@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.EmojiBatteryPort" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Matches splash gradient; no ad interstitial layer -->
+        <item name="android:windowBackground">@drawable/bg_splash_screen</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>

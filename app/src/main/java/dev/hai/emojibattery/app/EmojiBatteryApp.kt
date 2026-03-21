@@ -93,7 +93,10 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -496,6 +499,10 @@ fun EmojiBatteryApp(
                     onSelectTemplate = viewModel::selectBatteryTrollTemplate,
                     onSetMessage = viewModel::setTrollMessage,
                     onToggleAutoDrop = viewModel::setTrollAutoDrop,
+                    onOpenTutorial = {
+                        viewModel.replayTutorial()
+                        navController.navigate(AppRoute.Tutorial.route)
+                    },
                     onRefreshBatteryTrollCatalog = viewModel::refreshBatteryTrollCatalog,
                     onToggleAccessibility = {
                         AccessibilityBridge.openSettings(context)
@@ -525,6 +532,10 @@ fun EmojiBatteryApp(
                     onRemoveSticker = viewModel::removeSticker,
                     onUpdateStickerSize = viewModel::updateSelectedStickerSize,
                     onUpdateStickerSpeed = viewModel::updateSelectedStickerSpeed,
+                    onOpenTutorial = {
+                        viewModel.replayTutorial()
+                        navController.navigate(AppRoute.Tutorial.route)
+                    },
                     onRefreshStickerCatalog = viewModel::refreshStickerCatalog,
                     onToggleAccessibility = {
                         AccessibilityBridge.openSettings(context)
@@ -671,6 +682,7 @@ private fun EmojiStickerScreen(
     onRemoveSticker: (String) -> Unit,
     onUpdateStickerSize: (Float) -> Unit,
     onUpdateStickerSpeed: (Float) -> Unit,
+    onOpenTutorial: () -> Unit,
     onRefreshStickerCatalog: () -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
     onSave: () -> Unit,
@@ -768,7 +780,7 @@ private fun EmojiStickerScreen(
                         Surface(
                             shape = RoundedCornerShape(16.dp),
                             color = Color(0xFFFFE5FC),
-                            modifier = Modifier.clickable { },
+                            modifier = Modifier.clickable(onClick = onOpenTutorial),
                         ) {
                             Text(
                                 "Tutorial",
@@ -1009,31 +1021,63 @@ private fun SplashRoute(
             onFinish()
         }
     }
+    // Shape/gradient XML drawables are not supported by Compose painterResource (vector/bitmap only).
+    // Match res/drawable/bg_splash_screen.xml via the same color stops.
     Box(
-        modifier = Modifier
+        Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center,
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        colorResource(R.color.splash_gradient_top),
+                        colorResource(R.color.splash_gradient_mid),
+                        colorResource(R.color.splash_gradient_bottom),
+                    ),
+                ),
+            ),
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(RoundedCornerShape(28.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Surface(
+                shape = RoundedCornerShape(28.dp),
+                color = colorResource(R.color.splash_logo_plate),
+                tonalElevation = 0.dp,
+                shadowElevation = 4.dp,
+                modifier = Modifier.size(dimensionResource(R.dimen.splash_logo_box)),
             ) {
-                Text("🔋", style = MaterialTheme.typography.displaySmall)
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Image(
+                        painter = painterResource(R.drawable.img_btn_status_bar_new),
+                        contentDescription = null,
+                        modifier = Modifier.size(72.dp),
+                    )
+                }
             }
             Spacer(Modifier.height(20.dp))
-            Text("Emoji Battery Port", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Text(
-                "Splash -> language gate -> main shell -> battery icon editor",
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(R.color.splash_title),
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.splash_tagline),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = colorResource(R.color.splash_subtitle),
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(24.dp))
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth(0.55f))
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(0.55f),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = colorResource(R.color.splash_progress_track),
+            )
         }
     }
 }
@@ -1188,9 +1232,15 @@ private fun OnboardingScreen(
     val page = SampleCatalog.onboardingPages[uiState.onboardingPage.coerceIn(0, SampleCatalog.onboardingPages.lastIndex)]
     val isFirst = uiState.onboardingPage == 0
     val isLast = uiState.onboardingPage == SampleCatalog.onboardingPages.lastIndex
-    val gradient = Brush.horizontalGradient(listOf(Color(0xFFF6A2D8), Color(0xFFB765F5)))
+    val gradient = Brush.horizontalGradient(
+        listOf(
+            colorResource(R.color.onboarding_cta_gradient_start),
+            colorResource(R.color.onboarding_cta_gradient_end),
+        ),
+    )
+    val onboardingBg = colorResource(R.color.onboarding_scaffold)
     Scaffold(
-        containerColor = Color(0xFFFFF7FB),
+        containerColor = onboardingBg,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { },
@@ -1201,7 +1251,7 @@ private fun OnboardingScreen(
                 },
                 actions = { TextButton(onClick = onSkip) { Text("Skip") } },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFFFFF7FB),
+                    containerColor = onboardingBg,
                 ),
             )
         },
@@ -1216,15 +1266,15 @@ private fun OnboardingScreen(
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 Surface(
                     shape = RoundedCornerShape(32.dp),
-                    color = Color.White,
-                    border = BorderStroke(2.dp, Color(0xFFF0D6EA)),
+                    color = colorResource(R.color.onboarding_hero_card),
+                    border = BorderStroke(2.dp, colorResource(R.color.onboarding_hero_border)),
                     shadowElevation = 6.dp,
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(310.dp)
-                            .background(Color(0xFFFFFBFE)),
+                            .height(dimensionResource(R.dimen.onboarding_hero_height))
+                            .background(colorResource(R.color.onboarding_hero_inner)),
                         contentAlignment = Alignment.Center,
                     ) {
                         Column(
@@ -1234,20 +1284,29 @@ private fun OnboardingScreen(
                             Text(page.accentGlyph, style = MaterialTheme.typography.displayLarge)
                             Surface(
                                 shape = RoundedCornerShape(18.dp),
-                                color = Color(0xFFFFEFF7),
+                                color = colorResource(R.color.onboarding_chip_surface),
                             ) {
                                 Text(
                                     "EMOJI BATTERY",
                                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                                    color = Color(0xFFB26AD9),
+                                    color = colorResource(R.color.onboarding_chip_magenta),
                                     fontWeight = FontWeight.ExtraBold,
                                 )
                             }
                         }
                     }
                 }
-                Text(page.title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
-                Text(page.body, color = Color(0xFF8D7680), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    page.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colorResource(R.color.onboarding_title),
+                )
+                Text(
+                    page.body,
+                    color = colorResource(R.color.onboarding_body),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     SampleCatalog.onboardingPages.forEachIndexed { index, _ ->
                         Box(
@@ -1255,8 +1314,11 @@ private fun OnboardingScreen(
                                 .size(width = if (index == uiState.onboardingPage) 28.dp else 10.dp, height = 10.dp)
                                 .clip(RoundedCornerShape(999.dp))
                                 .background(
-                                    if (index == uiState.onboardingPage) Color(0xFFE285EF)
-                                    else Color(0xFFF2DDEB),
+                                    if (index == uiState.onboardingPage) {
+                                        colorResource(R.color.onboarding_dot_active)
+                                    } else {
+                                        colorResource(R.color.onboarding_dot_inactive)
+                                    },
                                 ),
                         )
                     }
@@ -2431,6 +2493,7 @@ private fun BatteryTrollScreen(
     onSelectTemplate: (String) -> Unit,
     onSetMessage: (String) -> Unit,
     onToggleAutoDrop: (Boolean) -> Unit,
+    onOpenTutorial: () -> Unit,
     onRefreshBatteryTrollCatalog: () -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
     onApply: () -> Unit,
@@ -2537,7 +2600,7 @@ private fun BatteryTrollScreen(
                         Surface(
                             shape = RoundedCornerShape(16.dp),
                             color = Color(0xFFFFE5FC),
-                            modifier = Modifier.clickable { },
+                            modifier = Modifier.clickable(onClick = onOpenTutorial),
                         ) {
                             Text(
                                 "Tutorial",

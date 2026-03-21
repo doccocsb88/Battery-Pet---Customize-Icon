@@ -1,4 +1,28 @@
 <resources>
     <color name="seed">#FF8FB1</color>
     <color name="surface_soft">#FFF7FA</color>
+
+    <!-- Splash (no ad surfaces; marketing-style gradient only) -->
+    <color name="splash_gradient_top">#FFFFF7FB</color>
+    <color name="splash_gradient_mid">#FFFEF5FA</color>
+    <color name="splash_gradient_bottom">#FFFFFFFF</color>
+    <color name="splash_logo_plate">#33FFABE5</color>
+    <color name="splash_title">#FF5C4B51</color>
+    <color name="splash_subtitle">#FF8D7680</color>
+    <color name="splash_progress_track">#33D47DFE</color>
+
+    <!-- Onboarding pager (matches original pink / Albert theme in Compose) -->
+    <color name="onboarding_scaffold">#FFFEF5FA</color>
+    <color name="onboarding_top_bar">#FFFEF5FA</color>
+    <color name="onboarding_hero_card">#FFFFFFFF</color>
+    <color name="onboarding_hero_inner">#FFFFFBFE</color>
+    <color name="onboarding_hero_border">#FFF0D6EA</color>
+    <color name="onboarding_chip_surface">#FFFFEFF7</color>
+    <color name="onboarding_chip_magenta">#FFB26AD9</color>
+    <color name="onboarding_title">#FF5F4B54</color>
+    <color name="onboarding_body">#FF8D7680</color>
+    <color name="onboarding_dot_active">#FFE285EF</color>
+    <color name="onboarding_dot_inactive">#FFF2DDEB</color>
+    <color name="onboarding_cta_gradient_start">#FFF6A2D8</color>
+    <color name="onboarding_cta_gradient_end">#FFB765F5</color>
 </resources>

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Emoji Battery Port</string>
+    <string name="splash_tagline">Customize your status bar battery &amp; emoji</string>
 </resources>
