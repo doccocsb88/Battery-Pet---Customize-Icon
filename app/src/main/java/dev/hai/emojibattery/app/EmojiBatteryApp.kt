@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,6 +25,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -31,7 +35,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -84,6 +87,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -123,6 +130,7 @@ import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.SearchTemplate
 import dev.hai.emojibattery.model.StickerPlacement
 import dev.hai.emojibattery.model.StickerPreset
+import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
 import dev.hai.emojibattery.billing.BillingUiState
@@ -515,6 +523,7 @@ fun EmojiBatteryApp(
                     onRemoveSticker = viewModel::removeSticker,
                     onUpdateStickerSize = viewModel::updateSelectedStickerSize,
                     onUpdateStickerSpeed = viewModel::updateSelectedStickerSpeed,
+                    onRefreshStickerCatalog = viewModel::refreshStickerCatalog,
                     onToggleAccessibility = {
                         AccessibilityBridge.openSettings(context)
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
@@ -660,49 +669,61 @@ private fun EmojiStickerScreen(
     onRemoveSticker: (String) -> Unit,
     onUpdateStickerSize: (Float) -> Unit,
     onUpdateStickerSpeed: (Float) -> Unit,
+    onRefreshStickerCatalog: () -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
     onSave: () -> Unit,
     onTurnOff: () -> Unit,
 ) {
-    val selectedSticker = uiState.selectedStickerId?.let { id ->
-        SampleCatalog.stickerPresets.firstOrNull { it.id == id }
+    LaunchedEffect(Unit) {
+        onRefreshStickerCatalog()
     }
+
+    val stickerLibrary = if (uiState.stickerCatalogRemote.isNotEmpty()) {
+        uiState.stickerCatalogRemote
+    } else {
+        SampleCatalog.stickerPresets
+    }
+    val selectedSticker = uiState.selectedStickerId?.let { uiState.stickerPresetForId(it) }
     val selectedPlacement = uiState.selectedStickerId?.let { id ->
         uiState.stickerPlacements.firstOrNull { it.stickerId == id }
     }
+    val stickerScroll = rememberScrollState()
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Emoji Sticker") },
-                navigationIcon = {
-                    TextButton(onClick = onBack) { Text("Back") }
-                },
-                actions = {
-                    AssistChip(
-                        onClick = {},
-                        label = { Text("Tutorial") },
-                    )
-                },
-            )
-        },
+        containerColor = Color(0xFFFEF5FA),
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .verticalScroll(stickerScroll)
+                .padding(horizontal = 8.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp),
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_back_40_new),
+                    contentDescription = "Back",
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .size(40.dp)
+                        .clickable(onClick = onBack),
+                )
+            }
             StickerPreviewCard(
                 selectedSticker = selectedSticker,
                 selectedPlacement = selectedPlacement,
                 overlayEnabled = uiState.stickerOverlayEnabled,
             )
             Surface(
-                shape = RoundedCornerShape(18.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
             ) {
                 Text(
                     if (uiState.premiumUnlocked) {
@@ -713,78 +734,220 @@ private fun EmojiStickerScreen(
                         "Free mode allows ${SampleCatalog.FREE_STICKER_SLOTS} sticker. Premium stickers trigger paywall."
                     },
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color(0xFF5C4B51),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
             PermissionBanner(
                 enabled = uiState.accessibilityGranted,
                 onToggle = onToggleAccessibility,
             )
-            Card(shape = RoundedCornerShape(24.dp)) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(
+                    Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text("Add Sticker", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                        AssistChip(onClick = {}, label = { Text("Tutorial") })
-                    }
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        SampleCatalog.stickerPresets.forEach { sticker ->
-                            StickerCatalogCard(
-                                sticker = sticker,
-                                selected = uiState.selectedStickerId == sticker.id,
-                                added = uiState.stickerPlacements.any { it.stickerId == sticker.id },
-                                onClick = { onAddSticker(sticker.id) },
+                        Text(
+                            "Add Sticker",
+                            color = Color(0xFF5C4B51),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Surface(
+                            shape = RoundedCornerShape(16.dp),
+                            color = Color(0xFFFFE5FC),
+                            modifier = Modifier.clickable { },
+                        ) {
+                            Text(
+                                "Tutorial",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                color = Color(0xFF5C4B51),
+                                style = MaterialTheme.typography.titleSmall,
                             )
+                        }
+                    }
+                    if (uiState.stickerCatalogLoading && uiState.stickerCatalogRemote.isEmpty()) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            val loadingComposition by rememberLottieComposition(
+                                LottieCompositionSpec.Asset("cute_loading.json"),
+                            )
+                            LottieAnimation(
+                                composition = loadingComposition,
+                                iterations = LottieConstants.IterateForever,
+                                speed = 2f,
+                                modifier = Modifier.size(120.dp),
+                            )
+                            Text(
+                                "Loading…",
+                                color = Color(0xFF5C4B51),
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+                    } else {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            stickerLibrary.chunked(4).forEach { row ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    row.forEach { sticker ->
+                                        Box(modifier = Modifier.weight(1f)) {
+                                            StickerCatalogCard(
+                                                sticker = sticker,
+                                                selected = uiState.selectedStickerId == sticker.id,
+                                                added = uiState.stickerPlacements.any { it.stickerId == sticker.id },
+                                                onClick = { onAddSticker(sticker.id) },
+                                            )
+                                        }
+                                    }
+                                    repeat(4 - row.size) {
+                                        Spacer(Modifier.weight(1f))
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-            Card(shape = RoundedCornerShape(24.dp)) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Surface(
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(
+                    Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text("My Sticker", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                        Text("${uiState.stickerPlacements.size} added", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            "My Sticker",
+                            color = Color(0xFF5C4B51),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            "${uiState.stickerPlacements.size} added",
+                            color = Color(0xFF5C4B51),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                     if (uiState.stickerPlacements.isEmpty()) {
-                        Text("Add a sticker from the library above to start editing.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            "Add a sticker from the library above to start editing.",
+                            color = Color(0xFF5C4B51),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     } else {
-                        LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.height(88.dp),
+                        ) {
                             items(uiState.stickerPlacements, key = { it.stickerId }) { placement ->
-                                val sticker = SampleCatalog.stickerPresets.first { it.id == placement.stickerId }
-                                AddedStickerChip(
-                                    sticker = sticker,
-                                    selected = uiState.selectedStickerId == sticker.id,
-                                    onSelect = { onSelectSticker(sticker.id) },
-                                    onRemove = { onRemoveSticker(sticker.id) },
-                                )
+                                val sticker = uiState.stickerPresetForId(placement.stickerId)
+                                if (sticker != null) {
+                                    AddedStickerChip(
+                                        sticker = sticker,
+                                        selected = uiState.selectedStickerId == sticker.id,
+                                        onSelect = { onSelectSticker(sticker.id) },
+                                        onRemove = { onRemoveSticker(sticker.id) },
+                                    )
+                                }
                             }
                         }
                     }
-                    HorizontalDivider()
-                    Text("Selected Sticker Controls", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                    HorizontalDivider(thickness = 1.dp, color = Color.Black)
+                    Text(
+                        "Selected Sticker Controls",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF5C4B51),
+                    )
                     if (selectedSticker != null && selectedPlacement != null) {
-                        Text("${selectedSticker.glyph} ${selectedSticker.name}", style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            "${selectedSticker.glyph} ${selectedSticker.name}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color(0xFF5C4B51),
+                        )
                         SliderField("Sticker size", selectedPlacement.size, 0.2f..1f, onUpdateStickerSize)
                         SliderField("Sticker speed", selectedPlacement.speed, 0.2f..1f, onUpdateStickerSpeed)
                     } else {
-                        Text("Select one of your added stickers to edit size and speed.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            "Select one of your added stickers to edit size and speed.",
+                            color = Color(0xFF5C4B51),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedButton(onClick = onTurnOff, modifier = Modifier.weight(1f)) {
-                            Text("Turn Off")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(50.dp),
+                            color = Color(0xFFFFE5FC),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(56.dp)
+                                .clickable(onClick = onTurnOff),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_turn_off_shimeji),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "Turn Off",
+                                    color = Color(0xFFD47DFE),
+                                    fontWeight = FontWeight.SemiBold,
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                            }
                         }
-                        FilledTonalButton(onClick = onSave, modifier = Modifier.weight(1f)) {
-                            Text("Save")
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(56.dp)
+                                .clip(RoundedCornerShape(50.dp))
+                                .background(
+                                    Brush.horizontalGradient(
+                                        listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)),
+                                    ),
+                                )
+                                .clickable(onClick = onSave),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                "Save",
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleLarge,
+                            )
                         }
                     }
                 }
@@ -3179,48 +3342,100 @@ private fun BatteryPreviewCard(
 }
 
 @Composable
+private fun StickerMediaPreview(
+    sticker: StickerPreset,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        when {
+            sticker.lottieUrl != null -> {
+                val composition by rememberLottieComposition(LottieCompositionSpec.Url(sticker.lottieUrl))
+                LottieAnimation(
+                    composition = composition,
+                    iterations = LottieConstants.IterateForever,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            sticker.thumbnailUrl != null -> {
+                AsyncImage(
+                    model = sticker.thumbnailUrl,
+                    contentDescription = sticker.name,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+            else -> {
+                Text(
+                    sticker.glyph,
+                    style = MaterialTheme.typography.displaySmall,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun StickerPreviewCard(
     selectedSticker: StickerPreset?,
     selectedPlacement: StickerPlacement?,
     overlayEnabled: Boolean,
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)),
-        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(0.5.dp, Color(0xFFE5C7D2)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("Sticker Preview", fontWeight = FontWeight.SemiBold)
+            Text(
+                "Sticker Preview",
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF5C4B51),
+                style = MaterialTheme.typography.titleSmall,
+            )
             Text(
                 if (overlayEnabled) "Overlay active" else "Overlay inactive",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = Color(0xFF5C4B51),
+                style = MaterialTheme.typography.bodySmall,
             )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(116.dp)
-                    .clip(RoundedCornerShape(22.dp))
-                    .background(Color.White.copy(alpha = 0.7f)),
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFF8F8F8)),
             ) {
-                Text(
-                    text = selectedSticker?.glyph ?: "✨",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(top = ((1f - (selectedPlacement?.speed ?: 0.5f)) * 24f).dp),
-                    style = MaterialTheme.typography.displayLarge,
-                )
+                if (selectedSticker != null) {
+                    StickerMediaPreview(
+                        selectedSticker,
+                        Modifier
+                            .align(Alignment.Center)
+                            .padding(top = ((1f - (selectedPlacement?.speed ?: 0.5f)) * 24f).dp)
+                            .fillMaxSize()
+                            .padding(12.dp),
+                    )
+                } else {
+                    Text(
+                        text = "✨",
+                        modifier = Modifier.align(Alignment.Center),
+                        style = MaterialTheme.typography.displayLarge,
+                        color = Color(0xFF5C4B51),
+                    )
+                }
             }
             if (selectedSticker != null && selectedPlacement != null) {
                 Text(
                     "${selectedSticker.name}  •  size ${(selectedPlacement.size * 100).toInt()}%  •  speed ${(selectedPlacement.speed * 100).toInt()}%",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color(0xFF5C4B51),
+                    style = MaterialTheme.typography.bodySmall,
                 )
             } else {
-                Text("Pick a sticker to preview it here.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Pick a sticker to preview it here.", color = Color(0xFF5C4B51), style = MaterialTheme.typography.bodySmall)
             }
         }
     }
@@ -3235,38 +3450,59 @@ private fun StickerCatalogCard(
 ) {
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceVariant,
-        ),
-        modifier = Modifier.size(width = 78.dp, height = 92.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8)),
+        border = if (selected) {
+            BorderStroke(1.dp, Color(0xFFD47DFE))
+        } else {
+            BorderStroke(0.5.dp, Color(0xFFE0E0E0))
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
+        Box(Modifier.fillMaxSize()) {
+            StickerMediaPreview(
+                sticker,
+                Modifier
+                    .fillMaxSize()
+                    .padding(6.dp),
+            )
+            if (added) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.08f)),
+                )
+            }
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (sticker.premium) {
-                    Text("♦", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelSmall)
-                } else {
-                    Spacer(Modifier.size(10.dp))
+                    Image(
+                        painter = painterResource(R.drawable.ic_diamond),
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                    )
                 }
                 if (sticker.animated) {
-                    Text("GIF", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = Color(0x33FFFFFF),
+                    ) {
+                        Text(
+                            "GIF",
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF5C4B51),
+                        )
+                    }
                 }
             }
-            Text(sticker.glyph, style = MaterialTheme.typography.headlineMedium)
-            Text(
-                if (added) "Added" else sticker.name,
-                style = MaterialTheme.typography.labelSmall,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }
@@ -3280,8 +3516,9 @@ private fun AddedStickerChip(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = if (selected) Color(0xFFFFE5FC) else Color(0xFFF8F8F8),
         ),
+        border = if (selected) BorderStroke(1.dp, Color(0xFFD47DFE)) else null,
         onClick = onSelect,
     ) {
         Row(
@@ -3289,9 +3526,18 @@ private fun AddedStickerChip(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(sticker.glyph)
-            Text(sticker.name)
-            TextButton(onClick = onRemove) { Text("x") }
+            if (sticker.thumbnailUrl != null) {
+                AsyncImage(
+                    model = sticker.thumbnailUrl,
+                    contentDescription = sticker.name,
+                    modifier = Modifier.size(36.dp),
+                    contentScale = ContentScale.Fit,
+                )
+            } else {
+                Text(sticker.glyph)
+            }
+            Text(sticker.name, color = Color(0xFF5C4B51), style = MaterialTheme.typography.bodySmall)
+            TextButton(onClick = onRemove) { Text("×", color = Color(0xFF5C4B51)) }
         }
     }
 }

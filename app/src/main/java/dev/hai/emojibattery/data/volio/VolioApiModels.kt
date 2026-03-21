@@ -14,10 +14,16 @@ data class VolioCategoryDto(
     @SerializedName("status") val status: Boolean?,
 )
 
+data class VolioItemCustomFieldsDto(
+    @SerializedName("content") val content: String?,
+)
+
 data class VolioEmojiBatteryItemDto(
     @SerializedName("id") val id: String,
     @SerializedName("category_id") val categoryId: String?,
     @SerializedName("name") val name: String?,
     @SerializedName("thumbnail") val thumbnail: String?,
-    @SerializedName("is_pro") val isPro: Boolean?,
+    @SerializedName("photo") val photo: String? = null,
+    @SerializedName("is_pro") val isPro: Boolean? = null,
+    @SerializedName("custom_fields") val customFields: VolioItemCustomFieldsDto? = null,
 )

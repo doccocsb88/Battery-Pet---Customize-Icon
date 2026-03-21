@@ -4,6 +4,7 @@ import android.content.Context
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.BatteryIconConfig
 import dev.hai.emojibattery.model.SampleCatalog
+import dev.hai.emojibattery.model.stickerPresetForId
 
 data class OverlaySnapshot(
     val statusBarEnabled: Boolean,
@@ -12,6 +13,8 @@ data class OverlaySnapshot(
     val backgroundColor: Long,
     val stickerEnabled: Boolean,
     val stickerGlyph: String,
+    /** When set, overlay draws the Volio thumbnail instead of [stickerGlyph]. */
+    val stickerThumbnailUrl: String?,
     val trollEnabled: Boolean,
     val trollMessage: String,
     val realTimeEnabled: Boolean,
@@ -27,6 +30,7 @@ object OverlayConfigStore {
     private const val KEY_BACKGROUND = "background"
     private const val KEY_STICKER_ENABLED = "sticker_enabled"
     private const val KEY_STICKER_GLYPH = "sticker_glyph"
+    private const val KEY_STICKER_THUMB_URL = "sticker_thumb_url"
     private const val KEY_TROLL_ENABLED = "troll_enabled"
     private const val KEY_TROLL_MESSAGE = "troll_message"
     private const val KEY_REALTIME_ENABLED = "realtime_enabled"
@@ -46,16 +50,18 @@ object OverlayConfigStore {
 
     fun saveStickerOverlay(context: Context, uiState: AppUiState) {
         val stickerId = uiState.selectedStickerId ?: uiState.stickerPlacements.lastOrNull()?.stickerId ?: return
-        val sticker = SampleCatalog.stickerPresets.firstOrNull { it.id == stickerId } ?: return
+        val sticker = uiState.stickerPresetForId(stickerId) ?: return
         prefs(context).edit()
             .putBoolean(KEY_STICKER_ENABLED, true)
             .putString(KEY_STICKER_GLYPH, sticker.glyph)
+            .putString(KEY_STICKER_THUMB_URL, sticker.thumbnailUrl?.takeIf { it.isNotBlank() }.orEmpty())
             .apply()
     }
 
     fun clearStickerOverlay(context: Context) {
         prefs(context).edit()
             .putBoolean(KEY_STICKER_ENABLED, false)
+            .remove(KEY_STICKER_THUMB_URL)
             .apply()
     }
 
@@ -90,6 +96,7 @@ object OverlayConfigStore {
             backgroundColor = prefs.getLong(KEY_BACKGROUND, SampleCatalog.defaultConfig.backgroundColor),
             stickerEnabled = prefs.getBoolean(KEY_STICKER_ENABLED, false),
             stickerGlyph = prefs.getString(KEY_STICKER_GLYPH, "✨").orEmpty(),
+            stickerThumbnailUrl = prefs.getString(KEY_STICKER_THUMB_URL, null)?.takeIf { it.isNotBlank() },
             trollEnabled = prefs.getBoolean(KEY_TROLL_ENABLED, false),
             trollMessage = prefs.getString(KEY_TROLL_MESSAGE, "999").orEmpty(),
             realTimeEnabled = prefs.getBoolean(KEY_REALTIME_ENABLED, false),

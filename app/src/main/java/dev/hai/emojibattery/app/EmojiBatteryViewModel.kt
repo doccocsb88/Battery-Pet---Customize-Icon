@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.hai.emojibattery.data.HomeCatalogRepository
 import dev.hai.emojibattery.data.VolioHomeRepository
+import dev.hai.emojibattery.data.VolioStickerRepository
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.AchievementTask
 import dev.hai.emojibattery.model.BatteryIconConfig
@@ -15,6 +16,7 @@ import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.PaywallState
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.StickerPlacement
+import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
 import kotlinx.coroutines.Dispatchers
@@ -218,8 +220,23 @@ class EmojiBatteryViewModel : ViewModel() {
         advanceAchievement("apply_status_bar")
     }
 
+    fun refreshStickerCatalog() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(stickerCatalogLoading = true) }
+            val list = withContext(Dispatchers.IO) {
+                runCatching { VolioStickerRepository.fetchStickerPresets() }.getOrElse { emptyList() }
+            }
+            _uiState.update {
+                it.copy(
+                    stickerCatalogRemote = list,
+                    stickerCatalogLoading = false,
+                )
+            }
+        }
+    }
+
     fun addSticker(stickerId: String) {
-        val sticker = SampleCatalog.stickerPresets.firstOrNull { it.id == stickerId } ?: return
+        val sticker = _uiState.value.stickerPresetForId(stickerId) ?: return
         _uiState.update { state ->
             if (sticker.premium && !hasFeatureAccess(state, "sticker:$stickerId")) {
                 state.copy(

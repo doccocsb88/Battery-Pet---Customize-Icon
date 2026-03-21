@@ -72,6 +72,11 @@ data class StickerPreset(
     val glyph: String,
     val premium: Boolean = false,
     val animated: Boolean = false,
+    /** Volio CDN thumbnail (PNG/GIF); shown in grid and status overlay when present. */
+    val thumbnailUrl: String? = null,
+    /** Lottie JSON URL from [custom_fields.content] when applicable. */
+    val lottieUrl: String? = null,
+    val remotePhotoUrl: String? = null,
 )
 
 data class StickerPlacement(
@@ -225,7 +230,15 @@ data class AppUiState(
     val lastFeedbackSubmitted: Boolean = false,
     val ratingSelection: Int = 0,
     val infoMessage: String? = null,
+    /** Remote Volio sticker library (Emoji sticker scope); merged at UI with [SampleCatalog.stickerPresets]. */
+    val stickerCatalogRemote: List<StickerPreset> = emptyList(),
+    val stickerCatalogLoading: Boolean = false,
 )
+
+/** Resolves a sticker from bundled samples or the remote Volio sticker catalog. */
+fun AppUiState.stickerPresetForId(stickerId: String): StickerPreset? =
+    SampleCatalog.stickerPresets.firstOrNull { it.id == stickerId }
+        ?: stickerCatalogRemote.firstOrNull { it.id == stickerId }
 
 object SampleCatalog {
     val batteryPresets = listOf(

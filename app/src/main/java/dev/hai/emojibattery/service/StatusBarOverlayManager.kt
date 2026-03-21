@@ -8,9 +8,11 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextClock
 import android.widget.TextView
+import coil.load
 import androidx.core.graphics.toColorInt
 
 class StatusBarOverlayManager(
@@ -36,7 +38,8 @@ class StatusBarOverlayManager(
     private val wifiView = TextView(context)
     private val signalView = TextView(context)
     private val batteryView = TextView(context)
-    private val stickerView = TextView(context)
+    private val stickerEmojiView = TextView(context)
+    private val stickerImageView = ImageView(context)
     private val trollView = TextView(context)
     private val realtimeView = TextView(context)
 
@@ -83,9 +86,16 @@ class StatusBarOverlayManager(
         statusRow.addView(rightCluster)
 
         root.addView(statusRow)
-        root.addView(stickerView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
+        val stickerLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
             topMargin = 64
-        })
+        }
+        stickerImageView.scaleType = ImageView.ScaleType.FIT_CENTER
+        stickerImageView.adjustViewBounds = true
+        val stickerMax = (56 * context.resources.displayMetrics.density).toInt()
+        stickerImageView.maxWidth = stickerMax
+        stickerImageView.maxHeight = stickerMax
+        root.addView(stickerImageView, FrameLayout.LayoutParams(stickerLp))
+        root.addView(stickerEmojiView, FrameLayout.LayoutParams(stickerLp))
         root.addView(trollView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END).apply {
             topMargin = 64
             marginEnd = 24
@@ -95,11 +105,12 @@ class StatusBarOverlayManager(
             marginStart = 24
         })
 
-        listOf(stickerView, trollView, realtimeView).forEach { view ->
+        listOf(stickerEmojiView, trollView, realtimeView).forEach { view ->
             view.textSize = 18f
             view.setPadding(18, 10, 18, 10)
             view.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         }
+        stickerImageView.setPadding(18, 10, 18, 10)
     }
 
     fun render(snapshot: OverlaySnapshot, liveStatus: LiveStatus) {
@@ -124,8 +135,23 @@ class StatusBarOverlayManager(
         wifiView.setTextColor("#333333".toColorInt())
         signalView.setTextColor("#333333".toColorInt())
 
-        stickerView.text = snapshot.stickerGlyph
-        stickerView.visibility = if (snapshot.stickerEnabled) View.VISIBLE else View.GONE
+        if (snapshot.stickerEnabled) {
+            val url = snapshot.stickerThumbnailUrl?.takeIf { it.isNotBlank() }
+            if (url != null) {
+                stickerImageView.visibility = View.VISIBLE
+                stickerEmojiView.visibility = View.GONE
+                stickerImageView.load(url) {
+                    crossfade(true)
+                }
+            } else {
+                stickerImageView.visibility = View.GONE
+                stickerEmojiView.visibility = View.VISIBLE
+                stickerEmojiView.text = snapshot.stickerGlyph
+            }
+        } else {
+            stickerImageView.visibility = View.GONE
+            stickerEmojiView.visibility = View.GONE
+        }
 
         trollView.text = "Fake ${snapshot.trollMessage}"
         trollView.visibility = if (snapshot.trollEnabled) View.VISIBLE else View.GONE
