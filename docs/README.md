@@ -12,6 +12,7 @@
 
 - [Home — category & grid Volio](screens/home.md)
 - [Emoji Sticker — sticker store & overlay](screens/emoji-sticker.md)
+- [Battery Troll — prank templates & overlay](screens/battery-troll.md)
 
 ## Khác (đã có trong repo)
 

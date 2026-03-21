@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.hai.emojibattery.data.HomeCatalogRepository
 import dev.hai.emojibattery.data.VolioHomeRepository
+import dev.hai.emojibattery.data.VolioBatteryTrollRepository
 import dev.hai.emojibattery.data.VolioStickerRepository
+import dev.hai.emojibattery.data.volio.VolioConstants
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.AchievementTask
 import dev.hai.emojibattery.model.BatteryIconConfig
@@ -16,6 +18,7 @@ import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.PaywallState
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.StickerPlacement
+import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
@@ -235,6 +238,22 @@ class EmojiBatteryViewModel : ViewModel() {
         }
     }
 
+    fun refreshBatteryTrollCatalog() {
+        if (VolioConstants.BATTERY_TROLL_PARENT_ID.isBlank()) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(batteryTrollCatalogLoading = true) }
+            val list = withContext(Dispatchers.IO) {
+                runCatching { VolioBatteryTrollRepository.fetchTemplates() }.getOrElse { emptyList() }
+            }
+            _uiState.update {
+                it.copy(
+                    batteryTrollCatalogRemote = list,
+                    batteryTrollCatalogLoading = false,
+                )
+            }
+        }
+    }
+
     fun addSticker(stickerId: String) {
         val sticker = _uiState.value.stickerPresetForId(stickerId) ?: return
         _uiState.update { state ->
@@ -398,7 +417,7 @@ class EmojiBatteryViewModel : ViewModel() {
     }
 
     fun selectBatteryTrollTemplate(templateId: String) {
-        val template = SampleCatalog.batteryTrollTemplates.firstOrNull { it.id == templateId } ?: return
+        val template = _uiState.value.batteryTrollTemplateForId(templateId) ?: return
         _uiState.update {
             it.copy(
                 selectedBatteryTrollTemplateId = templateId,

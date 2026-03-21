@@ -6,6 +6,7 @@ Mỗi file mô tả **hành vi**, **data**, **đối chiếu app gốc** và **f
 |----------|-----------|
 | Home (category + grid Volio) | [home.md](home.md) |
 | Emoji Sticker (Volio sticker + overlay) | [emoji-sticker.md](emoji-sticker.md) |
+| Battery Troll (prank templates + overlay) | [battery-troll.md](battery-troll.md) |
 
 Thêm màn hình mới: tạo `docs/screens/<ten-man>.md` và cập nhật bảng trên.
 

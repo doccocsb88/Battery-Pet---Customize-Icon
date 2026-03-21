@@ -130,6 +130,7 @@ import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.SearchTemplate
 import dev.hai.emojibattery.model.StickerPlacement
 import dev.hai.emojibattery.model.StickerPreset
+import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
@@ -495,6 +496,7 @@ fun EmojiBatteryApp(
                     onSelectTemplate = viewModel::selectBatteryTrollTemplate,
                     onSetMessage = viewModel::setTrollMessage,
                     onToggleAutoDrop = viewModel::setTrollAutoDrop,
+                    onRefreshBatteryTrollCatalog = viewModel::refreshBatteryTrollCatalog,
                     onToggleAccessibility = {
                         AccessibilityBridge.openSettings(context)
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
@@ -2421,7 +2423,7 @@ private fun RealTimeScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun BatteryTrollScreen(
     uiState: AppUiState,
@@ -2429,37 +2431,189 @@ private fun BatteryTrollScreen(
     onSelectTemplate: (String) -> Unit,
     onSetMessage: (String) -> Unit,
     onToggleAutoDrop: (Boolean) -> Unit,
+    onRefreshBatteryTrollCatalog: () -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
     onApply: () -> Unit,
     onTurnOff: () -> Unit,
 ) {
-    val selected = SampleCatalog.batteryTrollTemplates.first { it.id == uiState.selectedBatteryTrollTemplateId }
-    ScreenContainer(title = "Battery Troll", subtitle = "Pick prank content, tweak the fake label, then apply.") {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            TemplatePreviewCard(
-                title = selected.title,
-                summary = selected.summary,
-                glyph = selected.accentGlyph,
-                tag = if (uiState.trollOverlayEnabled) "Overlay Active" else "Overlay Inactive",
+    LaunchedEffect(Unit) {
+        onRefreshBatteryTrollCatalog()
+    }
+
+    val templateLibrary = if (uiState.batteryTrollCatalogRemote.isNotEmpty()) {
+        uiState.batteryTrollCatalogRemote
+    } else {
+        SampleCatalog.batteryTrollTemplates
+    }
+    val selected = uiState.batteryTrollTemplateForId(uiState.selectedBatteryTrollTemplateId)
+        ?: SampleCatalog.batteryTrollTemplates.first()
+    val chipMessages = buildList {
+        addAll(SampleCatalog.trollMessageOptions)
+        templateLibrary.forEach { t ->
+            if (t.prankMessage.isNotBlank() && t.prankMessage !in this) add(t.prankMessage)
+        }
+        if (uiState.trollMessage.isNotBlank() && uiState.trollMessage !in this) add(uiState.trollMessage)
+    }
+    val trollScroll = rememberScrollState()
+
+    Scaffold(
+        containerColor = Color(0xFFFEF5FA),
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(trollScroll)
+                .padding(horizontal = 8.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp),
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_back_40_new),
+                    contentDescription = "Back",
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .size(40.dp)
+                        .clickable(onClick = onBack),
+                )
+            }
+            BatteryTrollPreviewCard(
+                template = selected,
+                trollMessage = uiState.trollMessage,
+                overlayEnabled = uiState.trollOverlayEnabled,
             )
-            PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = onToggleAccessibility)
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                items(SampleCatalog.batteryTrollTemplates) { template ->
-                    TrollTemplateCard(
-                        template = template,
-                        selected = template.id == uiState.selectedBatteryTrollTemplateId,
-                        onClick = { onSelectTemplate(template.id) },
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_battery_troll_customize_32),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                    )
+                    Text(
+                        "Pick a fake battery label and apply the overlay when accessibility is enabled.",
+                        color = Color(0xFF5C4B51),
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
-            Card {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Customize", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            PermissionBanner(
+                enabled = uiState.accessibilityGranted,
+                onToggle = onToggleAccessibility,
+            )
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(
+                    Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Troll templates",
+                            color = Color(0xFF5C4B51),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Surface(
+                            shape = RoundedCornerShape(16.dp),
+                            color = Color(0xFFFFE5FC),
+                            modifier = Modifier.clickable { },
+                        ) {
+                            Text(
+                                "Tutorial",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                color = Color(0xFF5C4B51),
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                        }
+                    }
+                    if (uiState.batteryTrollCatalogLoading && uiState.batteryTrollCatalogRemote.isEmpty()) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            val loadingComposition by rememberLottieComposition(
+                                LottieCompositionSpec.Asset("cute_loading.json"),
+                            )
+                            LottieAnimation(
+                                composition = loadingComposition,
+                                iterations = LottieConstants.IterateForever,
+                                speed = 2f,
+                                modifier = Modifier.size(120.dp),
+                            )
+                            Text(
+                                "Loading…",
+                                color = Color(0xFF5C4B51),
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+                    } else {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            templateLibrary.chunked(4).forEach { row ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    row.forEach { template ->
+                                        Box(modifier = Modifier.weight(1f)) {
+                                            TrollTemplateCard(
+                                                template = template,
+                                                selected = template.id == uiState.selectedBatteryTrollTemplateId,
+                                                onClick = { onSelectTemplate(template.id) },
+                                            )
+                                        }
+                                    }
+                                    repeat(4 - row.size) {
+                                        Spacer(Modifier.weight(1f))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Surface(
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(
+                    Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(
+                        "Customize",
+                        color = Color(0xFF5C4B51),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        SampleCatalog.trollMessageOptions.forEach { option ->
+                        chipMessages.forEach { option ->
                             ChoiceChip(
                                 label = option,
                                 selected = option == uiState.trollMessage,
@@ -2468,17 +2622,72 @@ private fun BatteryTrollScreen(
                         }
                     }
                     SettingToggle("Auto drop animation", uiState.trollAutoDrop, onToggleAutoDrop)
-                }
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) {
-                    Text("Back")
-                }
-                OutlinedButton(onClick = onTurnOff, modifier = Modifier.weight(1f)) {
-                    Text("Turn Off")
-                }
-                Button(onClick = onApply, modifier = Modifier.weight(1f)) {
-                    Text("Apply")
+                    HorizontalDivider(thickness = 1.dp, color = Color.Black)
+                    Text(
+                        "Fake label preview",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF5C4B51),
+                    )
+                    Text(
+                        "Fake ${uiState.trollMessage}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color(0xFF5C4B51),
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(50.dp),
+                            color = Color(0xFFFFE5FC),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(56.dp)
+                                .clickable(onClick = onTurnOff),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_turn_off_shimeji),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    "Turn Off",
+                                    color = Color(0xFFD47DFE),
+                                    fontWeight = FontWeight.SemiBold,
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(56.dp)
+                                .clip(RoundedCornerShape(50.dp))
+                                .background(
+                                    Brush.horizontalGradient(
+                                        listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)),
+                                    ),
+                                )
+                                .clickable(onClick = onApply),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                "Save",
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -3621,6 +3830,103 @@ private fun ContentTemplateCard(
 }
 
 @Composable
+private fun TrollMediaPreview(
+    template: BatteryTrollTemplate,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        when {
+            template.lottieUrl != null -> {
+                val composition by rememberLottieComposition(LottieCompositionSpec.Url(template.lottieUrl))
+                LottieAnimation(
+                    composition = composition,
+                    iterations = LottieConstants.IterateForever,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            template.thumbnailUrl != null -> {
+                AsyncImage(
+                    model = template.thumbnailUrl,
+                    contentDescription = template.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+            else -> {
+                Text(
+                    template.accentGlyph,
+                    style = MaterialTheme.typography.displaySmall,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BatteryTrollPreviewCard(
+    template: BatteryTrollTemplate,
+    trollMessage: String,
+    overlayEnabled: Boolean,
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(0.5.dp, Color(0xFFE5C7D2)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                "Battery Troll preview",
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF5C4B51),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Text(
+                if (overlayEnabled) "Overlay active" else "Overlay inactive",
+                color = Color(0xFF5C4B51),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(116.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFF8F8F8)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    TrollMediaPreview(
+                        template,
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                    )
+                    Text(
+                        text = "Fake $trollMessage",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF5C4B51),
+                    )
+                }
+            }
+            Text(
+                "${template.title} • ${template.prankMessage}",
+                color = Color(0xFF5C4B51),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
+}
+
+@Composable
 private fun TrollTemplateCard(
     template: BatteryTrollTemplate,
     selected: Boolean,
@@ -3628,23 +3934,55 @@ private fun TrollTemplateCard(
 ) {
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceVariant,
-        ),
-        modifier = Modifier.size(width = 168.dp, height = 148.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8)),
+        border = if (selected) {
+            BorderStroke(1.dp, Color(0xFFD47DFE))
+        } else {
+            BorderStroke(0.5.dp, Color(0xFFE0E0E0))
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(14.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(template.accentGlyph, style = MaterialTheme.typography.headlineMedium)
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(template.title, fontWeight = FontWeight.SemiBold)
-                Text(template.summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Box(Modifier.fillMaxSize()) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    TrollMediaPreview(template, Modifier.fillMaxSize())
+                }
+                Text(
+                    template.title,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color(0xFF5C4B51),
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                )
             }
-            AssistChip(onClick = onClick, label = { Text(template.prankMessage) })
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                if (template.premium) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_diamond),
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                    )
+                }
+            }
         }
     }
 }

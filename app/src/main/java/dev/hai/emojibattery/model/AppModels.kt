@@ -106,6 +106,9 @@ data class BatteryTrollTemplate(
     val summary: String,
     val prankMessage: String,
     val accentGlyph: String,
+    val premium: Boolean = false,
+    val thumbnailUrl: String? = null,
+    val lottieUrl: String? = null,
 )
 
 data class AchievementTask(
@@ -233,12 +236,20 @@ data class AppUiState(
     /** Remote Volio sticker library (Emoji sticker scope); merged at UI with [SampleCatalog.stickerPresets]. */
     val stickerCatalogRemote: List<StickerPreset> = emptyList(),
     val stickerCatalogLoading: Boolean = false,
+    /** Remote Volio battery-troll templates when [VolioConstants.BATTERY_TROLL_PARENT_ID] is configured. */
+    val batteryTrollCatalogRemote: List<BatteryTrollTemplate> = emptyList(),
+    val batteryTrollCatalogLoading: Boolean = false,
 )
 
 /** Resolves a sticker from bundled samples or the remote Volio sticker catalog. */
 fun AppUiState.stickerPresetForId(stickerId: String): StickerPreset? =
     SampleCatalog.stickerPresets.firstOrNull { it.id == stickerId }
         ?: stickerCatalogRemote.firstOrNull { it.id == stickerId }
+
+/** Bundled samples or remote Volio battery troll row. */
+fun AppUiState.batteryTrollTemplateForId(templateId: String): BatteryTrollTemplate? =
+    SampleCatalog.batteryTrollTemplates.firstOrNull { it.id == templateId }
+        ?: batteryTrollCatalogRemote.firstOrNull { it.id == templateId }
 
 object SampleCatalog {
     val batteryPresets = listOf(
