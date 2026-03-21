@@ -6,4 +6,7 @@ build/
 local.properties
 *.iml
 .DS_Store
-
+*.apk
+*.xapk
+artifacts/
+decompiled/
