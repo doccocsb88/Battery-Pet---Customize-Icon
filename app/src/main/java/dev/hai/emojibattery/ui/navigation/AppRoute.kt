@@ -3,6 +3,8 @@ package dev.hai.emojibattery.ui.navigation
 sealed class AppRoute(val route: String) {
     data object Splash : AppRoute("splash")
     data object Language : AppRoute("language")
+    data object Onboarding : AppRoute("onboarding")
+    data object Tutorial : AppRoute("tutorial")
     data object Home : AppRoute("home")
     data object Customize : AppRoute("customize")
     data object Gesture : AppRoute("gesture")
@@ -11,6 +13,7 @@ sealed class AppRoute(val route: String) {
     data object LegacyBattery : AppRoute("legacy_battery")
     data object Search : AppRoute("search")
     data object Settings : AppRoute("settings")
+    data object Feedback : AppRoute("feedback")
     data object Paywall : AppRoute("paywall")
     data object Legal : AppRoute("legal/{document}") {
         fun create(document: String): String = "legal/$document"

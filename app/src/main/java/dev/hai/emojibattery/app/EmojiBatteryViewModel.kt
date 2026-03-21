@@ -37,7 +37,37 @@ class EmojiBatteryViewModel : ViewModel() {
             it.copy(
                 languageChosen = true,
                 selectedLanguage = language,
+                onboardingPage = 0,
                 infoMessage = "Language set to $language",
+            )
+        }
+    }
+
+    fun nextOnboardingPage() {
+        _uiState.update { state ->
+            val lastIndex = SampleCatalog.onboardingPages.lastIndex
+            if (state.onboardingPage >= lastIndex) {
+                state.copy(
+                    onboardingCompleted = true,
+                    infoMessage = "Onboarding completed.",
+                )
+            } else {
+                state.copy(onboardingPage = state.onboardingPage + 1)
+            }
+        }
+    }
+
+    fun previousOnboardingPage() {
+        _uiState.update { state ->
+            state.copy(onboardingPage = (state.onboardingPage - 1).coerceAtLeast(0))
+        }
+    }
+
+    fun skipOnboarding() {
+        _uiState.update {
+            it.copy(
+                onboardingCompleted = true,
+                infoMessage = "Onboarding skipped.",
             )
         }
     }
@@ -48,6 +78,10 @@ class EmojiBatteryViewModel : ViewModel() {
 
     fun selectMainSection(section: MainSection) {
         _uiState.update { it.copy(activeMainSection = section) }
+    }
+
+    fun selectHomeCategory(categoryId: String) {
+        _uiState.update { it.copy(selectedHomeCategoryId = categoryId) }
     }
 
     fun selectStatusTab(tab: StatusBarTab) {
@@ -75,6 +109,12 @@ class EmojiBatteryViewModel : ViewModel() {
         val theme = SampleCatalog.themePresets.firstOrNull { it.id == themeId } ?: return
         updateTheme(theme)
     }
+
+    fun setStatusBarHeight(value: Float) = updateConfig { copy(statusBarHeight = value) }
+
+    fun setStatusBarLeftMargin(value: Float) = updateConfig { copy(leftMargin = value) }
+
+    fun setStatusBarRightMargin(value: Float) = updateConfig { copy(rightMargin = value) }
 
     fun setBatteryPercentScale(value: Float) = updateConfig { copy(batteryPercentScale = value) }
 
@@ -313,7 +353,42 @@ class EmojiBatteryViewModel : ViewModel() {
     }
 
     fun replayTutorial() {
-        _uiState.update { it.copy(tutorialCompleted = true, infoMessage = "Tutorial replay queued.") }
+        _uiState.update {
+            it.copy(
+                tutorialCompleted = false,
+                tutorialPage = 0,
+                infoMessage = "Tutorial replay started.",
+            )
+        }
+    }
+
+    fun nextTutorialPage() {
+        _uiState.update { state ->
+            val lastIndex = SampleCatalog.tutorialPages.lastIndex
+            if (state.tutorialPage >= lastIndex) {
+                state.copy(
+                    tutorialCompleted = true,
+                    infoMessage = "Tutorial completed.",
+                )
+            } else {
+                state.copy(tutorialPage = state.tutorialPage + 1)
+            }
+        }
+    }
+
+    fun previousTutorialPage() {
+        _uiState.update { state ->
+            state.copy(tutorialPage = (state.tutorialPage - 1).coerceAtLeast(0))
+        }
+    }
+
+    fun skipTutorial() {
+        _uiState.update {
+            it.copy(
+                tutorialCompleted = true,
+                infoMessage = "Tutorial skipped.",
+            )
+        }
     }
 
     fun setProtectFromRecentApps(enabled: Boolean) {
@@ -335,6 +410,47 @@ class EmojiBatteryViewModel : ViewModel() {
 
     fun shareApp() {
         _uiState.update { it.copy(infoMessage = "Share app action triggered.") }
+    }
+
+    fun setRatingSelection(value: Int) {
+        _uiState.update { it.copy(ratingSelection = value.coerceIn(0, 5)) }
+    }
+
+    fun toggleFeedbackReason(reasonId: String) {
+        _uiState.update { state ->
+            val updated = state.feedbackReasons.toMutableSet().apply {
+                if (!add(reasonId)) remove(reasonId)
+            }
+            state.copy(feedbackReasons = updated)
+        }
+    }
+
+    fun setFeedbackNote(value: String) {
+        _uiState.update { it.copy(feedbackNote = value, lastFeedbackSubmitted = false) }
+    }
+
+    fun submitFeedback() {
+        _uiState.update { state ->
+            if (state.feedbackReasons.isEmpty() && state.feedbackNote.isBlank()) {
+                state.copy(infoMessage = "Please select at least one option or enter your own feedback.")
+            } else {
+                state.copy(
+                    lastFeedbackSubmitted = true,
+                    infoMessage = "Your feedback was successfully submitted.",
+                )
+            }
+        }
+    }
+
+    fun rateApp() {
+        _uiState.update { state ->
+            val message = when {
+                state.ratingSelection >= 4 -> "Thanks. This should deep-link to Google Play review in production."
+                state.ratingSelection in 1..3 -> "Thanks. We captured the low rating path so users can leave feedback."
+                else -> "Pick a star rating first."
+            }
+            state.copy(infoMessage = message)
+        }
     }
 
     fun checkForUpdates() {

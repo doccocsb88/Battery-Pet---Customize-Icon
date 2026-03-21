@@ -5,8 +5,13 @@ import android.content.Context
 import android.content.ContextWrapper
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Column
@@ -26,6 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -42,6 +48,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -64,15 +71,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -84,6 +97,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.AchievementTask
 import dev.hai.emojibattery.model.BatteryPreset
@@ -190,7 +204,12 @@ fun EmojiBatteryApp(
                     uiState = uiState,
                     onFinish = {
                         viewModel.finishSplash()
-                        navController.navigate(if (uiState.languageChosen) AppRoute.Home.route else AppRoute.Language.route) {
+                        val nextRoute = when {
+                            !uiState.languageChosen -> AppRoute.Language.route
+                            !uiState.onboardingCompleted -> AppRoute.Onboarding.route
+                            else -> AppRoute.Home.route
+                        }
+                        navController.navigate(nextRoute) {
                             popUpTo(AppRoute.Splash.route) { inclusive = true }
                         }
                     },
@@ -199,16 +218,56 @@ fun EmojiBatteryApp(
             composable(AppRoute.Language.route) {
                 LanguageScreen(
                     selected = uiState.selectedLanguage,
-                    onChooseLanguage = {
-                        viewModel.chooseLanguage(it)
-                        navController.navigate(AppRoute.Home.route) {
+                    onChooseLanguage = { viewModel.chooseLanguage(it) },
+                    onNext = {
+                        val nextRoute = if (uiState.onboardingCompleted) AppRoute.Home.route else AppRoute.Onboarding.route
+                        navController.navigate(nextRoute) {
                             popUpTo(AppRoute.Language.route) { inclusive = true }
                         }
                     },
                 )
             }
+            composable(AppRoute.Onboarding.route) {
+                OnboardingScreen(
+                    uiState = uiState,
+                    onSkip = {
+                        viewModel.skipOnboarding()
+                        navController.navigate(AppRoute.Home.route) {
+                            popUpTo(AppRoute.Onboarding.route) { inclusive = true }
+                        }
+                    },
+                    onPrevious = viewModel::previousOnboardingPage,
+                    onNext = {
+                        val isLast = uiState.onboardingPage >= SampleCatalog.onboardingPages.lastIndex
+                        viewModel.nextOnboardingPage()
+                        if (isLast) {
+                            navController.navigate(AppRoute.Home.route) {
+                                popUpTo(AppRoute.Onboarding.route) { inclusive = true }
+                            }
+                        }
+                    },
+                )
+            }
+            composable(AppRoute.Tutorial.route) {
+                TutorialScreen(
+                    uiState = uiState,
+                    onClose = { navController.popBackStack() },
+                    onPrevious = viewModel::previousTutorialPage,
+                    onNext = {
+                        val isLast = uiState.tutorialPage >= SampleCatalog.tutorialPages.lastIndex
+                        viewModel.nextTutorialPage()
+                        if (isLast) navController.popBackStack()
+                    },
+                    onOpenAccessibility = {
+                        AccessibilityBridge.openSettings(context)
+                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                    },
+                )
+            }
             composable(AppRoute.Home.route) {
                 HomeScreen(
+                    uiState = uiState,
+                    onSelectCategory = viewModel::selectHomeCategory,
                     onOpenStatusBarCustom = {
                         viewModel.selectMainSection(MainSection.Home)
                         navController.navigate(AppRoute.StatusBarCustom.route)
@@ -217,10 +276,13 @@ fun EmojiBatteryApp(
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
                     onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
+                    onOpenSettings = { navController.navigate(AppRoute.Settings.route) },
+                    onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
                 )
             }
             composable(AppRoute.Customize.route) {
                 CustomizeHubScreen(
+                    onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
                     onOpenFeature = { entry ->
                         when (entry) {
                             CustomizeEntry.Charge,
@@ -235,6 +297,7 @@ fun EmojiBatteryApp(
                     onOpenStatusBarCustom = { navController.navigate(AppRoute.StatusBarCustom.route) },
                     onOpenRealTime = { navController.navigate(AppRoute.RealTime.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
+                    onOpenSettings = { navController.navigate(AppRoute.Settings.route) },
                 )
             }
             composable(AppRoute.Gesture.route) {
@@ -260,6 +323,9 @@ fun EmojiBatteryApp(
                     onSelectBattery = viewModel::selectBatteryPreset,
                     onSelectEmoji = viewModel::selectEmojiPreset,
                     onSelectTheme = viewModel::selectTheme,
+                    onSetStatusBarHeight = viewModel::setStatusBarHeight,
+                    onSetLeftMargin = viewModel::setStatusBarLeftMargin,
+                    onSetRightMargin = viewModel::setStatusBarRightMargin,
                     onSetBatteryScale = viewModel::setBatteryPercentScale,
                     onSetEmojiScale = viewModel::setEmojiScale,
                     onTogglePercentage = viewModel::setShowPercentage,
@@ -310,10 +376,23 @@ fun EmojiBatteryApp(
                 SettingsScreen(
                     uiState = uiState,
                     onOpenLanguage = { navController.navigate(AppRoute.Language.route) },
-                    onReplayTutorial = viewModel::replayTutorial,
+                    onReplayTutorial = {
+                        viewModel.replayTutorial()
+                        navController.navigate(AppRoute.Tutorial.route)
+                    },
                     onToggleProtection = viewModel::setProtectFromRecentApps,
-                    onOpenPrivacy = viewModel::openPrivacyPolicy,
+                    onOpenPrivacy = {
+                        viewModel.openPrivacyPolicy()
+                        navController.navigate(AppRoute.Legal.create("privacy"))
+                    },
+                    onOpenTerms = {
+                        viewModel.openTermsOfUse()
+                        navController.navigate(AppRoute.Legal.create("terms"))
+                    },
                     onShareApp = viewModel::shareApp,
+                    onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
+                    onRateApp = viewModel::rateApp,
+                    onSelectRating = viewModel::setRatingSelection,
                     onCheckUpdate = viewModel::checkForUpdates,
                     onToggleAccessibility = {
                         AccessibilityBridge.openSettings(context)
@@ -339,6 +418,16 @@ fun EmojiBatteryApp(
                             purchaseService.purchase(activity, productId)
                         }
                     },
+                )
+            }
+            composable(AppRoute.Feedback.route) {
+                FeedbackScreen(
+                    uiState = uiState,
+                    onBack = { navController.popBackStack() },
+                    onSelectRating = viewModel::setRatingSelection,
+                    onToggleReason = viewModel::toggleFeedbackReason,
+                    onNoteChange = viewModel::setFeedbackNote,
+                    onSubmit = viewModel::submitFeedback,
                 )
             }
             composable(
@@ -467,6 +556,15 @@ fun EmojiBatteryApp(
             navController.navigate(AppRoute.Paywall.route)
         }
     }
+
+    LaunchedEffect(initialRoute) {
+        val target = initialRoute ?: return@LaunchedEffect
+        if (target != route) {
+            navController.navigate(target) {
+                launchSingleTop = true
+            }
+        }
+    }
 }
 
 @Composable
@@ -476,50 +574,68 @@ private fun GestureScreen(
     onSetVibrateFeedback: (Boolean) -> Unit,
     onSetGestureAction: (GestureTrigger, GestureAction) -> Unit,
 ) {
-    ScreenContainer(
-        title = "Gesture",
-        subtitle = "Master gesture switch, five action bindings, and vibration feedback.",
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            HeroCard(
-                title = "Status Bar Gestures",
-                body = "Bind taps and swipes to the main routes in this port.",
-                cta = if (uiState.gestureEnabled) "Gestures Enabled" else "Enable Gestures",
-                onClick = { onSetGestureEnabled(!uiState.gestureEnabled) },
+    val rowDescription = { action: GestureAction ->
+        when (action) {
+            GestureAction.None -> "Not selected"
+            GestureAction.OpenCustomize -> "Open customize screen"
+            GestureAction.OpenEmojiSticker -> "Open emoji sticker"
+            GestureAction.OpenSearch -> "Open search"
+            GestureAction.OpenBatteryTroll -> "Open battery troll"
+            GestureAction.ToggleOverlay -> "Toggle overlay"
+        }
+    }
+    Scaffold(
+        containerColor = Color(0xFFFEF5FA),
+        topBar = {
+            OriginalTopShell(
+                title = "Battery Icon",
+                onLeftPrimary = {},
+                onLeftSecondary = {},
+                onSearch = {},
             )
-            SettingToggle(
-                label = "Use gestures in the status bar for custom actions",
-                value = uiState.gestureEnabled,
-                onChange = onSetGestureEnabled,
-            )
-            AnimatedVisibility(uiState.gestureEnabled) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    GestureTrigger.entries.forEach { trigger ->
-                        GestureActionCard(
-                            trigger = trigger,
-                            selectedAction = uiState.gestureActions[trigger] ?: GestureAction.None,
-                            onSelectAction = { onSetGestureAction(trigger, it) },
-                        )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Surface(shape = RoundedCornerShape(24.dp), color = Color.White, shadowElevation = 2.dp) {
+                Column(Modifier.padding(vertical = 6.dp)) {
+                    GestureSwitchRow(
+                        iconRes = R.drawable.ic_guesture_32,
+                        title = "Gesture",
+                        description = "Use gestures on the status bar to trigger your favourite action.",
+                        enabled = uiState.gestureEnabled,
+                        onToggle = onSetGestureEnabled,
+                    )
+                    AnimatedVisibility(uiState.gestureEnabled) {
+                        Column {
+                            GestureTrigger.entries.forEach { trigger ->
+                                GestureSelectionRow(
+                                    title = trigger.title,
+                                    description = rowDescription(uiState.gestureActions[trigger] ?: GestureAction.None),
+                                    selectedAction = uiState.gestureActions[trigger] ?: GestureAction.None,
+                                    onSelectAction = { onSetGestureAction(trigger, it) },
+                                )
+                            }
+                        }
                     }
-                    SettingToggle(
-                        label = "Vibrate feedback",
-                        value = uiState.vibrateFeedback,
-                        onChange = onSetVibrateFeedback,
-                    )
                 }
             }
-            if (!uiState.gestureEnabled) {
-                Surface(
-                    shape = RoundedCornerShape(24.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                ) {
-                    Text(
-                        "Enable gestures to reveal the five action rows, matching the original visibility flow.",
-                        modifier = Modifier.padding(16.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+            Surface(shape = RoundedCornerShape(24.dp), color = Color.White, shadowElevation = 2.dp) {
+                GestureSwitchRow(
+                    iconRes = R.drawable.ic_vibrate_feedback_32,
+                    title = "Vibrate feedback",
+                    description = "Vibrate when a gesture action is recognized.",
+                    enabled = uiState.vibrateFeedback,
+                    onToggle = onSetVibrateFeedback,
+                )
             }
+            Spacer(Modifier.height(72.dp))
         }
     }
 }
@@ -751,30 +867,411 @@ private fun SplashRoute(
 private fun LanguageScreen(
     selected: String,
     onChooseLanguage: (String) -> Unit,
+    onNext: () -> Unit,
 ) {
-    val options = listOf("English", "Vietnamese", "Spanish", "Portuguese")
-    ScreenContainer(title = "Choose Language", subtitle = "Matches the original LanguageActivity gate after SplashActivity.") {
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(options) { language ->
-                Card(
-                    onClick = { onChooseLanguage(language) },
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (language == selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-                    ),
-                ) {
-                    Row(
+    val options = listOf(
+        "English" to R.drawable.flag_united_kingdom,
+        "Hindi" to R.drawable.flag_india,
+        "Spanish" to R.drawable.flag_spain,
+        "French" to R.drawable.flag_france,
+        "Arabic" to R.drawable.flag_saudi_arabia,
+        "Portuguese" to R.drawable.flag_portugal,
+        "Indonesian" to R.drawable.flag_indonesia,
+        "German" to R.drawable.flag_germany,
+        "Vietnamese" to R.drawable.flag_vietnam,
+        "Russian" to R.drawable.flag_russia,
+        "Japanese" to R.drawable.flag_japan,
+        "Korean" to R.drawable.flag_south_korea,
+        "Filipino" to R.drawable.flag_philippines,
+        "Uzbek" to R.drawable.flag_uzbekistn,
+        "Persian" to R.drawable.flag_partian,
+        "Chinese" to R.drawable.flag_china,
+        "Thai" to R.drawable.flag_thailand,
+        "Turkish" to R.drawable.flag_turkey
+    )
+
+    Scaffold(containerColor = Color.White) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Select Your Language",
+                    color = Color(0xFF5C4B51),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            // List
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(options) { (language, flagRes) ->
+                    val active = language == selected
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(18.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(0xFFF2F2F2))
+                            .clickable { onChooseLanguage(language) }
+                            .padding(horizontal = 20.dp, vertical = 14.dp)
                     ) {
-                        Column {
-                            Text(language, fontWeight = FontWeight.SemiBold)
-                            Text("Tap to continue into MainActivity", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Image(
+                                painter = painterResource(flagRes),
+                                contentDescription = language,
+                                modifier = Modifier.size(32.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(Modifier.size(width = 16.dp, height = 0.dp))
+                            Text(
+                                language,
+                                color = Color(0xFF5C4B51),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.weight(1f)
+                            )
+                            if (language == "English") {
+                                Text(
+                                    "Default",
+                                    color = Color(0xFF5C4B51).copy(alpha = 0.8f),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(end = 12.dp)
+                                )
+                            }
+                            // Icon Check
+                            Image(
+                                painter = painterResource(
+                                    if (active) R.drawable.ic_checked_language_enable
+                                    else R.drawable.ic_checked_language_disable
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
-                        if (language == selected) {
-                            Icon(Icons.Rounded.CheckCircle, contentDescription = null)
+                    }
+                }
+            }
+            
+            // Bottom Gradient & Next Button Area
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.White),
+                        )
+                    )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(Color(0xFF5C4B51)) // Or primary button color
+                        .clickable { onNext() }
+                        .padding(vertical = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "NEXT",
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun OnboardingScreen(
+    uiState: AppUiState,
+    onSkip: () -> Unit,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+) {
+    val page = SampleCatalog.onboardingPages[uiState.onboardingPage.coerceIn(0, SampleCatalog.onboardingPages.lastIndex)]
+    val isFirst = uiState.onboardingPage == 0
+    val isLast = uiState.onboardingPage == SampleCatalog.onboardingPages.lastIndex
+    val gradient = Brush.horizontalGradient(listOf(Color(0xFFF6A2D8), Color(0xFFB765F5)))
+    Scaffold(
+        containerColor = Color(0xFFFFF7FB),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { },
+                navigationIcon = {
+                    if (!isFirst) {
+                        TextButton(onClick = onPrevious) { Text("Back") }
+                    }
+                },
+                actions = { TextButton(onClick = onSkip) { Text("Skip") } },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFFFFF7FB),
+                ),
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                Surface(
+                    shape = RoundedCornerShape(32.dp),
+                    color = Color.White,
+                    border = BorderStroke(2.dp, Color(0xFFF0D6EA)),
+                    shadowElevation = 6.dp,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(310.dp)
+                            .background(Color(0xFFFFFBFE)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            Text(page.accentGlyph, style = MaterialTheme.typography.displayLarge)
+                            Surface(
+                                shape = RoundedCornerShape(18.dp),
+                                color = Color(0xFFFFEFF7),
+                            ) {
+                                Text(
+                                    "EMOJI BATTERY",
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                    color = Color(0xFFB26AD9),
+                                    fontWeight = FontWeight.ExtraBold,
+                                )
+                            }
+                        }
+                    }
+                }
+                Text(page.title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
+                Text(page.body, color = Color(0xFF8D7680), style = MaterialTheme.typography.bodyLarge)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    SampleCatalog.onboardingPages.forEachIndexed { index, _ ->
+                        Box(
+                            modifier = Modifier
+                                .size(width = if (index == uiState.onboardingPage) 28.dp else 10.dp, height = 10.dp)
+                                .clip(RoundedCornerShape(999.dp))
+                                .background(
+                                    if (index == uiState.onboardingPage) Color(0xFFE285EF)
+                                    else Color(0xFFF2DDEB),
+                                ),
+                        )
+                    }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(
+                    onClick = onPrevious,
+                    enabled = !isFirst,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(999.dp),
+                ) {
+                    Text("Previous")
+                }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(gradient),
+                ) {
+                    TextButton(onClick = onNext, modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            if (isLast) "Get Started" else "Next",
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TutorialScreen(
+    uiState: AppUiState,
+    onClose: () -> Unit,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+    onOpenAccessibility: () -> Unit,
+) {
+    val page = SampleCatalog.tutorialPages[uiState.tutorialPage.coerceIn(0, SampleCatalog.tutorialPages.lastIndex)]
+    val isFirst = uiState.tutorialPage == 0
+    val isLast = uiState.tutorialPage == SampleCatalog.tutorialPages.lastIndex
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("How To Use") },
+                navigationIcon = { TextButton(onClick = onClose) { Text("Close") } },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                ),
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            TemplatePreviewCard(
+                title = page.title,
+                summary = page.body,
+                glyph = page.accentGlyph,
+                tag = "Step ${uiState.tutorialPage + 1}/${SampleCatalog.tutorialPages.size}",
+            )
+            if (uiState.tutorialPage == 0) {
+                PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = { onOpenAccessibility() })
+            }
+            Spacer(Modifier.weight(1f))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(onClick = onPrevious, enabled = !isFirst, modifier = Modifier.weight(1f)) {
+                    Text("Previous")
+                }
+                Button(onClick = onNext, modifier = Modifier.weight(1f)) {
+                    Text(if (isLast) "Got It" else "Next")
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun HomeScreen(
+    uiState: AppUiState,
+    onSelectCategory: (String) -> Unit,
+    onOpenStatusBarCustom: () -> Unit,
+    onOpenLegacyBattery: () -> Unit,
+    onOpenSearch: () -> Unit,
+    onOpenSticker: () -> Unit,
+    onOpenBatteryTroll: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenFeedback: () -> Unit,
+) {
+    val categories = SampleCatalog.homeCategories
+    val selectedCategory = categories.firstOrNull { it.id == uiState.selectedHomeCategoryId } ?: categories.first()
+    Scaffold(
+        containerColor = Color(0xFFFEF5FA),
+        topBar = {
+            OriginalTopShell(
+                title = "Battery Icon",
+                onLeftPrimary = onOpenSettings,
+                onLeftSecondary = onOpenFeedback,
+                onSearch = onOpenSearch,
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 8.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Surface(
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(24.dp),
+                color = Color.White,
+                shadowElevation = 3.dp,
+            ) {
+                Box(Modifier.fillMaxSize()) {
+                    Image(
+                        painter = painterResource(R.drawable.bg_sub_home_x_mas),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize().graphicsLayer(alpha = 0.06f),
+                        contentScale = ContentScale.Crop,
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 14.dp),
+                    ) {
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        ) {
+                            items(categories) { category ->
+                                val selected = category.id == selectedCategory.id
+                                Text(
+                                    text = if (category.id == "hot") "🔥 ${category.title}" else category.title,
+                                    color = if (selected) Color(0xFF5C4B51) else Color(0xFFD1D1D1),
+                                    fontWeight = FontWeight.ExtraBold,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    modifier = Modifier.clickable { onSelectCategory(category.id) },
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 8.dp)
+                                .size(width = 70.dp, height = 2.dp)
+                                .clip(RoundedCornerShape(999.dp))
+                                .background(
+                                    Brush.horizontalGradient(
+                                        listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)),
+                                    ),
+                                ),
+                        )
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(horizontal = 9.dp, vertical = 12.dp),
+                        ) {
+                            items(selectedCategory.items.chunked(3)) { rowItems ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(0.dp),
+                                ) {
+                                    rowItems.forEach { item ->
+                                        HomeBatteryGridCard(
+                                            item = item,
+                                            onClick = {
+                                                when {
+                                                    item.animated -> onOpenSticker()
+                                                    item.title.contains("Troll", ignoreCase = true) -> onOpenBatteryTroll()
+                                                    item.title.contains("Search", ignoreCase = true) -> onOpenSearch()
+                                                    else -> onOpenStatusBarCustom()
+                                                }
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                    }
+                                    repeat(3 - rowItems.size) {
+                                        Spacer(Modifier.weight(1f))
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -783,68 +1280,371 @@ private fun LanguageScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun HomeScreen(
-    onOpenStatusBarCustom: () -> Unit,
-    onOpenLegacyBattery: () -> Unit,
-    onOpenSearch: () -> Unit,
+private fun CustomizeHubScreen(
     onOpenSticker: () -> Unit,
+    onOpenFeature: (CustomizeEntry) -> Unit,
+    onOpenStatusBarCustom: () -> Unit,
+    onOpenRealTime: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
+    onOpenSettings: () -> Unit,
 ) {
-    ScreenContainer(title = "Home", subtitle = "Main launcher with quick jumps into the strongest flows.") {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            HeroCard(
-                title = "Status Bar Custom",
-                body = "Battery, emoji, theme, and settings in one live editor.",
-                cta = "Open Editor",
-                onClick = onOpenStatusBarCustom,
+    val gridEntries = listOf(
+        CustomizeEntry.Emotion,
+        CustomizeEntry.Wifi,
+        CustomizeEntry.Data,
+        CustomizeEntry.Signal,
+        CustomizeEntry.Airplane,
+        CustomizeEntry.Hotspot,
+        CustomizeEntry.Ringer,
+        CustomizeEntry.Charge,
+        CustomizeEntry.DateTime,
+    )
+    Scaffold(
+        containerColor = Color(0xFFFFF7FB),
+        topBar = {
+            Surface(
+                color = Color.White,
+                shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
+                shadowElevation = 6.dp,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp, vertical = 14.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                            HomeRoundIcon(R.drawable.ic_settings_new, onOpenSettings)
+                            HomeRoundIcon(R.drawable.ic_feeb_back_home, onOpenRealTime)
+                        }
+                        Text("Battery Icon", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
+                        Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                            HomeRoundIcon(R.drawable.ic_home_search, onOpenStatusBarCustom)
+                            Image(
+                                painter = painterResource(R.drawable.no_ads_on),
+                                contentDescription = "Ads on",
+                                modifier = Modifier.size(width = 40.dp, height = 36.dp),
+                            )
+                        }
+                    }
+                    EnableBanner(onStart = onOpenStatusBarCustom)
+                }
+            }
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PromoBannerCard(
+                backgroundRes = R.drawable.img_bg_emoji_sticker,
+                title = "Status Bar Stickers",
+                body = "Animated stickers for your status bar!",
+                cta = "Customize Now",
+                onClick = onOpenSticker,
             )
-            Text("Quick access", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SmallActionCard("Legacy Battery", "Classic battery picker", "🔋", onOpenLegacyBattery, modifier = Modifier.weight(1f))
-                SmallActionCard("Search", "Find routes and packs", "🔎", onOpenSearch, modifier = Modifier.weight(1f))
+            FakeAdCard()
+            PromoBannerCard(
+                backgroundRes = R.drawable.image_battery_troll_customize,
+                title = "Battery Troll",
+                body = "Just for fun, fake your battery % to everyone",
+                cta = "Troll Mode",
+                leadingIconRes = R.drawable.ic_battery_troll_customize_32,
+                badge = "NEW",
+                onClick = onOpenBatteryTroll,
+            )
+            Surface(
+                onClick = onOpenStatusBarCustom,
+                shape = RoundedCornerShape(24.dp),
+                color = Color.White,
+                shadowElevation = 3.dp,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.img_btn_status_bar_new),
+                        contentDescription = "Status Bar Customize",
+                        modifier = Modifier.size(40.dp),
+                    )
+                    Text(
+                        "Status Bar Customize",
+                        modifier = Modifier.weight(1f),
+                        color = Color(0xFF5C4B51),
+                        fontWeight = FontWeight.ExtraBold,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SmallActionCard("Emoji Sticker", "Floating sticker overlay", "✨", onOpenSticker, modifier = Modifier.weight(1f))
-                SmallActionCard("Battery Troll", "Prank battery templates", "😈", onOpenBatteryTroll, modifier = Modifier.weight(1f))
+                SmallCustomizeCard(
+                    title = "Notch",
+                    iconRes = R.drawable.ic_item_notch,
+                    modifier = Modifier.weight(1f),
+                    onClick = onOpenStatusBarCustom,
+                )
+                SmallCustomizeCard(
+                    title = "Animation",
+                    iconRes = R.drawable.ic_item_animation,
+                    modifier = Modifier.weight(1f),
+                    onClick = onOpenStatusBarCustom,
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFF5C4B51))
+                Text(
+                    "Customize Icon",
+                    color = Color(0xFF5C4B51),
+                    fontWeight = FontWeight.ExtraBold,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFF5C4B51))
+            }
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                maxItemsInEachRow = 3,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.spacedBy(18.dp),
+            ) {
+                gridEntries.forEach { entry ->
+                    CustomizeIconGridItem(
+                        entry = entry,
+                        modifier = Modifier.fillMaxWidth(0.31f),
+                        onClick = { onOpenFeature(entry) },
+                    )
+                }
+            }
+            Spacer(Modifier.height(80.dp))
+        }
+    }
+}
+
+@Composable
+private fun PromoBannerCard(
+    backgroundRes: Int,
+    title: String,
+    body: String,
+    cta: String,
+    onClick: () -> Unit,
+    leadingIconRes: Int? = null,
+    badge: String? = null,
+) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(28.dp),
+        color = Color.White,
+        shadowElevation = 3.dp,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(144.dp),
+        ) {
+            Image(
+                painter = painterResource(backgroundRes),
+                contentDescription = title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+            if (badge != null) {
+                Surface(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    shape = RoundedCornerShape(bottomStart = 18.dp),
+                    color = Color(0xFFFF6A00),
+                ) {
+                    Text(
+                        badge,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 16.dp, top = 18.dp, bottom = 16.dp)
+                    .fillMaxWidth(0.58f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        title,
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                    if (leadingIconRes != null) {
+                        Image(
+                            painter = painterResource(leadingIconRes),
+                            contentDescription = null,
+                            modifier = Modifier.size(22.dp),
+                        )
+                    }
+                }
+                Text(
+                    body,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                )
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(Color(0xFF53A3FF))
+                        .border(BorderStroke(3.dp, Color.White), RoundedCornerShape(999.dp))
+                        .padding(horizontal = 18.dp, vertical = 10.dp),
+                ) {
+                    Text(
+                        cta,
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
             }
         }
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun CustomizeHubScreen(
-    onOpenFeature: (CustomizeEntry) -> Unit,
-    onOpenStatusBarCustom: () -> Unit,
-    onOpenRealTime: () -> Unit,
-    onOpenBatteryTroll: () -> Unit,
-) {
-    ScreenContainer(title = "Battery Icon", subtitle = "Feature hub for the status-bar editor and isolated icon sections.") {
-        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            HeroCard(
-                title = "Unified Status Bar Custom",
-                body = "Battery, emoji, theme, and settings in one place.",
-                cta = "Open Status Bar Custom",
-                onClick = onOpenStatusBarCustom,
-            )
-            Text("Customize sections", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+private fun FakeAdCard() {
+    Surface(
+        shape = RoundedCornerShape(28.dp),
+        color = Color.White,
+        shadowElevation = 2.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(66.dp)
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color(0xFFFFF4FE)),
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFD06AFF)) {
+                            Text("Ad", modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = Color.White, fontWeight = FontWeight.Bold)
+                        }
+                        Text("CapCut", color = Color(0xFFD06AFF), fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
+                    }
+                    Text("Pangle Test Ads - 2", color = Color(0xFF8F8790))
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Color(0xFF4DB24A))
+                    .padding(vertical = 18.dp),
+                contentAlignment = Alignment.Center,
             ) {
-                CustomizeEntry.entries.forEach { entry ->
-                    FeatureTileCard(entry = entry, onClick = { onOpenFeature(entry) })
+                Text("VIEW NOW", color = Color.White, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SmallCustomizeCard(
+    title: String,
+    iconRes: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = RoundedCornerShape(24.dp),
+        color = Color.White,
+        shadowElevation = 2.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(iconRes),
+                contentDescription = title,
+                modifier = Modifier.size(40.dp),
+            )
+            Text(
+                title,
+                color = Color(0xFF5C4B51),
+                fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CustomizeIconGridItem(
+    entry: CustomizeEntry,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        color = Color.Transparent,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Image(
+                        painter = painterResource(customizeIconRes(entry)),
+                        contentDescription = customizeLabel(entry),
+                        modifier = Modifier.size(54.dp),
+                    )
                 }
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(onClick = onOpenRealTime, modifier = Modifier.weight(1f)) {
-                    Text("Real Time")
-                }
-                OutlinedButton(onClick = onOpenBatteryTroll, modifier = Modifier.weight(1f)) {
-                    Text("Battery Troll")
-                }
-            }
+            Text(
+                customizeLabel(entry),
+                textAlign = TextAlign.Center,
+                color = Color(0xFF08162D),
+                fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.titleMedium,
+            )
         }
     }
 }
@@ -858,6 +1658,9 @@ private fun StatusBarCustomScreen(
     onSelectBattery: (String) -> Unit,
     onSelectEmoji: (String) -> Unit,
     onSelectTheme: (String) -> Unit,
+    onSetStatusBarHeight: (Float) -> Unit,
+    onSetLeftMargin: (Float) -> Unit,
+    onSetRightMargin: (Float) -> Unit,
     onSetBatteryScale: (Float) -> Unit,
     onSetEmojiScale: (Float) -> Unit,
     onTogglePercentage: (Boolean) -> Unit,
@@ -873,73 +1676,120 @@ private fun StatusBarCustomScreen(
     val themePresets = SampleCatalog.themePresets
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Status Bar Custom") },
-                navigationIcon = {
-                    TextButton(onClick = onBack) { Text("Back") }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
-            )
-        },
+        containerColor = Color(0xFFFEF5FA),
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                IconButton(onClick = onBack) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_back_40_new),
+                        contentDescription = "Back",
+                        modifier = Modifier.size(40.dp),
+                    )
+                }
+                Text(
+                    "Status Bar Custom",
+                    color = Color(0xFF5C4B51),
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = onAccessibilityChanged)
             BatteryPreviewCard(uiState = uiState)
-            PermissionBanner(
-                enabled = uiState.accessibilityGranted,
-                onToggle = onAccessibilityChanged,
-            )
-            TabStrip(
-                tabs = StatusBarTab.entries,
+            OriginalStatusTabStrip(
                 selected = uiState.activeStatusBarTab,
                 onSelect = onSelectTab,
             )
+            Surface(shape = RoundedCornerShape(22.dp), color = Color.White) {
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    StatusSliderRow("Status bar height", config.statusBarHeight, onSetStatusBarHeight)
+                    StatusSliderRow("Status bar left margin", config.leftMargin, onSetLeftMargin)
+                    StatusSliderRow("Status bar right margin", config.rightMargin, onSetRightMargin)
+                }
+            }
+            Surface(shape = RoundedCornerShape(22.dp), color = Color.White) {
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    StatusColorRow("Status bar icon color", Color(config.accentColor))
+                    StatusColorRow("Status bar background color", Color(config.backgroundColor))
+                }
+            }
+            Surface(shape = RoundedCornerShape(22.dp), color = Color.White, onClick = { onSelectTab(StatusBarTab.Theme) }) {
+                StatusChevronRow("More template")
+            }
+            Text(
+                "Customize Icon",
+                color = Color(0xFF08162D),
+                style = MaterialTheme.typography.titleLarge,
+            )
             when (uiState.activeStatusBarTab) {
-                StatusBarTab.Battery -> BatteryTabContent(
-                    selectedId = config.batteryPresetId,
-                    presets = batteryPresets,
-                    batteryScale = config.batteryPercentScale,
-                    showPercentage = config.showPercentage,
-                    showStroke = config.showStroke,
-                    onSelectBattery = onSelectBattery,
-                    onSetBatteryScale = onSetBatteryScale,
-                    onTogglePercentage = onTogglePercentage,
-                    onToggleStroke = onToggleStroke,
+                StatusBarTab.Battery -> StatusBarChoiceGrid(
+                    labels = batteryPresets.map { it.name },
+                    selectedLabel = batteryPresets.firstOrNull { it.id == config.batteryPresetId }?.name.orEmpty(),
+                    onClick = { label ->
+                        batteryPresets.firstOrNull { it.name == label }?.let { onSelectBattery(it.id) }
+                    },
+                    icon = { label ->
+                        Text(
+                            text = batteryPresets.first { it.name == label }.body,
+                            color = Color(0xFF5C4B51),
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center,
+                        )
+                    },
                 )
-
-                StatusBarTab.Emoji -> EmojiTabContent(
-                    selectedId = config.emojiPresetId,
-                    presets = emojiPresets,
-                    emojiScale = config.emojiScale,
-                    animateCharge = config.animateCharge,
-                    onSelectEmoji = onSelectEmoji,
-                    onSetEmojiScale = onSetEmojiScale,
-                    onToggleAnimate = onToggleAnimate,
+                StatusBarTab.Emoji -> StatusBarChoiceGrid(
+                    labels = emojiPresets.map { it.name },
+                    selectedLabel = emojiPresets.firstOrNull { it.id == config.emojiPresetId }?.name.orEmpty(),
+                    onClick = { label ->
+                        emojiPresets.firstOrNull { it.name == label }?.let { onSelectEmoji(it.id) }
+                    },
+                    icon = { label ->
+                        Text(
+                            text = emojiPresets.first { it.name == label }.glyph,
+                            style = MaterialTheme.typography.headlineMedium,
+                        )
+                    },
                 )
-
-                StatusBarTab.Theme -> ThemeTabContent(
-                    selectedId = config.themePresetId,
-                    presets = themePresets,
-                    onSelectTheme = onSelectTheme,
+                StatusBarTab.Theme -> StatusBarChoiceGrid(
+                    labels = themePresets.map { it.name },
+                    selectedLabel = themePresets.firstOrNull { it.id == config.themePresetId }?.name.orEmpty(),
+                    onClick = { label ->
+                        themePresets.firstOrNull { it.name == label }?.let { onSelectTheme(it.id) }
+                    },
+                    icon = { label ->
+                        val preset = themePresets.first { it.name == label }
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(
+                                    Brush.linearGradient(
+                                        listOf(Color(preset.accent), Color(preset.background)),
+                                    ),
+                                ),
+                        )
+                    },
                 )
-
-                StatusBarTab.Settings -> SettingsTabContent(
-                    showPercentage = config.showPercentage,
-                    animateCharge = config.animateCharge,
-                    showStroke = config.showStroke,
-                    onTogglePercentage = onTogglePercentage,
-                    onToggleAnimate = onToggleAnimate,
-                    onToggleStroke = onToggleStroke,
-                )
+                StatusBarTab.Settings -> Surface(shape = RoundedCornerShape(22.dp), color = Color.White) {
+                    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                        StatusSwitchRow("Show percentage", config.showPercentage, onTogglePercentage)
+                        StatusSwitchRow("Animate charge", config.animateCharge, onToggleAnimate)
+                        StatusSwitchRow("Show stroke", config.showStroke, onToggleStroke)
+                        StatusSliderRow("Battery text size", config.batteryPercentScale, onSetBatteryScale)
+                        StatusSliderRow("Emoji size", config.emojiScale, onSetEmojiScale)
+                    }
+                }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = onRestore, modifier = Modifier.weight(1f)) {
@@ -1013,15 +1863,61 @@ private fun SearchScreen(
             template.tags.any { it.contains(query, ignoreCase = true) }
     }
 
-    ScreenContainer(title = "Search", subtitle = "Search by keyword, most-searched tags, or recommended packs.") {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedTextField(
-                value = uiState.searchQuery,
-                onValueChange = onQueryChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Search template") },
-                singleLine = true,
-            )
+    Scaffold(containerColor = Color.White) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                IconButton(onClick = onBack) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_back_40_new),
+                        contentDescription = "Back",
+                        modifier = Modifier.size(40.dp),
+                    )
+                }
+                Text(
+                    "Search template",
+                    color = Color(0xFF5C4B51),
+                    fontWeight = FontWeight.ExtraBold,
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+            }
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFFF8F8F8),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Image(painter = painterResource(R.drawable.ic_home_search), contentDescription = null, modifier = Modifier.size(20.dp))
+                    BasicTextField(
+                        value = uiState.searchQuery,
+                        onValueChange = onQueryChange,
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF5C4B51), fontSize = 16.sp),
+                        decorationBox = { inner ->
+                            if (uiState.searchQuery.isBlank()) {
+                                Text("Search template", color = Color(0xFFB4A7AF))
+                            }
+                            inner()
+                        },
+                    )
+                    if (uiState.searchQuery.isNotBlank()) {
+                        IconButton(onClick = { onQueryChange("") }, modifier = Modifier.size(20.dp)) {
+                            Image(painter = painterResource(R.drawable.ic_search_clear), contentDescription = "Clear")
+                        }
+                    }
+                }
+            }
             if (query.isEmpty()) {
                 Text("Most searched", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                 FlowRow(
@@ -1050,7 +1946,7 @@ private fun SearchScreen(
                     }
                 }
             } else {
-                Text("${results.size} result(s) for \"$query\"", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("${results.size} result(s) for \"$query\"", color = Color(0xFF8D7680))
                 LazyColumn(
                     modifier = Modifier.weight(1f, fill = false),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -1078,9 +1974,6 @@ private fun SearchScreen(
                     }
                 }
             }
-            TextButton(onClick = onBack, modifier = Modifier.align(Alignment.End)) {
-                Text("Back")
-            }
         }
     }
 }
@@ -1091,7 +1984,11 @@ private fun SearchTemplateCard(
     template: SearchTemplate,
     onClick: () -> Unit,
 ) {
-    Card(onClick = onClick) {
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+    ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1137,11 +2034,17 @@ private fun AchievementScreen(
     onClaim: (String) -> Unit,
     onNavigate: (String) -> Unit,
 ) {
-    ScreenContainer(title = "Achievement", subtitle = "Progress cards, claim state, and route-linked rewards.") {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Scaffold(containerColor = Color(0xFFFEF5FA)) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
             uiState.achievements.forEach { task ->
                 val completed = task.progress >= task.target
-                Card {
+                Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(task.title, fontWeight = FontWeight.SemiBold)
                         Text(task.description, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -1197,33 +2100,38 @@ private fun SettingsScreen(
     onReplayTutorial: () -> Unit,
     onToggleProtection: (Boolean) -> Unit,
     onOpenPrivacy: () -> Unit,
+    onOpenTerms: () -> Unit,
     onShareApp: () -> Unit,
+    onOpenFeedback: () -> Unit,
+    onRateApp: () -> Unit,
+    onSelectRating: (Int) -> Unit,
     onCheckUpdate: () -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
 ) {
-    ScreenContainer(title = "Settings", subtitle = "Language, tutorial, permission entry points, and app utilities.") {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Card(onClick = onOpenLanguage) {
-                Column(Modifier.padding(16.dp)) {
-                    Text("Language", fontWeight = FontWeight.SemiBold)
-                    Text(uiState.selectedLanguage, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
+    Scaffold(
+        containerColor = Color(0xFFFEF5FA),
+        topBar = {
+            SettingsTopBar(onStart = { onToggleAccessibility(true) })
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            SettingsRow("Language", R.drawable.ic_language_settings, uiState.selectedLanguage, onOpenLanguage)
+            SettingsRow("Not-Allowed Apps", R.drawable.ic_not_allow, if (uiState.protectFromRecentApps) "Protected" else null) {
+                onToggleProtection(!uiState.protectFromRecentApps)
             }
-            Card(onClick = onReplayTutorial) {
-                Column(Modifier.padding(16.dp)) {
-                    Text("Tutorial", fontWeight = FontWeight.SemiBold)
-                    Text("Replay permission onboarding and gesture/status-bar setup.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
-            SettingToggle("Accessibility bridge", uiState.accessibilityGranted, onToggleAccessibility)
-            SettingToggle("Protect from recent-app cleaning", uiState.protectFromRecentApps, onToggleProtection)
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SmallActionCard("Privacy", "Policy and data usage", "🔐", onOpenPrivacy, modifier = Modifier.weight(1f))
-                SmallActionCard("Share App", "Invite a friend", "📤", onShareApp, modifier = Modifier.weight(1f))
-            }
-            OutlinedButton(onClick = onCheckUpdate, modifier = Modifier.fillMaxWidth()) {
-                Text("Check Update")
-            }
+            SettingsRow("Tutorial", R.drawable.ic_tutorials_new, "Permission and gesture guide", onReplayTutorial)
+            SettingsRow("Privacy policy", R.drawable.ic_privacy_settings, null, onOpenPrivacy)
+            SettingsRow("Terms & Conditions", R.drawable.ic_privacy_settings, null, onOpenTerms)
+            SettingsRow("Feedback", R.drawable.ic_feed_back_setting, null, onOpenFeedback)
+            SettingsRow("Share app", R.drawable.ic_share_app_settings, null, onShareApp)
+            SettingsRow("Rate us", R.drawable.ic_rate_us_setting, if (uiState.ratingSelection > 0) "${uiState.ratingSelection}/5" else null, onRateApp)
+            SettingsRow("Check for update", R.drawable.ic_check_update_settings, "Version: 1.2.9", onCheckUpdate)
         }
     }
 }
@@ -1391,6 +2299,589 @@ private fun FeatureDetailScreen(
                 }
                 Button(onClick = onApply, modifier = Modifier.weight(1f)) {
                     Text("Apply")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeRoundIcon(
+    iconRes: Int,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = Color.Transparent,
+    ) {
+        Image(
+            painter = painterResource(iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(40.dp),
+        )
+    }
+}
+
+@Composable
+private fun EnableBanner(
+    onStart: () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(28.dp),
+        color = Color(0xFFFFE9FA),
+        border = BorderStroke(2.dp, Color(0xFFE88EEA)),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Enable emoji battery to begin", color = Color(0xFF5F4B54), fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(Color(0xFFE88EEA)),
+            ) {
+                TextButton(onClick = onStart) {
+                    Text("Start", color = Color.White, fontWeight = FontWeight.ExtraBold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeBatteryGridCard(
+    item: dev.hai.emojibattery.model.HomeBatteryItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .padding(horizontal = 7.dp, vertical = 7.dp)
+            .clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .background(color = Color(0xFFFCFCFC), shape = RoundedCornerShape(16.dp))
+                .border(width = 1.dp, color = Color(0xFFFFE5FC), shape = RoundedCornerShape(16.dp))
+        ) {
+            Image(
+                painter = painterResource(item.previewRes),
+                contentDescription = item.title,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+            )
+            if (item.premium) {
+                Image(
+                    painter = painterResource(R.drawable.ic_diamond),
+                    contentDescription = "Premium",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp)
+                        .size(20.dp),
+                )
+            }
+            if (item.animated) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White),
+                ) {
+                    Text(
+                        "GIF",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        color = Color(0xFF5C4B51),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OriginalStatusTabStrip(
+    selected: StatusBarTab,
+    onSelect: (StatusBarTab) -> Unit,
+) {
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        items(StatusBarTab.entries) { tab ->
+            val isSelected = tab == selected
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(if (isSelected) Color(0xFFD47DFE) else Color.Transparent)
+                    .clickable { onSelect(tab) }
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+            ) {
+                Text(
+                    tab.title,
+                    color = if (isSelected) Color.White else Color(0xFFD47DFE),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusSliderRow(
+    title: String,
+    value: Float,
+    onValueChange: (Float) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Slider(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier.weight(1f),
+            )
+            Text("${(value * 100).toInt()}", color = Color.Black, style = MaterialTheme.typography.titleSmall)
+        }
+    }
+}
+
+@Composable
+private fun StatusColorRow(
+    title: String,
+    color: Color,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(color)
+                .border(1.dp, Color(0xFFA1A1A1), CircleShape),
+        )
+    }
+}
+
+@Composable
+private fun StatusChevronRow(title: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        Image(
+            painter = painterResource(R.drawable.ic_chevron_right),
+            contentDescription = null,
+            modifier = Modifier.size(24.dp),
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun StatusBarChoiceGrid(
+    labels: List<String>,
+    selectedLabel: String,
+    onClick: (String) -> Unit,
+    icon: @Composable (String) -> Unit,
+) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        maxItemsInEachRow = 3,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        labels.forEach { label ->
+            val selected = selectedLabel.equals(label, ignoreCase = true)
+            Surface(
+                onClick = { onClick(label) },
+                modifier = Modifier.fillMaxWidth(0.31f),
+                shape = RoundedCornerShape(22.dp),
+                color = Color.White,
+                border = BorderStroke(2.dp, if (selected) Color(0xFFD47DFE) else Color(0xFFF2E4ED)),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    icon(label)
+                    Text(
+                        label,
+                        color = Color(0xFF5C4B51),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusSwitchRow(
+    title: String,
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        IconButton(onClick = { onToggle(!enabled) }) {
+            Image(
+                painter = painterResource(
+                    if (enabled) R.drawable.ic_switch_button_enabled else R.drawable.ic_switch_button_disable,
+                ),
+                contentDescription = null,
+                modifier = Modifier.size(width = 40.dp, height = 20.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsRow(
+    title: String,
+    iconRes: Int,
+    subtitle: String? = null,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(18.dp),
+        color = Color.White,
+        shadowElevation = 2.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(iconRes),
+                    contentDescription = title,
+                    modifier = Modifier.size(24.dp),
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(title, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge, color = Color(0xFF5F4B54))
+                    if (subtitle != null) {
+                        Text(subtitle, color = Color(0xFF8D7680), style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
+            Image(
+                painter = painterResource(R.drawable.ic_end_setting),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun FeedbackScreen(
+    uiState: AppUiState,
+    onBack: () -> Unit,
+    onSelectRating: (Int) -> Unit,
+    onToggleReason: (String) -> Unit,
+    onNoteChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+) {
+    val gradient = Brush.horizontalGradient(listOf(Color(0xFFF6A2D8), Color(0xFFB765F5)))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.48f))
+            .padding(horizontal = 18.dp, vertical = 40.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            shape = RoundedCornerShape(28.dp),
+            color = Color.White,
+            shadowElevation = 16.dp,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(22.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Spacer(Modifier.size(40.dp))
+                    Text("Feedback", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
+                    IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .background(Color(0xFF6A5961)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text("×", color = Color.White, style = MaterialTheme.typography.headlineMedium)
+                        }
+                    }
+                }
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    val reasons = listOf(
+                        "5 stars" to "⭐",
+                        "Can't allow permission" to null,
+                        "Feature error" to null,
+                        "I can't close the ads" to null,
+                        "I can't exit the app" to null,
+                        "I can't navigate to the next screen" to null,
+                    )
+                    reasons.forEachIndexed { index, (label, icon) ->
+                        val selected = if (index == 0) uiState.ratingSelection == 5 else uiState.feedbackReasons.contains(SampleCatalog.feedbackReasons.getOrNull((index - 1).coerceAtLeast(0))?.id)
+                        Surface(
+                            onClick = {
+                                if (index == 0) onSelectRating(5) else SampleCatalog.feedbackReasons.getOrNull((index - 1).coerceAtLeast(0))?.let { onToggleReason(it.id) }
+                            },
+                            shape = RoundedCornerShape(22.dp),
+                            color = Color(0xFFF8F8F8),
+                            border = BorderStroke(1.dp, if (selected) Color(0xFFE9A8EC) else Color.Transparent),
+                        ) {
+                            Text(
+                                buildString {
+                                    if (icon != null) append("$icon ")
+                                    append(label)
+                                },
+                                modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
+                                color = Color(0xFF5F4B54),
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+                Text(
+                    "Do you have any additional feedback for us?\nWe're Listening.",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color(0xFF5F4B54),
+                )
+                Surface(
+                    shape = RoundedCornerShape(24.dp),
+                    color = Color(0xFFF8F8F8),
+                ) {
+                    OutlinedTextField(
+                        value = uiState.feedbackNote,
+                        onValueChange = onNoteChange,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(170.dp),
+                        minLines = 5,
+                        placeholder = { Text("Please describe your issue in detail.", color = Color(0xFFD4CFD5)) },
+                    )
+                }
+                if (uiState.lastFeedbackSubmitted) {
+                    Text("Your feedback was successfully submitted", color = Color(0xFF17A398), fontWeight = FontWeight.Bold)
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(gradient),
+                ) {
+                    TextButton(onClick = onSubmit, modifier = Modifier.fillMaxWidth()) {
+                        Text("Submit", color = Color.White, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OriginalTopShell(
+    title: String,
+    onLeftPrimary: () -> Unit,
+    onLeftSecondary: () -> Unit,
+    onSearch: () -> Unit,
+) {
+    Surface(
+        color = Color.White,
+        shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
+        shadowElevation = 6.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    HomeRoundIcon(R.drawable.ic_settings_new, onLeftPrimary)
+                    HomeRoundIcon(R.drawable.ic_feeb_back_home, onLeftSecondary)
+                }
+                Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5C4B51))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    HomeRoundIcon(R.drawable.ic_home_search, onSearch)
+                    Image(
+                        painter = painterResource(R.drawable.no_ads_on),
+                        contentDescription = "Ads on",
+                        modifier = Modifier.size(width = 40.dp, height = 36.dp),
+                    )
+                }
+            }
+            EnableBanner(onStart = onSearch)
+        }
+    }
+}
+
+@Composable
+private fun SettingsTopBar(
+    onStart: () -> Unit,
+) {
+    Surface(color = Color.White, shadowElevation = 4.dp, shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_back_40_new),
+                    contentDescription = "Back",
+                    modifier = Modifier.size(40.dp),
+                )
+                Text("Settings", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
+                Spacer(Modifier.size(40.dp))
+            }
+            EnableBanner(onStart = onStart)
+        }
+    }
+}
+
+@Composable
+private fun GestureSwitchRow(
+    iconRes: Int,
+    title: String,
+    description: String,
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(painter = painterResource(iconRes), contentDescription = title, modifier = Modifier.size(32.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(title, color = Color(0xFF08162D), fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleMedium)
+                Text(description, color = Color(0xFF08162D), style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+        IconButton(onClick = { onToggle(!enabled) }) {
+            Image(
+                painter = painterResource(
+                    if (enabled) R.drawable.ic_switch_button_enabled
+                    else R.drawable.ic_switch_button_disable,
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(width = 40.dp, height = 20.dp)
+                    .graphicsLayer { alpha = 1f },
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun GestureSelectionRow(
+    title: String,
+    description: String,
+    selectedAction: GestureAction,
+    onSelectAction: (GestureAction) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Text(title, color = Color(0xFF08162D), fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleMedium)
+        Text(description, color = Color(0xFF08162D), style = MaterialTheme.typography.bodyMedium)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            GestureAction.entries.forEach { action ->
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(Color(0xFFF8F8F8))
+                        .clickable { onSelectAction(action) }
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Image(
+                        painter = painterResource(
+                            if (action == selectedAction) R.drawable.ic_radio_gesture_selected
+                            else R.drawable.ic_radio_gesture_unselected,
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text(action.title, color = Color(0xFF5C4B51), style = MaterialTheme.typography.bodySmall)
                 }
             }
         }
@@ -2045,6 +3536,26 @@ private fun featureGlyph(entry: CustomizeEntry): String = when (entry) {
     CustomizeEntry.DateTime -> "🕒"
     CustomizeEntry.Theme -> "🎨"
     CustomizeEntry.Settings -> "⚙"
+}
+
+private fun customizeLabel(entry: CustomizeEntry): String = when (entry) {
+    CustomizeEntry.Emotion -> "Emotion"
+    CustomizeEntry.Charge -> "Charge"
+    else -> entry.title
+}
+
+private fun customizeIconRes(entry: CustomizeEntry): Int = when (entry) {
+    CustomizeEntry.Emotion -> R.drawable.ic_item_emotion
+    CustomizeEntry.Wifi -> R.drawable.ic_item_wifi
+    CustomizeEntry.Data -> R.drawable.ic_item_data
+    CustomizeEntry.Signal -> R.drawable.ic_item_signal
+    CustomizeEntry.Airplane -> R.drawable.ic_item_airplane
+    CustomizeEntry.Hotspot -> R.drawable.ic_item_hotspot
+    CustomizeEntry.Ringer -> R.drawable.ic_item_ringer
+    CustomizeEntry.Charge -> R.drawable.ic_item_charge
+    CustomizeEntry.DateTime -> R.drawable.ic_item_date_time
+    CustomizeEntry.Theme -> R.drawable.img_btn_status_bar_new
+    CustomizeEntry.Settings -> R.drawable.ic_item_animation
 }
 
 private fun Context.findActivity(): Activity? = when (this) {

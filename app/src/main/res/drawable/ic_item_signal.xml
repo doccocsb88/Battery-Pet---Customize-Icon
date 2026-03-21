@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector android:height="40.0dp" android:width="40.0dp" android:viewportWidth="40.0" android:viewportHeight="40.0"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt">
+    <path android:fillColor="#ffffff" android:pathData="M12,0L28,0A12,12 0,0 1,40 12L40,28A12,12 0,0 1,28 40L12,40A12,12 0,0 1,0 28L0,12A12,12 0,0 1,12 0z" />
+    <path android:fillColor="@drawable/ic_item_signal_bar4_gradient" android:pathData="M26.25,13.125C26.25,12.78 26.53,12.5 26.875,12.5H28.125C28.47,12.5 28.75,12.78 28.75,13.125V26.875C28.75,27.22 28.47,27.5 28.125,27.5H26.875C26.53,27.5 26.25,27.22 26.25,26.875V13.125Z" />
+    <path android:fillColor="@drawable/ic_item_signal_bar2_gradient" android:pathData="M16.25,20.625C16.25,20.28 16.53,20 16.875,20H18.125C18.47,20 18.75,20.28 18.75,20.625V26.875C18.75,27.22 18.47,27.5 18.125,27.5H16.875C16.53,27.5 16.25,27.22 16.25,26.875V20.625Z" />
+    <path android:fillColor="@drawable/ic_item_signal_bar3_gradient" android:pathData="M21.25,15.625C21.25,15.28 21.53,15 21.875,15H23.125C23.47,15 23.75,15.28 23.75,15.625V26.875C23.75,27.22 23.47,27.5 23.125,27.5H21.875C21.53,27.5 21.25,27.22 21.25,26.875V15.625Z" />
+    <path android:fillColor="@drawable/ic_item_signal_bar1_gradient" android:pathData="M11.25,23.125C11.25,22.78 11.53,22.5 11.875,22.5H13.125C13.47,22.5 13.75,22.78 13.75,23.125V26.875C13.75,27.22 13.47,27.5 13.125,27.5H11.875C11.53,27.5 11.25,27.22 11.25,26.875V23.125Z" />
+</vector>

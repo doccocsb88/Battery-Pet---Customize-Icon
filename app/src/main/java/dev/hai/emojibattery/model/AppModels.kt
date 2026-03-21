@@ -1,5 +1,7 @@
 package dev.hai.emojibattery.model
 
+import co.q7labs.co.emoji.R
+
 enum class MainSection(val title: String) {
     Home("Home"),
     Customize("Customize"),
@@ -123,16 +125,47 @@ data class SearchTemplate(
     val animated: Boolean = false,
 )
 
+data class HomeBatteryItem(
+    val id: String,
+    val categoryId: String,
+    val title: String,
+    val previewRes: Int,
+    val premium: Boolean = false,
+    val animated: Boolean = false,
+)
+
+data class HomeCategory(
+    val id: String,
+    val title: String,
+    val remotePath: String = "items",
+    val items: List<HomeBatteryItem>,
+)
+
 data class PaywallState(
     val featureKey: String,
     val title: String,
     val message: String,
 )
 
+data class OnboardingPage(
+    val id: String,
+    val title: String,
+    val body: String,
+    val accentGlyph: String,
+)
+
+data class FeedbackReason(
+    val id: String,
+    val label: String,
+)
+
 data class BatteryIconConfig(
     val batteryPresetId: String,
     val emojiPresetId: String,
     val themePresetId: String,
+    val statusBarHeight: Float = 0.2f,
+    val leftMargin: Float = 0.12f,
+    val rightMargin: Float = 0.12f,
     val batteryPercentScale: Float = 0.56f,
     val emojiScale: Float = 0.64f,
     val showPercentage: Boolean = true,
@@ -145,9 +178,12 @@ data class BatteryIconConfig(
 data class AppUiState(
     val splashDone: Boolean = false,
     val languageChosen: Boolean = false,
+    val onboardingCompleted: Boolean = false,
+    val onboardingPage: Int = 0,
     val selectedLanguage: String = "English",
     val accessibilityGranted: Boolean = false,
     val activeMainSection: MainSection = MainSection.Home,
+    val selectedHomeCategoryId: String = SampleCatalog.homeCategories.first().id,
     val activeStatusBarTab: StatusBarTab = StatusBarTab.Battery,
     val editingConfig: BatteryIconConfig,
     val appliedConfig: BatteryIconConfig,
@@ -165,11 +201,16 @@ data class AppUiState(
     val trollAutoDrop: Boolean = true,
     val trollOverlayEnabled: Boolean = false,
     val tutorialCompleted: Boolean = false,
+    val tutorialPage: Int = 0,
     val protectFromRecentApps: Boolean = false,
     val premiumUnlocked: Boolean = false,
     val unlockedFeatureKeys: Set<String> = emptySet(),
     val paywallState: PaywallState? = null,
     val achievements: List<AchievementTask> = SampleCatalog.defaultAchievements,
+    val feedbackReasons: Set<String> = emptySet(),
+    val feedbackNote: String = "",
+    val lastFeedbackSubmitted: Boolean = false,
+    val ratingSelection: Int = 0,
     val infoMessage: String? = null,
 )
 
@@ -219,6 +260,106 @@ object SampleCatalog {
         backgroundColor = defaultTheme.background,
     )
 
+    val homeCategories = listOf(
+        HomeCategory("hot", "HOT", items = buildHomeItems("hot", listOf(
+            "Gudetama Toast" to R.drawable.ic_item_charge,
+            "Sunset Vibes" to R.drawable.ic_item_data,
+            "Jerry Power" to R.drawable.ic_item_emotion,
+            "Shark Cruise" to R.drawable.ic_item_wifi,
+            "Stitch Charge" to R.drawable.ic_item_charge,
+            "Palm Beach" to R.drawable.ic_item_date_time,
+            "My Melody" to R.drawable.ic_item_hotspot,
+            "Fox Battery" to R.drawable.ic_item_charge,
+            "Cosmo Boy" to R.drawable.ic_item_signal,
+            "Pink Bear" to R.drawable.ic_item_emotion,
+            "Croc Jet" to R.drawable.ic_item_signal,
+            "Pompompurin" to R.drawable.ic_item_date_time,
+        ))),
+        HomeCategory("sanrio", "Sanrio", items = buildHomeItems("sanrio", listOf(
+            "Hello Kitty" to R.drawable.ic_item_hotspot,
+            "My Melody" to R.drawable.ic_item_emotion,
+            "Kuromi" to R.drawable.ic_item_signal,
+            "Cinnamoroll" to R.drawable.ic_item_wifi,
+            "Pochacco" to R.drawable.ic_item_data,
+            "Keroppi" to R.drawable.ic_item_airplane,
+            "Badtz-Maru" to R.drawable.ic_item_ringer,
+            "Pompompurin" to R.drawable.ic_item_charge,
+            "Little Twin Stars" to R.drawable.ic_item_date_time,
+        ))),
+        HomeCategory("avatar", "Avatar", items = buildHomeItems("avatar", listOf(
+            "Blue Spirit" to R.drawable.ic_item_emotion,
+            "Water Tribe" to R.drawable.ic_item_wifi,
+            "Fire Nation" to R.drawable.ic_item_data,
+            "Aang Air" to R.drawable.ic_item_airplane,
+            "Sokka Signal" to R.drawable.ic_item_signal,
+            "Katara Flow" to R.drawable.ic_item_hotspot,
+            "Toph Metal" to R.drawable.ic_item_charge,
+            "Appa Ride" to R.drawable.ic_item_date_time,
+            "Momo Vibe" to R.drawable.ic_item_ringer,
+        ))),
+        HomeCategory("zootopia", "Zootopia", items = buildHomeItems("zootopia", listOf(
+            "Judy Hopps" to R.drawable.ic_item_emotion,
+            "Nick Wilde" to R.drawable.ic_item_wifi,
+            "Flash Speed" to R.drawable.ic_item_data,
+            "Chief Bogo" to R.drawable.ic_item_signal,
+            "Clawhauser" to R.drawable.ic_item_hotspot,
+            "Bellwether" to R.drawable.ic_item_ringer,
+            "Duke Weaselton" to R.drawable.ic_item_airplane,
+            "Gazelle" to R.drawable.ic_item_date_time,
+            "City Patrol" to R.drawable.ic_item_charge,
+        ))),
+        HomeCategory("actor", "Actor", items = buildHomeItems("actor", listOf(
+            "Cinema Night" to R.drawable.ic_item_date_time,
+            "Red Carpet" to R.drawable.ic_item_data,
+            "Star Power" to R.drawable.ic_item_charge,
+            "Spotlight" to R.drawable.ic_item_signal,
+            "Action Hero" to R.drawable.ic_item_emotion,
+            "Director Cut" to R.drawable.ic_item_ringer,
+            "Award Season" to R.drawable.ic_item_hotspot,
+            "Golden Frame" to R.drawable.ic_item_wifi,
+        ))),
+        HomeCategory("kpop", "Kpop", items = buildHomeItems("kpop", listOf(
+            "Stage Glow" to R.drawable.ic_item_emotion,
+            "Neon Lightstick" to R.drawable.ic_item_signal,
+            "Encore Night" to R.drawable.ic_item_wifi,
+            "Bubble Pop" to R.drawable.ic_item_data,
+            "Candy Heart" to R.drawable.ic_item_hotspot,
+            "Idol Wave" to R.drawable.ic_item_ringer,
+            "Midnight Dance" to R.drawable.ic_item_charge,
+            "Comback Day" to R.drawable.ic_item_date_time,
+        ), premiumEveryThird = true)),
+        HomeCategory("stitch", "Stitch", items = buildHomeItems("stitch", listOf(
+            "Surf Stitch" to R.drawable.ic_item_wifi,
+            "Blue Buddy" to R.drawable.ic_item_charge,
+            "Aloha Mood" to R.drawable.ic_item_date_time,
+            "Island Bloom" to R.drawable.ic_item_hotspot,
+            "Space Stitch" to R.drawable.ic_item_signal,
+            "Experiment 626" to R.drawable.ic_item_data,
+            "Cuddle Chaos" to R.drawable.ic_item_emotion,
+            "Ohana" to R.drawable.ic_item_ringer,
+        ))),
+        HomeCategory("shin", "Shin", items = buildHomeItems("shin", listOf(
+            "Crayon Wink" to R.drawable.ic_item_emotion,
+            "Kasukabe Ride" to R.drawable.ic_item_airplane,
+            "Chocobi" to R.drawable.ic_item_charge,
+            "Action Mask" to R.drawable.ic_item_signal,
+            "Nene Chan" to R.drawable.ic_item_hotspot,
+            "Bo Chan" to R.drawable.ic_item_wifi,
+            "Shiro" to R.drawable.ic_item_data,
+            "Misae Rage" to R.drawable.ic_item_ringer,
+        ))),
+        HomeCategory("xmas", "X-Mas", items = buildHomeItems("xmas", listOf(
+            "Candy Cane" to R.drawable.ic_item_charge,
+            "Snow Globe" to R.drawable.ic_item_date_time,
+            "Santa Bell" to R.drawable.ic_item_ringer,
+            "Gift Box" to R.drawable.ic_item_hotspot,
+            "Reindeer Dash" to R.drawable.ic_item_signal,
+            "Holiday Tree" to R.drawable.ic_item_wifi,
+            "Warm Cocoa" to R.drawable.ic_item_emotion,
+            "Spark Lights" to R.drawable.ic_item_data,
+        ), animatedEverySecond = true)),
+    )
+
     val featureVariants = mapOf(
         CustomizeEntry.Wifi to listOf("Rounded", "Mono", "Bold"),
         CustomizeEntry.Data to listOf("4G", "LTE", "Bars"),
@@ -247,6 +388,48 @@ object SampleCatalog {
         GestureTrigger.LongPress to GestureAction.OpenBatteryTroll,
     )
 
+    val onboardingPages = listOf(
+        OnboardingPage(
+            id = "customize",
+            title = "Customize Your Status Bar",
+            body = "Battery, emoji, Wi-Fi, signal, theme, and date-time styles live in one editor.",
+            accentGlyph = "🔋",
+        ),
+        OnboardingPage(
+            id = "gesture",
+            title = "Control It With Gestures",
+            body = "Single tap, swipe, and long press can jump into the routes you use most often.",
+            accentGlyph = "👆",
+        ),
+        OnboardingPage(
+            id = "sticker",
+            title = "Sticker And Troll Overlays",
+            body = "Floating stickers and prank battery templates need the accessibility bridge before apply.",
+            accentGlyph = "✨",
+        ),
+    )
+
+    val tutorialPages = listOf(
+        OnboardingPage(
+            id = "permission",
+            title = "How To Request Permission",
+            body = "Enable the accessibility bridge so the app can draw and refresh the custom status bar overlay.",
+            accentGlyph = "🛡",
+        ),
+        OnboardingPage(
+            id = "question",
+            title = "Why Accessibility Is Needed",
+            body = "The overlay sits above the system bar and can trigger your selected shortcuts without collecting personal content.",
+            accentGlyph = "❔",
+        ),
+        OnboardingPage(
+            id = "gesture_guide",
+            title = "How To Use Gestures",
+            body = "Bind tap, swipe, and long press actions, then test them from the gesture screen after the service is enabled.",
+            accentGlyph = "👉",
+        ),
+    )
+
     val realTimeTemplates = listOf(
         ContentTemplate("mood_flip", "Mood Flip", "Reactive emoji pack that changes by charge level.", "Real Time", "⚡"),
         ContentTemplate("tiny_forecast", "Tiny Forecast", "Compact weather mood on the battery cluster.", "Utility", "⛅"),
@@ -262,6 +445,13 @@ object SampleCatalog {
     )
 
     val trollMessageOptions = batteryTrollTemplates.map { it.prankMessage }.distinct()
+
+    val feedbackReasons = listOf(
+        FeedbackReason("ads", "I don't want to see ads"),
+        FeedbackReason("how_to_use", "I don't know how to use it"),
+        FeedbackReason("more_emoji", "I want more emojis"),
+        FeedbackReason("other", "Other"),
+    )
 
     val defaultAchievements = listOf(
         AchievementTask(
@@ -408,9 +598,25 @@ object SampleCatalog {
     val recommendedSearchTemplates = searchTemplates.filter { it.category == "recommend" }.take(6)
 
     const val FREE_STICKER_SLOTS = 1
-    const val PREMIUM_STICKER_SLOTS = 4
+    const val PREMIUM_STICKER_SLOTS = 6
     const val REWARD_EXTRA_STICKER_SLOTS = 2
 
-    const val FEATURE_EXTRA_STICKER_SLOT = "slot:extra"
-    const val FEATURE_PREMIUM_REALTIME_CAT_DIARY = "template:cat_diary"
+    const val FEATURE_EXTRA_STICKER_SLOT = "reward:extra_sticker_slot"
+    const val FEATURE_PREMIUM_REALTIME_CAT_DIARY = "reward:cat_diary"
+
+    private fun buildHomeItems(
+        categoryId: String,
+        entries: List<Pair<String, Int>>,
+        premiumEveryThird: Boolean = false,
+        animatedEverySecond: Boolean = false,
+    ): List<HomeBatteryItem> = entries.mapIndexed { index, (title, previewRes) ->
+        HomeBatteryItem(
+            id = "$categoryId-${index + 1}",
+            categoryId = categoryId,
+            title = title,
+            previewRes = previewRes,
+            premium = premiumEveryThird && index % 3 == 2,
+            animated = animatedEverySecond && index % 2 == 1,
+        )
+    }
 }
