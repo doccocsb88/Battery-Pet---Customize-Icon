@@ -78,6 +78,39 @@ fun PaywallScreen(
     val monthly = billingState.monthlyPlan
     val weekly = billingState.weeklyPlan
     val lifetime = billingState.lifetimePlan
+    val loadingPrices = billingState.loading
+    val monthPriceLabel = when {
+        loadingPrices -> stringResource(R.string.paywall_price_loading)
+        monthly != null -> monthly.displayPrice
+        else -> stringResource(R.string.paywall_price_unavailable)
+    }
+    val lifetimePriceLabel = when {
+        loadingPrices -> stringResource(R.string.paywall_price_loading)
+        lifetime != null -> lifetime.displayPrice
+        else -> stringResource(R.string.paywall_price_unavailable)
+    }
+    val weekWord = stringResource(R.string.week11)
+    val weeklyPrimaryLine: String
+    val weeklySecondaryLine: String?
+    when {
+        loadingPrices -> {
+            weeklyPrimaryLine = stringResource(R.string.paywall_price_loading)
+            weeklySecondaryLine = null
+        }
+        weekly != null && billingState.weeklyHasFreeTrial -> {
+            weeklyPrimaryLine = stringResource(R.string.start_3_days_free_trial)
+            weeklySecondaryLine =
+                "${stringResource(R.string.try_free_for_3_days_then)} ${weekly.displayPrice}/$weekWord"
+        }
+        weekly != null -> {
+            weeklyPrimaryLine = "${weekly.displayPrice}/$weekWord"
+            weeklySecondaryLine = null
+        }
+        else -> {
+            weeklyPrimaryLine = stringResource(R.string.paywall_price_unavailable)
+            weeklySecondaryLine = null
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -116,7 +149,7 @@ fun PaywallScreen(
                     PaywallPriceCard(
                         modifier = Modifier.weight(1f),
                         title = stringResource(R.string.monthly),
-                        price = monthly?.displayPrice ?: "…",
+                        price = monthPriceLabel,
                         footnote = stringResource(R.string.auto_renew_monthly_n_cancel_anytime),
                         onClick = {
                             monthly?.let { onPurchase(it.productId, it.offerToken) }
@@ -126,7 +159,7 @@ fun PaywallScreen(
                     PaywallPriceCard(
                         modifier = Modifier.weight(1f),
                         title = stringResource(R.string.life_time),
-                        price = lifetime?.displayPrice ?: "…",
+                        price = lifetimePriceLabel,
                         footnote = stringResource(R.string.one_time_payment),
                         onClick = {
                             lifetime?.let { onPurchase(it.productId, null) }
@@ -159,14 +192,25 @@ fun PaywallScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             PaywallWeeklyCta(
-                weekly = weekly,
-                hasFreeTrial = billingState.weeklyHasFreeTrial,
+                primaryLine = weeklyPrimaryLine,
+                secondaryLine = weeklySecondaryLine,
+                hasFreeTrial = weekly != null && billingState.weeklyHasFreeTrial,
                 loading = billingState.loading,
                 purchaseInFlight = billingState.purchaseInFlight,
+                weeklyAvailable = weekly != null,
                 onClick = {
                     weekly?.let { onPurchase(it.productId, it.offerToken) }
                 },
             )
+
+            if (!loadingPrices && monthly == null && lifetime == null && weekly == null && billingState.errorMessage == null) {
+                Text(
+                    text = stringResource(R.string.paywall_catalog_hint),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PaywallFooter,
+                )
+            }
 
             Row(
                 modifier = Modifier
@@ -365,17 +409,15 @@ private fun PaywallPriceCard(
 
 @Composable
 private fun PaywallWeeklyCta(
-    weekly: BillingPlan?,
+    primaryLine: String,
+    secondaryLine: String?,
     hasFreeTrial: Boolean,
     loading: Boolean,
     purchaseInFlight: Boolean,
+    weeklyAvailable: Boolean,
     onClick: () -> Unit,
 ) {
     val gradient = Brush.horizontalGradient(listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)))
-    val weekWord = stringResource(R.string.week11)
-    val priceLine = weekly?.let { w ->
-        "${w.displayPrice}/$weekWord"
-    } ?: "…"
 
     Column(
         modifier = Modifier
@@ -384,28 +426,28 @@ private fun PaywallWeeklyCta(
             .defaultMinSize(minHeight = 56.dp)
             .background(gradient, RoundedCornerShape(50.dp))
             .clickable(
-                enabled = weekly != null && !purchaseInFlight && !loading,
+                enabled = weeklyAvailable && !purchaseInFlight && !loading,
                 onClick = onClick,
             )
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (hasFreeTrial && weekly != null) {
+        if (hasFreeTrial && secondaryLine != null) {
             Text(
-                text = stringResource(R.string.start_3_days_free_trial),
+                text = primaryLine,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
             )
             Text(
-                text = "${stringResource(R.string.try_free_for_3_days_then)} $priceLine",
+                text = secondaryLine,
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.White,
             )
         } else {
             Text(
-                text = priceLine,
+                text = primaryLine,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,

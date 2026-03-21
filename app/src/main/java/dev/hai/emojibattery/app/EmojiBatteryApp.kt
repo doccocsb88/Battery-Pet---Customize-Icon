@@ -476,9 +476,11 @@ fun EmojiBatteryApp(
     }
 
     LaunchedEffect(uiState.paywallState, route) {
-        if (uiState.paywallState != null && route != AppRoute.Paywall.route) {
-            navController.navigate(AppRoute.Paywall.route)
-        }
+        if (uiState.paywallState == null) return@LaunchedEffect
+        if (route == AppRoute.Paywall.route) return@LaunchedEffect
+        // Paywall → Terms/Privacy uses legal/*; do not force paywall again or the legal screen flashes closed.
+        if (route != null && route.startsWith("legal/")) return@LaunchedEffect
+        navController.navigate(AppRoute.Paywall.route)
     }
 
     LaunchedEffect(initialRoute) {

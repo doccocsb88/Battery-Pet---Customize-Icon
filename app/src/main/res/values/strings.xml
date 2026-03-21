@@ -53,4 +53,7 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="paywall_restore">Restore</string>
     <string name="paywall_manage_subscriptions">Manage subscriptions</string>
+    <string name="paywall_price_loading">Loading…</string>
+    <string name="paywall_price_unavailable">—</string>
+    <string name="paywall_catalog_hint">If prices stay empty: create these in Play Console (same app id) and add a test track, then install from Play.</string>
 </resources>
