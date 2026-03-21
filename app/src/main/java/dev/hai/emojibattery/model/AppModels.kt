@@ -130,6 +130,8 @@ data class HomeBatteryItem(
     val categoryId: String,
     val title: String,
     val previewRes: Int,
+    /** Remote preview from Volio CDN (original app); when set, UI prefers this over [previewRes]. */
+    val thumbnailUrl: String? = null,
     val premium: Boolean = false,
     val animated: Boolean = false,
 )
@@ -139,6 +141,12 @@ data class HomeCategory(
     val title: String,
     val remotePath: String = "items",
     val items: List<HomeBatteryItem>,
+)
+
+/** Tab metadata for the home horizontal category strip (maps to original CategoryEmojiBatteryModel id/title). */
+data class HomeCategoryTab(
+    val id: String,
+    val title: String,
 )
 
 data class PaywallState(
@@ -184,6 +192,11 @@ data class AppUiState(
     val accessibilityGranted: Boolean = false,
     val activeMainSection: MainSection = MainSection.Home,
     val selectedHomeCategoryId: String = SampleCatalog.homeCategories.first().id,
+    /** Category strip; filled at startup from [SampleCatalog] (mirrors loading all categories in the original HomeViewModel). */
+    val homeTabs: List<HomeCategoryTab> = emptyList(),
+    /** Lazy-loaded, shuffled items per category id (mirrors SubHome per-category load). */
+    val homeItemsByCategoryId: Map<String, List<HomeBatteryItem>> = emptyMap(),
+    val homeCategoryLoadingId: String? = null,
     val activeStatusBarTab: StatusBarTab = StatusBarTab.Battery,
     val editingConfig: BatteryIconConfig,
     val appliedConfig: BatteryIconConfig,

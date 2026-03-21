@@ -32,6 +32,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -39,6 +42,7 @@ import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -70,6 +74,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
@@ -77,6 +83,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -87,6 +94,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -98,6 +107,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import co.q7labs.co.emoji.R
+import dev.hai.emojibattery.model.HomeCategoryTab
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.AchievementTask
 import dev.hai.emojibattery.model.BatteryPreset
@@ -1167,7 +1177,7 @@ private fun TutorialScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun HomeScreen(
     uiState: AppUiState,
@@ -1180,8 +1190,35 @@ private fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenFeedback: () -> Unit,
 ) {
-    val categories = SampleCatalog.homeCategories
-    val selectedCategory = categories.firstOrNull { it.id == uiState.selectedHomeCategoryId } ?: categories.first()
+    val categories = uiState.homeTabs.takeIf { it.isNotEmpty() }
+        ?: SampleCatalog.homeCategories.map { HomeCategoryTab(it.id, it.title) }
+    if (categories.isEmpty()) return
+
+    val initialPage = remember(uiState.selectedHomeCategoryId, categories) {
+        categories.indexOfFirst { it.id == uiState.selectedHomeCategoryId }
+            .coerceIn(0, (categories.size - 1).coerceAtLeast(0))
+    }
+    val pagerState = rememberPagerState(
+        initialPage = initialPage,
+        pageCount = { categories.size },
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(categories.map { it.id }.joinToString(), uiState.selectedHomeCategoryId) {
+        val idx = categories.indexOfFirst { it.id == uiState.selectedHomeCategoryId }.coerceAtLeast(0)
+        if (pagerState.currentPage != idx) {
+            pagerState.scrollToPage(idx)
+        }
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }
+            .distinctUntilChanged()
+            .collect { page ->
+                categories.getOrNull(page)?.id?.let(onSelectCategory)
+            }
+    }
+
     Scaffold(
         containerColor = Color(0xFFFEF5FA),
         topBar = {
@@ -1222,14 +1259,25 @@ private fun HomeScreen(
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(24.dp),
                         ) {
-                            items(categories) { category ->
-                                val selected = category.id == selectedCategory.id
+                            items(
+                                count = categories.size,
+                                key = { index -> categories[index].id },
+                            ) { index ->
+                                val category = categories[index]
+                                val selected = pagerState.settledPage == index
                                 Text(
-                                    text = if (category.id == "hot") "🔥 ${category.title}" else category.title,
+                                    text = when {
+                                        category.id == "hot" -> "🔥 ${category.title}"
+                                        else -> category.title
+                                    },
                                     color = if (selected) Color(0xFF5C4B51) else Color(0xFFD1D1D1),
                                     fontWeight = FontWeight.ExtraBold,
                                     style = MaterialTheme.typography.titleLarge,
-                                    modifier = Modifier.clickable { onSelectCategory(category.id) },
+                                    modifier = Modifier.clickable {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                    },
                                 )
                             }
                         }
@@ -1244,31 +1292,52 @@ private fun HomeScreen(
                                     ),
                                 ),
                         )
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(horizontal = 9.dp, vertical = 12.dp),
-                        ) {
-                            items(selectedCategory.items.chunked(3)) { rowItems ->
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(0.dp),
+                        HorizontalPager(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            state = pagerState,
+                            beyondViewportPageCount = 1,
+                        ) { page ->
+                            val categoryId = categories[page].id
+                            val gridItems = uiState.homeItemsByCategoryId[categoryId].orEmpty()
+                            val loading = uiState.homeCategoryLoadingId == categoryId && gridItems.isEmpty()
+
+                            if (loading) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
                                 ) {
-                                    rowItems.forEach { item ->
-                                        HomeBatteryGridCard(
-                                            item = item,
-                                            onClick = {
-                                                when {
-                                                    item.animated -> onOpenSticker()
-                                                    item.title.contains("Troll", ignoreCase = true) -> onOpenBatteryTroll()
-                                                    item.title.contains("Search", ignoreCase = true) -> onOpenSearch()
-                                                    else -> onOpenStatusBarCustom()
-                                                }
-                                            },
-                                            modifier = Modifier.weight(1f),
-                                        )
-                                    }
-                                    repeat(3 - rowItems.size) {
-                                        Spacer(Modifier.weight(1f))
+                                    CircularProgressIndicator(color = Color(0xFFD47DFE))
+                                }
+                            } else {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentPadding = PaddingValues(horizontal = 9.dp, vertical = 12.dp),
+                                ) {
+                                    items(gridItems.chunked(3)) { rowItems ->
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(0.dp),
+                                        ) {
+                                            rowItems.forEach { item ->
+                                                HomeBatteryGridCard(
+                                                    item = item,
+                                                    onClick = {
+                                                        when {
+                                                            item.animated -> onOpenSticker()
+                                                            item.title.contains("Troll", ignoreCase = true) -> onOpenBatteryTroll()
+                                                            item.title.contains("Search", ignoreCase = true) -> onOpenSearch()
+                                                            else -> onOpenStatusBarCustom()
+                                                        }
+                                                    },
+                                                    modifier = Modifier.weight(1f),
+                                                )
+                                            }
+                                            repeat(3 - rowItems.size) {
+                                                Spacer(Modifier.weight(1f))
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -2372,13 +2441,24 @@ private fun HomeBatteryGridCard(
                 .background(color = Color(0xFFFCFCFC), shape = RoundedCornerShape(16.dp))
                 .border(width = 1.dp, color = Color(0xFFFFE5FC), shape = RoundedCornerShape(16.dp))
         ) {
-            Image(
-                painter = painterResource(item.previewRes),
-                contentDescription = item.title,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp),
-            )
+            if (!item.thumbnailUrl.isNullOrBlank()) {
+                AsyncImage(
+                    model = item.thumbnailUrl,
+                    contentDescription = item.title,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp),
+                    contentScale = ContentScale.Fit,
+                )
+            } else {
+                Image(
+                    painter = painterResource(item.previewRes),
+                    contentDescription = item.title,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp),
+                )
+            }
             if (item.premium) {
                 Image(
                     painter = painterResource(R.drawable.ic_diamond),

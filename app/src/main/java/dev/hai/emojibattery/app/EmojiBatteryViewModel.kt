@@ -1,6 +1,9 @@
 package dev.hai.emojibattery.app
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dev.hai.emojibattery.data.HomeCatalogRepository
+import dev.hai.emojibattery.data.VolioHomeRepository
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.AchievementTask
 import dev.hai.emojibattery.model.BatteryIconConfig
@@ -14,19 +17,44 @@ import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.StickerPlacement
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EmojiBatteryViewModel : ViewModel() {
+    private var homeCategoryLoadJob: Job? = null
+
     private val _uiState = MutableStateFlow(
         AppUiState(
             editingConfig = SampleCatalog.defaultConfig,
             appliedConfig = SampleCatalog.defaultConfig,
+            homeTabs = HomeCatalogRepository.categoryTabs(),
         ),
     )
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            runCatching { VolioHomeRepository.fetchCategoryTabs() }
+                .onSuccess { remoteTabs ->
+                    if (remoteTabs.isNotEmpty()) {
+                        _uiState.update {
+                            it.copy(
+                                homeTabs = remoteTabs,
+                                selectedHomeCategoryId = remoteTabs.first().id,
+                                homeItemsByCategoryId = emptyMap(),
+                            )
+                        }
+                        loadHomeCategoryItems(remoteTabs.first().id)
+                    }
+                }
+        }
+    }
 
     fun finishSplash() {
         _uiState.update { it.copy(splashDone = true) }
@@ -80,9 +108,45 @@ class EmojiBatteryViewModel : ViewModel() {
         _uiState.update { it.copy(activeMainSection = section) }
     }
 
+    /**
+     * Called when the home category strip or [androidx.compose.foundation.pager.HorizontalPager]
+     * settles on a category (mirrors original ViewPager2 page + SubHome load).
+     */
     fun selectHomeCategory(categoryId: String) {
         _uiState.update { it.copy(selectedHomeCategoryId = categoryId) }
+        loadHomeCategoryItems(categoryId)
     }
+
+    private fun loadHomeCategoryItems(categoryId: String) {
+        homeCategoryLoadJob?.cancel()
+        homeCategoryLoadJob = viewModelScope.launch {
+            _uiState.update { it.copy(homeCategoryLoadingId = categoryId) }
+            val items = withContext(Dispatchers.IO) {
+                runCatching {
+                    if (isVolioCategoryId(categoryId)) {
+                        VolioHomeRepository.fetchItemsForCategory(categoryId)
+                    } else {
+                        HomeCatalogRepository.loadItemsForCategory(categoryId)
+                    }
+                }.getOrElse {
+                    if (isVolioCategoryId(categoryId)) {
+                        emptyList()
+                    } else {
+                        HomeCatalogRepository.loadItemsForCategory(categoryId)
+                    }
+                }
+            }
+            _uiState.update { state ->
+                state.copy(
+                    homeItemsByCategoryId = state.homeItemsByCategoryId + (categoryId to items),
+                    homeCategoryLoadingId = null,
+                )
+            }
+        }
+    }
+
+    private fun isVolioCategoryId(categoryId: String): Boolean =
+        categoryId.length >= 32 && categoryId.count { it == '-' } >= 4
 
     fun selectStatusTab(tab: StatusBarTab) {
         _uiState.update { it.copy(activeStatusBarTab = tab) }
