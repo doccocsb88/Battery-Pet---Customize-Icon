@@ -9,4 +9,3 @@ local.properties
 *.apk
 *.xapk
 artifacts/
-decompiled/

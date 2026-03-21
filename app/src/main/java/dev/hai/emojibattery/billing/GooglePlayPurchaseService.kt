@@ -33,8 +33,11 @@ data class BillingPlan(
 data class BillingUiState(
     val connected: Boolean = false,
     val loading: Boolean = true,
+    val monthlyPlan: BillingPlan? = null,
     val weeklyPlan: BillingPlan? = null,
     val lifetimePlan: BillingPlan? = null,
+    /** Mirrors original [DialogIapFull]: weekly subscription may include a free-trial phase. */
+    val weeklyHasFreeTrial: Boolean = false,
     val ownedProductIds: Set<String> = emptySet(),
     val purchaseInFlight: Boolean = false,
     val errorMessage: String? = null,
@@ -42,6 +45,7 @@ data class BillingUiState(
 
 class GooglePlayPurchaseService private constructor() : PurchaseService, PurchasesUpdatedListener {
     override val weeklyProductId: String = "$APP_ID.weekly"
+    override val monthlyProductId: String = "$APP_ID.monthly"
     override val lifetimeProductId: String = "$APP_ID.lifetime"
 
     private var billingClient: BillingClient? = null
@@ -82,7 +86,7 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         })
     }
 
-    override fun purchase(activity: Activity, productId: String) {
+    override fun purchase(activity: Activity, productId: String, subscriptionOfferToken: String?) {
         val details = productCache[productId]
         val client = billingClient
         if (details == null || client?.isReady != true) {
@@ -92,9 +96,14 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         val productParams = BillingFlowParams.ProductDetailsParams.newBuilder()
             .setProductDetails(details)
             .apply {
-                if (productId == weeklyProductId) {
-                    val offerToken = details.subscriptionOfferDetails?.firstOrNull()?.offerToken
-                    if (offerToken != null) setOfferToken(offerToken)
+                val token = subscriptionOfferToken
+                    ?: when (productId) {
+                        weeklyProductId, monthlyProductId ->
+                            details.subscriptionOfferDetails?.firstOrNull()?.offerToken
+                        else -> null
+                    }
+                if (token != null && (productId == weeklyProductId || productId == monthlyProductId)) {
+                    setOfferToken(token)
                 }
             }
             .build()
@@ -120,7 +129,9 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     }
 
     override fun hasPremiumAccess(ownedProductIds: Set<String>): Boolean {
-        return ownedProductIds.any { it == weeklyProductId || it == lifetimeProductId }
+        return ownedProductIds.any {
+            it == weeklyProductId || it == monthlyProductId || it == lifetimeProductId
+        }
     }
 
     override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
@@ -138,15 +149,33 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     }
 
     private fun queryCatalog() {
-        queryProductDetails(listOf(weeklyProductId), BillingClient.ProductType.SUBS) { details ->
-            val plan = details.firstOrNull()?.let(::weeklyPlanFrom)
+        var subsLoaded = false
+        var inAppLoaded = false
+        fun maybeFinishLoading() {
+            if (subsLoaded && inAppLoaded) {
+                _uiState.value = _uiState.value.copy(loading = false)
+            }
+        }
+        queryProductDetails(
+            listOf(weeklyProductId, monthlyProductId),
+            BillingClient.ProductType.SUBS,
+        ) { details ->
             details.forEach { productCache[it.productId] = it }
-            _uiState.value = _uiState.value.copy(weeklyPlan = plan, loading = false)
+            val weeklyDetails = details.find { it.productId == weeklyProductId }
+            val monthlyDetails = details.find { it.productId == monthlyProductId }
+            _uiState.value = _uiState.value.copy(
+                weeklyPlan = weeklyDetails?.let(::weeklyPlanFrom),
+                monthlyPlan = monthlyDetails?.let(::monthlyPlanFrom),
+                weeklyHasFreeTrial = weeklyDetails?.let(::weeklyHasFreeTrialPhases) == true,
+            )
+            subsLoaded = true
+            maybeFinishLoading()
         }
         queryProductDetails(listOf(lifetimeProductId), BillingClient.ProductType.INAPP) { details ->
-            val plan = details.firstOrNull()?.let(::lifetimePlanFrom)
             details.forEach { productCache[it.productId] = it }
-            _uiState.value = _uiState.value.copy(lifetimePlan = plan, loading = false)
+            _uiState.value = _uiState.value.copy(lifetimePlan = details.firstOrNull()?.let(::lifetimePlanFrom))
+            inAppLoaded = true
+            maybeFinishLoading()
         }
     }
 
@@ -166,12 +195,13 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             QueryProductDetailsParams.newBuilder().setProductList(products).build(),
         ) { result, details ->
             if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                onLoaded(details)
+                onLoaded(details.orEmpty())
             } else {
                 _uiState.value = _uiState.value.copy(
                     loading = false,
                     errorMessage = result.debugMessage.ifBlank { "Could not load billing products." },
                 )
+                onLoaded(emptyList())
             }
         }
     }
@@ -216,15 +246,37 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         ) { }
     }
 
+    private fun weeklyHasFreeTrialPhases(details: ProductDetails): Boolean {
+        val phases = details.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList
+            ?: return false
+        return phases.size > 1 && phases.first().priceAmountMicros == 0L
+    }
+
     private fun weeklyPlanFrom(details: ProductDetails): BillingPlan {
         val offer = details.subscriptionOfferDetails?.firstOrNull()
-        val phase = offer?.pricingPhases?.pricingPhaseList?.firstOrNull()
+        val phases = offer?.pricingPhases?.pricingPhaseList.orEmpty()
+        val recurring = phases.firstOrNull { it.priceAmountMicros > 0 } ?: phases.firstOrNull()
         return BillingPlan(
             productId = details.productId,
             title = details.name.ifBlank { "Weekly Premium" },
             description = details.description.ifBlank { "Unlock all premium content with weekly billing." },
-            displayPrice = phase?.formattedPrice ?: "Unavailable",
+            displayPrice = recurring?.formattedPrice ?: "Unavailable",
             billingLabel = "Weekly subscription, auto-renews until canceled",
+            productType = BillingClient.ProductType.SUBS,
+            offerToken = offer?.offerToken,
+        )
+    }
+
+    private fun monthlyPlanFrom(details: ProductDetails): BillingPlan {
+        val offer = details.subscriptionOfferDetails?.firstOrNull()
+        val phase = offer?.pricingPhases?.pricingPhaseList?.firstOrNull { it.priceAmountMicros > 0 }
+            ?: offer?.pricingPhases?.pricingPhaseList?.firstOrNull()
+        return BillingPlan(
+            productId = details.productId,
+            title = details.name.ifBlank { "Monthly" },
+            description = details.description.ifBlank { "Auto-renew monthly. Cancel anytime." },
+            displayPrice = phase?.formattedPrice ?: "Unavailable",
+            billingLabel = "Auto-renew monthly until canceled",
             productType = BillingClient.ProductType.SUBS,
             offerToken = offer?.offerToken,
         )

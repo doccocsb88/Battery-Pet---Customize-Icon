@@ -1,4 +1,56 @@
 <resources>
+    <string name="battery_icon_title">Battery Icon</string>
+
     <string name="app_name">Emoji Battery Port</string>
     <string name="splash_tagline">Customize your status bar battery &amp; emoji</string>
+    <!-- Splash / language / onboarding — aligned with decompiled strings.xml -->
+    <string name="loading_dot">Loading...</string>
+    <string name="this_action_may_be_content_ads">(This action may be content ADS)</string>
+    <string name="select_your_language">Select your language</string>
+    <string name="next">Next</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get Started</string>
+
+    <!-- Gesture screen — aligned with decompiled GuestureFragment (emoji-battery-icon-customize 1.2.8) -->
+    <string name="gesture">Gesture</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">"Use gestures in the status bar for custom actions "</string>
+    <string name="single_tap_action">Single -tap action</string>
+    <string name="swipe_up_to_down">Swipe up to down</string>
+    <string name="swipe_left_to_right_action">Swipe left to right action</string>
+    <string name="swipe_right_to_left_action">Swipe right to left action</string>
+    <string name="long_press_action">Long press action</string>
+    <string name="vibrate_feedback">Vibrate feedback</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Vibrate feedback when interacting with the status bar</string>
+    <string name="select_action">Select Action</string>
+    <string name="apply">Apply</string>
+
+    <string name="open_app">Open App</string>
+    <string name="do_nothing">Do nothing</string>
+    <string name="action_button_back">Back Action</string>
+    <string name="action_button_home">Home Action</string>
+    <string name="recent_apps_button">Recent Action</string>
+    <string name="action_opens_notification_center">Notification center</string>
+    <string name="open_control_center">Control center</string>
+    <string name="power_source_options">Power source options</string>
+    <string name="screen_lock_button_action">Lock Screen</string>
+    <string name="screenshot_action_button">Take Screenshot</string>
+
+    <!-- Paywall / IAP — aligned with decompiled dialog_iap_full.xml + DialogIapFull (id_weekly, id_monthly, id_lifetime) -->
+    <string name="unlimited_library_icon_sticker">Unlimited library Icon, Sticker</string>
+    <string name="no_ad_experience_2">No-Ad experience</string>
+    <string name="early_update_new_feature">Early update new feature</string>
+    <string name="monthly">Monthly</string>
+    <string name="life_time">Life-Time</string>
+    <string name="one_time_payment">One-time payment.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">"Auto-renew monthly.\nCancel anytime."</string>
+    <string name="popular">Popular</string>
+    <string name="start_3_days_free_trial">Start 3 days free trial</string>
+    <string name="try_free_for_3_days_then">Try free for 3 days, then</string>
+    <string name="week11">week</string>
+    <string name="terms_amp_conditions">Terms &amp; Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="paywall_restore">Restore</string>
+    <string name="paywall_manage_subscriptions">Manage subscriptions</string>
 </resources>

@@ -10,6 +10,9 @@
     <color name="splash_title">#FF5C4B51</color>
     <color name="splash_subtitle">#FF8D7680</color>
     <color name="splash_progress_track">#33D47DFE</color>
+    <!-- activity_splash.xml: tvLoading / progress accent -->
+    <color name="splash_loading_accent">#FFD47DFE</color>
+    <color name="splash_ads_hint">#FFD47DFE</color>
 
     <!-- Onboarding pager (matches original pink / Albert theme in Compose) -->
     <color name="onboarding_scaffold">#FFFEF5FA</color>

@@ -1,6 +1,7 @@
 package dev.hai.emojibattery.app
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dev.hai.emojibattery.data.HomeCatalogRepository
 import dev.hai.emojibattery.data.VolioHomeRepository
@@ -22,6 +23,7 @@ import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
+import dev.hai.emojibattery.service.GestureSettingsStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +33,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EmojiBatteryViewModel : ViewModel() {
+class EmojiBatteryViewModel(application: Application) : AndroidViewModel(application) {
     private var homeCategoryLoadJob: Job? = null
 
     private val _uiState = MutableStateFlow(
@@ -44,6 +46,14 @@ class EmojiBatteryViewModel : ViewModel() {
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
     init {
+        val gestureSnapshot = GestureSettingsStore.read(getApplication())
+        _uiState.update {
+            it.copy(
+                gestureEnabled = gestureSnapshot.gestureEnabled,
+                vibrateFeedback = gestureSnapshot.vibrateFeedback,
+                gestureActions = gestureSnapshot.gestureActions,
+            )
+        }
         viewModelScope.launch {
             runCatching { VolioHomeRepository.fetchCategoryTabs() }
                 .onSuccess { remoteTabs ->
@@ -330,6 +340,7 @@ class EmojiBatteryViewModel : ViewModel() {
                 infoMessage = if (enabled) "Status-bar gestures enabled." else "Status-bar gestures disabled.",
             )
         }
+        persistGestureSettings()
     }
 
     fun setVibrateFeedback(enabled: Boolean) {
@@ -339,6 +350,7 @@ class EmojiBatteryViewModel : ViewModel() {
                 infoMessage = if (enabled) "Vibrate feedback enabled." else "Vibrate feedback disabled.",
             )
         }
+        persistGestureSettings()
     }
 
     fun setGestureAction(trigger: GestureTrigger, action: GestureAction) {
@@ -348,8 +360,19 @@ class EmojiBatteryViewModel : ViewModel() {
                 infoMessage = "${trigger.title} mapped to ${action.title}.",
             )
         }
-        val mappedCount = _uiState.value.gestureActions.values.count { it != GestureAction.None }
+        persistGestureSettings()
+        val mappedCount = _uiState.value.gestureActions.values.count { it != GestureAction.DoNothing }
         if (mappedCount >= 3) advanceAchievement("gesture_mapper")
+    }
+
+    private fun persistGestureSettings() {
+        val state = _uiState.value
+        GestureSettingsStore.write(
+            getApplication(),
+            state.gestureEnabled,
+            state.vibrateFeedback,
+            state.gestureActions,
+        )
     }
 
     fun setSearchQuery(query: String) {

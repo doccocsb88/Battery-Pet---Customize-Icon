@@ -31,20 +31,25 @@ enum class CustomizeEntry(val title: String, val subtitle: String) {
 }
 
 enum class GestureTrigger(val title: String, val subtitle: String) {
-    SingleTap("Single tap action", "Quick action when the status bar is tapped once"),
-    SwipeLeftToRight("Swipe left to right action", "Horizontal swipe from left to right"),
-    SwipeRightToLeft("Swipe right to left action", "Horizontal swipe from right to left"),
+    SingleTap("Single-tap action", "Tap once on the status bar"),
+    SwipeLeftToRight("Swipe left to right action", "Horizontal swipe along the status bar"),
+    SwipeRightToLeft("Swipe right to left action", "Horizontal swipe along the status bar"),
     SwipeTopToBottom("Swipe up to down", "Vertical swipe from the top edge downward"),
-    LongPress("Long press action", "Hold on the status bar to trigger an action"),
+    LongPress("Long press action", "Press and hold on the status bar"),
 }
 
+/** System-style actions aligned with the original app gesture picker (see design screenshots). */
 enum class GestureAction(val title: String, val subtitle: String) {
-    None("None", "No action"),
-    OpenCustomize("Open customize", "Jump into the battery and emoji editor"),
-    OpenEmojiSticker("Open emoji sticker", "Open sticker overlay configuration"),
-    OpenBatteryTroll("Open battery troll", "Open prank battery templates"),
-    OpenSearch("Open search", "Open the search landing flow"),
-    ToggleOverlay("Toggle overlay", "Enable or disable the active overlay quickly"),
+    OpenApp("Open App", "Launch a chosen application"),
+    DoNothing("Do nothing", "No action"),
+    BackAction("Back Action", "Navigate back"),
+    HomeAction("Home Action", "Open the home screen"),
+    RecentAction("Recent Action", "Open recent apps"),
+    NotificationCenter("Notification center", "Open notifications"),
+    ControlCenter("Control center", "Open quick settings / control center"),
+    PowerSourceOptions("Power source options", "Battery and power settings"),
+    LockScreen("Lock Screen", "Lock the device"),
+    TakeScreenshot("Take Screenshot", "Capture the current screen"),
 }
 
 data class BatteryPreset(
@@ -418,11 +423,11 @@ object SampleCatalog {
     val gestureActionOptions = GestureAction.entries
 
     val defaultGestureActions = linkedMapOf(
-        GestureTrigger.SingleTap to GestureAction.OpenCustomize,
-        GestureTrigger.SwipeLeftToRight to GestureAction.OpenEmojiSticker,
-        GestureTrigger.SwipeRightToLeft to GestureAction.OpenSearch,
-        GestureTrigger.SwipeTopToBottom to GestureAction.ToggleOverlay,
-        GestureTrigger.LongPress to GestureAction.OpenBatteryTroll,
+        GestureTrigger.SingleTap to GestureAction.DoNothing,
+        GestureTrigger.SwipeTopToBottom to GestureAction.NotificationCenter,
+        GestureTrigger.SwipeLeftToRight to GestureAction.ControlCenter,
+        GestureTrigger.SwipeRightToLeft to GestureAction.BackAction,
+        GestureTrigger.LongPress to GestureAction.DoNothing,
     )
 
     val onboardingPages = listOf(
