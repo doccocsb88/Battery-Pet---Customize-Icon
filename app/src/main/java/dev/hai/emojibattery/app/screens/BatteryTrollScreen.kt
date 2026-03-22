@@ -50,7 +50,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilledTonalButton
@@ -143,6 +143,7 @@ import dev.hai.emojibattery.billing.GooglePlayPurchaseService
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
+import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
@@ -184,7 +185,32 @@ internal fun BatteryTrollScreen(
     val trollScroll = rememberScrollState()
 
     Scaffold(
-        containerColor = Color(0xFFFEF5FA),
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "Battery Troll",
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_back_40_new),
+                            contentDescription = "Back",
+                            modifier = Modifier.size(40.dp),
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                ),
+            )
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -195,20 +221,6 @@ internal fun BatteryTrollScreen(
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp),
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_back_40_new),
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .size(40.dp)
-                        .clickable(onClick = onBack),
-                )
-            }
             BatteryTrollPreviewCard(
                 template = selected,
                 trollMessage = uiState.trollMessage,
@@ -231,7 +243,7 @@ internal fun BatteryTrollScreen(
                     )
                     Text(
                         "Pick a fake battery label and apply the overlay when accessibility is enabled.",
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -257,19 +269,19 @@ internal fun BatteryTrollScreen(
                     ) {
                         Text(
                             "Troll templates",
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Surface(
                             shape = RoundedCornerShape(16.dp),
-                            color = Color(0xFFFFE5FC),
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             modifier = Modifier.clickable(onClick = onOpenTutorial),
                         ) {
                             Text(
                                 "Tutorial",
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                                color = Color(0xFF5C4B51),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall,
                             )
                         }
@@ -290,7 +302,7 @@ internal fun BatteryTrollScreen(
                             )
                             Text(
                                 "Loading…",
-                                color = Color(0xFF5C4B51),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleLarge,
                             )
@@ -332,7 +344,7 @@ internal fun BatteryTrollScreen(
                 ) {
                     Text(
                         "Customize",
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -354,12 +366,12 @@ internal fun BatteryTrollScreen(
                         "Fake label preview",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         "Fake ${uiState.trollMessage}",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -367,7 +379,7 @@ internal fun BatteryTrollScreen(
                     ) {
                         Surface(
                             shape = RoundedCornerShape(50.dp),
-                            color = Color(0xFFFFE5FC),
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp)
@@ -388,7 +400,7 @@ internal fun BatteryTrollScreen(
                                 Spacer(Modifier.width(8.dp))
                                 Text(
                                     "Turn Off",
-                                    color = Color(0xFFD47DFE),
+                                    color = MaterialTheme.colorScheme.secondary,
                                     fontWeight = FontWeight.SemiBold,
                                     style = MaterialTheme.typography.titleLarge,
                                 )
@@ -400,9 +412,7 @@ internal fun BatteryTrollScreen(
                                 .height(56.dp)
                                 .clip(RoundedCornerShape(50.dp))
                                 .background(
-                                    Brush.horizontalGradient(
-                                        listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)),
-                                    ),
+                                    StrawberryCtaGradientBrush,
                                 )
                                 .clickable(onClick = onApply),
                             contentAlignment = Alignment.Center,
@@ -463,7 +473,7 @@ internal fun BatteryTrollPreviewCard(
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(0.5.dp, Color(0xFFE5C7D2)),
+        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
@@ -475,12 +485,12 @@ internal fun BatteryTrollPreviewCard(
             Text(
                 "Battery Troll preview",
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF5C4B51),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleSmall,
             )
             Text(
                 if (overlayEnabled) "Overlay active" else "Overlay inactive",
-                color = Color(0xFF5C4B51),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall,
             )
             Box(
@@ -488,7 +498,7 @@ internal fun BatteryTrollPreviewCard(
                     .fillMaxWidth()
                     .height(116.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFFF8F8F8)),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
                 Column(
@@ -505,13 +515,13 @@ internal fun BatteryTrollPreviewCard(
                         text = "Fake $trollMessage",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
             Text(
                 "${template.title} • ${template.prankMessage}",
-                color = Color(0xFF5C4B51),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
@@ -526,11 +536,11 @@ internal fun TrollTemplateCard(
 ) {
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         border = if (selected) {
-            BorderStroke(1.dp, Color(0xFFD47DFE))
+            BorderStroke(1.dp, MaterialTheme.colorScheme.secondary)
         } else {
-            BorderStroke(0.5.dp, Color(0xFFE0E0E0))
+            BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.55f))
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -556,7 +566,7 @@ internal fun TrollTemplateCard(
                 Text(
                     template.title,
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color(0xFF5C4B51),
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
                 )

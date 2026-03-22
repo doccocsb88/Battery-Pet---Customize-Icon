@@ -142,6 +142,7 @@ import dev.hai.emojibattery.model.GestureAction
 import dev.hai.emojibattery.model.GestureTrigger
 import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.SampleCatalog
+import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.model.SearchTemplate
 import dev.hai.emojibattery.model.StickerPlacement
 import dev.hai.emojibattery.model.StickerPreset
@@ -300,7 +301,7 @@ internal fun LanguageScreen(
         "Turkish" to R.drawable.flag_turkey
     )
 
-    Scaffold(containerColor = Color.White) { innerPadding ->
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -316,7 +317,7 @@ internal fun LanguageScreen(
             ) {
                 Text(
                     stringResource(R.string.select_your_language),
-                    color = Color(0xFF5C4B51),
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -335,7 +336,7 @@ internal fun LanguageScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0xFFF2F2F2))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .clickable { onChooseLanguage(language) }
                             .padding(horizontal = 20.dp, vertical = 14.dp)
                     ) {
@@ -352,7 +353,7 @@ internal fun LanguageScreen(
                             Spacer(Modifier.size(width = 16.dp, height = 0.dp))
                             Text(
                                 language,
-                                color = Color(0xFF5C4B51),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.weight(1f)
@@ -360,7 +361,7 @@ internal fun LanguageScreen(
                             if (language == "English") {
                                 Text(
                                     "Default",
-                                    color = Color(0xFF5C4B51).copy(alpha = 0.8f),
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                                     style = MaterialTheme.typography.bodySmall,
                                     fontWeight = FontWeight.Medium,
                                     modifier = Modifier.padding(end = 12.dp)
@@ -396,11 +397,7 @@ internal fun LanguageScreen(
                         .padding(horizontal = 16.dp, vertical = 16.dp)
                         .height(48.dp)
                         .clip(RoundedCornerShape(50.dp))
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)),
-                            ),
-                        )
+                        .background(StrawberryCtaGradientBrush)
                         .clickable { onNext() },
                     contentAlignment = Alignment.Center
                 ) {

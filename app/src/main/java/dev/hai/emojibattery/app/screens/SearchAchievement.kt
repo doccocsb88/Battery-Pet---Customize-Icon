@@ -183,14 +183,14 @@ internal fun SearchScreen(
                 }
                 Text(
                     "Search template",
-                    color = Color(0xFF5C4B51),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.ExtraBold,
                     style = MaterialTheme.typography.headlineSmall,
                 )
             }
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = Color(0xFFF8F8F8),
+                color = MaterialTheme.colorScheme.surfaceVariant,
             ) {
                 Row(
                     modifier = Modifier
@@ -205,10 +205,10 @@ internal fun SearchScreen(
                         onValueChange = onQueryChange,
                         modifier = Modifier.weight(1f),
                         singleLine = true,
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color(0xFF5C4B51), fontSize = 16.sp),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp),
                         decorationBox = { inner ->
                             if (uiState.searchQuery.isBlank()) {
-                                Text("Search template", color = Color(0xFFB4A7AF))
+                                Text("Search template", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f))
                             }
                             inner()
                         },
@@ -248,7 +248,7 @@ internal fun SearchScreen(
                     }
                 }
             } else {
-                Text("${results.size} result(s) for \"$query\"", color = Color(0xFF8D7680))
+                Text("${results.size} result(s) for \"$query\"", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 LazyColumn(
                     modifier = Modifier.weight(1f, fill = false),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -336,7 +336,7 @@ internal fun AchievementScreen(
     onClaim: (String) -> Unit,
     onNavigate: (String) -> Unit,
 ) {
-    Scaffold(containerColor = Color(0xFFFEF5FA)) { innerPadding ->
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

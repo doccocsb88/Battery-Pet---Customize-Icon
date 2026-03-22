@@ -81,7 +81,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
@@ -143,6 +142,7 @@ import dev.hai.emojibattery.billing.GooglePlayPurchaseService
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
+import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
@@ -166,7 +166,7 @@ internal fun SettingsScreen(
     onToggleAccessibility: (Boolean) -> Unit,
 ) {
     Scaffold(
-        containerColor = Color(0xFFFEF5FA),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             SettingsTopBar(
                 onBack = onBack,
@@ -206,7 +206,7 @@ internal fun SettingsRow(
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(18.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 2.dp,
     ) {
         Row(
@@ -227,9 +227,9 @@ internal fun SettingsRow(
                     modifier = Modifier.size(24.dp),
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(title, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge, color = Color(0xFF5F4B54))
+                    Text(title, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                     if (subtitle != null) {
-                        Text(subtitle, color = Color(0xFF8D7680), style = MaterialTheme.typography.bodySmall)
+                        Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
@@ -252,7 +252,7 @@ internal fun FeedbackScreen(
     onNoteChange: (String) -> Unit,
     onSubmit: () -> Unit,
 ) {
-    val gradient = Brush.horizontalGradient(listOf(Color(0xFFF6A2D8), Color(0xFFB765F5)))
+    val gradient = StrawberryCtaGradientBrush
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -262,7 +262,7 @@ internal fun FeedbackScreen(
     ) {
         Surface(
             shape = RoundedCornerShape(28.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 16.dp,
         ) {
             Column(
@@ -277,16 +277,16 @@ internal fun FeedbackScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Spacer(Modifier.size(40.dp))
-                    Text("Feedback", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
+                    Text("Feedback", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                     IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(CircleShape)
-                                .background(Color(0xFF6A5961)),
+                                .background(MaterialTheme.colorScheme.onSurfaceVariant),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Text("×", color = Color.White, style = MaterialTheme.typography.headlineMedium)
+                            Text("×", color = MaterialTheme.colorScheme.surface, style = MaterialTheme.typography.headlineMedium)
                         }
                     }
                 }
@@ -309,8 +309,8 @@ internal fun FeedbackScreen(
                                 if (index == 0) onSelectRating(5) else SampleCatalog.feedbackReasons.getOrNull((index - 1).coerceAtLeast(0))?.let { onToggleReason(it.id) }
                             },
                             shape = RoundedCornerShape(22.dp),
-                            color = Color(0xFFF8F8F8),
-                            border = BorderStroke(1.dp, if (selected) Color(0xFFE9A8EC) else Color.Transparent),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            border = BorderStroke(1.dp, if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent),
                         ) {
                             Text(
                                 buildString {
@@ -318,7 +318,7 @@ internal fun FeedbackScreen(
                                     append(label)
                                 },
                                 modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
-                                color = Color(0xFF5F4B54),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Bold,
                             )
                         }
@@ -328,11 +328,11 @@ internal fun FeedbackScreen(
                     "Do you have any additional feedback for us?\nWe're Listening.",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF5F4B54),
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Surface(
                     shape = RoundedCornerShape(24.dp),
-                    color = Color(0xFFF8F8F8),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                 ) {
                     OutlinedTextField(
                         value = uiState.feedbackNote,
@@ -341,11 +341,11 @@ internal fun FeedbackScreen(
                             .fillMaxWidth()
                             .height(170.dp),
                         minLines = 5,
-                        placeholder = { Text("Please describe your issue in detail.", color = Color(0xFFD4CFD5)) },
+                        placeholder = { Text("Please describe your issue in detail.", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)) },
                     )
                 }
                 if (uiState.lastFeedbackSubmitted) {
-                    Text("Your feedback was successfully submitted", color = Color(0xFF17A398), fontWeight = FontWeight.Bold)
+                    Text("Your feedback was successfully submitted", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                 }
                 Box(
                     modifier = Modifier
@@ -354,7 +354,7 @@ internal fun FeedbackScreen(
                         .background(gradient),
                 ) {
                     TextButton(onClick = onSubmit, modifier = Modifier.fillMaxWidth()) {
-                        Text("Submit", color = Color.White, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
+                        Text("Submit", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
                     }
                 }
             }
@@ -367,7 +367,7 @@ internal fun SettingsTopBar(
     onBack: () -> Unit,
     onStart: () -> Unit,
 ) {
-    Surface(color = Color.White, shadowElevation = 4.dp, shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)) {
+    Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -386,7 +386,7 @@ internal fun SettingsTopBar(
                         modifier = Modifier.size(40.dp),
                     )
                 }
-                Text("Settings", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
+                Text("Settings", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.size(40.dp))
             }
             EnableBanner(onStart = onStart)

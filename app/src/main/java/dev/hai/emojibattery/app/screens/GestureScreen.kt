@@ -43,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
@@ -59,15 +58,7 @@ import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.ui.gesture.actionLabelRes
 import dev.hai.emojibattery.ui.gesture.rowIconRes
 import dev.hai.emojibattery.ui.gesture.triggerLabelRes
-
-private val GestureRowText = Color(0xFF08162D)
-private val SheetTitleText = Color(0xFF333333)
-private val GradientApplyStart = Color(0xFFFF8EC5)
-private val GradientApplyEnd = Color(0xFFC47FFF)
-private val RadioUnselectedStroke = Color(0xFFE8D5F5)
-private val RadioSelectedRing = Color(0xFF9B4DCB)
-private val CloseButtonBg = Color(0xFF5C4033)
-private val DividerGesture = Color(0xFF5C4B51)
+import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 
 /**
  * Order matches [fragment_guesture.xml](decompiled): Single tap → up/down → L→R → R→L → long press.
@@ -99,7 +90,7 @@ internal fun GestureScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Scaffold(
-        containerColor = Color(0xFFFEF5FA),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             OriginalTopShell(
                 title = stringResource(R.string.battery_icon_title),
@@ -117,7 +108,7 @@ internal fun GestureScreen(
                 .padding(horizontal = 8.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Surface(shape = RoundedCornerShape(16.dp), color = Color.White, shadowElevation = 2.dp) {
+            Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 2.dp) {
                 Column(Modifier.padding(vertical = 6.dp)) {
                     GestureSwitchRow(
                         iconRes = R.drawable.ic_guesture_32,
@@ -131,7 +122,7 @@ internal fun GestureScreen(
                             HorizontalDivider(
                                 modifier = Modifier.padding(horizontal = 15.dp),
                                 thickness = 1.dp,
-                                color = DividerGesture,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f),
                             )
                             GestureTriggerDisplayOrder.forEach { trigger ->
                                 val current = uiState.gestureActions[trigger] ?: GestureAction.DoNothing
@@ -146,7 +137,7 @@ internal fun GestureScreen(
                     }
                 }
             }
-            Surface(shape = RoundedCornerShape(16.dp), color = Color.White, shadowElevation = 2.dp) {
+            Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 2.dp) {
                 GestureSwitchRow(
                     iconRes = R.drawable.ic_vibrate_feedback_32,
                     title = stringResource(R.string.vibrate_feedback),
@@ -163,7 +154,7 @@ internal fun GestureScreen(
         ModalBottomSheet(
             onDismissRequest = { sheetTrigger = null },
             sheetState = sheetState,
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
             dragHandle = null,
         ) {
@@ -207,13 +198,13 @@ private fun GestureMappingRowWithIcon(
         ) {
             Text(
                 triggerLabel,
-                color = GestureRowText,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Medium,
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
                 actionLabel,
-                color = GestureRowText,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -237,7 +228,7 @@ private fun SelectActionSheetContent(
                 stringResource(R.string.select_action),
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 textAlign = TextAlign.Center,
-                color = SheetTitleText,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -249,10 +240,10 @@ private fun SelectActionSheetContent(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(CloseButtonBg),
+                        .background(MaterialTheme.colorScheme.onSurfaceVariant),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Icon(Icons.Rounded.Close, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    Icon(Icons.Rounded.Close, contentDescription = null, tint = MaterialTheme.colorScheme.surface, modifier = Modifier.size(20.dp))
                 }
             }
         }
@@ -276,17 +267,13 @@ private fun SelectActionSheetContent(
                 .padding(horizontal = 20.dp)
                 .height(52.dp)
                 .clip(RoundedCornerShape(999.dp))
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(GradientApplyStart, GradientApplyEnd),
-                    ),
-                )
+                .background(StrawberryCtaGradientBrush)
                 .clickable(onClick = onApply),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 stringResource(R.string.apply),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -319,7 +306,7 @@ private fun SelectActionRadioRow(
                     .clip(CircleShape)
                     .border(
                         width = if (selected) 2.5.dp else 1.5.dp,
-                        color = if (selected) RadioSelectedRing else RadioUnselectedStroke,
+                        color = if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outline,
                         shape = CircleShape,
                     ),
             )
@@ -328,11 +315,11 @@ private fun SelectActionRadioRow(
                     Modifier
                         .size(10.dp)
                         .clip(CircleShape)
-                        .background(RadioSelectedRing),
+                        .background(MaterialTheme.colorScheme.secondary),
                 )
             }
         }
-        Text(label, color = SheetTitleText, style = MaterialTheme.typography.bodyLarge)
+        Text(label, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyLarge)
     }
 }
 
@@ -359,8 +346,8 @@ internal fun GestureSwitchRow(
         ) {
             Image(painter = painterResource(iconRes), contentDescription = title, modifier = Modifier.size(32.dp))
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(title, color = GestureRowText, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyLarge)
-                Text(description, color = GestureRowText, style = MaterialTheme.typography.bodyMedium)
+                Text(title, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyLarge)
+                Text(description, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
             }
         }
         IconButton(onClick = { onToggle(!enabled) }) {

@@ -50,7 +50,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilledTonalButton
@@ -143,13 +143,22 @@ import dev.hai.emojibattery.billing.GooglePlayPurchaseService
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
+import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+private const val STICKER_CATALOG_COLUMNS = 4
+private const val STICKER_CATALOG_ROWS = 4
+private const val STICKERS_PER_CATALOG_PAGE = STICKER_CATALOG_COLUMNS * STICKER_CATALOG_ROWS
+
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalLayoutApi::class,
+    ExperimentalFoundationApi::class,
+)
 @Composable
 internal fun EmojiStickerScreen(
     uiState: AppUiState,
@@ -181,7 +190,32 @@ internal fun EmojiStickerScreen(
     val stickerScroll = rememberScrollState()
 
     Scaffold(
-        containerColor = Color(0xFFFEF5FA),
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "Status Bar Sticker",
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_back_40_new),
+                            contentDescription = "Back",
+                            modifier = Modifier.size(40.dp),
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                ),
+            )
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -192,20 +226,6 @@ internal fun EmojiStickerScreen(
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp),
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_back_40_new),
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .size(40.dp)
-                        .clickable(onClick = onBack),
-                )
-            }
             StickerPreviewCard(
                 selectedSticker = selectedSticker,
                 selectedPlacement = selectedPlacement,
@@ -225,7 +245,7 @@ internal fun EmojiStickerScreen(
                         "Free mode allows ${SampleCatalog.FREE_STICKER_SLOTS} sticker. Premium stickers trigger paywall."
                     },
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-                    color = Color(0xFF5C4B51),
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -250,19 +270,19 @@ internal fun EmojiStickerScreen(
                     ) {
                         Text(
                             "Add Sticker",
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Surface(
                             shape = RoundedCornerShape(16.dp),
-                            color = Color(0xFFFFE5FC),
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             modifier = Modifier.clickable(onClick = onOpenTutorial),
                         ) {
                             Text(
                                 "Tutorial",
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                                color = Color(0xFF5C4B51),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall,
                             )
                         }
@@ -283,32 +303,48 @@ internal fun EmojiStickerScreen(
                             )
                             Text(
                                 "Loading…",
-                                color = Color(0xFF5C4B51),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleLarge,
                             )
                         }
                     } else {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            stickerLibrary.chunked(4).forEach { row ->
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
-                                    row.forEach { sticker ->
-                                        Box(modifier = Modifier.weight(1f)) {
-                                            StickerCatalogCard(
-                                                sticker = sticker,
-                                                selected = uiState.selectedStickerId == sticker.id,
-                                                added = uiState.stickerPlacements.any { it.stickerId == sticker.id },
-                                                onClick = { onAddSticker(sticker.id) },
-                                            )
-                                        }
-                                    }
-                                    repeat(4 - row.size) {
-                                        Spacer(Modifier.weight(1f))
-                                    }
+                        val stickerPages = remember(stickerLibrary) {
+                            stickerLibrary.chunked(STICKERS_PER_CATALOG_PAGE)
+                        }
+                        if (stickerPages.isEmpty()) {
+                            Text(
+                                "No stickers available.",
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        } else {
+                            val pagerState = rememberPagerState(pageCount = { stickerPages.size })
+                            LaunchedEffect(stickerPages.size) {
+                                if (pagerState.currentPage >= stickerPages.size) {
+                                    pagerState.scrollToPage((stickerPages.size - 1).coerceAtLeast(0))
                                 }
+                            }
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                HorizontalPager(
+                                    state = pagerState,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    beyondViewportPageCount = 1,
+                                    pageSpacing = 0.dp,
+                                ) { pageIndex ->
+                                    StickerCatalogGridPage(
+                                        stickers = stickerPages[pageIndex],
+                                        uiState = uiState,
+                                        onAddSticker = onAddSticker,
+                                    )
+                                }
+                                Text(
+                                    "${pagerState.currentPage + 1} / ${stickerPages.size}",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
                             }
                         }
                     }
@@ -331,20 +367,20 @@ internal fun EmojiStickerScreen(
                     ) {
                         Text(
                             "My Sticker",
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Text(
                             "${uiState.stickerPlacements.size} added",
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                     if (uiState.stickerPlacements.isEmpty()) {
                         Text(
                             "Add a sticker from the library above to start editing.",
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     } else {
@@ -370,20 +406,20 @@ internal fun EmojiStickerScreen(
                         "Selected Sticker Controls",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     if (selectedSticker != null && selectedPlacement != null) {
                         Text(
                             "${selectedSticker.glyph} ${selectedSticker.name}",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         SliderField("Sticker size", selectedPlacement.size, 0.2f..1f, onUpdateStickerSize)
                         SliderField("Sticker speed", selectedPlacement.speed, 0.2f..1f, onUpdateStickerSpeed)
                     } else {
                         Text(
                             "Select one of your added stickers to edit size and speed.",
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -393,7 +429,7 @@ internal fun EmojiStickerScreen(
                     ) {
                         Surface(
                             shape = RoundedCornerShape(50.dp),
-                            color = Color(0xFFFFE5FC),
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp)
@@ -414,7 +450,7 @@ internal fun EmojiStickerScreen(
                                 Spacer(Modifier.width(8.dp))
                                 Text(
                                     "Turn Off",
-                                    color = Color(0xFFD47DFE),
+                                    color = MaterialTheme.colorScheme.secondary,
                                     fontWeight = FontWeight.SemiBold,
                                     style = MaterialTheme.typography.titleLarge,
                                 )
@@ -426,9 +462,7 @@ internal fun EmojiStickerScreen(
                                 .height(56.dp)
                                 .clip(RoundedCornerShape(50.dp))
                                 .background(
-                                    Brush.horizontalGradient(
-                                        listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)),
-                                    ),
+                                    StrawberryCtaGradientBrush,
                                 )
                                 .clickable(onClick = onSave),
                             contentAlignment = Alignment.Center,
@@ -441,6 +475,39 @@ internal fun EmojiStickerScreen(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StickerCatalogGridPage(
+    stickers: List<StickerPreset>,
+    uiState: AppUiState,
+    onAddSticker: (String) -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        stickers.chunked(STICKER_CATALOG_COLUMNS).forEach { rowStickers ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                rowStickers.forEach { sticker ->
+                    Box(modifier = Modifier.weight(1f)) {
+                        StickerCatalogCard(
+                            sticker = sticker,
+                            selected = uiState.selectedStickerId == sticker.id,
+                            added = uiState.stickerPlacements.any { it.stickerId == sticker.id },
+                            onClick = { onAddSticker(sticker.id) },
+                        )
+                    }
+                }
+                repeat(STICKER_CATALOG_COLUMNS - rowStickers.size) {
+                    Spacer(Modifier.weight(1f))
                 }
             }
         }
@@ -489,7 +556,7 @@ internal fun StickerPreviewCard(
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(0.5.dp, Color(0xFFE5C7D2)),
+        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
@@ -501,12 +568,12 @@ internal fun StickerPreviewCard(
             Text(
                 "Sticker Preview",
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF5C4B51),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleSmall,
             )
             Text(
                 if (overlayEnabled) "Overlay active" else "Overlay inactive",
-                color = Color(0xFF5C4B51),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall,
             )
             Box(
@@ -514,7 +581,7 @@ internal fun StickerPreviewCard(
                     .fillMaxWidth()
                     .height(116.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFFF8F8F8)),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
             ) {
                 if (selectedSticker != null) {
                     StickerMediaPreview(
@@ -530,18 +597,18 @@ internal fun StickerPreviewCard(
                         text = "✨",
                         modifier = Modifier.align(Alignment.Center),
                         style = MaterialTheme.typography.displayLarge,
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
             if (selectedSticker != null && selectedPlacement != null) {
                 Text(
                     "${selectedSticker.name}  •  size ${(selectedPlacement.size * 100).toInt()}%  •  speed ${(selectedPlacement.speed * 100).toInt()}%",
-                    color = Color(0xFF5C4B51),
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodySmall,
                 )
             } else {
-                Text("Pick a sticker to preview it here.", color = Color(0xFF5C4B51), style = MaterialTheme.typography.bodySmall)
+                Text("Pick a sticker to preview it here.", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall)
             }
         }
     }
@@ -556,11 +623,11 @@ internal fun StickerCatalogCard(
 ) {
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         border = if (selected) {
-            BorderStroke(1.dp, Color(0xFFD47DFE))
+            BorderStroke(1.dp, MaterialTheme.colorScheme.secondary)
         } else {
-            BorderStroke(0.5.dp, Color(0xFFE0E0E0))
+            BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.55f))
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -598,13 +665,13 @@ internal fun StickerCatalogCard(
                 if (sticker.animated) {
                     Surface(
                         shape = RoundedCornerShape(4.dp),
-                        color = Color(0x33FFFFFF),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                     ) {
                         Text(
                             "GIF",
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
@@ -622,9 +689,9 @@ internal fun AddedStickerChip(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = if (selected) Color(0xFFFFE5FC) else Color(0xFFF8F8F8),
+            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
         ),
-        border = if (selected) BorderStroke(1.dp, Color(0xFFD47DFE)) else null,
+        border = if (selected) BorderStroke(1.dp, MaterialTheme.colorScheme.secondary) else null,
         onClick = onSelect,
     ) {
         Row(
@@ -642,8 +709,8 @@ internal fun AddedStickerChip(
             } else {
                 Text(sticker.glyph)
             }
-            Text(sticker.name, color = Color(0xFF5C4B51), style = MaterialTheme.typography.bodySmall)
-            TextButton(onClick = onRemove) { Text("×", color = Color(0xFF5C4B51)) }
+            Text(sticker.name, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall)
+            TextButton(onClick = onRemove) { Text("×", color = MaterialTheme.colorScheme.onSurface) }
         }
     }
 }

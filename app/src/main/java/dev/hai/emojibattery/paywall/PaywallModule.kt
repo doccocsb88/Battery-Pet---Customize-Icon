@@ -40,7 +40,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -54,13 +53,8 @@ import dev.hai.emojibattery.billing.BillingPlan
 import dev.hai.emojibattery.billing.BillingUiState
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.model.PaywallState
-
-private val PaywallBackground = Color(0xFFFFF6F4)
-private val PaywallTextMuted = Color(0xFF5C4B51)
-private val PaywallAccent = Color(0xFFD47DFE)
-private val PaywallBody = Color(0xFF303030)
-private val PaywallFooter = Color(0xFF979797)
-private val PopularBadge = Color(0xFF7915F3)
+import dev.hai.emojibattery.ui.theme.StrawberryMilk
+import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,11 +105,12 @@ fun PaywallScreen(
             weeklySecondaryLine = null
         }
     }
+    val scheme = MaterialTheme.colorScheme
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(PaywallBackground),
+            .background(scheme.background),
     ) {
         Column(
             modifier = Modifier
@@ -132,7 +127,10 @@ fun PaywallScreen(
                 contentScale = ContentScale.Crop,
             )
 
-            PaywallBenefitRow()
+            PaywallBenefitRow(
+                iconTint = scheme.onSurface,
+                labelColor = scheme.onSurface,
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -150,7 +148,10 @@ fun PaywallScreen(
                         modifier = Modifier.weight(1f),
                         title = stringResource(R.string.monthly),
                         price = monthPriceLabel,
+                        titleColor = scheme.onSurfaceVariant,
+                        priceColor = scheme.primary,
                         footnote = stringResource(R.string.auto_renew_monthly_n_cancel_anytime),
+                        footnoteColor = scheme.onSurfaceVariant,
                         onClick = {
                             monthly?.let { onPurchase(it.productId, it.offerToken) }
                         },
@@ -160,7 +161,10 @@ fun PaywallScreen(
                         modifier = Modifier.weight(1f),
                         title = stringResource(R.string.life_time),
                         price = lifetimePriceLabel,
+                        titleColor = scheme.onSurfaceVariant,
+                        priceColor = scheme.primary,
                         footnote = stringResource(R.string.one_time_payment),
+                        footnoteColor = scheme.onSurfaceVariant,
                         onClick = {
                             lifetime?.let { onPurchase(it.productId, null) }
                         },
@@ -177,7 +181,7 @@ fun PaywallScreen(
                         bottomStart = 8.dp,
                         bottomEnd = 0.dp,
                     ),
-                    color = PopularBadge,
+                    color = StrawberryMilk.PopularBadge,
                 ) {
                     Text(
                         text = stringResource(R.string.popular),
@@ -208,7 +212,7 @@ fun PaywallScreen(
                     text = stringResource(R.string.paywall_catalog_hint),
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     style = MaterialTheme.typography.bodySmall,
-                    color = PaywallFooter,
+                    color = scheme.onSurfaceVariant,
                 )
             }
 
@@ -223,7 +227,7 @@ fun PaywallScreen(
                     modifier = Modifier
                         .weight(1f)
                         .clickable(onClick = onOpenTerms),
-                    color = PaywallFooter,
+                    color = scheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                 )
@@ -231,14 +235,14 @@ fun PaywallScreen(
                     modifier = Modifier
                         .width(1.dp)
                         .height(13.dp)
-                        .background(PaywallFooter),
+                        .background(scheme.onSurfaceVariant),
                 )
                 Text(
                     text = stringResource(R.string.privacy_policy),
                     modifier = Modifier
                         .weight(1f)
                         .clickable(onClick = onOpenPolicy),
-                    color = PaywallFooter,
+                    color = scheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                 )
@@ -249,13 +253,13 @@ fun PaywallScreen(
                     text = it.title,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     style = MaterialTheme.typography.titleMedium,
-                    color = PaywallBody,
+                    color = scheme.onSurface,
                 )
                 Text(
                     text = it.message,
                     modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = PaywallTextMuted,
+                    color = scheme.onSurfaceVariant,
                 )
             }
 
@@ -299,14 +303,17 @@ fun PaywallScreen(
             Icon(
                 painter = painterResource(R.drawable.ic_close_40_2),
                 contentDescription = null,
-                tint = PaywallTextMuted,
+                tint = scheme.onSurfaceVariant,
             )
         }
     }
 }
 
 @Composable
-private fun PaywallBenefitRow() {
+private fun PaywallBenefitRow(
+    iconTint: Color,
+    labelColor: Color,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,16 +323,19 @@ private fun PaywallBenefitRow() {
         verticalAlignment = Alignment.Top,
     ) {
         PaywallBenefitCell(
-            icon = { Icon(Icons.Outlined.AutoAwesome, contentDescription = null, tint = PaywallBody) },
+            icon = { Icon(Icons.Outlined.AutoAwesome, contentDescription = null, tint = iconTint) },
             label = stringResource(R.string.unlimited_library_icon_sticker),
+            labelColor = labelColor,
         )
         PaywallBenefitCell(
-            icon = { Icon(Icons.Outlined.Block, contentDescription = null, tint = PaywallBody) },
+            icon = { Icon(Icons.Outlined.Block, contentDescription = null, tint = iconTint) },
             label = stringResource(R.string.no_ad_experience_2),
+            labelColor = labelColor,
         )
         PaywallBenefitCell(
-            icon = { Icon(Icons.Outlined.NewReleases, contentDescription = null, tint = PaywallBody) },
+            icon = { Icon(Icons.Outlined.NewReleases, contentDescription = null, tint = iconTint) },
             label = stringResource(R.string.early_update_new_feature),
+            labelColor = labelColor,
         )
     }
 }
@@ -334,6 +344,7 @@ private fun PaywallBenefitRow() {
 private fun PaywallBenefitCell(
     icon: @Composable () -> Unit,
     label: String,
+    labelColor: Color,
 ) {
     Column(
         modifier = Modifier.width(110.dp),
@@ -349,7 +360,7 @@ private fun PaywallBenefitCell(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = PaywallBody,
+            color = labelColor,
             textAlign = TextAlign.Center,
             maxLines = 2,
         )
@@ -361,7 +372,10 @@ private fun PaywallPriceCard(
     modifier: Modifier = Modifier,
     title: String,
     price: String,
+    titleColor: Color,
+    priceColor: Color,
     footnote: String,
+    footnoteColor: Color,
     onClick: () -> Unit,
     enabled: Boolean,
 ) {
@@ -387,20 +401,20 @@ private fun PaywallPriceCard(
                 text = title.uppercase(),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
-                color = PaywallTextMuted,
+                color = titleColor,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = price,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = PaywallAccent,
+                color = priceColor,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = footnote,
                 style = MaterialTheme.typography.bodySmall,
-                color = PaywallTextMuted,
+                color = footnoteColor,
                 textAlign = TextAlign.Center,
             )
         }
@@ -417,14 +431,12 @@ private fun PaywallWeeklyCta(
     weeklyAvailable: Boolean,
     onClick: () -> Unit,
 ) {
-    val gradient = Brush.horizontalGradient(listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)))
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .defaultMinSize(minHeight = 56.dp)
-            .background(gradient, RoundedCornerShape(50.dp))
+            .background(StrawberryCtaGradientBrush, RoundedCornerShape(50.dp))
             .clickable(
                 enabled = weeklyAvailable && !purchaseInFlight && !loading,
                 onClick = onClick,

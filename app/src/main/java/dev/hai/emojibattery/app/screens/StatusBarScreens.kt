@@ -176,7 +176,7 @@ internal fun StatusBarCustomScreen(
     val themePresets = SampleCatalog.themePresets
 
     Scaffold(
-        containerColor = Color(0xFFFEF5FA),
+        containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -200,7 +200,7 @@ internal fun StatusBarCustomScreen(
                 }
                 Text(
                     "Status Bar Custom",
-                    color = Color(0xFF5C4B51),
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.weight(1f),
                 )
@@ -211,25 +211,25 @@ internal fun StatusBarCustomScreen(
                 selected = uiState.activeStatusBarTab,
                 onSelect = onSelectTab,
             )
-            Surface(shape = RoundedCornerShape(22.dp), color = Color.White) {
+            Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface) {
                 Column(modifier = Modifier.padding(vertical = 8.dp)) {
                     StatusSliderRow("Status bar height", config.statusBarHeight, onSetStatusBarHeight)
                     StatusSliderRow("Status bar left margin", config.leftMargin, onSetLeftMargin)
                     StatusSliderRow("Status bar right margin", config.rightMargin, onSetRightMargin)
                 }
             }
-            Surface(shape = RoundedCornerShape(22.dp), color = Color.White) {
+            Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface) {
                 Column(modifier = Modifier.padding(vertical = 8.dp)) {
                     StatusColorRow("Status bar icon color", Color(config.accentColor))
                     StatusColorRow("Status bar background color", Color(config.backgroundColor))
                 }
             }
-            Surface(shape = RoundedCornerShape(22.dp), color = Color.White, onClick = { onSelectTab(StatusBarTab.Theme) }) {
+            Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface, onClick = { onSelectTab(StatusBarTab.Theme) }) {
                 StatusChevronRow("More template")
             }
             Text(
                 "Customize Icon",
-                color = Color(0xFF08162D),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleLarge,
             )
             when (uiState.activeStatusBarTab) {
@@ -242,7 +242,7 @@ internal fun StatusBarCustomScreen(
                     icon = { label ->
                         Text(
                             text = batteryPresets.first { it.name == label }.body,
-                            color = Color(0xFF5C4B51),
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.titleLarge,
                             textAlign = TextAlign.Center,
                         )
@@ -281,7 +281,7 @@ internal fun StatusBarCustomScreen(
                         )
                     },
                 )
-                StatusBarTab.Settings -> Surface(shape = RoundedCornerShape(22.dp), color = Color.White) {
+                StatusBarTab.Settings -> Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface) {
                     Column(modifier = Modifier.padding(vertical = 8.dp)) {
                         StatusSwitchRow("Show percentage", config.showPercentage, onTogglePercentage)
                         StatusSwitchRow("Animate charge", config.animateCharge, onToggleAnimate)
@@ -358,13 +358,13 @@ internal fun OriginalStatusTabStrip(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(999.dp))
-                    .background(if (isSelected) Color(0xFFD47DFE) else Color.Transparent)
+                    .background(if (isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent)
                     .clickable { onSelect(tab) }
                     .padding(horizontal = 16.dp, vertical = 10.dp),
             ) {
                 Text(
                     tab.title,
-                    color = if (isSelected) Color.White else Color(0xFFD47DFE),
+                    color = if (isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -384,14 +384,14 @@ internal fun StatusSliderRow(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
-        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Slider(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.weight(1f),
             )
-            Text("${(value * 100).toInt()}", color = Color.Black, style = MaterialTheme.typography.titleSmall)
+            Text("${(value * 100).toInt()}", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
         }
     }
 }
@@ -408,13 +408,13 @@ internal fun StatusColorRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
         Box(
             modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
                 .background(color)
-                .border(1.dp, Color(0xFFA1A1A1), CircleShape),
+                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
         )
     }
 }
@@ -428,7 +428,7 @@ internal fun StatusChevronRow(title: String) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
         Image(
             painter = painterResource(R.drawable.ic_chevron_right),
             contentDescription = null,
@@ -457,8 +457,8 @@ internal fun StatusBarChoiceGrid(
                 onClick = { onClick(label) },
                 modifier = Modifier.fillMaxWidth(0.31f),
                 shape = RoundedCornerShape(22.dp),
-                color = Color.White,
-                border = BorderStroke(2.dp, if (selected) Color(0xFFD47DFE) else Color(0xFFF2E4ED)),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(2.dp, if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)),
             ) {
                 Column(
                     modifier = Modifier
@@ -470,7 +470,7 @@ internal fun StatusBarChoiceGrid(
                     icon(label)
                     Text(
                         label,
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.labelLarge,
                     )
@@ -493,7 +493,7 @@ internal fun StatusSwitchRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, color = Color(0xFF111013), style = MaterialTheme.typography.titleSmall)
+        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
         IconButton(onClick = { onToggle(!enabled) }) {
             Image(
                 painter = painterResource(
@@ -527,7 +527,7 @@ internal fun BatteryPreviewCard(
             Text("Live Preview", fontWeight = FontWeight.SemiBold, color = Color(config.accentColor))
             Surface(
                 shape = RoundedCornerShape(22.dp),
-                color = Color.White.copy(alpha = 0.55f),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.55f),
             ) {
                 Column(
                     modifier = Modifier

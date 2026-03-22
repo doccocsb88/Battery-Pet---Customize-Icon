@@ -83,7 +83,9 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -132,6 +134,8 @@ import dev.hai.emojibattery.model.GestureTrigger
 import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.SearchTemplate
+import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
+import dev.hai.emojibattery.ui.theme.StrawberryMilk
 import dev.hai.emojibattery.model.StickerPlacement
 import dev.hai.emojibattery.model.StickerPreset
 import dev.hai.emojibattery.model.batteryTrollTemplateForId
@@ -192,7 +196,7 @@ internal fun HomeScreen(
     }
 
     Scaffold(
-        containerColor = Color(0xFFFEF5FA),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             OriginalTopShell(
                 title = "Battery Icon",
@@ -212,15 +216,40 @@ internal fun HomeScreen(
             Surface(
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(24.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 3.dp,
             ) {
                 Box(Modifier.fillMaxSize()) {
-                    Image(
-                        painter = painterResource(R.drawable.bg_sub_home_x_mas),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize().graphicsLayer(alpha = 0.06f),
-                        contentScale = ContentScale.Crop,
+                    // layer-list drawables are not supported by painterResource; draw equivalent wash in Compose
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer(alpha = 0.06f)
+                            .drawBehind {
+                                drawRect(
+                                    brush = Brush.linearGradient(
+                                        colorStops = arrayOf(
+                                            0f to StrawberryMilk.Background,
+                                            0.5f to Color(
+                                                red = (StrawberryMilk.Background.red + StrawberryMilk.PrimaryContainer.red) / 2f,
+                                                green = (StrawberryMilk.Background.green + StrawberryMilk.PrimaryContainer.green) / 2f,
+                                                blue = (StrawberryMilk.Background.blue + StrawberryMilk.PrimaryContainer.blue) / 2f,
+                                                alpha = 1f,
+                                            ),
+                                            1f to StrawberryMilk.PrimaryContainer,
+                                        ),
+                                        start = Offset(size.width, 0f),
+                                        end = Offset(0f, size.height),
+                                    ),
+                                )
+                                drawRect(
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(StrawberryMilk.Primary.copy(alpha = 0.094f), Color.Transparent),
+                                        start = Offset(0f, size.height),
+                                        end = Offset(size.width, 0f),
+                                    ),
+                                )
+                            },
                     )
                     Column(
                         modifier = Modifier
@@ -242,7 +271,8 @@ internal fun HomeScreen(
                                         category.id == "hot" -> "🔥 ${category.title}"
                                         else -> category.title
                                     },
-                                    color = if (selected) Color(0xFF5C4B51) else Color(0xFFD1D1D1),
+                                    color = if (selected) MaterialTheme.colorScheme.onSurface
+                                    else MaterialTheme.colorScheme.outline.copy(alpha = 0.55f),
                                     fontWeight = FontWeight.ExtraBold,
                                     style = MaterialTheme.typography.titleLarge,
                                     modifier = Modifier.clickable {
@@ -258,11 +288,7 @@ internal fun HomeScreen(
                                 .padding(start = 16.dp, top = 8.dp)
                                 .size(width = 70.dp, height = 2.dp)
                                 .clip(RoundedCornerShape(999.dp))
-                                .background(
-                                    Brush.horizontalGradient(
-                                        listOf(Color(0xFFFFABE5), Color(0xFFD47DFE)),
-                                    ),
-                                ),
+                                .background(StrawberryCtaGradientBrush),
                         )
                         HorizontalPager(
                             modifier = Modifier
@@ -280,7 +306,7 @@ internal fun HomeScreen(
                                     modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center,
                                 ) {
-                                    CircularProgressIndicator(color = Color(0xFFD47DFE))
+                                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                                 }
                             } else {
                                 LazyColumn(
@@ -343,10 +369,10 @@ internal fun CustomizeHubScreen(
         CustomizeEntry.DateTime,
     )
     Scaffold(
-        containerColor = Color(0xFFFFF7FB),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Surface(
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
                 shadowElevation = 6.dp,
             ) {
@@ -365,7 +391,7 @@ internal fun CustomizeHubScreen(
                             HomeRoundIcon(R.drawable.ic_settings_new, onOpenSettings)
                             HomeRoundIcon(R.drawable.ic_feeb_back_home, onOpenRealTime)
                         }
-                        Text("Battery Icon", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5F4B54))
+                        Text("Battery Icon", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             HomeRoundIcon(R.drawable.ic_home_search, onOpenStatusBarCustom)
                             Image(
@@ -408,7 +434,7 @@ internal fun CustomizeHubScreen(
             Surface(
                 onClick = onOpenStatusBarCustom,
                 shape = RoundedCornerShape(24.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 3.dp,
             ) {
                 Row(
@@ -426,7 +452,7 @@ internal fun CustomizeHubScreen(
                     Text(
                         "Status Bar Customize",
                         modifier = Modifier.weight(1f),
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.ExtraBold,
                         style = MaterialTheme.typography.titleLarge,
                     )
@@ -451,14 +477,14 @@ internal fun CustomizeHubScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFF5C4B51))
+                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline)
                 Text(
                     "Customize Icon",
-                    color = Color(0xFF5C4B51),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.ExtraBold,
                     style = MaterialTheme.typography.titleLarge,
                 )
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFF5C4B51))
+                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline)
             }
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
@@ -492,7 +518,7 @@ internal fun PromoBannerCard(
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(28.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 3.dp,
     ) {
         Box(
@@ -510,12 +536,12 @@ internal fun PromoBannerCard(
                 Surface(
                     modifier = Modifier.align(Alignment.TopEnd),
                     shape = RoundedCornerShape(bottomStart = 18.dp),
-                    color = Color(0xFFFF6A00),
+                    color = MaterialTheme.colorScheme.secondary,
                 ) {
                     Text(
                         badge,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSecondary,
                         fontWeight = FontWeight.ExtraBold,
                     )
                 }
@@ -551,13 +577,13 @@ internal fun PromoBannerCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(999.dp))
-                        .background(Color(0xFF53A3FF))
+                        .background(MaterialTheme.colorScheme.primary)
                         .border(BorderStroke(3.dp, Color.White), RoundedCornerShape(999.dp))
                         .padding(horizontal = 18.dp, vertical = 10.dp),
                 ) {
                     Text(
                         cta,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.ExtraBold,
                         style = MaterialTheme.typography.titleLarge,
                     )
@@ -571,7 +597,7 @@ internal fun PromoBannerCard(
 internal fun FakeAdCard() {
     Surface(
         shape = RoundedCornerShape(28.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 2.dp,
     ) {
         Column(
@@ -585,27 +611,27 @@ internal fun FakeAdCard() {
                     modifier = Modifier
                         .size(66.dp)
                         .clip(RoundedCornerShape(18.dp))
-                        .background(Color(0xFFFFF4FE)),
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFD06AFF)) {
-                            Text("Ad", modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = Color.White, fontWeight = FontWeight.Bold)
+                        Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.secondary) {
+                            Text("Ad", modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight.Bold)
                         }
-                        Text("CapCut", color = Color(0xFFD06AFF), fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
+                        Text("CapCut", color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
                     }
-                    Text("Pangle Test Ads - 2", color = Color(0xFF8F8790))
+                    Text("Pangle Test Ads - 2", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(999.dp))
-                    .background(Color(0xFF4DB24A))
+                    .background(MaterialTheme.colorScheme.primary)
                     .padding(vertical = 18.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("VIEW NOW", color = Color.White, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
+                Text("VIEW NOW", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
             }
         }
     }
@@ -622,7 +648,7 @@ internal fun SmallCustomizeCard(
         onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(24.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 2.dp,
     ) {
         Row(
@@ -639,7 +665,7 @@ internal fun SmallCustomizeCard(
             )
             Text(
                 title,
-                color = Color(0xFF5C4B51),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.ExtraBold,
                 style = MaterialTheme.typography.titleLarge,
             )
@@ -665,7 +691,7 @@ internal fun CustomizeIconGridItem(
         ) {
             Surface(
                 shape = RoundedCornerShape(24.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 2.dp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -682,7 +708,7 @@ internal fun CustomizeIconGridItem(
             Text(
                 customizeLabel(entry),
                 textAlign = TextAlign.Center,
-                color = Color(0xFF08162D),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.ExtraBold,
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -712,10 +738,11 @@ internal fun HomeRoundIcon(
 internal fun EnableBanner(
     onStart: () -> Unit,
 ) {
+    val scheme = MaterialTheme.colorScheme
     Surface(
         shape = RoundedCornerShape(28.dp),
-        color = Color(0xFFFFE9FA),
-        border = BorderStroke(2.dp, Color(0xFFE88EEA)),
+        color = scheme.primaryContainer,
+        border = BorderStroke(2.dp, scheme.outline),
     ) {
         Row(
             modifier = Modifier
@@ -724,14 +751,19 @@ internal fun EnableBanner(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Enable emoji battery to begin", color = Color(0xFF5F4B54), fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
+            Text(
+                "Enable emoji battery to begin",
+                color = scheme.onSurface,
+                fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.titleLarge,
+            )
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(22.dp))
-                    .background(Color(0xFFE88EEA)),
+                    .background(StrawberryCtaGradientBrush),
             ) {
                 TextButton(onClick = onStart) {
-                    Text("Start", color = Color.White, fontWeight = FontWeight.ExtraBold)
+                    Text("Start", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold)
                 }
             }
         }
@@ -746,7 +778,7 @@ internal fun OriginalTopShell(
     onSearch: () -> Unit,
 ) {
     Surface(
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
         shadowElevation = 6.dp,
     ) {
@@ -765,7 +797,7 @@ internal fun OriginalTopShell(
                     HomeRoundIcon(R.drawable.ic_settings_new, onLeftPrimary)
                     HomeRoundIcon(R.drawable.ic_feeb_back_home, onLeftSecondary)
                 }
-                Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFF5C4B51))
+                Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     HomeRoundIcon(R.drawable.ic_home_search, onSearch)
                     Image(
@@ -796,8 +828,8 @@ internal fun HomeBatteryGridCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .background(color = Color(0xFFFCFCFC), shape = RoundedCornerShape(16.dp))
-                .border(width = 1.dp, color = Color(0xFFFFE5FC), shape = RoundedCornerShape(16.dp))
+                .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp))
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.65f), shape = RoundedCornerShape(16.dp))
         ) {
             if (!item.thumbnailUrl.isNullOrBlank()) {
                 AsyncImage(
@@ -833,12 +865,12 @@ internal fun HomeBatteryGridCard(
                         .align(Alignment.TopStart)
                         .padding(4.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White),
+                        .background(MaterialTheme.colorScheme.surface),
                 ) {
                     Text(
                         "GIF",
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        color = Color(0xFF5C4B51),
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.labelMedium,
                     )
                 }
