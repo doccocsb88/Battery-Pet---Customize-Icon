@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     private val routeOverride = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AppLocalePreferences.applyAppCompatFromPersistedLocales(this)
+        AppLocalePreferences.applyAppLocalesAtStartup(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         routeOverride.value = intent.getStringExtra("route")

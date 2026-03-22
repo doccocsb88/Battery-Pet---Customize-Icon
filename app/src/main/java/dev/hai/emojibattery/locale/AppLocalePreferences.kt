@@ -58,4 +58,22 @@ object AppLocalePreferences {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
         }
     }
+
+    /**
+     * Call from [android.app.Application] and [android.app.Activity] so locale is applied before UI.
+     * When [AppLanguageConfig.isLanguagePickerFlowEnabled] is false, persists English, marks the
+     * language step complete, and applies [AppLanguageConfig.fixedAppLocaleTag].
+     */
+    fun applyAppLocalesAtStartup(context: Context) {
+        val appCtx = context.applicationContext
+        if (!AppLanguageConfig.isLanguagePickerFlowEnabled) {
+            setPersistedLocale(appCtx, Locale.ENGLISH)
+            setLanguageFlowCompleted(appCtx, true)
+            AppCompatDelegate.setApplicationLocales(
+                LocaleListCompat.forLanguageTags(AppLanguageConfig.fixedAppLocaleTag),
+            )
+            return
+        }
+        applyAppCompatFromPersistedLocales(appCtx)
+    }
 }

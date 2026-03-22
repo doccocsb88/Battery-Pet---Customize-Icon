@@ -147,6 +147,7 @@ import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
+import dev.hai.emojibattery.locale.AppLanguageConfig
 import dev.hai.emojibattery.locale.displayNameForLocaleTag
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import java.util.Locale
@@ -172,7 +173,6 @@ internal fun SettingsScreen(
     val displayLocale = remember(configuration) {
         configuration.locales.get(0) ?: Locale.getDefault()
     }
-    val languageSubtitle = displayNameForLocaleTag(uiState.selectedLocaleTag, displayLocale)
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -189,7 +189,10 @@ internal fun SettingsScreen(
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            SettingsRow(stringResource(R.string.language), R.drawable.ic_language_settings, languageSubtitle, onOpenLanguage)
+            if (AppLanguageConfig.isLanguagePickerFlowEnabled) {
+                val languageSubtitle = displayNameForLocaleTag(uiState.selectedLocaleTag, displayLocale)
+                SettingsRow(stringResource(R.string.language), R.drawable.ic_language_settings, languageSubtitle, onOpenLanguage)
+            }
             SettingsRow(stringResource(R.string.settings_not_allowed_apps), R.drawable.ic_not_allow, if (uiState.protectFromRecentApps) stringResource(R.string.settings_protected) else null) {
                 onToggleProtection(!uiState.protectFromRecentApps)
             }

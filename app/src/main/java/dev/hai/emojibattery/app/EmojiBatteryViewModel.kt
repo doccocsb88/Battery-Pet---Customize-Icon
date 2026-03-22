@@ -24,6 +24,7 @@ import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
 import dev.hai.emojibattery.locale.AppFlowPreferences
+import dev.hai.emojibattery.locale.AppLanguageConfig
 import dev.hai.emojibattery.locale.AppLocalePreferences
 import dev.hai.emojibattery.locale.localeForSupportedTag
 import dev.hai.emojibattery.locale.normalizeSupportedTag
@@ -54,17 +55,23 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         val app = getApplication<Application>()
         val gestureSnapshot = GestureSettingsStore.read(app)
         val defaultTag = resolveDefaultLocaleTag(app)
+        val englishOnly = !AppLanguageConfig.isLanguagePickerFlowEnabled
+        val resolvedLocaleTag = if (englishOnly) {
+            AppLanguageConfig.fixedAppLocaleTag
+        } else {
+            normalizeSupportedTag(
+                AppLocalePreferences.getPersistedLocaleTag(app) ?: defaultTag,
+            )
+        }
         _uiState.update {
             it.copy(
                 gestureEnabled = gestureSnapshot.gestureEnabled,
                 vibrateFeedback = gestureSnapshot.vibrateFeedback,
                 gestureActions = gestureSnapshot.gestureActions,
                 splashDone = AppFlowPreferences.isSplashDone(app),
-                languageChosen = AppLocalePreferences.isLanguageFlowCompleted(app),
+                languageChosen = englishOnly || AppLocalePreferences.isLanguageFlowCompleted(app),
                 onboardingCompleted = AppFlowPreferences.isOnboardingDone(app),
-                selectedLocaleTag = normalizeSupportedTag(
-                    AppLocalePreferences.getPersistedLocaleTag(app) ?: defaultTag,
-                ),
+                selectedLocaleTag = resolvedLocaleTag,
             )
         }
         viewModelScope.launch {

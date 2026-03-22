@@ -36,6 +36,7 @@ import dev.hai.emojibattery.paywall.PaywallScreen
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
+import dev.hai.emojibattery.locale.AppLanguageConfig
 import dev.hai.emojibattery.ui.navigation.AppRoute
 
 @Composable
@@ -120,7 +121,8 @@ fun EmojiBatteryApp(
                         }
                         val latest = viewModel.uiState.value
                         val nextRoute = when {
-                            !latest.languageChosen -> AppRoute.Language.route
+                            AppLanguageConfig.isLanguagePickerFlowEnabled && !latest.languageChosen ->
+                                AppRoute.Language.route
                             !latest.onboardingCompleted -> AppRoute.Onboarding.route
                             else -> AppRoute.Home.route
                         }

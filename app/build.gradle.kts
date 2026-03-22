@@ -17,6 +17,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        // Ship English locale variants only; base `values/` stays included (see AppLanguageConfig).
+        resourceConfigurations += listOf("en")
     }
 
     buildTypes {

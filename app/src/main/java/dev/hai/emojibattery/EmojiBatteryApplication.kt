@@ -6,6 +6,6 @@ import dev.hai.emojibattery.locale.AppLocalePreferences
 class EmojiBatteryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        AppLocalePreferences.applyAppCompatFromPersistedLocales(this)
+        AppLocalePreferences.applyAppLocalesAtStartup(this)
     }
 }
