@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Laden...</string>
+    <string name="this_action_may_be_content_ads">(Diese Aktion kann Inhalte ADS enthalten)</string>
+    <string name="select_your_language">Wählen Sie Ihre Sprache aus</string>
+    <string name="next">Weiter</string>
+    <string name="gesture">Geste</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Verwenden Sie Gesten in der Statusleiste für benutzerdefinierte Aktionen</string>
+    <string name="single_tap_action">Single -Tap -Aktion</string>
+    <string name="swipe_up_to_down">Von oben nach unten wischen</string>
+    <string name="swipe_left_to_right_action">Swischen Sie von links nach rechts Aktion</string>
+    <string name="swipe_right_to_left_action">Swischen Sie nach rechts nach links. Aktion</string>
+    <string name="long_press_action">Lange Pressaktion</string>
+    <string name="vibrate_feedback">Vibrate Feedback</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Vibrieren Sie das Feedback, wenn Sie mit der Statusleiste interagieren</string>
+    <string name="select_action">Aktion auswählen</string>
+    <string name="apply">Bewerben Sie sich</string>
+    <string name="open_app">App öffnen</string>
+    <string name="do_nothing">Nichts</string>
+    <string name="action_button_back">Back -Aktion</string>
+    <string name="action_button_home">Home -Aktion</string>
+    <string name="recent_apps_button">Neue Aktion</string>
+    <string name="action_opens_notification_center">Benachrichtigungszentrum</string>
+    <string name="open_control_center">Kontrollzentrum</string>
+    <string name="power_source_options">Stromquellenoptionen</string>
+    <string name="screen_lock_button_action">Sperrbildschirm</string>
+    <string name="screenshot_action_button">Screenshot machen</string>
+    <string name="unlimited_library_icon_sticker">Unbegrenzte Bibliothek Icon, Sticker</string>
+    <string name="no_ad_experience_2">Keine-Werbung-Erfahrung</string>
+    <string name="early_update_new_feature">Frühes Update neuer Funktionen</string>
+    <string name="monthly">monatlich</string>
+    <string name="life_time">Lebenszeit</string>
+    <string name="one_time_payment">Einmalige Zahlung.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Automatische monatliche Verlängerung.\n Jederzeit kündbar.</string>
+    <string name="popular">Beliebt</string>
+    <string name="start_3_days_free_trial">Starten Sie die 3-tägige kostenlose Testversion</string>
+    <string name="try_free_for_3_days_then">Kostenlos 3 Tage testen, dann</string>
+    <string name="week11">Woche</string>
+    <string name="terms_amp_conditions">Allgemeine Geschäftsbedingungen</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+</resources>

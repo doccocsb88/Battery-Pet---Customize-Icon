@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Загрузка...</string>
+    <string name="this_action_may_be_content_ads">(Это действие может содержать рекламу)</string>
+    <string name="select_your_language">Выберите ваш язык</string>
+    <string name="next">Далее</string>
+    <string name="gesture">Жест</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Используйте жесты в строке состояния для пользовательских действий </string>
+    <string name="single_tap_action">Действие одним нажатием</string>
+    <string name="swipe_up_to_down">Проведите вверх вниз</string>
+    <string name="swipe_left_to_right_action">Проведите слева направо</string>
+    <string name="swipe_right_to_left_action">Проведите справа налево</string>
+    <string name="long_press_action">Долгое нажатие</string>
+    <string name="vibrate_feedback">Обратная связь вибрацией</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Обратная связь вибрацией при взаимодействии со строкой состояния</string>
+    <string name="select_action">Выберите действие</string>
+    <string name="apply">Применить</string>
+    <string name="open_app">Открыть приложение</string>
+    <string name="do_nothing">Ничего не делать</string>
+    <string name="action_button_back">Действие Назад</string>
+    <string name="action_button_home">Действие Домой</string>
+    <string name="recent_apps_button">Действие Недавние</string>
+    <string name="action_opens_notification_center">Центр уведомлений</string>
+    <string name="open_control_center">Центр управления</string>
+    <string name="power_source_options">Опции источника питания</string>
+    <string name="screen_lock_button_action">Заблокировать экран</string>
+    <string name="screenshot_action_button">Сделать скриншот</string>
+    <string name="unlimited_library_icon_sticker">Неограниченная библиотека значков, стикеров</string>
+    <string name="no_ad_experience_2">Опыт без рекламы</string>
+    <string name="early_update_new_feature">Раннее обновление новой функции</string>
+    <string name="monthly">Ежемесячно</string>
+    <string name="life_time">Пожизненно</string>
+    <string name="one_time_payment">Единовременная оплата.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Автоматическое продление ежемесячно.\n Отменить в любое время.</string>
+    <string name="popular">Популярное</string>
+    <string name="start_3_days_free_trial">Начать 3-дневную бесплатную пробную версию</string>
+    <string name="try_free_for_3_days_then">Попробуйте бесплатно в течение 3 дней, затем</string>
+    <string name="week11">неделя</string>
+    <string name="terms_amp_conditions">Условия и положения</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+</resources>

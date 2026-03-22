@@ -91,6 +91,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
@@ -146,7 +147,9 @@ import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
+import dev.hai.emojibattery.locale.displayNameForLocaleTag
 import dev.hai.emojibattery.ui.navigation.AppRoute
+import java.util.Locale
 import kotlinx.coroutines.delay
 
 @Composable
@@ -165,6 +168,11 @@ internal fun SettingsScreen(
     onCheckUpdate: () -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
 ) {
+    val configuration = LocalConfiguration.current
+    val displayLocale = remember(configuration) {
+        configuration.locales.get(0) ?: Locale.getDefault()
+    }
+    val languageSubtitle = displayNameForLocaleTag(uiState.selectedLocaleTag, displayLocale)
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -181,17 +189,17 @@ internal fun SettingsScreen(
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            SettingsRow("Language", R.drawable.ic_language_settings, uiState.selectedLanguage, onOpenLanguage)
-            SettingsRow("Not-Allowed Apps", R.drawable.ic_not_allow, if (uiState.protectFromRecentApps) "Protected" else null) {
+            SettingsRow(stringResource(R.string.language), R.drawable.ic_language_settings, languageSubtitle, onOpenLanguage)
+            SettingsRow(stringResource(R.string.settings_not_allowed_apps), R.drawable.ic_not_allow, if (uiState.protectFromRecentApps) stringResource(R.string.settings_protected) else null) {
                 onToggleProtection(!uiState.protectFromRecentApps)
             }
-            SettingsRow("Tutorial", R.drawable.ic_tutorials_new, "Permission and gesture guide", onReplayTutorial)
-            SettingsRow("Privacy policy", R.drawable.ic_privacy_settings, null, onOpenPrivacy)
-            SettingsRow("Terms & Conditions", R.drawable.ic_privacy_settings, null, onOpenTerms)
-            SettingsRow("Feedback", R.drawable.ic_feed_back_setting, null, onOpenFeedback)
-            SettingsRow("Share app", R.drawable.ic_share_app_settings, null, onShareApp)
-            SettingsRow("Rate us", R.drawable.ic_rate_us_setting, if (uiState.ratingSelection > 0) "${uiState.ratingSelection}/5" else null, onRateApp)
-            SettingsRow("Check for update", R.drawable.ic_check_update_settings, "Version: 1.2.9", onCheckUpdate)
+            SettingsRow(stringResource(R.string.tutorial), R.drawable.ic_tutorials_new, stringResource(R.string.settings_tutorial_summary), onReplayTutorial)
+            SettingsRow(stringResource(R.string.privacy_policy), R.drawable.ic_privacy_settings, null, onOpenPrivacy)
+            SettingsRow(stringResource(R.string.terms_amp_conditions), R.drawable.ic_privacy_settings, null, onOpenTerms)
+            SettingsRow(stringResource(R.string.feedback_title), R.drawable.ic_feed_back_setting, null, onOpenFeedback)
+            SettingsRow(stringResource(R.string.settings_share_app), R.drawable.ic_share_app_settings, null, onShareApp)
+            SettingsRow(stringResource(R.string.settings_rate_us), R.drawable.ic_rate_us_setting, if (uiState.ratingSelection > 0) stringResource(R.string.settings_rating_line, uiState.ratingSelection) else null, onRateApp)
+            SettingsRow(stringResource(R.string.settings_check_update), R.drawable.ic_check_update_settings, stringResource(R.string.settings_version_line, "1.2.9"), onCheckUpdate)
         }
     }
 }
@@ -277,7 +285,7 @@ internal fun FeedbackScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Spacer(Modifier.size(40.dp))
-                    Text("Feedback", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                    Text(stringResource(R.string.feedback_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                     IconButton(onClick = onBack, modifier = Modifier.size(40.dp)) {
                         Box(
                             modifier = Modifier
@@ -286,7 +294,7 @@ internal fun FeedbackScreen(
                                 .background(MaterialTheme.colorScheme.onSurfaceVariant),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Text("×", color = MaterialTheme.colorScheme.surface, style = MaterialTheme.typography.headlineMedium)
+                            Text(stringResource(R.string.multiply_sign), color = MaterialTheme.colorScheme.surface, style = MaterialTheme.typography.headlineMedium)
                         }
                     }
                 }
@@ -295,12 +303,12 @@ internal fun FeedbackScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     val reasons = listOf(
-                        "5 stars" to "⭐",
-                        "Can't allow permission" to null,
-                        "Feature error" to null,
-                        "I can't close the ads" to null,
-                        "I can't exit the app" to null,
-                        "I can't navigate to the next screen" to null,
+                        stringResource(R.string.feedback_chip_5_stars) to "⭐",
+                        stringResource(R.string.feedback_chip_cant_allow_permission) to null,
+                        stringResource(R.string.feedback_chip_feature_error) to null,
+                        stringResource(R.string.feedback_chip_cant_close_ads) to null,
+                        stringResource(R.string.feedback_chip_cant_exit_app) to null,
+                        stringResource(R.string.feedback_chip_cant_navigate) to null,
                     )
                     reasons.forEachIndexed { index, (label, icon) ->
                         val selected = if (index == 0) uiState.ratingSelection == 5 else uiState.feedbackReasons.contains(SampleCatalog.feedbackReasons.getOrNull((index - 1).coerceAtLeast(0))?.id)
@@ -325,7 +333,7 @@ internal fun FeedbackScreen(
                     }
                 }
                 Text(
-                    "Do you have any additional feedback for us?\nWe're Listening.",
+                    stringResource(R.string.feedback_prompt_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -341,11 +349,11 @@ internal fun FeedbackScreen(
                             .fillMaxWidth()
                             .height(170.dp),
                         minLines = 5,
-                        placeholder = { Text("Please describe your issue in detail.", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)) },
+                        placeholder = { Text(stringResource(R.string.feedback_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)) },
                     )
                 }
                 if (uiState.lastFeedbackSubmitted) {
-                    Text("Your feedback was successfully submitted", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.feedback_success), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                 }
                 Box(
                     modifier = Modifier
@@ -354,7 +362,7 @@ internal fun FeedbackScreen(
                         .background(gradient),
                 ) {
                     TextButton(onClick = onSubmit, modifier = Modifier.fillMaxWidth()) {
-                        Text("Submit", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
+                        Text(stringResource(R.string.submit), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
                     }
                 }
             }
@@ -382,11 +390,11 @@ internal fun SettingsTopBar(
                 IconButton(onClick = onBack) {
                     Image(
                         painter = painterResource(R.drawable.ic_back_40_new),
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.cd_back),
                         modifier = Modifier.size(40.dp),
                     )
                 }
-                Text("Settings", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.settings_screen_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.size(40.dp))
             }
             EnableBanner(onStart = onStart)

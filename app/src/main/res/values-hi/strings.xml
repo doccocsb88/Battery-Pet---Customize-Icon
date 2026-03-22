@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">लोड हो रहा है...</string>
+    <string name="this_action_may_be_content_ads">(यह क्रिया सामग्री विज्ञापन हो सकती है)</string>
+    <string name="select_your_language">अपनी भाषा चुनें</string>
+    <string name="next">अगला</string>
+    <string name="gesture">इशारा</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">कस्टम क्रियाओं के लिए स्टेटस बार में इशारों का उपयोग करें</string>
+    <string name="single_tap_action">सिंगल-टैप एक्शन</string>
+    <string name="swipe_up_to_down">ऊपर से नीचे स्वाइप करें</string>
+    <string name="swipe_left_to_right_action">बाएँ से दाएँ स्वाइप करें</string>
+    <string name="swipe_right_to_left_action">दाएँ से बाएँ स्वाइप करें कार्रवाई</string>
+    <string name="long_press_action">लंबी प्रेस कार्रवाई</string>
+    <string name="vibrate_feedback">प्रतिक्रिया कंपन करें</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">स्टेटस बार के साथ इंटरैक्ट करते समय फीडबैक वाइब्रेट करें</string>
+    <string name="select_action">क्रिया चुनें</string>
+    <string name="apply">लागू करें</string>
+    <string name="open_app">ऐप खोलें</string>
+    <string name="do_nothing">कुछ मत करो</string>
+    <string name="action_button_back">बैक एक्शन</string>
+    <string name="action_button_home">होम एक्शन</string>
+    <string name="recent_apps_button">हाल की कार्रवाई</string>
+    <string name="action_opens_notification_center">अधिसूचना केंद्र</string>
+    <string name="open_control_center">नियंत्रण केंद्र</string>
+    <string name="power_source_options">पावर स्रोत विकल्प</string>
+    <string name="screen_lock_button_action">लॉक स्क्रीन</string>
+    <string name="screenshot_action_button">स्क्रीनशॉट लें</string>
+    <string name="unlimited_library_icon_sticker">असीमित लाइब्रेरी आइकन, स्टिकर</string>
+    <string name="no_ad_experience_2">कोई-विज्ञापन अनुभव नहीं</string>
+    <string name="early_update_new_feature">नई सुविधा का जल्दी अपडेट</string>
+    <string name="monthly">मासिक</string>
+    <string name="life_time">जीवनकाल</string>
+    <string name="one_time_payment">एक बार भुगतान।</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">मासिक ऑटो-नवीनीकरण।\n कभी भी रद्द करें।</string>
+    <string name="popular">लोकप्रिय</string>
+    <string name="start_3_days_free_trial">3 दिन का मुफ्त परीक्षण शुरू करें</string>
+    <string name="try_free_for_3_days_then">3 दिन के लिए मुफ्त आज़माएं, फिर</string>
+    <string name="week11">सप्ताह</string>
+    <string name="terms_amp_conditions">नियम और शर्तें</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+</resources>

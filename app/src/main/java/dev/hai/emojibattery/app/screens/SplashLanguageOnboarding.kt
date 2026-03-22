@@ -103,6 +103,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
@@ -158,17 +159,27 @@ import dev.hai.emojibattery.paywall.PaywallScreen
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
+import dev.hai.emojibattery.locale.SUPPORTED_APP_LANGUAGES
+import dev.hai.emojibattery.locale.displayNameForLocaleTag
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import kotlinx.coroutines.delay
+import java.util.Locale
 
 @Composable
 internal fun SplashRoute(
+    fastForward: Boolean,
     onFinish: () -> Unit,
 ) {
     // Original SplashActivity: ~700ms logo overshoot + ValueAnimator on progress; total ~1.2s before ads/navigation.
     var launchLogo by remember { mutableStateOf(false) }
     var progressTarget by remember { mutableStateOf(0f) }
-    LaunchedEffect(Unit) {
+    LaunchedEffect(fastForward) {
+        if (fastForward) {
+            launchLogo = true
+            progressTarget = 1f
+            onFinish()
+            return@LaunchedEffect
+        }
         launchLogo = true
         progressTarget = 1f
         delay(1200)
@@ -276,30 +287,14 @@ internal fun SplashRoute(
 
 @Composable
 internal fun LanguageScreen(
-    selected: String,
-    onChooseLanguage: (String) -> Unit,
+    selectedLocaleTag: String,
+    onSelectLocaleTag: (String) -> Unit,
     onNext: () -> Unit,
 ) {
-    val options = listOf(
-        "English" to R.drawable.flag_united_kingdom,
-        "Hindi" to R.drawable.flag_india,
-        "Spanish" to R.drawable.flag_spain,
-        "French" to R.drawable.flag_france,
-        "Arabic" to R.drawable.flag_saudi_arabia,
-        "Portuguese" to R.drawable.flag_portugal,
-        "Indonesian" to R.drawable.flag_indonesia,
-        "German" to R.drawable.flag_germany,
-        "Vietnamese" to R.drawable.flag_vietnam,
-        "Russian" to R.drawable.flag_russia,
-        "Japanese" to R.drawable.flag_japan,
-        "Korean" to R.drawable.flag_south_korea,
-        "Filipino" to R.drawable.flag_philippines,
-        "Uzbek" to R.drawable.flag_uzbekistn,
-        "Persian" to R.drawable.flag_partian,
-        "Chinese" to R.drawable.flag_china,
-        "Thai" to R.drawable.flag_thailand,
-        "Turkish" to R.drawable.flag_turkey
-    )
+    val configuration = LocalConfiguration.current
+    val displayLocale = remember(configuration) {
+        configuration.locales.get(0) ?: Locale.getDefault()
+    }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Column(
@@ -330,14 +325,15 @@ internal fun LanguageScreen(
                     .padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(options) { (language, flagRes) ->
-                    val active = language == selected
+                items(SUPPORTED_APP_LANGUAGES, key = { it.localeTag }) { option ->
+                    val active = option.localeTag == selectedLocaleTag
+                    val label = displayNameForLocaleTag(option.localeTag, displayLocale)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .clickable { onChooseLanguage(language) }
+                            .clickable { onSelectLocaleTag(option.localeTag) }
                             .padding(horizontal = 20.dp, vertical = 14.dp)
                     ) {
                         Row(
@@ -345,22 +341,22 @@ internal fun LanguageScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Image(
-                                painter = painterResource(flagRes),
-                                contentDescription = language,
+                                painter = painterResource(option.flagResId),
+                                contentDescription = label,
                                 modifier = Modifier.size(32.dp),
                                 contentScale = ContentScale.Crop
                             )
                             Spacer(Modifier.size(width = 16.dp, height = 0.dp))
                             Text(
-                                language,
+                                label,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.weight(1f)
                             )
-                            if (language == "English") {
+                            if (option.localeTag == "en") {
                                 Text(
-                                    "Default",
+                                    stringResource(R.string.language_default),
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                                     style = MaterialTheme.typography.bodySmall,
                                     fontWeight = FontWeight.Medium,
@@ -579,8 +575,8 @@ internal fun TutorialScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("How To Use") },
-                navigationIcon = { TextButton(onClick = onClose) { Text("Close") } },
+                title = { Text(stringResource(R.string.how_to_use_title)) },
+                navigationIcon = { TextButton(onClick = onClose) { Text(stringResource(R.string.close)) } },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                 ),
@@ -598,7 +594,7 @@ internal fun TutorialScreen(
                 title = page.title,
                 summary = page.body,
                 glyph = page.accentGlyph,
-                tag = "Step ${uiState.tutorialPage + 1}/${SampleCatalog.tutorialPages.size}",
+                tag = stringResource(R.string.tutorial_step_format, uiState.tutorialPage + 1, SampleCatalog.tutorialPages.size),
             )
             if (uiState.tutorialPage == 0) {
                 PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = { onOpenAccessibility() })
@@ -606,10 +602,10 @@ internal fun TutorialScreen(
             Spacer(Modifier.weight(1f))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = onPrevious, enabled = !isFirst, modifier = Modifier.weight(1f)) {
-                    Text("Previous")
+                    Text(stringResource(R.string.previous))
                 }
                 Button(onClick = onNext, modifier = Modifier.weight(1f)) {
-                    Text(if (isLast) "Got It" else "Next")
+                    Text(if (isLast) stringResource(R.string.got_it) else stringResource(R.string.onboarding_next))
                 }
             }
         }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Yükleniyor...</string>
+    <string name="this_action_may_be_content_ads">(Bu eylem içerik reklamları olabilir)</string>
+    <string name="select_your_language">Dil seçin</string>
+    <string name="next">Sonraki</string>
+    <string name="gesture">Hareket</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Özel eylemler için durum çubuğunda hareketleri kullanın</string>
+    <string name="single_tap_action">Tek dokunuş eylemi</string>
+    <string name="swipe_up_to_down">Yukarıdan aşağıya kaydır</string>
+    <string name="swipe_left_to_right_action">Soldan sağa kaydırma eylemi</string>
+    <string name="swipe_right_to_left_action">Sağdan sola kaydırma eylemi</string>
+    <string name="long_press_action">Uzun basma eylemi</string>
+    <string name="vibrate_feedback">Titreşim geri bildirimi</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Durum çubuğuyla etkileşimde bulunurken titreşim geri bildirimi</string>
+    <string name="select_action">Eylem Seç</string>
+    <string name="apply">Uygula</string>
+    <string name="open_app">Uygulamayı Aç</string>
+    <string name="do_nothing">Hiçbir şey yapma</string>
+    <string name="action_button_back">Geri Eylemi</string>
+    <string name="action_button_home">Ana Sayfa Eylemi</string>
+    <string name="recent_apps_button">Son Eylem</string>
+    <string name="action_opens_notification_center">Bildirim merkezi</string>
+    <string name="open_control_center">Kontrol merkezi</string>
+    <string name="power_source_options">Güç kaynağı seçenekleri</string>
+    <string name="screen_lock_button_action">Ekranı Kilitle</string>
+    <string name="screenshot_action_button">Ekran Görüntüsü Al</string>
+    <string name="unlimited_library_icon_sticker">Sınırsız kütüphane İkon, Çıkartma</string>
+    <string name="no_ad_experience_2">Reklamsız deneyim</string>
+    <string name="early_update_new_feature">Yeni özellik için erken güncelleme</string>
+    <string name="monthly">Aylık</string>
+    <string name="life_time">Ömür Boyu</string>
+    <string name="one_time_payment">Tek seferlik ödeme.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Aylık otomatik yenileme.\n İstediğiniz zaman iptal edin.</string>
+    <string name="popular">Popüler</string>
+    <string name="start_3_days_free_trial">3 gün ücretsiz deneme başlat</string>
+    <string name="try_free_for_3_days_then">3 gün ücretsiz deneyin, ardından</string>
+    <string name="week11">hafta</string>
+    <string name="terms_amp_conditions">Şartlar ve Koşullar</string>
+    <string name="privacy_policy">Gizlilik politikası</string>
+</resources>

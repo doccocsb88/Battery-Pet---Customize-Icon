@@ -158,7 +158,10 @@ internal fun RealTimeScreen(
     onApply: () -> Unit,
 ) {
     val selected = SampleCatalog.realTimeTemplates.first { it.id == uiState.selectedRealTimeTemplateId }
-    ScreenContainer(title = "Real Time", subtitle = "Template list, preview, and apply flow.") {
+    ScreenContainer(
+        title = stringResource(R.string.realtime_screen_title),
+        subtitle = stringResource(R.string.realtime_screen_subtitle),
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             TemplatePreviewCard(
                 title = selected.title,
@@ -192,10 +195,10 @@ internal fun RealTimeScreen(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) {
-                    Text("Back")
+                    Text(stringResource(R.string.onboarding_back))
                 }
                 Button(onClick = onApply, modifier = Modifier.weight(1f)) {
-                    Text("Apply Template")
+                    Text(stringResource(R.string.apply_template))
                 }
             }
         }
@@ -222,11 +225,11 @@ internal fun FeatureDetailScreen(
                 title = entry.title,
                 summary = entry.subtitle,
                 glyph = featureGlyph(entry),
-                tag = if (config.enabled) config.variant else "Disabled",
+                tag = if (config.enabled) config.variant else stringResource(R.string.feature_disabled),
             )
-            SettingToggle("Enable ${entry.title}", config.enabled, onToggleEnabled)
-            SliderField("${entry.title} intensity", config.intensity, 0.1f..1f, onSetIntensity)
-            Text("Variants", style = MaterialTheme.typography.titleMedium)
+            SettingToggle(stringResource(R.string.feature_enable_format, entry.title), config.enabled, onToggleEnabled)
+            SliderField(stringResource(R.string.feature_intensity_format, entry.title), config.intensity, 0.1f..1f, onSetIntensity)
+            Text(stringResource(R.string.common_variants), style = MaterialTheme.typography.titleMedium)
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -241,13 +244,13 @@ internal fun FeatureDetailScreen(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) {
-                    Text("Back")
+                    Text(stringResource(R.string.onboarding_back))
                 }
                 OutlinedButton(onClick = onReset, modifier = Modifier.weight(1f)) {
-                    Text("Reset")
+                    Text(stringResource(R.string.common_reset))
                 }
                 Button(onClick = onApply, modifier = Modifier.weight(1f)) {
-                    Text("Apply")
+                    Text(stringResource(R.string.apply))
                 }
             }
         }

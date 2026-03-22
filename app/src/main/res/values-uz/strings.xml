@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Yuklanmoqda...</string>
+    <string name="this_action_may_be_content_ads">(Ushbu harakat kontent ADS bo‘lishi mumkin)</string>
+    <string name="select_your_language">Tilni tanlang</string>
+    <string name="next">Keyingi</string>
+    <string name="gesture">Imo-ishora</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Holat panelida imo-ishoralarni maxsus harakatlar uchun foydalaning</string>
+    <string name="single_tap_action">Yagona bosish harakati</string>
+    <string name="swipe_up_to_down">Yuqoridan pastga suring</string>
+    <string name="swipe_left_to_right_action">Chapdan o‘ngga surish harakati</string>
+    <string name="swipe_right_to_left_action">O‘ngdan chapga surish harakati</string>
+    <string name="long_press_action">Uzoq bosish harakati</string>
+    <string name="vibrate_feedback">Vibratsiya fikr-mulohazasi</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Holat paneli bilan o‘zaro ta\'sirda vibratsiya fikr-mulohazasi</string>
+    <string name="select_action">Harakatni tanlang</string>
+    <string name="apply">Qo‘llash</string>
+    <string name="open_app">Ilovani ochish</string>
+    <string name="do_nothing">Hech narsa qilmaslik</string>
+    <string name="action_button_back">Orqaga harakati</string>
+    <string name="action_button_home">Uy harakati</string>
+    <string name="recent_apps_button">Yaqinda harakat</string>
+    <string name="action_opens_notification_center">Bildirishnoma markazi</string>
+    <string name="open_control_center">Nazorat markazi</string>
+    <string name="power_source_options">Quvvat manbai variantlari</string>
+    <string name="screen_lock_button_action">Ekranni bloklash</string>
+    <string name="screenshot_action_button">Skreenshot olish</string>
+    <string name="unlimited_library_icon_sticker">Cheksiz kutubxona Ikona, Stiker</string>
+    <string name="no_ad_experience_2">Reklamasiz tajriba</string>
+    <string name="early_update_new_feature">Yangi xususiyatni erta yangilash</string>
+    <string name="monthly">Oylik</string>
+    <string name="life_time">Umrbod</string>
+    <string name="one_time_payment">Bir martalik to‘lov.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Oylik avtomatik yangilanish.\n Istalgan vaqtda bekor qiling.</string>
+    <string name="popular">Mashhur</string>
+    <string name="start_3_days_free_trial">3 kunlik bepul sinovni boshlang</string>
+    <string name="try_free_for_3_days_then">3 kun davomida bepul sinab ko‘ring, keyin</string>
+    <string name="week11">hafta</string>
+    <string name="terms_amp_conditions">Shartlar va Shartlar</string>
+    <string name="privacy_policy">Maxfiylik siyosati</string>
+</resources>

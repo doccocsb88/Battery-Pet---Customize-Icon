@@ -199,7 +199,7 @@ internal fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             OriginalTopShell(
-                title = "Battery Icon",
+                title = stringResource(R.string.battery_icon_title),
                 onLeftPrimary = onOpenSettings,
                 onLeftSecondary = onOpenFeedback,
                 onSearch = onOpenSearch,
@@ -391,12 +391,12 @@ internal fun CustomizeHubScreen(
                             HomeRoundIcon(R.drawable.ic_settings_new, onOpenSettings)
                             HomeRoundIcon(R.drawable.ic_feeb_back_home, onOpenRealTime)
                         }
-                        Text("Battery Icon", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                        Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             HomeRoundIcon(R.drawable.ic_home_search, onOpenStatusBarCustom)
                             Image(
                                 painter = painterResource(R.drawable.no_ads_on),
-                                contentDescription = "Ads on",
+                                contentDescription = stringResource(R.string.cd_ads_on),
                                 modifier = Modifier.size(width = 40.dp, height = 36.dp),
                             )
                         }
@@ -416,19 +416,19 @@ internal fun CustomizeHubScreen(
         ) {
             PromoBannerCard(
                 backgroundRes = R.drawable.img_bg_emoji_sticker,
-                title = "Status Bar Stickers",
-                body = "Animated stickers for your status bar!",
-                cta = "Customize Now",
+                title = stringResource(R.string.home_promo_stickers_title),
+                body = stringResource(R.string.home_promo_stickers_body),
+                cta = stringResource(R.string.home_promo_stickers_cta),
                 onClick = onOpenSticker,
             )
             FakeAdCard()
             PromoBannerCard(
                 backgroundRes = R.drawable.image_battery_troll_customize,
-                title = "Battery Troll",
-                body = "Just for fun, fake your battery % to everyone",
-                cta = "Troll Mode",
+                title = stringResource(R.string.home_promo_troll_title),
+                body = stringResource(R.string.home_promo_troll_body),
+                cta = stringResource(R.string.home_promo_troll_cta),
                 leadingIconRes = R.drawable.ic_battery_troll_customize_32,
-                badge = "NEW",
+                badge = stringResource(R.string.home_badge_new),
                 onClick = onOpenBatteryTroll,
             )
             Surface(
@@ -446,11 +446,11 @@ internal fun CustomizeHubScreen(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.img_btn_status_bar_new),
-                        contentDescription = "Status Bar Customize",
+                        contentDescription = stringResource(R.string.home_status_bar_customize),
                         modifier = Modifier.size(40.dp),
                     )
                     Text(
-                        "Status Bar Customize",
+                        stringResource(R.string.home_status_bar_customize),
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.ExtraBold,
@@ -460,13 +460,13 @@ internal fun CustomizeHubScreen(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SmallCustomizeCard(
-                    title = "Notch",
+                    title = stringResource(R.string.home_notch),
                     iconRes = R.drawable.ic_item_notch,
                     modifier = Modifier.weight(1f),
                     onClick = onOpenStatusBarCustom,
                 )
                 SmallCustomizeCard(
-                    title = "Animation",
+                    title = stringResource(R.string.home_animation),
                     iconRes = R.drawable.ic_item_animation,
                     modifier = Modifier.weight(1f),
                     onClick = onOpenStatusBarCustom,
@@ -479,7 +479,7 @@ internal fun CustomizeHubScreen(
             ) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline)
                 Text(
-                    "Customize Icon",
+                    stringResource(R.string.home_customize_icon_row),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.ExtraBold,
                     style = MaterialTheme.typography.titleLarge,
@@ -616,11 +616,11 @@ internal fun FakeAdCard() {
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.secondary) {
-                            Text("Ad", modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.fake_ad_label), modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight.Bold)
                         }
-                        Text("CapCut", color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
+                        Text(stringResource(R.string.fake_ad_capcut_title), color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
                     }
-                    Text("Pangle Test Ads - 2", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.fake_ad_pangle_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             Box(
@@ -631,7 +631,7 @@ internal fun FakeAdCard() {
                     .padding(vertical = 18.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("VIEW NOW", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
+                Text(stringResource(R.string.fake_ad_view_now), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
             }
         }
     }
@@ -752,7 +752,7 @@ internal fun EnableBanner(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                "Enable emoji battery to begin",
+                stringResource(R.string.home_enable_banner),
                 color = scheme.onSurface,
                 fontWeight = FontWeight.ExtraBold,
                 style = MaterialTheme.typography.titleLarge,
@@ -763,7 +763,7 @@ internal fun EnableBanner(
                     .background(StrawberryCtaGradientBrush),
             ) {
                 TextButton(onClick = onStart) {
-                    Text("Start", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold)
+                    Text(stringResource(R.string.home_start), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold)
                 }
             }
         }
@@ -802,7 +802,7 @@ internal fun OriginalTopShell(
                     HomeRoundIcon(R.drawable.ic_home_search, onSearch)
                     Image(
                         painter = painterResource(R.drawable.no_ads_on),
-                        contentDescription = "Ads on",
+                        contentDescription = stringResource(R.string.cd_ads_on),
                         modifier = Modifier.size(width = 40.dp, height = 36.dp),
                     )
                 }
@@ -852,7 +852,7 @@ internal fun HomeBatteryGridCard(
             if (item.premium) {
                 Image(
                     painter = painterResource(R.drawable.ic_diamond),
-                    contentDescription = "Premium",
+                    contentDescription = stringResource(R.string.cd_premium),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(4.dp)
@@ -868,7 +868,7 @@ internal fun HomeBatteryGridCard(
                         .background(MaterialTheme.colorScheme.surface),
                 ) {
                     Text(
-                        "GIF",
+                        stringResource(R.string.label_gif),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.labelMedium,

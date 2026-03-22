@@ -167,9 +167,13 @@ internal fun PermissionBanner(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(Modifier.weight(1f)) {
-                Text("Accessibility Bridge", fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.accessibility_bridge_title), fontWeight = FontWeight.SemiBold)
                 Text(
-                    if (enabled) "Overlay service is active and ready to apply." else "Open Accessibility Settings to enable the overlay service.",
+                    if (enabled) {
+                        stringResource(R.string.accessibility_bridge_active)
+                    } else {
+                        stringResource(R.string.accessibility_bridge_disabled)
+                    },
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -225,7 +229,10 @@ internal fun SliderField(
     Card {
         Column(Modifier.padding(16.dp)) {
             Text(label, fontWeight = FontWeight.SemiBold)
-            Text("${(value * 100).toInt()}%", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                stringResource(R.string.slider_percent_format, (value * 100).toInt()),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             Slider(value = value, onValueChange = onChange, valueRange = range)
         }
     }

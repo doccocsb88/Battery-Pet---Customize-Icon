@@ -113,8 +113,11 @@ fun EmojiBatteryApp(
         ) {
             composable(AppRoute.Splash.route) {
                 SplashRoute(
+                    fastForward = uiState.splashDone,
                     onFinish = {
-                        viewModel.finishSplash()
+                        if (!uiState.splashDone) {
+                            viewModel.finishSplash()
+                        }
                         val latest = viewModel.uiState.value
                         val nextRoute = when {
                             !latest.languageChosen -> AppRoute.Language.route
@@ -129,13 +132,18 @@ fun EmojiBatteryApp(
             }
             composable(AppRoute.Language.route) {
                 LanguageScreen(
-                    selected = uiState.selectedLanguage,
-                    onChooseLanguage = { viewModel.chooseLanguage(it) },
+                    selectedLocaleTag = uiState.selectedLocaleTag,
+                    onSelectLocaleTag = viewModel::selectLocaleForLanguagePicker,
                     onNext = {
-                        val latest = viewModel.uiState.value
-                        val nextRoute = if (latest.onboardingCompleted) AppRoute.Home.route else AppRoute.Onboarding.route
-                        navController.navigate(nextRoute) {
-                            popUpTo(AppRoute.Language.route) { inclusive = true }
+                        val localeChanged = viewModel.confirmLanguageSelection()
+                        if (!localeChanged) {
+                            if (viewModel.uiState.value.onboardingCompleted) {
+                                navController.popBackStack()
+                            } else {
+                                navController.navigate(AppRoute.Onboarding.route) {
+                                    popUpTo(AppRoute.Language.route) { inclusive = true }
+                                }
+                            }
                         }
                     },
                 )

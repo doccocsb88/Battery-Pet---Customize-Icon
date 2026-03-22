@@ -177,12 +177,12 @@ internal fun SearchScreen(
                 IconButton(onClick = onBack) {
                     Image(
                         painter = painterResource(R.drawable.ic_back_40_new),
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.cd_back),
                         modifier = Modifier.size(40.dp),
                     )
                 }
                 Text(
-                    "Search template",
+                    stringResource(R.string.search_screen_title),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.ExtraBold,
                     style = MaterialTheme.typography.headlineSmall,
@@ -208,20 +208,20 @@ internal fun SearchScreen(
                         textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp),
                         decorationBox = { inner ->
                             if (uiState.searchQuery.isBlank()) {
-                                Text("Search template", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f))
+                                Text(stringResource(R.string.search_hint), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f))
                             }
                             inner()
                         },
                     )
                     if (uiState.searchQuery.isNotBlank()) {
                         IconButton(onClick = { onQueryChange("") }, modifier = Modifier.size(20.dp)) {
-                            Image(painter = painterResource(R.drawable.ic_search_clear), contentDescription = "Clear")
+                            Image(painter = painterResource(R.drawable.ic_search_clear), contentDescription = stringResource(R.string.cd_clear))
                         }
                     }
                 }
             }
             if (query.isEmpty()) {
-                Text("Most searched", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.search_most_searched), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -234,7 +234,7 @@ internal fun SearchScreen(
                         )
                     }
                 }
-                Text("Recommend", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.search_recommend), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                 LazyColumn(
                     modifier = Modifier.weight(1f, fill = false),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -248,7 +248,7 @@ internal fun SearchScreen(
                     }
                 }
             } else {
-                Text("${results.size} result(s) for \"$query\"", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.search_results_for, results.size, query), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 LazyColumn(
                     modifier = Modifier.weight(1f, fill = false),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -261,7 +261,7 @@ internal fun SearchScreen(
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                             ) {
                                 Text(
-                                    "No templates matched this keyword.",
+                                    stringResource(R.string.search_no_match),
                                     modifier = Modifier.padding(16.dp),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -306,10 +306,10 @@ internal fun SearchTemplateCard(
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     if (template.premium) {
-                        Text("PRO", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                        Text(stringResource(R.string.label_pro), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                     }
                     if (template.animated) {
-                        Text("GIF", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.label_gif), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -354,7 +354,7 @@ internal fun AchievementScreen(
                             progress = { task.progress / task.target.toFloat() },
                             modifier = Modifier.fillMaxWidth(),
                         )
-                        Text("${task.progress}/${task.target}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.achievement_progress_fraction, task.progress, task.target), color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             OutlinedButton(
                                 onClick = {
@@ -368,14 +368,14 @@ internal fun AchievementScreen(
                                 },
                                 modifier = Modifier.weight(1f),
                             ) {
-                                Text("Open")
+                                Text(stringResource(R.string.achievement_open))
                             }
                             Button(
                                 onClick = { onClaim(task.id) },
                                 enabled = completed && !task.claimed,
                                 modifier = Modifier.weight(1f),
                             ) {
-                                Text(if (task.claimed) "Claimed" else "Claim")
+                                Text(if (task.claimed) stringResource(R.string.achievement_claimed) else stringResource(R.string.achievement_claim))
                             }
                         }
                         Surface(

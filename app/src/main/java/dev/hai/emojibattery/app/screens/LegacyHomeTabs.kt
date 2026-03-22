@@ -162,7 +162,7 @@ internal fun BatteryTabContent(
     onToggleStroke: (Boolean) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Text("Battery Body", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.legacy_tab_battery_body), style = MaterialTheme.typography.titleMedium)
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(presets) { preset ->
                 ChoiceChip(
@@ -172,9 +172,9 @@ internal fun BatteryTabContent(
                 )
             }
         }
-        SliderField("Percentage scale", batteryScale, 0.3f..1f, onSetBatteryScale)
-        SettingToggle("Show percentage", showPercentage, onTogglePercentage)
-        SettingToggle("Show stroke", showStroke, onToggleStroke)
+        SliderField(stringResource(R.string.legacy_slider_percentage_scale), batteryScale, 0.3f..1f, onSetBatteryScale)
+        SettingToggle(stringResource(R.string.show_percentage), showPercentage, onTogglePercentage)
+        SettingToggle(stringResource(R.string.show_stroke), showStroke, onToggleStroke)
     }
 }
 
@@ -189,7 +189,7 @@ internal fun EmojiTabContent(
     onToggleAnimate: (Boolean) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Text("Emoji Battery", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.legacy_tab_emoji_battery), style = MaterialTheme.typography.titleMedium)
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(presets) { preset ->
                 ChoiceChip(
@@ -199,8 +199,8 @@ internal fun EmojiTabContent(
                 )
             }
         }
-        SliderField("Emoji size", emojiScale, 0.3f..1f, onSetEmojiScale)
-        SettingToggle("Animate charge", animateCharge, onToggleAnimate)
+        SliderField(stringResource(R.string.slider_emoji_size), emojiScale, 0.3f..1f, onSetEmojiScale)
+        SettingToggle(stringResource(R.string.animate_charge), animateCharge, onToggleAnimate)
     }
 }
 
@@ -211,7 +211,7 @@ internal fun ThemeTabContent(
     onSelectTheme: (String) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Text("Theme Templates", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.legacy_tab_theme_templates), style = MaterialTheme.typography.titleMedium)
         presets.forEach { preset ->
             Card(onClick = { onSelectTheme(preset.id) }) {
                 Row(
@@ -230,7 +230,11 @@ internal fun ThemeTabContent(
                     Column(modifier = Modifier.weight(1f)) {
                         Text(preset.name, fontWeight = FontWeight.SemiBold)
                         Text(
-                            if (selectedId == preset.id) "Active template" else "Tap to load accent and surface colors",
+                            if (selectedId == preset.id) {
+                                stringResource(R.string.legacy_theme_status_active)
+                            } else {
+                                stringResource(R.string.legacy_theme_status_inactive)
+                            },
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
@@ -250,15 +254,15 @@ internal fun SettingsTabContent(
     onToggleStroke: (Boolean) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        SettingToggle("Show percentage", showPercentage, onTogglePercentage)
-        SettingToggle("Animate charge", animateCharge, onToggleAnimate)
-        SettingToggle("Show stroke", showStroke, onToggleStroke)
+        SettingToggle(stringResource(R.string.show_percentage), showPercentage, onTogglePercentage)
+        SettingToggle(stringResource(R.string.animate_charge), animateCharge, onToggleAnimate)
+        SettingToggle(stringResource(R.string.show_stroke), showStroke, onToggleStroke)
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
             Text(
-                "In the original app this tab is part of `StatusBarCustomFragment` and updates the same shared `BatteryConfig` preview state.",
+                stringResource(R.string.legacy_settings_tab_description),
                 modifier = Modifier.padding(16.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

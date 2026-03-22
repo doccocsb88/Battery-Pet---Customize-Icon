@@ -1,19 +1,21 @@
 package dev.hai.emojibattery
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.hai.emojibattery.app.EmojiBatteryApp
 import dev.hai.emojibattery.app.EmojiBatteryViewModel
+import dev.hai.emojibattery.locale.AppLocalePreferences
 import dev.hai.emojibattery.ui.theme.EmojiBatteryTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val routeOverride = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppLocalePreferences.applyAppCompatFromPersistedLocales(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         routeOverride.value = intent.getStringExtra("route")

@@ -201,7 +201,8 @@ data class AppUiState(
     val languageChosen: Boolean = false,
     val onboardingCompleted: Boolean = false,
     val onboardingPage: Int = 0,
-    val selectedLanguage: String = "English",
+    /** BCP 47 tag aligned with [dev.hai.emojibattery.locale.SUPPORTED_APP_LANGUAGES]. */
+    val selectedLocaleTag: String = "en",
     val accessibilityGranted: Boolean = false,
     val activeMainSection: MainSection = MainSection.Home,
     val selectedHomeCategoryId: String = SampleCatalog.homeCategories.first().id,

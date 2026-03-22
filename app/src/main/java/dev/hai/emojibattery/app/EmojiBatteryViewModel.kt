@@ -23,6 +23,11 @@ import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.model.ThemePreset
+import dev.hai.emojibattery.locale.AppFlowPreferences
+import dev.hai.emojibattery.locale.AppLocalePreferences
+import dev.hai.emojibattery.locale.localeForSupportedTag
+import dev.hai.emojibattery.locale.normalizeSupportedTag
+import dev.hai.emojibattery.locale.resolveDefaultLocaleTag
 import dev.hai.emojibattery.service.GestureSettingsStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,12 +51,20 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
     init {
-        val gestureSnapshot = GestureSettingsStore.read(getApplication())
+        val app = getApplication<Application>()
+        val gestureSnapshot = GestureSettingsStore.read(app)
+        val defaultTag = resolveDefaultLocaleTag(app)
         _uiState.update {
             it.copy(
                 gestureEnabled = gestureSnapshot.gestureEnabled,
                 vibrateFeedback = gestureSnapshot.vibrateFeedback,
                 gestureActions = gestureSnapshot.gestureActions,
+                splashDone = AppFlowPreferences.isSplashDone(app),
+                languageChosen = AppLocalePreferences.isLanguageFlowCompleted(app),
+                onboardingCompleted = AppFlowPreferences.isOnboardingDone(app),
+                selectedLocaleTag = normalizeSupportedTag(
+                    AppLocalePreferences.getPersistedLocaleTag(app) ?: defaultTag,
+                ),
             )
         }
         viewModelScope.launch {
@@ -72,24 +85,52 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun finishSplash() {
+        val app = getApplication<Application>()
+        AppFlowPreferences.setSplashDone(app)
         _uiState.update { it.copy(splashDone = true) }
     }
 
-    fun chooseLanguage(language: String) {
+    fun selectLocaleForLanguagePicker(localeTag: String) {
+        _uiState.update {
+            it.copy(selectedLocaleTag = normalizeSupportedTag(localeTag))
+        }
+    }
+
+    /**
+     * Persists locale using the original app preference keys (`language_setting` / `key_language` /
+     * `key_country`), applies AppCompat application locales (see hungvv.C4588dQ0 / C2536It0), which
+     * recreates the activity when the locale changes.
+     *
+     * @return true if the locale value changed and AppCompat was applied (activity will recreate).
+     */
+    fun confirmLanguageSelection(): Boolean {
+        val app = getApplication<Application>()
+        val tag = normalizeSupportedTag(_uiState.value.selectedLocaleTag)
+        val locale = localeForSupportedTag(tag)
+        val old = AppLocalePreferences.getPersistedLocale(app)
+        val localeChanged = old == null ||
+            old.language != locale.language ||
+            old.country.orEmpty() != locale.country.orEmpty()
+        AppLocalePreferences.setPersistedLocale(app, locale)
+        AppLocalePreferences.setLanguageFlowCompleted(app, true)
+        if (localeChanged) {
+            AppLocalePreferences.applyAppCompatFromPersistedLocales(app)
+        }
         _uiState.update {
             it.copy(
                 languageChosen = true,
-                selectedLanguage = language,
                 onboardingPage = 0,
-                infoMessage = "Language set to $language",
+                selectedLocaleTag = tag,
             )
         }
+        return localeChanged
     }
 
     fun nextOnboardingPage() {
         _uiState.update { state ->
             val lastIndex = SampleCatalog.onboardingPages.lastIndex
             if (state.onboardingPage >= lastIndex) {
+                AppFlowPreferences.setOnboardingDone(getApplication())
                 state.copy(
                     onboardingCompleted = true,
                     infoMessage = "Onboarding completed.",
@@ -107,6 +148,7 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun skipOnboarding() {
+        AppFlowPreferences.setOnboardingDone(getApplication())
         _uiState.update {
             it.copy(
                 onboardingCompleted = true,

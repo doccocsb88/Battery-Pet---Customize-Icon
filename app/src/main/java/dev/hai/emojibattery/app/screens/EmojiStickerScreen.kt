@@ -195,7 +195,7 @@ internal fun EmojiStickerScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "Status Bar Sticker",
+                        stringResource(R.string.status_bar_sticker_title),
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.titleLarge,
                     )
@@ -204,7 +204,7 @@ internal fun EmojiStickerScreen(
                     IconButton(onClick = onBack) {
                         Image(
                             painter = painterResource(R.drawable.ic_back_40_new),
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.cd_back),
                             modifier = Modifier.size(40.dp),
                         )
                     }
@@ -238,11 +238,11 @@ internal fun EmojiStickerScreen(
             ) {
                 Text(
                     if (uiState.premiumUnlocked) {
-                        "Premium unlocked. You can add up to ${SampleCatalog.PREMIUM_STICKER_SLOTS} stickers."
+                        stringResource(R.string.sticker_premium_unlocked_slots, SampleCatalog.PREMIUM_STICKER_SLOTS)
                     } else if (uiState.unlockedFeatureKeys.contains(SampleCatalog.FEATURE_EXTRA_STICKER_SLOT)) {
-                        "Reward unlocked. You can add up to ${SampleCatalog.REWARD_EXTRA_STICKER_SLOTS} stickers."
+                        stringResource(R.string.sticker_reward_unlocked_slots, SampleCatalog.REWARD_EXTRA_STICKER_SLOTS)
                     } else {
-                        "Free mode allows ${SampleCatalog.FREE_STICKER_SLOTS} sticker. Premium stickers trigger paywall."
+                        stringResource(R.string.sticker_free_mode_hint, SampleCatalog.FREE_STICKER_SLOTS)
                     },
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                     color = MaterialTheme.colorScheme.onSurface,
@@ -269,7 +269,7 @@ internal fun EmojiStickerScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "Add Sticker",
+                            stringResource(R.string.sticker_add_sticker),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
@@ -280,7 +280,7 @@ internal fun EmojiStickerScreen(
                             modifier = Modifier.clickable(onClick = onOpenTutorial),
                         ) {
                             Text(
-                                "Tutorial",
+                                stringResource(R.string.tutorial),
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall,
@@ -302,7 +302,7 @@ internal fun EmojiStickerScreen(
                                 modifier = Modifier.size(120.dp),
                             )
                             Text(
-                                "Loading…",
+                                stringResource(R.string.common_loading_ellipsis),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleLarge,
@@ -314,7 +314,7 @@ internal fun EmojiStickerScreen(
                         }
                         if (stickerPages.isEmpty()) {
                             Text(
-                                "No stickers available.",
+                                stringResource(R.string.sticker_no_stickers),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodyMedium,
                             )
@@ -339,7 +339,11 @@ internal fun EmojiStickerScreen(
                                     )
                                 }
                                 Text(
-                                    "${pagerState.currentPage + 1} / ${stickerPages.size}",
+                                    stringResource(
+                                        R.string.sticker_page_indicator,
+                                        pagerState.currentPage + 1,
+                                        stickerPages.size,
+                                    ),
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.onSurface,
@@ -366,20 +370,20 @@ internal fun EmojiStickerScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "My Sticker",
+                            stringResource(R.string.sticker_my_sticker),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Text(
-                            "${uiState.stickerPlacements.size} added",
+                            stringResource(R.string.sticker_added_count, uiState.stickerPlacements.size),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                     if (uiState.stickerPlacements.isEmpty()) {
                         Text(
-                            "Add a sticker from the library above to start editing.",
+                            stringResource(R.string.sticker_add_from_library_hint),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
@@ -403,7 +407,7 @@ internal fun EmojiStickerScreen(
                     }
                     HorizontalDivider(thickness = 1.dp, color = Color.Black)
                     Text(
-                        "Selected Sticker Controls",
+                        stringResource(R.string.sticker_selected_controls),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -414,11 +418,11 @@ internal fun EmojiStickerScreen(
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
-                        SliderField("Sticker size", selectedPlacement.size, 0.2f..1f, onUpdateStickerSize)
-                        SliderField("Sticker speed", selectedPlacement.speed, 0.2f..1f, onUpdateStickerSpeed)
+                        SliderField(stringResource(R.string.sticker_size_slider), selectedPlacement.size, 0.2f..1f, onUpdateStickerSize)
+                        SliderField(stringResource(R.string.sticker_speed_slider), selectedPlacement.speed, 0.2f..1f, onUpdateStickerSpeed)
                     } else {
                         Text(
-                            "Select one of your added stickers to edit size and speed.",
+                            stringResource(R.string.sticker_select_to_edit_hint),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
@@ -468,7 +472,7 @@ internal fun EmojiStickerScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                "Save",
+                                stringResource(R.string.common_save),
                                 color = Color.White,
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleLarge,
@@ -566,13 +570,17 @@ internal fun StickerPreviewCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                "Sticker Preview",
+                stringResource(R.string.sticker_preview_title),
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleSmall,
             )
             Text(
-                if (overlayEnabled) "Overlay active" else "Overlay inactive",
+                if (overlayEnabled) {
+                    stringResource(R.string.overlay_active)
+                } else {
+                    stringResource(R.string.overlay_inactive)
+                },
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -603,12 +611,21 @@ internal fun StickerPreviewCard(
             }
             if (selectedSticker != null && selectedPlacement != null) {
                 Text(
-                    "${selectedSticker.name}  •  size ${(selectedPlacement.size * 100).toInt()}%  •  speed ${(selectedPlacement.speed * 100).toInt()}%",
+                    stringResource(
+                        R.string.sticker_stats_line,
+                        selectedSticker.name,
+                        (selectedPlacement.size * 100).toInt(),
+                        (selectedPlacement.speed * 100).toInt(),
+                    ),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodySmall,
                 )
             } else {
-                Text("Pick a sticker to preview it here.", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    stringResource(R.string.sticker_pick_preview_hint),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodySmall,
+                )
             }
         }
     }
@@ -668,7 +685,7 @@ internal fun StickerCatalogCard(
                         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                     ) {
                         Text(
-                            "GIF",
+                            stringResource(R.string.label_gif),
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -710,7 +727,9 @@ internal fun AddedStickerChip(
                 Text(sticker.glyph)
             }
             Text(sticker.name, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall)
-            TextButton(onClick = onRemove) { Text("×", color = MaterialTheme.colorScheme.onSurface) }
+            TextButton(onClick = onRemove) {
+                Text(stringResource(R.string.multiply_sign), color = MaterialTheme.colorScheme.onSurface)
+            }
         }
     }
 }

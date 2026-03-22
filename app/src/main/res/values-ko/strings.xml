@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">로딩 중...</string>
+    <string name="this_action_may_be_content_ads">(이 작업은 콘텐츠 광고일 수 있습니다)</string>
+    <string name="select_your_language">언어 선택</string>
+    <string name="next">다음</string>
+    <string name="gesture">제스처</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">사용자 정의 작업을 위해 상태 표시줄에서 제스처 사용</string>
+    <string name="single_tap_action">단일 탭 작업</string>
+    <string name="swipe_up_to_down">위에서 아래로 스와이프</string>
+    <string name="swipe_left_to_right_action">왼쪽에서 오른쪽으로 스와이프 작업</string>
+    <string name="swipe_right_to_left_action">오른쪽에서 왼쪽으로 스와이프 작업</string>
+    <string name="long_press_action">길게 누르기 작업</string>
+    <string name="vibrate_feedback">진동 피드백</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">상태 표시줄과 상호작용할 때 진동 피드백</string>
+    <string name="select_action">작업 선택</string>
+    <string name="apply">적용</string>
+    <string name="open_app">앱 열기</string>
+    <string name="do_nothing">아무것도 하지 않기</string>
+    <string name="action_button_back">뒤로 가기 작업</string>
+    <string name="action_button_home">홈 작업</string>
+    <string name="recent_apps_button">최근 작업</string>
+    <string name="action_opens_notification_center">알림 센터</string>
+    <string name="open_control_center">제어 센터</string>
+    <string name="power_source_options">전원 옵션</string>
+    <string name="screen_lock_button_action">화면 잠금</string>
+    <string name="screenshot_action_button">스크린샷 찍기</string>
+    <string name="unlimited_library_icon_sticker">무제한 라이브러리 아이콘, 스티커</string>
+    <string name="no_ad_experience_2">광고 없는 경험</string>
+    <string name="early_update_new_feature">새로운 기능 조기 업데이트</string>
+    <string name="monthly">월간</string>
+    <string name="life_time">평생</string>
+    <string name="one_time_payment">한 번의 결제.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">매월 자동 갱신.\n 언제든지 취소 가능.</string>
+    <string name="popular">인기</string>
+    <string name="start_3_days_free_trial">3일 무료 체험 시작</string>
+    <string name="try_free_for_3_days_then">3일 무료 체험 후,</string>
+    <string name="week11">주</string>
+    <string name="terms_amp_conditions">약관 및 조건</string>
+    <string name="privacy_policy">개인정보 보호정책</string>
+</resources>

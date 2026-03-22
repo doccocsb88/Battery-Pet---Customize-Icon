@@ -7,6 +7,8 @@
     <string name="loading_dot">Loading...</string>
     <string name="this_action_may_be_content_ads">(This action may be content ADS)</string>
     <string name="select_your_language">Select your language</string>
+    <string name="language">Language</string>
+    <string name="language_default">Default</string>
     <string name="next">Next</string>
     <string name="onboarding_skip">Skip</string>
     <string name="onboarding_back">Back</string>
@@ -56,4 +58,175 @@
     <string name="paywall_price_loading">Loading…</string>
     <string name="paywall_price_unavailable">—</string>
     <string name="paywall_catalog_hint">If prices stay empty: create these in Play Console (same app id) and add a test track, then install from Play.</string>
+
+    <!-- Common -->
+    <string name="cd_back">Back</string>
+    <string name="cd_clear">Clear</string>
+    <string name="cd_ads_on">Ads on</string>
+    <string name="cd_premium">Premium</string>
+    <string name="common_save">Save</string>
+    <string name="common_turn_off">Turn Off</string>
+    <string name="common_loading_ellipsis">Loading…</string>
+    <string name="common_customize">Customize</string>
+    <string name="common_variants">Variants</string>
+    <string name="common_reset">Reset</string>
+    <string name="label_gif">GIF</string>
+    <string name="label_pro">PRO</string>
+    <string name="multiply_sign">×</string>
+    <string name="slider_percent_format">%1$d%%</string>
+    <string name="slider_value_integer">%1$d</string>
+
+    <!-- Accessibility bridge (PermissionBanner) -->
+    <string name="accessibility_bridge_title">Accessibility Bridge</string>
+    <string name="accessibility_bridge_active">Overlay service is active and ready to apply.</string>
+    <string name="accessibility_bridge_disabled">Open Accessibility Settings to enable the overlay service.</string>
+
+    <!-- Overlay state -->
+    <string name="overlay_active">Overlay active</string>
+    <string name="overlay_inactive">Overlay inactive</string>
+
+    <!-- Tutorial / dialogs -->
+    <string name="tutorial">Tutorial</string>
+    <string name="how_to_use_title">How To Use</string>
+    <string name="close">Close</string>
+    <string name="previous">Previous</string>
+    <string name="got_it">Got It</string>
+    <string name="tutorial_step_format">Step %1$d/%2$d</string>
+
+    <!-- Sticker screen -->
+    <string name="status_bar_sticker_title">Status Bar Sticker</string>
+    <string name="sticker_premium_unlocked_slots">Premium unlocked. You can add up to %1$d stickers.</string>
+    <string name="sticker_reward_unlocked_slots">Reward unlocked. You can add up to %1$d stickers.</string>
+    <string name="sticker_free_mode_hint">Free mode allows %1$d sticker. Premium stickers trigger paywall.</string>
+    <string name="sticker_add_sticker">Add Sticker</string>
+    <string name="sticker_no_stickers">No stickers available.</string>
+    <string name="sticker_page_indicator">%1$d / %2$d</string>
+    <string name="sticker_my_sticker">My Sticker</string>
+    <string name="sticker_added_count">%1$d added</string>
+    <string name="sticker_add_from_library_hint">Add a sticker from the library above to start editing.</string>
+    <string name="sticker_selected_controls">Selected Sticker Controls</string>
+    <string name="sticker_select_to_edit_hint">Select one of your added stickers to edit size and speed.</string>
+    <string name="sticker_preview_title">Sticker Preview</string>
+    <string name="sticker_pick_preview_hint">Pick a sticker to preview it here.</string>
+    <string name="sticker_size_slider">Sticker size</string>
+    <string name="sticker_speed_slider">Sticker speed</string>
+    <string name="sticker_stats_line">%1$s  •  size %2$d%%  •  speed %3$d%%</string>
+
+    <!-- Battery troll -->
+    <string name="battery_troll_title">Battery Troll</string>
+    <string name="battery_troll_intro">Pick a fake battery label and apply the overlay when accessibility is enabled.</string>
+    <string name="battery_troll_templates">Troll templates</string>
+    <string name="battery_troll_customize_section">Customize</string>
+    <string name="battery_troll_auto_drop">Auto drop animation</string>
+    <string name="battery_troll_fake_preview_label">Fake label preview</string>
+    <string name="battery_troll_fake_message_format">Fake %1$s</string>
+    <string name="battery_troll_preview_card_title">Battery Troll preview</string>
+
+    <!-- Home -->
+    <string name="home_promo_stickers_title">Status Bar Stickers</string>
+    <string name="home_promo_stickers_body">Animated stickers for your status bar!</string>
+    <string name="home_promo_stickers_cta">Customize Now</string>
+    <string name="home_promo_troll_title">Battery Troll</string>
+    <string name="home_promo_troll_body">Just for fun, fake your battery % to everyone</string>
+    <string name="home_promo_troll_cta">Troll Mode</string>
+    <string name="home_badge_new">NEW</string>
+    <string name="home_status_bar_customize">Status Bar Customize</string>
+    <string name="home_notch">Notch</string>
+    <string name="home_animation">Animation</string>
+    <string name="home_customize_icon_row">Customize Icon</string>
+    <string name="home_enable_banner">Enable emoji battery to begin</string>
+    <string name="home_start">Start</string>
+    <string name="fake_ad_label">Ad</string>
+    <string name="fake_ad_view_now">VIEW NOW</string>
+    <string name="fake_ad_capcut_title">CapCut</string>
+    <string name="fake_ad_pangle_subtitle">Pangle Test Ads - 2</string>
+
+    <!-- Search -->
+    <string name="search_screen_title">Search template</string>
+    <string name="search_hint">Search template</string>
+    <string name="search_most_searched">Most searched</string>
+    <string name="search_recommend">Recommend</string>
+    <string name="search_results_for">%1$d result(s) for \"%2$s\"</string>
+    <string name="search_no_match">No templates matched this keyword.</string>
+
+    <!-- Achievement -->
+    <string name="achievement_open">Open</string>
+    <string name="achievement_claim">Claim</string>
+    <string name="achievement_claimed">Claimed</string>
+    <string name="achievement_progress_fraction">%1$d/%2$d</string>
+
+    <!-- Status bar custom -->
+    <string name="status_bar_custom_title">Status Bar Custom</string>
+    <string name="status_bar_height">Status bar height</string>
+    <string name="status_bar_left_margin">Status bar left margin</string>
+    <string name="status_bar_right_margin">Status bar right margin</string>
+    <string name="status_bar_icon_color">Status bar icon color</string>
+    <string name="status_bar_background_color">Status bar background color</string>
+    <string name="more_template">More template</string>
+    <string name="customize_icon_heading">Customize Icon</string>
+    <string name="restore_applied">Restore Applied</string>
+    <string name="show_percentage">Show percentage</string>
+    <string name="animate_charge">Animate charge</string>
+    <string name="show_stroke">Show stroke</string>
+    <string name="battery_text_size">Battery text size</string>
+    <string name="emoji_size_label">Emoji size</string>
+    <string name="legacy_battery_flow_title">Legacy Battery Flow</string>
+    <string name="legacy_battery_flow_subtitle">Port of the older `BatteryFragment` path that separately chooses battery body and emoji.</string>
+    <string name="label_battery_body">Battery body</string>
+    <string name="label_emoji">Emoji</string>
+    <string name="slider_battery_percentage_size">Battery percentage size</string>
+    <string name="slider_emoji_size">Emoji size</string>
+    <string name="apply_legacy_flow">Apply Legacy Flow</string>
+    <string name="live_preview">Live Preview</string>
+    <string name="demo_time">12:45</string>
+    <string name="demo_date">Fri, Mar 20</string>
+    <string name="demo_wifi">WIFI</string>
+    <string name="accessibility_bridge_active_short">Accessibility bridge active</string>
+    <string name="accessibility_bridge_required_short">Accessibility bridge required for apply</string>
+
+    <!-- Legacy home tabs -->
+    <string name="legacy_tab_battery_body">Battery Body</string>
+    <string name="legacy_tab_emoji_battery">Emoji Battery</string>
+    <string name="legacy_tab_theme_templates">Theme Templates</string>
+    <string name="legacy_slider_percentage_scale">Percentage scale</string>
+    <string name="legacy_theme_status_active">Active template</string>
+    <string name="legacy_theme_status_inactive">Tap to load accent and surface colors</string>
+    <string name="legacy_settings_tab_description">In the original app this tab is part of `StatusBarCustomFragment` and updates the same shared `BatteryConfig` preview state.</string>
+
+    <!-- Real-time feature -->
+    <string name="realtime_screen_title">Real Time</string>
+    <string name="realtime_screen_subtitle">Template list, preview, and apply flow.</string>
+    <string name="realtime_premium_hint_on">Premium template access is available for this account state.</string>
+    <string name="realtime_premium_hint_off">Templates marked PRO open a paywall unless unlocked by reward or premium access.</string>
+    <string name="apply_template">Apply Template</string>
+
+    <!-- Feature detail -->
+    <string name="feature_detail_subtitle">Isolated editor with local config, variants, and apply/reset actions.</string>
+    <string name="feature_enable_format">Enable %1$s</string>
+    <string name="feature_intensity_format">%1$s intensity</string>
+    <string name="feature_disabled">Disabled</string>
+
+    <!-- Settings (additional rows) -->
+    <string name="settings_screen_title">Settings</string>
+    <string name="settings_not_allowed_apps">Not-Allowed Apps</string>
+    <string name="settings_protected">Protected</string>
+    <string name="settings_tutorial_summary">Permission and gesture guide</string>
+    <string name="settings_share_app">Share app</string>
+    <string name="settings_rate_us">Rate us</string>
+    <string name="settings_check_update">Check for update</string>
+    <string name="settings_version_line">Version: %1$s</string>
+    <string name="settings_rating_line">%1$d/5</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Feedback</string>
+    <string name="feedback_placeholder">Please describe your issue in detail.</string>
+    <string name="feedback_success">Your feedback was successfully submitted</string>
+    <string name="submit">Submit</string>
+    <string name="feedback_prompt_title">Do you have any additional feedback for us?\nWe\'re Listening.</string>
+    <string name="feedback_chip_5_stars">5 stars</string>
+    <string name="feedback_chip_cant_allow_permission">Can\'t allow permission</string>
+    <string name="feedback_chip_feature_error">Feature error</string>
+    <string name="feedback_chip_cant_close_ads">I can\'t close the ads</string>
+    <string name="feedback_chip_cant_exit_app">I can\'t exit the app</string>
+    <string name="feedback_chip_cant_navigate">I can\'t navigate to the next screen</string>
 </resources>

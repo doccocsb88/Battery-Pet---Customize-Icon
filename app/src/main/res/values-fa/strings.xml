@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">بارگذاری...</string>
+    <string name="this_action_may_be_content_ads">(این عمل ممکن است محتوای تبلیغاتی باشد)</string>
+    <string name="select_your_language">زبان خود را انتخاب کنید</string>
+    <string name="next">بعدی</string>
+    <string name="gesture">حرکت</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">استفاده از حرکات در نوار وضعیت برای اقدامات سفارشی</string>
+    <string name="single_tap_action">عمل ضربه تک</string>
+    <string name="swipe_up_to_down">کشیدن از بالا به پایین</string>
+    <string name="swipe_left_to_right_action">عمل کشیدن از چپ به راست</string>
+    <string name="swipe_right_to_left_action">عمل کشیدن از راست به چپ</string>
+    <string name="long_press_action">عمل فشار طولانی</string>
+    <string name="vibrate_feedback">بازخورد لرزش</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">بازخورد لرزش هنگام تعامل با نوار وضعیت</string>
+    <string name="select_action">عمل را انتخاب کنید</string>
+    <string name="apply">اعمال</string>
+    <string name="open_app">برنامه را باز کنید</string>
+    <string name="do_nothing">هیچ کاری نکنید</string>
+    <string name="action_button_back">عمل بازگشت</string>
+    <string name="action_button_home">عمل خانه</string>
+    <string name="recent_apps_button">عمل اخیر</string>
+    <string name="action_opens_notification_center">مرکز اعلان</string>
+    <string name="open_control_center">مرکز کنترل</string>
+    <string name="power_source_options">گزینه‌های منبع تغذیه</string>
+    <string name="screen_lock_button_action">قفل صفحه</string>
+    <string name="screenshot_action_button">گرفتن اسکرین شات</string>
+    <string name="unlimited_library_icon_sticker">کتابخانه نامحدود آیکون، استیکر</string>
+    <string name="no_ad_experience_2">تجربه بدون تبلیغ</string>
+    <string name="early_update_new_feature">به‌روزرسانی زودهنگام ویژگی جدید</string>
+    <string name="monthly">ماهانه</string>
+    <string name="life_time">عمر</string>
+    <string name="one_time_payment">پرداخت یک‌باره.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">تمدید خودکار ماهانه. هر زمان لغو کنید.</string>
+    <string name="popular">محبوب</string>
+    <string name="start_3_days_free_trial">شروع ۳ روز آزمایش رایگان</string>
+    <string name="try_free_for_3_days_then">۳ روز رایگان امتحان کنید، سپس</string>
+    <string name="week11">هفته</string>
+    <string name="terms_amp_conditions">شرایط و ضوابط</string>
+    <string name="privacy_policy">سیاست حفظ حریم خصوصی</string>
+</resources>

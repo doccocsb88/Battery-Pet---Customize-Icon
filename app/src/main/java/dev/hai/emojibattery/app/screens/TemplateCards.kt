@@ -215,7 +215,7 @@ internal fun ContentTemplateCard(
             ) {
                 Text(template.accentGlyph, style = MaterialTheme.typography.headlineMedium)
                 if (template.premium) {
-                    Text("PRO", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(R.string.label_pro), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                 }
             }
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

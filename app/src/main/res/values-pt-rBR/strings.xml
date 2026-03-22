@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Carregando...</string>
+    <string name="this_action_may_be_content_ads">(Esta ação pode conter anúncios)</string>
+    <string name="select_your_language">Selecione seu idioma</string>
+    <string name="next">Próximo</string>
+    <string name="gesture">Gesto</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Use gestos na barra de status para ações personalizadas</string>
+    <string name="single_tap_action">Ação de toque único</string>
+    <string name="swipe_up_to_down">Deslizar de cima para baixo</string>
+    <string name="swipe_left_to_right_action">Ação de deslizar da esquerda para a direita</string>
+    <string name="swipe_right_to_left_action">Ação de deslizar da direita para a esquerda</string>
+    <string name="long_press_action">Ação de pressão longa</string>
+    <string name="vibrate_feedback">Vibrar feedback</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Vibrar feedback ao interagir com a barra de status</string>
+    <string name="select_action">Selecionar Ação</string>
+    <string name="apply">Inscreva-se</string>
+    <string name="open_app">Abrir App</string>
+    <string name="do_nothing">Não faça nada</string>
+    <string name="action_button_back">Ação Voltar</string>
+    <string name="action_button_home">Ação inicial</string>
+    <string name="recent_apps_button">Ação recente</string>
+    <string name="action_opens_notification_center">Central de notificações</string>
+    <string name="open_control_center">Centro de controle</string>
+    <string name="power_source_options">Opções de fonte de energia</string>
+    <string name="screen_lock_button_action">Tela de bloqueio</string>
+    <string name="screenshot_action_button">Faça uma captura de tela</string>
+    <string name="unlimited_library_icon_sticker">Biblioteca ilimitada de ícones, adesivos</string>
+    <string name="no_ad_experience_2">Experiência sem anúncios</string>
+    <string name="early_update_new_feature">Atualização antecipada de novos recursos</string>
+    <string name="monthly">Mensal</string>
+    <string name="life_time">Vitalício</string>
+    <string name="one_time_payment">Pagamento único.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Renovação automática mensal.\n Cancele a qualquer momento.</string>
+    <string name="popular">Popular</string>
+    <string name="start_3_days_free_trial">Comece o teste gratuito de 3 dias</string>
+    <string name="try_free_for_3_days_then">Experimente grátis por 3 dias, depois</string>
+    <string name="week11">semana</string>
+    <string name="terms_amp_conditions">Termos e Condições</string>
+    <string name="privacy_policy">Política de privacidade</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Naglo-load...</string>
+    <string name="this_action_may_be_content_ads">(Ang aksyong ito ay maaaring may nilalaman na ADS)</string>
+    <string name="select_your_language">Piliin ang iyong wika</string>
+    <string name="next">Susunod</string>
+    <string name="gesture">Kumpas</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Gumamit ng mga galaw sa status bar para sa mga custom na pagkilos </string>
+    <string name="single_tap_action">Single-tap action</string>
+    <string name="swipe_up_to_down">Mag-swipe mula itaas pababa</string>
+    <string name="swipe_left_to_right_action">Mag-swipe pakaliwa pakanan na pagkilos</string>
+    <string name="swipe_right_to_left_action">Mag-swipe pakanan pakaliwa na pagkilos</string>
+    <string name="long_press_action">Pagpindot nang matagal</string>
+    <string name="vibrate_feedback">Mag-vibrate ng feedback</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Mag-vibrate ng feedback kapag nakikipag-ugnayan sa status bar</string>
+    <string name="select_action">Piliin ang Aksyon</string>
+    <string name="apply">Mag-apply</string>
+    <string name="open_app">Buksan ang App</string>
+    <string name="do_nothing">Walang gagawin</string>
+    <string name="action_button_back">Balik na Aksyon</string>
+    <string name="action_button_home">Gawaing Home</string>
+    <string name="recent_apps_button">Kamakailang Aksyon</string>
+    <string name="action_opens_notification_center">Sentro ng Abiso</string>
+    <string name="open_control_center">Sentro ng Kontrol</string>
+    <string name="power_source_options">Mga opsyon sa power source</string>
+    <string name="screen_lock_button_action">Naka-lock na Screen</string>
+    <string name="screenshot_action_button">Kumuha ng Screenshot</string>
+    <string name="unlimited_library_icon_sticker">Walang limitasyong library Icon, Sticker</string>
+    <string name="no_ad_experience_2">Karanasan na Walang-Ad</string>
+    <string name="early_update_new_feature">Maagang pag-update ng bagong tampok</string>
+    <string name="monthly">Buwanang</string>
+    <string name="life_time">Habambuhay</string>
+    <string name="one_time_payment">Isang beses na pagbabayad.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Awtomatikong mag-renew buwan-buwan.\n Kanselahin anumang oras.</string>
+    <string name="popular">Sikat</string>
+    <string name="start_3_days_free_trial">Simulan ang 3 araw na libreng pagsubok</string>
+    <string name="try_free_for_3_days_then">Subukan ng libre sa loob ng 3 araw, pagkatapos</string>
+    <string name="week11">linggo</string>
+    <string name="terms_amp_conditions">Mga Tuntunin at Kundisyon</string>
+    <string name="privacy_policy">Patakaran sa privacy</string>
+</resources>

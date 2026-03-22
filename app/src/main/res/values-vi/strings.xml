@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Đang tải...</string>
+    <string name="this_action_may_be_content_ads">(Hành động này có thể là nội dung quảng cáo)</string>
+    <string name="select_your_language">Chọn ngôn ngữ của bạn</string>
+    <string name="next">Tiếp theo</string>
+    <string name="gesture">Cử chỉ</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Sử dụng cử chỉ trên thanh trạng thái cho các hành động tùy chỉnh</string>
+    <string name="single_tap_action">Hành động một lần chạm</string>
+    <string name="swipe_up_to_down">Vuốt từ trên xuống dưới</string>
+    <string name="swipe_left_to_right_action">Vuốt hành động từ trái sang phải</string>
+    <string name="swipe_right_to_left_action">Vuốt hành động từ phải sang trái</string>
+    <string name="long_press_action">Hành động nhấn và giữ</string>
+    <string name="vibrate_feedback">Rung phản hồi</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Rung phản hồi khi tương tác với thanh trạng thái</string>
+    <string name="select_action">Chọn hành động</string>
+    <string name="apply">Áp dụng</string>
+    <string name="open_app">Mở ứng dụng</string>
+    <string name="do_nothing">Không làm gì cả</string>
+    <string name="action_button_back">Thao tác quay lại</string>
+    <string name="action_button_home">Hành động tại nhà</string>
+    <string name="recent_apps_button">Hành động gần đây</string>
+    <string name="action_opens_notification_center">Trung tâm thông báo</string>
+    <string name="open_control_center">Trung tâm điều khiển</string>
+    <string name="power_source_options">Tùy chọn nguồn điện</string>
+    <string name="screen_lock_button_action">Màn hình khóa</string>
+    <string name="screenshot_action_button">Chụp ảnh màn hình</string>
+    <string name="unlimited_library_icon_sticker">Thư viện Biểu Tượng, Nhãn Dán không giới hạn</string>
+    <string name="no_ad_experience_2">Trải nghiệm không có quảng cáo</string>
+    <string name="early_update_new_feature">Cập nhật tính năng mới sớm</string>
+    <string name="monthly">Hàng tháng</string>
+    <string name="life_time">Trọn đời</string>
+    <string name="one_time_payment">Thanh toán một lần.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Tự động gia hạn hàng tháng.\n Hủy bất cứ lúc nào.</string>
+    <string name="popular">Phổ biến</string>
+    <string name="start_3_days_free_trial">Bắt đầu dùng thử miễn phí 3 ngày</string>
+    <string name="try_free_for_3_days_then">Dùng thử miễn phí 3 ngày, sau đó</string>
+    <string name="week11">tuần</string>
+    <string name="terms_amp_conditions">Điều khoản &amp; Điều kiện</string>
+    <string name="privacy_policy">Chính sách quyền riêng tư</string>
+</resources>

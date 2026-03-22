@@ -190,7 +190,7 @@ internal fun BatteryTrollScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "Battery Troll",
+                        stringResource(R.string.battery_troll_title),
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.titleLarge,
                     )
@@ -199,7 +199,7 @@ internal fun BatteryTrollScreen(
                     IconButton(onClick = onBack) {
                         Image(
                             painter = painterResource(R.drawable.ic_back_40_new),
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.cd_back),
                             modifier = Modifier.size(40.dp),
                         )
                     }
@@ -242,7 +242,7 @@ internal fun BatteryTrollScreen(
                         modifier = Modifier.size(32.dp),
                     )
                     Text(
-                        "Pick a fake battery label and apply the overlay when accessibility is enabled.",
+                        stringResource(R.string.battery_troll_intro),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium,
                     )
@@ -268,7 +268,7 @@ internal fun BatteryTrollScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "Troll templates",
+                            stringResource(R.string.battery_troll_templates),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
@@ -279,7 +279,7 @@ internal fun BatteryTrollScreen(
                             modifier = Modifier.clickable(onClick = onOpenTutorial),
                         ) {
                             Text(
-                                "Tutorial",
+                                stringResource(R.string.tutorial),
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleSmall,
@@ -301,7 +301,7 @@ internal fun BatteryTrollScreen(
                                 modifier = Modifier.size(120.dp),
                             )
                             Text(
-                                "Loading…",
+                                stringResource(R.string.common_loading_ellipsis),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleLarge,
@@ -343,7 +343,7 @@ internal fun BatteryTrollScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Text(
-                        "Customize",
+                        stringResource(R.string.common_customize),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
@@ -363,13 +363,13 @@ internal fun BatteryTrollScreen(
                     SettingToggle("Auto drop animation", uiState.trollAutoDrop, onToggleAutoDrop)
                     HorizontalDivider(thickness = 1.dp, color = Color.Black)
                     Text(
-                        "Fake label preview",
+                        stringResource(R.string.battery_troll_fake_preview_label),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
-                        "Fake ${uiState.trollMessage}",
+                        stringResource(R.string.battery_troll_fake_message_format, uiState.trollMessage),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
@@ -399,7 +399,7 @@ internal fun BatteryTrollScreen(
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
-                                    "Turn Off",
+                                    stringResource(R.string.common_turn_off),
                                     color = MaterialTheme.colorScheme.secondary,
                                     fontWeight = FontWeight.SemiBold,
                                     style = MaterialTheme.typography.titleLarge,
@@ -418,7 +418,7 @@ internal fun BatteryTrollScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                "Save",
+                                stringResource(R.string.common_save),
                                 color = Color.White,
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleLarge,
@@ -483,13 +483,17 @@ internal fun BatteryTrollPreviewCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                "Battery Troll preview",
+                stringResource(R.string.battery_troll_preview_card_title),
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleSmall,
             )
             Text(
-                if (overlayEnabled) "Overlay active" else "Overlay inactive",
+                if (overlayEnabled) {
+                    stringResource(R.string.overlay_active)
+                } else {
+                    stringResource(R.string.overlay_inactive)
+                },
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -512,7 +516,7 @@ internal fun BatteryTrollPreviewCard(
                             .height(56.dp),
                     )
                     Text(
-                        text = "Fake $trollMessage",
+                        text = stringResource(R.string.battery_troll_fake_message_format, trollMessage),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,

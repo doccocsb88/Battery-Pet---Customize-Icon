@@ -194,12 +194,12 @@ internal fun StatusBarCustomScreen(
                 IconButton(onClick = onBack) {
                     Image(
                         painter = painterResource(R.drawable.ic_back_40_new),
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.cd_back),
                         modifier = Modifier.size(40.dp),
                     )
                 }
                 Text(
-                    "Status Bar Custom",
+                    stringResource(R.string.status_bar_custom_title),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.weight(1f),
@@ -213,22 +213,22 @@ internal fun StatusBarCustomScreen(
             )
             Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface) {
                 Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    StatusSliderRow("Status bar height", config.statusBarHeight, onSetStatusBarHeight)
-                    StatusSliderRow("Status bar left margin", config.leftMargin, onSetLeftMargin)
-                    StatusSliderRow("Status bar right margin", config.rightMargin, onSetRightMargin)
+                    StatusSliderRow(stringResource(R.string.status_bar_height), config.statusBarHeight, onSetStatusBarHeight)
+                    StatusSliderRow(stringResource(R.string.status_bar_left_margin), config.leftMargin, onSetLeftMargin)
+                    StatusSliderRow(stringResource(R.string.status_bar_right_margin), config.rightMargin, onSetRightMargin)
                 }
             }
             Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface) {
                 Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    StatusColorRow("Status bar icon color", Color(config.accentColor))
-                    StatusColorRow("Status bar background color", Color(config.backgroundColor))
+                    StatusColorRow(stringResource(R.string.status_bar_icon_color), Color(config.accentColor))
+                    StatusColorRow(stringResource(R.string.status_bar_background_color), Color(config.backgroundColor))
                 }
             }
             Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface, onClick = { onSelectTab(StatusBarTab.Theme) }) {
                 StatusChevronRow("More template")
             }
             Text(
-                "Customize Icon",
+                stringResource(R.string.customize_icon_heading),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleLarge,
             )
@@ -283,20 +283,20 @@ internal fun StatusBarCustomScreen(
                 )
                 StatusBarTab.Settings -> Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface) {
                     Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                        StatusSwitchRow("Show percentage", config.showPercentage, onTogglePercentage)
-                        StatusSwitchRow("Animate charge", config.animateCharge, onToggleAnimate)
-                        StatusSwitchRow("Show stroke", config.showStroke, onToggleStroke)
-                        StatusSliderRow("Battery text size", config.batteryPercentScale, onSetBatteryScale)
-                        StatusSliderRow("Emoji size", config.emojiScale, onSetEmojiScale)
+                        StatusSwitchRow(stringResource(R.string.show_percentage), config.showPercentage, onTogglePercentage)
+                        StatusSwitchRow(stringResource(R.string.animate_charge), config.animateCharge, onToggleAnimate)
+                        StatusSwitchRow(stringResource(R.string.show_stroke), config.showStroke, onToggleStroke)
+                        StatusSliderRow(stringResource(R.string.battery_text_size), config.batteryPercentScale, onSetBatteryScale)
+                        StatusSliderRow(stringResource(R.string.emoji_size_label), config.emojiScale, onSetEmojiScale)
                     }
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = onRestore, modifier = Modifier.weight(1f)) {
-                    Text("Restore Applied")
+                    Text(stringResource(R.string.restore_applied))
                 }
                 Button(onClick = onApply, modifier = Modifier.weight(1f)) {
-                    Text("Apply")
+                    Text(stringResource(R.string.apply))
                 }
             }
         }
@@ -314,10 +314,13 @@ internal fun LegacyBatteryScreen(
     onApply: () -> Unit,
 ) {
     val config = uiState.editingConfig
-    ScreenContainer(title = "Legacy Battery Flow", subtitle = "Port of the older `BatteryFragment` path that separately chooses battery body and emoji.") {
+    ScreenContainer(
+        title = stringResource(R.string.legacy_battery_flow_title),
+        subtitle = stringResource(R.string.legacy_battery_flow_subtitle),
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             BatteryPreviewCard(uiState = uiState)
-            Text("Battery body", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.label_battery_body), style = MaterialTheme.typography.titleMedium)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(SampleCatalog.batteryPresets) { preset ->
                     ChoiceChip(
@@ -327,7 +330,7 @@ internal fun LegacyBatteryScreen(
                     )
                 }
             }
-            Text("Emoji", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.label_emoji), style = MaterialTheme.typography.titleMedium)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(SampleCatalog.emojiPresets) { preset ->
                     ChoiceChip(
@@ -337,11 +340,11 @@ internal fun LegacyBatteryScreen(
                     )
                 }
             }
-            SliderField("Battery percentage size", config.batteryPercentScale, 0.3f..1f, onSetBatteryScale)
-            SliderField("Emoji size", config.emojiScale, 0.3f..1f, onSetEmojiScale)
+            SliderField(stringResource(R.string.slider_battery_percentage_size), config.batteryPercentScale, 0.3f..1f, onSetBatteryScale)
+            SliderField(stringResource(R.string.slider_emoji_size), config.emojiScale, 0.3f..1f, onSetEmojiScale)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text("Back") }
-                Button(onClick = onApply, modifier = Modifier.weight(1f)) { Text("Apply Legacy Flow") }
+                OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.onboarding_back)) }
+                Button(onClick = onApply, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.apply_legacy_flow)) }
             }
         }
     }
@@ -391,7 +394,11 @@ internal fun StatusSliderRow(
                 onValueChange = onValueChange,
                 modifier = Modifier.weight(1f),
             )
-            Text("${(value * 100).toInt()}", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
+            Text(
+                stringResource(R.string.slider_value_integer, (value * 100).toInt()),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall,
+            )
         }
     }
 }
@@ -524,7 +531,7 @@ internal fun BatteryPreviewCard(
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Text("Live Preview", fontWeight = FontWeight.SemiBold, color = Color(config.accentColor))
+            Text(stringResource(R.string.live_preview), fontWeight = FontWeight.SemiBold, color = Color(config.accentColor))
             Surface(
                 shape = RoundedCornerShape(22.dp),
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.55f),
@@ -541,15 +548,15 @@ internal fun BatteryPreviewCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column {
-                            Text("12:45", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.demo_time), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Text(
-                                "Fri, Mar 20",
+                                stringResource(R.string.demo_date),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.labelMedium,
                             )
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text("WIFI", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.demo_wifi), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("▰▰▰▱", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text(
                                 "${battery.body} ${if (config.showPercentage) "56%" else ""}".trim(),
@@ -564,7 +571,11 @@ internal fun BatteryPreviewCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            if (uiState.accessibilityGranted) "Accessibility bridge active" else "Accessibility bridge required for apply",
+                            if (uiState.accessibilityGranted) {
+                                stringResource(R.string.accessibility_bridge_active_short)
+                            } else {
+                                stringResource(R.string.accessibility_bridge_required_short)
+                            },
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall,
                         )

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_dot">Memuat...</string>
+    <string name="this_action_may_be_content_ads">(Tindakan ini mungkin berisi Iklan)</string>
+    <string name="select_your_language">Pilih bahasa Anda</string>
+    <string name="next">Selanjutnya</string>
+    <string name="gesture">Gerakan</string>
+    <string name="use_gestures_in_the_status_bar_for_custom_actions">Gunakan isyarat di bilah status untuk tindakan khusus</string>
+    <string name="single_tap_action">Tindakan -ketuk tunggal</string>
+    <string name="swipe_up_to_down">Geser dari atas ke bawah</string>
+    <string name="swipe_left_to_right_action">Geser tindakan dari kiri ke kanan</string>
+    <string name="swipe_right_to_left_action">Geser tindakan dari kanan ke kiri</string>
+    <string name="long_press_action">Tindakan tekan lama</string>
+    <string name="vibrate_feedback">Umpan balik getar</string>
+    <string name="vibrate_feedback_when_interacting_with_the_status_bar">Getarkan umpan balik saat berinteraksi dengan bilah status</string>
+    <string name="select_action">Pilih Tindakan</string>
+    <string name="apply">Lamar</string>
+    <string name="open_app">Buka Aplikasi</string>
+    <string name="do_nothing">Jangan melakukan apa pun</string>
+    <string name="action_button_back">Aksi Kembali</string>
+    <string name="action_button_home">Aksi Rumah</string>
+    <string name="recent_apps_button">Aksi Terbaru</string>
+    <string name="action_opens_notification_center">Pusat notifikasi</string>
+    <string name="open_control_center">Pusat kendali</string>
+    <string name="power_source_options">Opsi sumber daya</string>
+    <string name="screen_lock_button_action">Kunci Layar</string>
+    <string name="screenshot_action_button">Ambil Tangkapan Layar</string>
+    <string name="unlimited_library_icon_sticker">Perpustakaan Ikon, Stiker tanpa batas</string>
+    <string name="no_ad_experience_2">Pengalaman Tanpa Iklan</string>
+    <string name="early_update_new_feature">Pembaruan fitur baru lebih awal</string>
+    <string name="monthly">Bulanan</string>
+    <string name="life_time">Seumur Hidup</string>
+    <string name="one_time_payment">Pembayaran satu kali.</string>
+    <string name="auto_renew_monthly_n_cancel_anytime">Perpanjangan otomatis bulanan.\n Batalkan kapan saja.</string>
+    <string name="popular">Populer</string>
+    <string name="start_3_days_free_trial">Mulai uji coba gratis 3 hari</string>
+    <string name="try_free_for_3_days_then">Coba gratis selama 3 hari, lalu</string>
+    <string name="week11">minggu</string>
+    <string name="terms_amp_conditions">Syarat &amp; Ketentuan</string>
+    <string name="privacy_policy">Kebijakan privasi</string>
+</resources>
