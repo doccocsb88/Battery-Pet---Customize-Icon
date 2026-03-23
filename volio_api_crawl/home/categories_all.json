@@ -1,0 +1,229 @@
+{
+  "message": "success",
+  "data": [
+    {
+      "id": "09197190-2899-4035-802f-766a8bfa3273",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 4,
+      "name": "🔥 HOT",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749453946_Heart3D_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749453946_Heart3D_06.png",
+      "status": true
+    },
+    {
+      "id": "701a7eb1-bea4-4865-9e77-388f8b6161fa",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 5,
+      "name": "Sanrio",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469096_Sanrio_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469096_Sanrio_13.png",
+      "status": true
+    },
+    {
+      "id": "224434da-74fc-4156-8741-296c1da4434d",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 6,
+      "name": "Avatar",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-13/1768287200_Battery_Icon_Avatar_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-13/1768287200_Battery_Icon_Avatar_10.png",
+      "status": true,
+      "old_id": 110
+    },
+    {
+      "id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 7,
+      "name": "Zootopia",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773882_Battery_Icon_Zootopia_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773882_Battery_Icon_Zootopia_06.png",
+      "status": true,
+      "old_id": 73
+    },
+    {
+      "id": "52826fbd-9f8a-4bb9-8db9-e4031eb056bb",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 8,
+      "name": "Shin-chan",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-25/1764066866_Sticker_Shinnosuke_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-25/1764066866_Sticker_Shinnosuke_29.png",
+      "status": true
+    },
+    {
+      "id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 9,
+      "name": "Anime",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131961_BatteryIcon_Anime_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131961_BatteryIcon_Anime_04.png",
+      "status": true
+    },
+    {
+      "id": "32d680b7-e2de-4d0d-bcd9-7e6610667115",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 10,
+      "name": "Cartoon",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470152_BatteryIcon_Cartoon_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470152_BatteryIcon_Cartoon_05.png",
+      "status": true
+    },
+    {
+      "id": "fd34c543-6301-4293-99d5-e7f42180da3d",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 11,
+      "name": "Demon Slayer",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-17/1758108920_Emoji_Cartoon_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-17/1758108920_Emoji_Cartoon_08.png",
+      "status": true
+    },
+    {
+      "id": "2f5fb2ed-dc67-4a91-9527-d9825596db59",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 12,
+      "name": "Huntrix",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759286301_Battery_Icon_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759286301_Battery_Icon_16.png",
+      "status": true
+    },
+    {
+      "id": "25564f24-07bc-4a68-aaa7-d3643e7013e4",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 13,
+      "name": "Lunar New Year 2026",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-13/1768287423_Battery_Icon_LNY_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-13/1768287423_Battery_Icon_LNY_30.png",
+      "status": true,
+      "old_id": 111
+    },
+    {
+      "id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 14,
+      "name": "Animal",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764907539_emojibattery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764907539_emojibattery_09.png",
+      "status": true
+    },
+    {
+      "id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 15,
+      "name": "Christmas",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-02/1764671658_Battery_Icon_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-02/1764671658_Battery_Icon_06.png",
+      "status": true
+    },
+    {
+      "id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 27,
+      "name": "K-Pop",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130749_battery_25.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130749_battery_25.png",
+      "status": true
+    },
+    {
+      "id": "08d01cfc-6648-4204-9005-14a8e022ca64",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 28,
+      "name": "Heart",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133424_BatteryIcon_Heart_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133424_BatteryIcon_Heart_20.png",
+      "status": true
+    },
+    {
+      "id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 30,
+      "name": "Actor",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883795_battery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883795_battery_09.png",
+      "status": true
+    },
+    {
+      "id": "e2e2b933-447f-414b-b7cc-19b40a20a53b",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 31,
+      "name": "Flower",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749468810_Flowers_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468810_Flowers_09.png",
+      "status": true
+    },
+    {
+      "id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 33,
+      "name": "Nature",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134589_BatteryIcon_Nature_21.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134589_BatteryIcon_Nature_21.png",
+      "status": true
+    },
+    {
+      "id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 34,
+      "name": "Fruit",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133913_BatteryIcon_Fruit_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133913_BatteryIcon_Fruit_13.png",
+      "status": true
+    },
+    {
+      "id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 35,
+      "name": "Food",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469580_Food_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469580_Food_09.png",
+      "status": true
+    },
+    {
+      "id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 37,
+      "name": "Halloween ",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759286001_Battery_Icon_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759286001_Battery_Icon_06.png",
+      "status": true
+    },
+    {
+      "id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 38,
+      "name": "Brainrot",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749453980_Rainrot_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749453980_Rainrot_02.png",
+      "status": true
+    },
+    {
+      "id": "eda6c9ca-4b1e-499b-90ea-919241996945",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "26bf9d75-7fd5-438d-81b0-b901f5ba2cd5",
+      "priority": 48,
+      "name": "Thanksgiving",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-07/1762509070_Battery_Icon_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-07/1762509070_Battery_Icon_03.png",
+      "status": true
+    }
+  ],
+  "status": 200
+}

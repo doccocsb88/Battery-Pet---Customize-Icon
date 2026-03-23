@@ -1,0 +1,1177 @@
+{
+  "data": [
+    {
+      "id": "db23e1df-34ef-40e0-9bd4-6deb1148376c",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 1,
+      "name": "Emoji Battery Cartoon_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-12/1739327485_EmojiBatteryCartoon_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739327485_EmojiBatteryCartoon_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739327527_BatteryCartoon_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739327531_EmojiCartoon_01.png",
+        "slug_search": "sanrio, cinnamoroll, anime"
+      }
+    },
+    {
+      "id": "24795335-1dff-4eb4-8ab3-925832745d32",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 2,
+      "name": "BatteryIcon_Anime_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_01.png",
+        "slug_search": "anime,girl,"
+      }
+    },
+    {
+      "id": "11c4fe03-3bd1-4e78-8d77-54492c402b99",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 3,
+      "name": "battery_cartoon_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-28/1740728677_battery_cartoon_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740728677_battery_cartoon_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729064_bettry_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729126_Emoji_Cartoon_03.png",
+        "slug_search": "Crayon Shin-chan, Shin chan, shinnosuke"
+      }
+    },
+    {
+      "id": "9e0a17d2-f387-4f56-a204-106169c39ae6",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 6,
+      "name": "Sanrio_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751599216_Sanrio_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599216_Sanrio_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599327_Sanrio_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599296_Sanrio_03.png",
+        "slug_search": "anime,sanrio,keroppi"
+      }
+    },
+    {
+      "id": "bd6a4979-749e-492b-b5bb-47563651fdb5",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 7,
+      "name": "BatteryIcon_Cartoon_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470011_BatteryIcon_Cartoon_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470011_BatteryIcon_Cartoon_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470109_Battery_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470079_Icon_05.png",
+        "slug_search": "cartoon, stitch, cute"
+      }
+    },
+    {
+      "id": "3b87f9b9-be41-4f73-babd-5f8363840fe5",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 8,
+      "name": "Emoji Battery Sticker3D_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-03-03/1740989496_EmojiBatterySticker3D_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-03-03/1740989496_EmojiBatterySticker3D_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-03-03/1740989533_BatterySticker3D_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-03-03/1740989562_EmojiSticker3D_02.png",
+        "slug_search": "sanrio, anime, Pompompurin, 3D, cute"
+      }
+    },
+    {
+      "id": "937f0cce-8cb7-4217-a515-2c44deb042b3",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 9,
+      "name": "Sanrio_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751599216_Sanrio_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599216_Sanrio_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599327_Sanrio_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599296_Sanrio_13.png",
+        "slug_search": "Pochacco,animal,sanrio,dog"
+      }
+    },
+    {
+      "id": "fb20d586-3909-40d4-8b19-dd12191c37d1",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 10,
+      "name": "Emoji Battery Cartoon_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-12/1739328230_EmojiBatteryCartoon_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328230_EmojiBatteryCartoon_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328282_BatteryCartoon_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328288_EmojiCartoon_03.png",
+        "slug_search": "Crayon Shin-chan, Shin chan, shinnosuke"
+      }
+    },
+    {
+      "id": "129e99a3-cab9-4553-a199-e55181e9749b",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 11,
+      "name": "BatteryIcon_Nature_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_05.png",
+        "slug_search": "nature, flower"
+      }
+    },
+    {
+      "id": "4030d3b0-4295-4e56-be35-c192a4e91644",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 12,
+      "name": "BatteryIcon_Anime_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_05.png",
+        "slug_search": "Frieren, anime, girl, elf"
+      }
+    },
+    {
+      "id": "29611a16-2087-4cab-becd-38353dbbc7a6",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 13,
+      "name": "BatteryIcon_Cartoon_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470011_BatteryIcon_Cartoon_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470011_BatteryIcon_Cartoon_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470109_Battery_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470079_Icon_06.png",
+        "slug_search": "cartoon, stitch "
+      }
+    },
+    {
+      "id": "175d5df3-064f-4f1b-acd4-483b09e88c32",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 15,
+      "name": "Flowers_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749468671_Flowers_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468671_Flowers_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468780_Flowers_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468740_Flowers_09.png",
+        "slug_search": "flower, pink, tulip"
+      }
+    },
+    {
+      "id": "7b5172f8-727d-4c98-a69e-974a1a2b7069",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 16,
+      "name": "BatteryIcon_Nature_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134385_Icon_Nature_08.png",
+        "slug_search": "nature, beach"
+      }
+    },
+    {
+      "id": "74f3f237-2f97-42a7-96aa-9352f2127c81",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 17,
+      "name": "Emoji Battery Brainrot_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746605073_EmojiBatteryBrainrot_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746605073_EmojiBatteryBrainrot_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746605182_Battery_Brainrot_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746605190_Emoji_Brainrot_04.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "9b08fb1f-973b-4586-85cd-54a4ebccab49",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 18,
+      "name": "battery_cartoon_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-28/1740728677_battery_cartoon_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740728677_battery_cartoon_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729064_bettry_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729126_Emoji_Cartoon_15.png",
+        "slug_search": "Crayon Shin-chan, Shin chan, shinnosuke"
+      }
+    },
+    {
+      "id": "71effacd-e1d5-4fc8-a3a6-8f17f5d3dcb2",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 19,
+      "name": "BatteryIconFlower_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749091749_BatteryIconFlower_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091749_BatteryIconFlower_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-06/1749176505_BatteryFlower_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-06/1749176501_IconFlower_06.png",
+        "slug_search": "flower, pink"
+      }
+    },
+    {
+      "id": "691d270e-9179-44e8-9edb-343b007723d6",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 20,
+      "name": "BatteryIcon_Nature_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134339_BatteryIcon_Nature_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134339_BatteryIcon_Nature_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_10.png",
+        "slug_search": "nature,winter"
+      }
+    },
+    {
+      "id": "b59a529f-76fa-4fd6-b897-4af122eb8e59",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 21,
+      "name": "BatteryIcon_Anime_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131801_BatteryIcon_Anime_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131801_BatteryIcon_Anime_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_12.png",
+        "slug_search": "anime,girl,chibi"
+      }
+    },
+    {
+      "id": "08da6203-72bf-42e2-aa31-7efda423b86e",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 22,
+      "name": "BatteryIconFlower_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749091749_BatteryIconFlower_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091749_BatteryIconFlower_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-06/1749176539_BatteryFlower_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-06/1749176536_IconFlower_09.png",
+        "slug_search": "flower, red"
+      }
+    },
+    {
+      "id": "9c471023-fd2f-4479-b81c-e2adb64f9ed4",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 23,
+      "name": "Flowers_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749468671_Flowers_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468671_Flowers_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468780_Flowers_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468740_Flowers_18.png",
+        "slug_search": "flower, pink"
+      }
+    },
+    {
+      "id": "8e68d386-ea89-4055-a93c-328a26df2f1e",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 24,
+      "name": "BatteryIcon_Anime_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_13.png",
+        "slug_search": "anime,naruto"
+      }
+    },
+    {
+      "id": "c346ce8d-67fa-44ff-ad65-0a5d5f86a03d",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 25,
+      "name": "BatteryIcon_Anime_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_14.png",
+        "slug_search": "anime,The Apothecary Diaries,maomao"
+      }
+    },
+    {
+      "id": "c97b4f5e-e3fa-4861-8783-0cbb0655c0bb",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 26,
+      "name": "BatteryIconFlower_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749091749_BatteryIconFlower_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091749_BatteryIconFlower_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091815_BatteryFlower_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091783_IconFlower_16.png",
+        "slug_search": "flower, yellow"
+      }
+    },
+    {
+      "id": "070818ed-6763-47b0-bcad-b50d74651f76",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 27,
+      "name": "Flowers_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749468671_Flowers_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468671_Flowers_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468780_Flowers_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468740_Flowers_01.png",
+        "slug_search": "flower, cute, tulip, yellow"
+      }
+    },
+    {
+      "id": "768a54bf-7171-4204-8f77-4ac127f68caa",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 28,
+      "name": "BatteryIcon_Nature_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_16.png",
+        "slug_search": "nature, winter"
+      }
+    },
+    {
+      "id": "9c237b0d-9b45-4e7f-8c13-b24733b2d6c8",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 29,
+      "name": "Sanrio_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751599216_Sanrio_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599216_Sanrio_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599327_Sanrio_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599296_Sanrio_15.png",
+        "slug_search": "anime,sanrio,melody,my melody"
+      }
+    },
+    {
+      "id": "c38140c5-1d44-4347-a4bf-b6a991da9536",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 30,
+      "name": "Flowers_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749468671_Flowers_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468671_Flowers_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468780_Flowers_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749468740_Flowers_19.png",
+        "slug_search": "flower, orange"
+      }
+    },
+    {
+      "id": "2bedf956-3e55-4447-aafa-40c2d35e9188",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 31,
+      "name": "battery_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470788_battery_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470788_battery_23.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470880_bettry_23.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470825_Emoji_23.png",
+        "slug_search": "cute, chibi, girl"
+      }
+    },
+    {
+      "id": "a5646453-5850-48c9-b34e-27e1f26e92e4",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 32,
+      "name": "battery_26",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470788_battery_26.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470788_battery_26.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470880_bettry_26.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470825_Emoji_26.png",
+        "slug_search": "heart, pink"
+      }
+    },
+    {
+      "id": "f7ca8d56-2220-411e-9dfb-15c284ae745e",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 33,
+      "name": "BatteryIcon_Cartoon_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470011_BatteryIcon_Cartoon_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470011_BatteryIcon_Cartoon_23.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470109_Battery_23.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470079_Icon_23.png",
+        "slug_search": "cartoon"
+      }
+    },
+    {
+      "id": "93a3e70b-caa2-4fd4-9bd6-7f6b30d63c60",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 34,
+      "name": "BatteryIcon_Anime_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_23.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_22.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_22.png",
+        "slug_search": "one piece, Zoro, anime"
+      }
+    },
+    {
+      "id": "ee1eac63-8b03-4e58-a2cf-01bc317b0b9e",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 35,
+      "name": "Sanrio_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751599216_Sanrio_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599216_Sanrio_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599327_Sanrio_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751599296_Sanrio_20.png",
+        "slug_search": "anime,sanrio,cinnamoroll,blue, cute"
+      }
+    },
+    {
+      "id": "f709f217-cf9d-4645-8beb-dc9e58391b11",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 36,
+      "name": "battery_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600566_battery_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600566_battery_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600741_bettry_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600640_Emoji_01.png",
+        "slug_search": "anime,sanrio,kuromi, pink"
+      }
+    },
+    {
+      "id": "e449dd42-e278-48e7-ae83-2781c703807d",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 37,
+      "name": "battery_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470788_battery_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470788_battery_29.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470880_bettry_29.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470830_Emoji_29.png",
+        "slug_search": "heart, pink"
+      }
+    },
+    {
+      "id": "736cbff5-b8b9-4b18-b9e2-ceba6e95c8cd",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 38,
+      "name": "BatteryIcon_Anime_25",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_25.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_25.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_24.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_24.png",
+        "slug_search": "demon slayer, Nezuko,anime"
+      }
+    },
+    {
+      "id": "36d6f186-94e9-4189-bc00-7f121c5a8499",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 39,
+      "name": "BatteryIcon_Nature_24",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_24.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_24.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_24.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_24.png",
+        "slug_search": "nature, sunrise"
+      }
+    },
+    {
+      "id": "eb094108-22cc-4719-8ba3-188add76bfcb",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 40,
+      "name": "battery_32",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470788_battery_32.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470788_battery_32.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470885_bettry_32.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470825_Emoji_32.png",
+        "slug_search": "heart, pink"
+      }
+    },
+    {
+      "id": "9b24ab4a-8212-41de-8364-5374b7a59f30",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 41,
+      "name": "battery_33",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470788_battery_33.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470788_battery_33.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470880_bettry_33.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470825_Emoji_33.png",
+        "slug_search": "heart, love, pink"
+      }
+    },
+    {
+      "id": "f75cfd69-f4dd-4789-9a0f-fe7b1a28ee7d",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 42,
+      "name": "battery_34",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749470788_battery_34.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470788_battery_34.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470880_bettry_34.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749470830_Emoji_34.png",
+        "slug_search": "heart"
+      }
+    },
+    {
+      "id": "2763fb69-7142-4b4e-8cc9-9a2766950c06",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 43,
+      "name": "battery_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600565_battery_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600565_battery_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600741_bettry_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600640_Emoji_06.png",
+        "slug_search": ""
+      }
+    },
+    {
+      "id": "e5883b2f-4dc2-4789-b9fa-422f6c19d0b3",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 44,
+      "name": "BatteryIcon_Anime_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_30.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_29.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_29.png",
+        "slug_search": "gojo, Jujutsu Kaisen,anime"
+      }
+    },
+    {
+      "id": "5dc0c2c4-dfec-4aaa-95f1-3e38ea168c59",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 45,
+      "name": "BatteryIcon_Nature_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_30.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_30.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_30.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "6d5042a1-fb1a-4187-9091-ef20ebc0344a",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 46,
+      "name": "battery_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548941_bettry_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_03.png",
+        "slug_search": "cartoon, bear"
+      }
+    },
+    {
+      "id": "98ab226f-bafe-4dae-bcbf-1157b9227b7e",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 47,
+      "name": "battery_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600565_battery_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600565_battery_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600741_bettry_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600641_Emoji_10.png",
+        "slug_search": "anime,sanrio,melody,pink"
+      }
+    },
+    {
+      "id": "1c2a7611-fdbb-4cac-91f3-7d3fb407c10a",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 48,
+      "name": "battery_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600565_battery_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600565_battery_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600741_bettry_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600641_Emoji_11.png",
+        "slug_search": "Sanrio, hello kitty, cat"
+      }
+    },
+    {
+      "id": "c2de2b0e-d200-4688-a0da-5c950c15efe9",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 49,
+      "name": "BatteryIconFlower_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749091749_BatteryIconFlower_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091749_BatteryIconFlower_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091815_BatteryFlower_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091783_IconFlower_02.png",
+        "slug_search": "flower, cute"
+      }
+    },
+    {
+      "id": "e3e45e41-76f5-4409-a8bf-66233b3c8466",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 50,
+      "name": "battery_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548941_bettry_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_07.png",
+        "slug_search": "cartoon"
+      }
+    },
+    {
+      "id": "e5196c2c-56c9-4be0-8343-d156706acea8",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 51,
+      "name": "battery_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548941_bettry_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_19.png",
+        "slug_search": "pikachu,pokemon, movie"
+      }
+    },
+    {
+      "id": "3189ea7b-858f-434a-a40a-8e9944f0a8aa",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 51,
+      "name": "battery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548951_bettry_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_09.png",
+        "slug_search": "cartoon"
+      }
+    },
+    {
+      "id": "f0a56ff1-e855-4b25-a40f-2a863e801721",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 52,
+      "name": "battery_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548946_bettry_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_20.png",
+        "slug_search": "cartoon"
+      }
+    },
+    {
+      "id": "4a68abe5-dc90-43ae-8537-18350e8735ba",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 54,
+      "name": "battery_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600565_battery_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600565_battery_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600741_bettry_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600641_Emoji_18.png",
+        "slug_search": "anime,sanrio,gudetama,egg"
+      }
+    },
+    {
+      "id": "c7496df3-8f12-4ee8-bdf3-ec1e1d97715a",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 55,
+      "name": "Emoji Battery Brainrot_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746605073_EmojiBatteryBrainrot_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746605073_EmojiBatteryBrainrot_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746605150_Battery_Brainrot_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746605167_Emoji_Brainrot_03.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "f09588d4-7afa-4600-a293-dd5f3b6b824f",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 56,
+      "name": "BatteryIconFlower_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749091749_BatteryIconFlower_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091749_BatteryIconFlower_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091815_BatteryFlower_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749091783_IconFlower_01.png",
+        "slug_search": "flower, yellow"
+      }
+    },
+    {
+      "id": "68898592-ffb7-4227-9084-a4d8a4926e13",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 57,
+      "name": "battery_26",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_26.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_26.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548941_bettry_26.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_26.png",
+        "slug_search": "doraemon,doremon,cat"
+      }
+    },
+    {
+      "id": "0f7267f9-bd03-4870-99fd-99156d223f1f",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 58,
+      "name": "battery_27",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_27.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_27.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548941_bettry_27.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_27.png",
+        "slug_search": "cartoon"
+      }
+    },
+    {
+      "id": "2f6cec65-c2f8-4179-b888-d023c1f9c58c",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 59,
+      "name": "battery_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-10/1749548749_battery_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548749_battery_30.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548941_bettry_30.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-10/1749548789_Emoji_30.png",
+        "slug_search": "anime, conan,chibi"
+      }
+    },
+    {
+      "id": "ca94d4d9-acbc-4f06-ac64-41b14d2893c0",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 60,
+      "name": "Battery_Icon_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882161_Battery_Icon_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882161_Battery_Icon_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882435_Battery_Cartoon_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882288_Emoji_Cartoon_13.png",
+        "slug_search": "anime,demonslayer,zenitsu"
+      }
+    },
+    {
+      "id": "91bed7ce-ca43-42fa-82e0-c9124a5ed1ea",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 61,
+      "name": "Battery_Icon_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882161_Battery_Icon_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882161_Battery_Icon_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882435_Battery_Cartoon_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882288_Emoji_Cartoon_15.png",
+        "slug_search": "cartoon"
+      }
+    },
+    {
+      "id": "c5b01f85-4070-4b2f-99f0-5925893102d6",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 62,
+      "name": "Battery_Icon_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882161_Battery_Icon_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882161_Battery_Icon_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882435_Battery_Cartoon_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882288_Emoji_Cartoon_19.png",
+        "slug_search": "cartoon,minions"
+      }
+    },
+    {
+      "id": "7c7d9fd4-540d-46a8-966e-f9c14762a025",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 63,
+      "name": "Battery_Icon_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882161_Battery_Icon_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882161_Battery_Icon_29.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882435_Battery_Cartoon_29.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882288_Emoji_Cartoon_29.png",
+        "slug_search": "Tom and Jerry, Nibbles, cartoon"
+      }
+    },
+    {
+      "id": "267d6138-091a-4ad2-8dd3-3c097453b420",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 64,
+      "name": "Battery_Icon_26",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882161_Battery_Icon_26.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882161_Battery_Icon_26.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882436_Battery_Cartoon_26.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882288_Emoji_Cartoon_26.png",
+        "slug_search": "cartoon,Mr Bean, Bear"
+      }
+    },
+    {
+      "id": "1d6f1c39-47a4-46c6-a7c5-988fa7a4d8d1",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 65,
+      "name": "Emoji Battery Cartoon_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-12/1739327486_EmojiBatteryCartoon_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739327486_EmojiBatteryCartoon_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328157_BatteryCartoon_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328163_EmojiCartoon_14.png"
+      }
+    },
+    {
+      "id": "1434af7e-9065-412e-885e-f8d4ca4df397",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 66,
+      "name": "emoji_battery_cute_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761119_emoji_battery_cute_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761119_emoji_battery_cute_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761219_battery_cute_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761225_emoji_cute_05.png"
+      }
+    },
+    {
+      "id": "372d4769-9843-4387-9e85-5f54faff9d3d",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 67,
+      "name": "Emoji Battery Cartoon_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-12/1739328231_EmojiBatteryCartoon_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328231_EmojiBatteryCartoon_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328322_BatteryCartoon_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328327_EmojiCartoon_05.png",
+        "slug_search": "Crayon Shin-chan, Shin chan, shinnosuke"
+      }
+    },
+    {
+      "id": "df63fb62-4d6e-4e30-acde-819472fd1e7c",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 68,
+      "name": "battery_cartoon_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-28/1740728677_battery_cartoon_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740728677_battery_cartoon_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729075_bettry_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729126_Emoji_Cartoon_20.png",
+        "slug_search": "Crayon Shin-chan, Shin chan, shinnosuke"
+      }
+    },
+    {
+      "id": "1b648468-6230-433e-acd7-e1606781b8c1",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 69,
+      "name": "Emoji Battery Cartoon_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-12/1739327486_EmojiBatteryCartoon_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739327486_EmojiBatteryCartoon_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328029_BatteryCartoon_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-12/1739328035_EmojiCartoon_13.png"
+      }
+    },
+    {
+      "id": "6d3ce2c4-ca4a-4a9f-a4e2-c21b0ec4490a",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 70,
+      "name": "Emoji Battery Sticker3D_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-03-03/1740989496_EmojiBatterySticker3D_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-03-03/1740989496_EmojiBatterySticker3D_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-03-03/1740989533_BatterySticker3D_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-03-03/1740989562_EmojiSticker3D_05.png",
+        "slug_search": "Cinnamoroll, cute, sanrio, 3D, Blue"
+      }
+    },
+    {
+      "id": "2236eeb4-d422-4012-b5e2-83dcfd9a07b3",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 71,
+      "name": "battery_cartoon_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-28/1740728677_battery_cartoon_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740728677_battery_cartoon_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729064_bettry_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729126_Emoji_Cartoon_18.png",
+        "slug_search": "Shin - chan, Shinnosuke, Crayon Shin-chan"
+      }
+    },
+    {
+      "id": "39df94c9-4ee9-4b17-b9f0-dc8d925ce2d1",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 72,
+      "name": "battery_cartoon_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-28/1740728677_battery_cartoon_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740728677_battery_cartoon_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729064_bettry_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729126_Emoji_Cartoon_07.png",
+        "slug_search": "Shin - chan, Shinnosuke, Crayon Shin-chan"
+      }
+    },
+    {
+      "id": "be91d03c-0ae8-4bcb-955f-d404e3069f78",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 73,
+      "name": "battery_cartoon_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-28/1740728677_battery_cartoon_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740728677_battery_cartoon_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729064_bettry_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729126_Emoji_Cartoon_09.png",
+        "slug_search": "patrick, SpongeBob "
+      }
+    },
+    {
+      "id": "5dfd3221-1d87-4e0f-92fb-d462da106401",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 74,
+      "name": "battery_cartoon_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-02-28/1740728677_battery_cartoon_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740728677_battery_cartoon_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729064_bettry_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-02-28/1740729126_Emoji_Cartoon_13.png"
+      }
+    },
+    {
+      "id": "d14cbac6-cd46-419c-9c0e-cc2a637c1346",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 75,
+      "name": "emoji battery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-07/1736245742_emojibattery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736245742_emojibattery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736245838_Battery_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736245844_Emoji_09.png",
+        "slug_search": "hamster, cute, mouse"
+      }
+    },
+    {
+      "id": "0c3f3a0c-3aa9-42b4-a804-c6a9ad856be6",
+      "category_id": "09197190-2899-4035-802f-766a8bfa3273",
+      "priority": 76,
+      "name": "battery_cartoon_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604137_bettry_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604145_Emoji_Cartoon_07.png",
+        "slug_search": "pig, cute, pink"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 73,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

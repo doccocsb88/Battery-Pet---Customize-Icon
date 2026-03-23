@@ -1,0 +1,258 @@
+{
+  "data": [
+    {
+      "id": "ca4f596b-295d-45e0-ada0-bf77f203d425",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 1,
+      "name": "Battery_Icon_Zootopia_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4518,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_06.png"
+      }
+    },
+    {
+      "id": "94722328-20c6-43af-a99e-8494906dae6d",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 2,
+      "name": "Battery_Icon_Zootopia_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4516,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_04.png",
+        "slug_search": "Zootopia, Nick & Judy, Nick, Judy"
+      }
+    },
+    {
+      "id": "2419859c-c0d7-4d9c-9e4a-45a40047e241",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 3,
+      "name": "Battery_Icon_Zootopia_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4513,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_01.png",
+        "slug_search": "Zootopia, Nick, 2D, fox"
+      }
+    },
+    {
+      "id": "62f96137-b6cf-4ed9-881a-fea5d76d7cf3",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 4,
+      "name": "Battery_Icon_Zootopia_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4519,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_07.png"
+      }
+    },
+    {
+      "id": "d8cf5779-2255-4c3a-9ce2-5e2fd2f1a3a4",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 5,
+      "name": "Battery_Icon_Zootopia_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4514,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_02.png",
+        "slug_search": "Zootopia, Judy, Rabbit, 2D"
+      }
+    },
+    {
+      "id": "50da74b1-6909-4fa9-8e88-aa7841a1cde5",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 6,
+      "name": "Battery_Icon_Zootopia_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4517,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_05.png",
+        "slug_search": "Zootopia, Finnick, Fox"
+      }
+    },
+    {
+      "id": "03024b9d-7fdb-45db-9176-919159a25c1c",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 7,
+      "name": "Battery_Icon_Zootopia_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4515,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_03.png",
+        "slug_search": "Zootopia, Snake, 2D"
+      }
+    },
+    {
+      "id": "b98374ef-a816-4fc1-b4a6-b9c851873f68",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 8,
+      "name": "Battery_Icon_Zootopia_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4520,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_08.png"
+      }
+    },
+    {
+      "id": "7a77bef5-7bb6-44f3-b0fd-0fb286497e44",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 9,
+      "name": "Battery_Icon_Zootopia_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4521,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_09.png"
+      }
+    },
+    {
+      "id": "24d1880f-5d26-47bd-80ac-432d8729045d",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 10,
+      "name": "Battery_Icon_Zootopia_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4522,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_10.png"
+      }
+    },
+    {
+      "id": "1934171e-b404-4f4d-a084-4412535b2810",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 11,
+      "name": "Battery_Icon_Zootopia_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4523,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_11.png"
+      }
+    },
+    {
+      "id": "1c3665ce-c73b-471d-933e-400fc896b529",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 12,
+      "name": "Battery_Icon_Zootopia_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4524,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_12.png"
+      }
+    },
+    {
+      "id": "542474d7-9886-4001-ae8d-5424d02112ac",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 13,
+      "name": "Battery_Icon_Zootopia_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4525,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_13.png"
+      }
+    },
+    {
+      "id": "5ca9c131-139b-4de8-afff-5614e7b50f48",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 14,
+      "name": "Battery_Icon_Zootopia_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4526,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_14.png"
+      }
+    },
+    {
+      "id": "540dc508-4d02-4559-8ce1-cec034f7fbb5",
+      "category_id": "78daf738-4e07-4688-aea4-c7323f89e46e",
+      "priority": 15,
+      "name": "Battery_Icon_Zootopia_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2026-01-07/1767773763_Battery_Icon_Zootopia_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773763_Battery_Icon_Zootopia_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "old_id": 4527,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773828_Battery_Zootopia_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2026-01-07/1767773860_Emoji_Zootopia_15.png"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 15,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

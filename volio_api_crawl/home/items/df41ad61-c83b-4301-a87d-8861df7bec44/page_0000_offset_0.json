@@ -1,0 +1,238 @@
+{
+  "data": [
+    {
+      "id": "85c19247-f5d2-4cac-873a-cffd0176aca9",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 31,
+      "name": "Battery_Icon_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_01.png"
+      }
+    },
+    {
+      "id": "7da7caa1-79d5-4a6c-8160-1e0ffb849454",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 32,
+      "name": "Battery_Icon_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_02.png"
+      }
+    },
+    {
+      "id": "0a70e6ae-14a5-4ab6-be57-039fa37c364c",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 33,
+      "name": "Battery_Icon_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_03.png"
+      }
+    },
+    {
+      "id": "24711359-e71f-41a3-9611-b60a46730649",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 34,
+      "name": "Battery_Icon_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_04.png"
+      }
+    },
+    {
+      "id": "b9ba7cf4-a888-4f11-974a-092127a8caa9",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 35,
+      "name": "Battery_Icon_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285916_Emoji_Halloween-Huntrix_05.png"
+      }
+    },
+    {
+      "id": "b5daeced-02cc-4186-8a3e-f8f66c955060",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 36,
+      "name": "Battery_Icon_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_06.png"
+      }
+    },
+    {
+      "id": "3a7e2962-abe7-4c48-9668-6f05324d3631",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 37,
+      "name": "Battery_Icon_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285916_Emoji_Halloween-Huntrix_07.png"
+      }
+    },
+    {
+      "id": "9d4b5d1a-fe09-40fc-8bf4-a7720482792c",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 38,
+      "name": "Battery_Icon_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_08.png"
+      }
+    },
+    {
+      "id": "4509666f-4a87-49e8-956e-8ebacee1549c",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 39,
+      "name": "Battery_Icon_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285637_Battery_Icon_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285637_Battery_Icon_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_09.png"
+      }
+    },
+    {
+      "id": "a918a2d6-8e79-4011-b7c3-9f896deabdf5",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 40,
+      "name": "Battery_Icon_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_10.png"
+      }
+    },
+    {
+      "id": "89e6ba6f-5069-48ad-923d-5772586dbbbb",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 41,
+      "name": "Battery_Icon_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_11.png"
+      }
+    },
+    {
+      "id": "ddc08a58-f7a1-412e-8e97-93c1b2c94608",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 42,
+      "name": "Battery_Icon_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_12.png"
+      }
+    },
+    {
+      "id": "b2d2af36-fcc7-46f0-a02a-58cdadda24dc",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 43,
+      "name": "Battery_Icon_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_13.png"
+      }
+    },
+    {
+      "id": "9f1d327c-2a96-4d88-8ca1-3e7f92b3ac52",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 44,
+      "name": "Battery_Icon_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285642_Battery_Icon_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285642_Battery_Icon_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285911_Emoji_Halloween-Huntrix_14.png"
+      }
+    },
+    {
+      "id": "2a5170b3-5df9-4bd5-ad57-c014f3f60151",
+      "category_id": "df41ad61-c83b-4301-a87d-8861df7bec44",
+      "priority": 45,
+      "name": "Battery_Icon_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-01/1759285632_Battery_Icon_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285632_Battery_Icon_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285939_Battery_Halloween-Huntrix_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-10-01/1759285916_Emoji_Halloween-Huntrix_15.png"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 15,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

@@ -1,0 +1,333 @@
+{
+  "data": [
+    {
+      "id": "adc6398e-65f4-4db1-b236-3f328328648b",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 1,
+      "name": "BatteryIcon_Fruit_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133803_Icon_Fruit_01.png",
+        "slug_search": "fruit, pineapple"
+      }
+    },
+    {
+      "id": "fad44e42-2391-4a8a-be4d-44f8822f768b",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 2,
+      "name": "BatteryIcon_Fruit_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133652_BatteryIcon_Fruit_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133652_BatteryIcon_Fruit_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133803_Icon_Fruit_02.png",
+        "slug_search": "fruit, strawberry"
+      }
+    },
+    {
+      "id": "68a2a287-6c7f-428b-98ca-fc71ea272f5b",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 3,
+      "name": "BatteryIcon_Fruit_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133662_BatteryIcon_Fruit_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133662_BatteryIcon_Fruit_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_03.png",
+        "slug_search": "fruit, cherry"
+      }
+    },
+    {
+      "id": "a0681de6-0571-44f3-9194-4ac47d6a412b",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 4,
+      "name": "BatteryIcon_Fruit_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_04.png",
+        "slug_search": "fruit, orange"
+      }
+    },
+    {
+      "id": "53b5ff21-dc6c-4f1b-ad8e-64b9088ea8de",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 5,
+      "name": "BatteryIcon_Fruit_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_05.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "e2816837-6239-4da1-b5d6-1ffcfcb5c8d8",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 6,
+      "name": "BatteryIcon_Fruit_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133652_BatteryIcon_Fruit_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133652_BatteryIcon_Fruit_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_06.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "4df3309f-40f0-4ea6-99dd-3e32fc22953e",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 7,
+      "name": "BatteryIcon_Fruit_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_07.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "5d0248da-5280-4fde-96b9-410faa8a62d3",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 8,
+      "name": "BatteryIcon_Fruit_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133652_BatteryIcon_Fruit_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133652_BatteryIcon_Fruit_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133847_Battery_Fruit_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133803_Icon_Fruit_08.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "a0e0fd45-91b0-474e-9152-10fe2dbb0580",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 9,
+      "name": "BatteryIcon_Fruit_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_09.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "b9ec60be-a8e2-439c-9b41-42fd7dea65cf",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 10,
+      "name": "BatteryIcon_Fruit_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133803_Icon_Fruit_10.png",
+        "slug_search": "fruit, mango"
+      }
+    },
+    {
+      "id": "48d29a14-a51f-4a72-b2a7-38df38389508",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 11,
+      "name": "BatteryIcon_Fruit_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_11.png",
+        "slug_search": "fruit, banana"
+      }
+    },
+    {
+      "id": "54f05ba9-3f68-4b6c-b70d-9c03635344c5",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 12,
+      "name": "BatteryIcon_Fruit_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133657_BatteryIcon_Fruit_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133657_BatteryIcon_Fruit_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_12.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "77636cac-d26c-454a-8fcb-56cecf8ed022",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 13,
+      "name": "BatteryIcon_Fruit_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_13.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "ec088698-5cc4-4f1b-a834-b7e1465b43e4",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 14,
+      "name": "BatteryIcon_Fruit_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_14.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "8e1df692-3308-460a-811e-cea5a458d03c",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 15,
+      "name": "BatteryIcon_Fruit_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133842_Battery_Fruit_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_15.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "582e7848-c1b7-4adb-a09c-d1290012f693",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 16,
+      "name": "BatteryIcon_Fruit_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_16.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "09cb9d46-6b1f-4c63-b27e-acf6c4cf5eab",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 17,
+      "name": "BatteryIcon_Fruit_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133803_Icon_Fruit_17.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "f676adc6-254d-4440-93ce-0b01fce58d4b",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 18,
+      "name": "BatteryIcon_Fruit_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133842_Battery_Fruit_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_18.png",
+        "slug_search": "fruit"
+      }
+    },
+    {
+      "id": "d8ac3d67-7ce8-4c3f-9ac1-3d637d8940bb",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 19,
+      "name": "BatteryIcon_Fruit_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133837_Battery_Fruit_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_19.png",
+        "slug_search": "fruit, orange"
+      }
+    },
+    {
+      "id": "709accb5-4a2b-46a6-9741-e6e0a4a91b7f",
+      "category_id": "904a6b2f-3641-492b-9dee-d41a47c473de",
+      "priority": 20,
+      "name": "BatteryIcon_Fruit_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750133647_BatteryIcon_Fruit_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133647_BatteryIcon_Fruit_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133842_Battery_Fruit_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750133798_Icon_Fruit_20.png",
+        "slug_search": "fruit, coconut "
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 20,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

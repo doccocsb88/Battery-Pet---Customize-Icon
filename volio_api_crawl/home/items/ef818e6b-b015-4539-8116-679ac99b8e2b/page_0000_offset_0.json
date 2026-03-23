@@ -1,0 +1,476 @@
+{
+  "data": [
+    {
+      "id": "3d86e26c-2b89-41a8-9bbb-84c91206f550",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 1,
+      "name": "BatteryIcon_Anime_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_01.png",
+        "slug_search": "anime,girl,anya"
+      }
+    },
+    {
+      "id": "e2797f60-9c1e-4338-82ee-ef196507884f",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 2,
+      "name": "BatteryIcon_Anime_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_02.png",
+        "slug_search": "Re:Zero,Rem,Girl"
+      }
+    },
+    {
+      "id": "29747e0e-2354-44a5-a8b0-a92f73d05082",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 3,
+      "name": "BatteryIcon_Anime_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_03.png",
+        "slug_search": "Anime, saitama, One punch man"
+      }
+    },
+    {
+      "id": "341562f9-ece9-4273-b869-af2aa111d48c",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 4,
+      "name": "BatteryIcon_Anime_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_04.png",
+        "slug_search": "anime, girl, pink, cute,Chainsaw Man,Power"
+      }
+    },
+    {
+      "id": "577c8bc8-30e5-488a-881e-7919f7f6a932",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 5,
+      "name": "BatteryIcon_Anime_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_05.png",
+        "slug_search": "Frieren, anime, girl, elf"
+      }
+    },
+    {
+      "id": "8496ce40-7dc7-4586-9379-47420fae19af",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 6,
+      "name": "BatteryIcon_Anime_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_06.png",
+        "slug_search": "kana, anime, dragon, kobayashi"
+      }
+    },
+    {
+      "id": "a035a3a8-57a0-4b7e-9d48-c075f63dcf85",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 7,
+      "name": "BatteryIcon_Anime_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131806_BatteryIcon_Anime_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131806_BatteryIcon_Anime_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_07.png"
+      }
+    },
+    {
+      "id": "73fa1ecc-f960-4550-a6e1-a803c8516e53",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 8,
+      "name": "BatteryIcon_Anime_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_09.png",
+        "slug_search": "Koro sensei, anime"
+      }
+    },
+    {
+      "id": "70895281-fdb1-4c51-b08b-d79dc92e8e49",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 9,
+      "name": "BatteryIcon_Anime_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_10.png",
+        "slug_search": "Beyond Journey's End, Stark, anime"
+      }
+    },
+    {
+      "id": "aaa32300-4823-4ef7-a152-1b28117b64ea",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 10,
+      "name": "BatteryIcon_Anime_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_11.png",
+        "slug_search": "anime, girl"
+      }
+    },
+    {
+      "id": "02507f29-c3a4-4fce-ad82-c339b1fb0a61",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 11,
+      "name": "BatteryIcon_Anime_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131801_BatteryIcon_Anime_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131801_BatteryIcon_Anime_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_12.png",
+        "slug_search": "anime,girl,chibi"
+      }
+    },
+    {
+      "id": "4cf69ad6-e8fb-4d3e-88f4-0378d95d1ba5",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 12,
+      "name": "BatteryIcon_Anime_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_13.png",
+        "slug_search": "anime,naruto"
+      }
+    },
+    {
+      "id": "91dc5efa-f72a-45eb-9a19-861cd6d7a1f7",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 13,
+      "name": "BatteryIcon_Anime_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_14.png",
+        "slug_search": "anime,The Apothecary Diaries,maomao"
+      }
+    },
+    {
+      "id": "aacbae80-98f6-4bbb-9c7d-1dcdddffebb7",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 14,
+      "name": "BatteryIcon_Anime_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131801_BatteryIcon_Anime_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131801_BatteryIcon_Anime_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_15.png",
+        "slug_search": "anime,girl"
+      }
+    },
+    {
+      "id": "e09d725f-6987-440e-a3a1-35d9bb2c6778",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 15,
+      "name": "BatteryIcon_Anime_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_16.png",
+        "slug_search": "megumin,KonoSuba,kazuma"
+      }
+    },
+    {
+      "id": "883bc24d-1906-4911-9e50-cec1838fb620",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 16,
+      "name": "BatteryIcon_Anime_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131882_Battery_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_17.png",
+        "slug_search": "Naofumi,anime, boy"
+      }
+    },
+    {
+      "id": "d619ff18-ad39-4704-9bc6-ea8c27e372d8",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 17,
+      "name": "BatteryIcon_Anime_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_18.png",
+        "slug_search": "OVERLORD,albedo,anime"
+      }
+    },
+    {
+      "id": "bed64099-28c6-41c2-a0e5-0a57e60dce01",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 18,
+      "name": "BatteryIcon_Anime_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_19.png",
+        "slug_search": "anime,girl"
+      }
+    },
+    {
+      "id": "b08ae036-db61-4cac-881e-bde1cd81e410",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 19,
+      "name": "BatteryIcon_Anime_21",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131801_BatteryIcon_Anime_21.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131801_BatteryIcon_Anime_21.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_20.png",
+        "slug_search": "naruto,boy,sasuke "
+      }
+    },
+    {
+      "id": "fee13c17-95e8-4245-ac60-c1785293820f",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 20,
+      "name": "BatteryIcon_Anime_22",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131806_BatteryIcon_Anime_22.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131806_BatteryIcon_Anime_22.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_21.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_21.png",
+        "slug_search": "one punch man,genos,anime"
+      }
+    },
+    {
+      "id": "1a80ed77-ba93-44da-bb5a-bb14e3edc4b2",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 21,
+      "name": "BatteryIcon_Anime_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_23.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_22.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_22.png",
+        "slug_search": "one piece, Zoro, anime"
+      }
+    },
+    {
+      "id": "8819efcc-19f2-4a35-92cd-ddc5c616a949",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 22,
+      "name": "BatteryIcon_Anime_24",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_24.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_24.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_23.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_23.png",
+        "slug_search": "Sakamoto Days,sakamoto, anime"
+      }
+    },
+    {
+      "id": "99cb3763-a25d-484a-9561-e272b6899fd1",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 23,
+      "name": "BatteryIcon_Anime_25",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_25.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_25.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_24.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_24.png",
+        "slug_search": "demon slayer, Nezuko,anime"
+      }
+    },
+    {
+      "id": "67d4402c-9a6d-4087-a767-2747a8d193ba",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 24,
+      "name": "BatteryIcon_Anime_26",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131801_BatteryIcon_Anime_26.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131801_BatteryIcon_Anime_26.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_25.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_25.png",
+        "slug_search": "anime, cute,chibi"
+      }
+    },
+    {
+      "id": "e89bb6af-0873-454d-ba95-ec4fa6820b82",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 25,
+      "name": "BatteryIcon_Anime_27",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_27.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_27.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_26.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_26.png",
+        "slug_search": "anime, hunterxhunter,killua"
+      }
+    },
+    {
+      "id": "5275148a-2185-4387-8adb-e40183064172",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 26,
+      "name": "BatteryIcon_Anime_28",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_28.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_28.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_27.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_27.png",
+        "slug_search": "haikyu,anime,cute"
+      }
+    },
+    {
+      "id": "cdf4a9c7-38b3-4913-b585-c7bcec62c083",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 27,
+      "name": "BatteryIcon_Anime_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_29.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_28.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_28.png",
+        "slug_search": "dragonball,anime, songoku "
+      }
+    },
+    {
+      "id": "8694afbb-95d8-40ac-bdda-6d09e1771c62",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 28,
+      "name": "BatteryIcon_Anime_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750131796_BatteryIcon_Anime_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131796_BatteryIcon_Anime_30.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131877_Battery_29.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750131826_Anime_29.png",
+        "slug_search": "gojo, Jujutsu Kaisen,anime"
+      }
+    },
+    {
+      "id": "5a4c8023-d02f-469b-ba41-9e8b3c3fd922",
+      "category_id": "ef818e6b-b015-4539-8116-679ac99b8e2b",
+      "priority": 29,
+      "name": "Battery_Icon_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882161_Battery_Icon_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882161_Battery_Icon_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882435_Battery_Cartoon_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882288_Emoji_Cartoon_13.png",
+        "slug_search": "anime,demonslayer,zenitsu"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 29,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

@@ -1,0 +1,156 @@
+{
+  "data": [
+    {
+      "id": "931172fa-edce-430e-b1ae-a70595b92c35",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 1,
+      "name": "battery_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883756_Battery_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883698_Emoji_Actor_01.png"
+      }
+    },
+    {
+      "id": "624faffa-4094-4ba3-bed4-ce6903951eb5",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 2,
+      "name": "battery_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883761_Battery_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883698_Emoji_Actor_02.png",
+        "slug_search": "John Wick,keanu reeves, actor"
+      }
+    },
+    {
+      "id": "d19aeba7-d2fc-4148-8a6e-7b1f145ac974",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 3,
+      "name": "battery_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883756_Battery_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883698_Emoji_Actor_03.png",
+        "slug_search": "actor, film, boy"
+      }
+    },
+    {
+      "id": "25168199-cb93-4614-8a54-38eb46b622f0",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 4,
+      "name": "battery_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883756_Battery_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883698_Emoji_Actor_04.png",
+        "slug_search": "jackie chan,actor,karate,film"
+      }
+    },
+    {
+      "id": "625b18c2-1951-40b9-9d29-d8f627a318fe",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 5,
+      "name": "battery_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883757_Battery_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883698_Emoji_Actor_05.png",
+        "slug_search": "actor,chibi"
+      }
+    },
+    {
+      "id": "c50d9aa4-530d-4207-b122-6a511ab4493e",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 6,
+      "name": "battery_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883756_Battery_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883703_Emoji_Actor_06.png",
+        "slug_search": "actor"
+      }
+    },
+    {
+      "id": "f795b2d2-2439-4e5b-8aa7-013c57bf439b",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 7,
+      "name": "battery_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883756_Battery_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883698_Emoji_Actor_07.png",
+        "slug_search": "actress,Scarlett Ingrid Johansson"
+      }
+    },
+    {
+      "id": "49875fac-af3e-4703-8285-a3541bce54d1",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 8,
+      "name": "battery_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883654_battery_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883654_battery_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883756_Battery_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883698_Emoji_Actor_08.png",
+        "slug_search": "actress,girl"
+      }
+    },
+    {
+      "id": "0ac244f7-27b9-488c-99f2-b96cf12416f4",
+      "category_id": "6a7d9b55-8d0b-4a2a-959d-e00e019b7924",
+      "priority": 9,
+      "name": "battery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751883649_battery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883649_battery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883756_Battery_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751883703_Emoji_Actor_09.png",
+        "slug_search": "wednesday,actor,film,Jenna Ortega"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 9,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

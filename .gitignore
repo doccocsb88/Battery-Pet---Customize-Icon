@@ -9,3 +9,11 @@ local.properties
 *.apk
 *.xapk
 artifacts/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Local crawls / decompile output (large; regenerate with scripts)
+decompiled/
+volio_api_crawl/downloaded_assets/
