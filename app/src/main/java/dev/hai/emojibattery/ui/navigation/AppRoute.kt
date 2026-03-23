@@ -10,7 +10,7 @@ sealed class AppRoute(val route: String) {
     data object Gesture : AppRoute("gesture")
     data object Achievement : AppRoute("achievement")
     data object StatusBarCustom : AppRoute("statusbar_custom")
-    /** Full list of background templates (`photo` URLs from Volio catalog), opened from Theme tab View More. */
+    /** Full list of local background templates, opened from Theme tab View More. */
     data object BackgroundTemplateList : AppRoute("background_template_list")
     data object LegacyBattery : AppRoute("legacy_battery")
     data object Search : AppRoute("search")

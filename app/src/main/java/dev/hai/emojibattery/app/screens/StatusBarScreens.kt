@@ -216,7 +216,7 @@ internal fun StatusBarCustomScreen(
     onSelectTheme: (String) -> Unit,
     onSetThemeBackgroundColor: (Long) -> Unit,
     onSetBackgroundTemplatePhoto: (String?) -> Unit,
-    onSetBackgroundTemplateDrawable: (Int?) -> Unit,
+    onViewMoreBackgroundTemplates: () -> Unit,
     onSetAccentColor: (Long) -> Unit,
     onSetStatusBarHeight: (Float) -> Unit,
     onSetLeftMargin: (Float) -> Unit,
@@ -249,6 +249,12 @@ internal fun StatusBarCustomScreen(
         ),
     )
 
+    /** Matches original ViewPager switching pages: scroll the editor panel back to the top. */
+    val editorScrollState = rememberScrollState()
+    LaunchedEffect(uiState.activeStatusBarTab) {
+        editorScrollState.scrollTo(0)
+    }
+
     Scaffold(
         containerColor = editorBg,
     ) { innerPadding ->
@@ -256,7 +262,7 @@ internal fun StatusBarCustomScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(editorScrollState)
                 .padding(bottom = 8.dp),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
@@ -360,11 +366,10 @@ internal fun StatusBarCustomScreen(
                                         onSelect = onSetThemeBackgroundColor,
                                     )
                                     StatusBarBackgroundTemplateSection(
-                                        catalogItems = uiState.statusBarCatalogItems,
                                         selectedPhotoUrl = config.backgroundTemplatePhotoUrl,
                                         selectedDrawableRes = config.backgroundTemplateDrawableRes,
                                         onSelectPhoto = onSetBackgroundTemplatePhoto,
-                                        onSelectDrawable = onSetBackgroundTemplateDrawable,
+                                        onViewMore = onViewMoreBackgroundTemplates,
                                     )
                                     StatusBarChoiceGrid(
                                         maxItemsInEachRow = 4,
@@ -876,20 +881,17 @@ private fun StatusBarThemeBackgroundColorRow(
 }
 
 /**
- * Background templates: primary source is Volio item **`photo`** (HTTPS PNG), same API feed as
- * Battery/Emoji ([VolioEmojiBatteryItemDto.photo] → [HomeBatteryItem.backgroundPhotoUrl]).
- * If the catalog is empty, falls back to bundled XML shape drawables ([StatusBarThemeTemplateCatalog]).
+ * Background templates in original decompiled flow are local (`C5914jz0.a.c()`), not remote API.
+ * Clone maps that local list to bundled drawable previews ([StatusBarThemeTemplateCatalog]).
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun StatusBarBackgroundTemplateSection(
-    catalogItems: List<HomeBatteryItem>,
     selectedPhotoUrl: String?,
     selectedDrawableRes: Int?,
     onSelectPhoto: (String?) -> Unit,
-    onSelectDrawable: (Int?) -> Unit,
+    onViewMore: () -> Unit,
 ) {
-    val urls = remember(catalogItems) { backgroundTemplatePhotoUrlsFromCatalog(catalogItems) }
     val labelColor = colorResource(R.color.splash_title)
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -913,69 +915,22 @@ private fun StatusBarBackgroundTemplateSection(
                 fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
             )
         }
-        if (urls.isNotEmpty()) {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                maxItemsInEachRow = 3,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                urls.forEach { url ->
-                    val selected = url == selectedPhotoUrl
-                    Surface(
-                        onClick = { onSelectPhoto(if (selected) null else url) },
-                        modifier = Modifier.fillMaxWidth(0.31f),
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (selected) {
-                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
-                        } else {
-                            MaterialTheme.colorScheme.surface
-                        },
-                        border = BorderStroke(
-                            1.5.dp,
-                            if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
-                        ),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(6.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            AsyncImage(
-                                model = url,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f)
-                                    .clip(RoundedCornerShape(10.dp)),
-                                contentScale = ContentScale.Crop,
-                            )
-                            if (selected) {
-                                Box(
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                        .size(18.dp)
-                                        .clip(CircleShape)
-                                        .background(StrawberryMilk.Secondary),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Check,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(12.dp),
-                                        tint = Color.White,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            StatusBarLocalThemeTemplateGrid(
-                selectedDrawableRes = selectedDrawableRes,
-                onSelectDrawable = onSelectDrawable,
+        StatusBarLocalThemeTemplateGrid(
+            selectedPhotoUrl = selectedPhotoUrl,
+            selectedDrawableRes = selectedDrawableRes,
+            onSelectPhoto = onSelectPhoto,
+        )
+        OutlinedButton(
+            onClick = onViewMore,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            shape = RoundedCornerShape(999.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.view_more),
+                color = StrawberryMilk.Secondary,
+                fontWeight = FontWeight.SemiBold,
             )
         }
     }
@@ -984,10 +939,14 @@ private fun StatusBarBackgroundTemplateSection(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun StatusBarLocalThemeTemplateGrid(
+    selectedPhotoUrl: String?,
     selectedDrawableRes: Int?,
-    onSelectDrawable: (Int?) -> Unit,
+    onSelectPhoto: (String?) -> Unit,
 ) {
     val all = StatusBarThemeTemplateCatalog.entries
+    val selectedAssetUrl = selectedPhotoUrl
+        ?: StatusBarThemeTemplateCatalog.entryForPreviewDrawable(selectedDrawableRes)
+            ?.let { StatusBarThemeTemplateCatalog.assetUri(it.assetRelativePath) }
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         maxItemsInEachRow = 3,
@@ -995,11 +954,15 @@ private fun StatusBarLocalThemeTemplateGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         all.forEach { entry ->
-            val selected = entry.previewDrawableRes == selectedDrawableRes
+            val assetUrl = StatusBarThemeTemplateCatalog.assetUri(entry.assetRelativePath)
+            val selected = assetUrl == selectedAssetUrl
             Surface(
                 onClick = {
-                    val res = entry.previewDrawableRes
-                    onSelectDrawable(if (selected) null else res)
+                    if (selected) {
+                        onSelectPhoto(null)
+                    } else {
+                        onSelectPhoto(assetUrl)
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(0.31f),
                 shape = RoundedCornerShape(12.dp),
@@ -1019,13 +982,14 @@ private fun StatusBarLocalThemeTemplateGrid(
                         .padding(6.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    ThemeShapeDrawableImage(
-                        drawableRes = entry.previewDrawableRes,
+                    AsyncImage(
+                        model = assetUrl,
                         contentDescription = itemIndexLabel(entry.index),
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(1f)
                             .clip(RoundedCornerShape(10.dp)),
+                        contentScale = ContentScale.Crop,
                     )
                     if (selected) {
                         Box(

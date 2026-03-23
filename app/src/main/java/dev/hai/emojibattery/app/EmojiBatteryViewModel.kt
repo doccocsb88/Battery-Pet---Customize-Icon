@@ -261,6 +261,10 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
     private fun isVolioCategoryId(categoryId: String): Boolean =
         categoryId.length >= 32 && categoryId.count { it == '-' } >= 4
 
+    /**
+     * Active editor tab (original app: `StatusBarCustomFragment` ViewPager page). Does not reload data;
+     * Battery and Emoji share [statusBarCatalogItems]; Theme uses the same list for background `photo` URLs.
+     */
     fun selectStatusTab(tab: StatusBarTab) {
         _uiState.update { it.copy(activeStatusBarTab = tab) }
     }
@@ -363,18 +367,27 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    /**
+     * Apply: commits **editing** → **applied** config in one shot (original status-bar editor: one shared model;
+     * the visible tab only changes which section is edited). Accessibility must be on for success; the UI layer
+     * persists overlay prefs after this when the bridge is enabled.
+     */
     fun applyConfig() {
+        var appliedSuccessfully = false
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
                 state.copy(infoMessage = "Enable accessibility bridge before applying the status-bar icon.")
             } else {
+                appliedSuccessfully = true
                 state.copy(
                     appliedConfig = state.editingConfig,
                     infoMessage = "Configuration applied successfully.",
                 )
             }
         }
-        advanceAchievement("apply_status_bar")
+        if (appliedSuccessfully) {
+            advanceAchievement("apply_status_bar")
+        }
     }
 
     fun applyLegacyBatteryConfig() {

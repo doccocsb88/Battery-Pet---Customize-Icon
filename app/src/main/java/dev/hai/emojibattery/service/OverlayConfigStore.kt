@@ -3,6 +3,7 @@ package dev.hai.emojibattery.service
 import android.content.Context
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.BatteryIconConfig
+import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.stickerPresetForId
 
@@ -43,17 +44,40 @@ object OverlayConfigStore {
     private const val KEY_REALTIME_GLYPH = "realtime_glyph"
     private const val KEY_REALTIME_TITLE = "realtime_title"
 
-    fun saveStatusBarConfig(context: Context, config: BatteryIconConfig) {
-        val battery = SampleCatalog.batteryPresets.firstOrNull { it.id == config.batteryPresetId } ?: SampleCatalog.batteryPresets.first()
-        val emoji = SampleCatalog.emojiPresets.firstOrNull { it.id == config.emojiPresetId } ?: SampleCatalog.emojiPresets.first()
+    /**
+     * Persists the status-bar editor config for the accessibility overlay (original app: one **BatteryConfig**
+     * committed on Apply regardless of which sub-screen is open).
+     *
+     * **volioCatalogItems** — same list as Battery/Emoji grids; preset IDs are often Volio UUIDs, so we avoid
+     * resolving them as unrelated sample catalog entries.
+     */
+    fun saveStatusBarConfig(
+        context: Context,
+        config: BatteryIconConfig,
+        volioCatalogItems: List<HomeBatteryItem> = emptyList(),
+    ) {
+        val batteryBody = batteryBodyForOverlay(config.batteryPresetId, volioCatalogItems)
+        val emojiGlyph = emojiGlyphForOverlay(config.emojiPresetId, volioCatalogItems)
         prefs(context).edit()
             .putBoolean(KEY_STATUS_ENABLED, true)
-            .putString(KEY_BATTERY_TEXT, "${battery.body} ${emoji.glyph}")
+            .putString(KEY_BATTERY_TEXT, "$batteryBody $emojiGlyph")
             .putLong(KEY_ACCENT, config.accentColor)
             .putLong(KEY_BACKGROUND, config.backgroundColor)
             .putString(KEY_BACKGROUND_TEMPLATE_PHOTO, config.backgroundTemplatePhotoUrl.orEmpty())
             .putInt(KEY_BACKGROUND_TEMPLATE_DRAWABLE, config.backgroundTemplateDrawableRes ?: 0)
             .apply()
+    }
+
+    private fun batteryBodyForOverlay(presetId: String, volioCatalog: List<HomeBatteryItem>): String {
+        SampleCatalog.batteryPresets.firstOrNull { it.id == presetId }?.body?.let { return it }
+        if (volioCatalog.any { it.id == presetId }) return "▰▰▰▱"
+        return SampleCatalog.batteryPresets.first().body
+    }
+
+    private fun emojiGlyphForOverlay(presetId: String, volioCatalog: List<HomeBatteryItem>): String {
+        SampleCatalog.emojiPresets.firstOrNull { it.id == presetId }?.glyph?.let { return it }
+        if (volioCatalog.any { it.id == presetId }) return "●"
+        return SampleCatalog.emojiPresets.first().glyph
     }
 
     fun saveStickerOverlay(context: Context, uiState: AppUiState) {

@@ -35,6 +35,7 @@ import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.SampleCatalog
+import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
 import dev.hai.emojibattery.service.AccessibilityBridge
@@ -200,6 +201,7 @@ fun EmojiBatteryApp(
                     onSelectCategory = viewModel::selectHomeCategory,
                     onOpenStatusBarCustom = {
                         viewModel.selectMainSection(MainSection.Home)
+                        viewModel.selectStatusTab(StatusBarTab.Battery)
                         navController.navigate(AppRoute.StatusBarCustom.route)
                     },
                     onOpenLegacyBattery = { navController.navigate(AppRoute.LegacyBattery.route) },
@@ -219,12 +221,18 @@ fun EmojiBatteryApp(
                             CustomizeEntry.Emotion,
                             CustomizeEntry.Theme,
                             CustomizeEntry.Settings,
-                            -> navController.navigate(AppRoute.StatusBarCustom.route)
+                            -> {
+                                customizeEntryToStatusBarTab(entry)?.let { viewModel.selectStatusTab(it) }
+                                navController.navigate(AppRoute.StatusBarCustom.route)
+                            }
 
                             else -> navController.navigate(AppRoute.FeatureDetail.create(entry.title))
                         }
                     },
-                    onOpenStatusBarCustom = { navController.navigate(AppRoute.StatusBarCustom.route) },
+                    onOpenStatusBarCustom = {
+                        viewModel.selectStatusTab(StatusBarTab.Battery)
+                        navController.navigate(AppRoute.StatusBarCustom.route)
+                    },
                     onOpenRealTime = { navController.navigate(AppRoute.RealTime.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
                     onOpenSettings = { navController.navigate(AppRoute.Settings.route) },
@@ -258,7 +266,9 @@ fun EmojiBatteryApp(
                     onSelectTheme = viewModel::selectTheme,
                     onSetThemeBackgroundColor = viewModel::setThemeBackgroundColor,
                     onSetBackgroundTemplatePhoto = viewModel::setBackgroundTemplatePhoto,
-                    onSetBackgroundTemplateDrawable = viewModel::setBackgroundTemplateDrawable,
+                    onViewMoreBackgroundTemplates = {
+                        navController.navigate(AppRoute.BackgroundTemplateList.route)
+                    },
                     onSetAccentColor = viewModel::setAccentColor,
                     onSetStatusBarHeight = viewModel::setStatusBarHeight,
                     onSetLeftMargin = viewModel::setStatusBarLeftMargin,
@@ -273,7 +283,12 @@ fun EmojiBatteryApp(
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
                         viewModel.applyConfig()
                         if (AccessibilityBridge.isEnabled(context)) {
-                            OverlayConfigStore.saveStatusBarConfig(context, uiState.editingConfig)
+                            val snapshot = viewModel.uiState.value
+                            OverlayConfigStore.saveStatusBarConfig(
+                                context,
+                                snapshot.editingConfig,
+                                snapshot.statusBarCatalogItems,
+                            )
                             OverlayAccessibilityService.requestRefresh(context)
                         }
                     },
@@ -309,7 +324,12 @@ fun EmojiBatteryApp(
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
                         viewModel.applyLegacyBatteryConfig()
                         if (AccessibilityBridge.isEnabled(context)) {
-                            OverlayConfigStore.saveStatusBarConfig(context, uiState.editingConfig)
+                            val snapshot = viewModel.uiState.value
+                            OverlayConfigStore.saveStatusBarConfig(
+                                context,
+                                snapshot.editingConfig,
+                                snapshot.statusBarCatalogItems,
+                            )
                             OverlayAccessibilityService.requestRefresh(context)
                         }
                     },
@@ -555,4 +575,16 @@ fun EmojiBatteryApp(
             }
         }
     }
+}
+
+/**
+ * Maps Customize hub entries to the status-bar editor tab (original [StatusBarCustomFragment] ViewPager
+ * `setCurrentItem` from navigation args).
+ */
+private fun customizeEntryToStatusBarTab(entry: CustomizeEntry): StatusBarTab? = when (entry) {
+    CustomizeEntry.Charge -> StatusBarTab.Battery
+    CustomizeEntry.Emotion -> StatusBarTab.Emoji
+    CustomizeEntry.Theme -> StatusBarTab.Theme
+    CustomizeEntry.Settings -> StatusBarTab.Settings
+    else -> null
 }

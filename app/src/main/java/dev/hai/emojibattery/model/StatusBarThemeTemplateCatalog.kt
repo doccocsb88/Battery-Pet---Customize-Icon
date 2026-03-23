@@ -42,4 +42,10 @@ object StatusBarThemeTemplateCatalog {
         BackgroundTemplateEntry(18, "background_template/template_color_19.png", R.drawable.theme_bg_template_19),
         BackgroundTemplateEntry(19, "background_template/template_color_20.png", R.drawable.theme_bg_template_20),
     )
+
+    /** Load asset through Coil/Glide using Android assets URI scheme. */
+    fun assetUri(assetRelativePath: String): String = "file:///android_asset/$assetRelativePath"
+
+    fun entryForPreviewDrawable(previewDrawableRes: Int?): BackgroundTemplateEntry? =
+        entries.firstOrNull { it.previewDrawableRes == previewDrawableRes }
 }

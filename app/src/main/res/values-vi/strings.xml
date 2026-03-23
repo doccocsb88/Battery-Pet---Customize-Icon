@@ -3,6 +3,9 @@
     <string name="loading_dot">Đang tải...</string>
     <string name="this_action_may_be_content_ads">(Hành động này có thể là nội dung quảng cáo)</string>
     <string name="select_your_language">Chọn ngôn ngữ của bạn</string>
+    <string name="status_bar_custom_title">Tuỳ chỉnh trang trạng thái</string>
+    <string name="background_template">Mẫu nền</string>
+    <string name="background_template_empty">Không có mẫu nền nào. Kiểm tra kết nối hoặc dữ liệu gói đã đi kèm.</string>
     <string name="next">Tiếp theo</string>
     <string name="gesture">Cử chỉ</string>
     <string name="use_gestures_in_the_status_bar_for_custom_actions">Sử dụng cử chỉ trên thanh trạng thái cho các hành động tùy chỉnh</string>
