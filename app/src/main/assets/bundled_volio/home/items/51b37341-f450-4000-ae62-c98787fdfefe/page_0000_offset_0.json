@@ -1,0 +1,669 @@
+{
+  "data": [
+    {
+      "id": "e13450f2-215d-49e9-ae6e-a4131e10daba",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 1,
+      "name": "battery_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130628_Emoji_01.png",
+        "slug_search": "Kpop,BTS,Jimin,Chibi"
+      }
+    },
+    {
+      "id": "c23099c3-e3bd-4626-b979-b34e0b05dfbf",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 2,
+      "name": "battery_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_02.png",
+        "slug_search": "BTS,Kpop,Jimin, Chibi"
+      }
+    },
+    {
+      "id": "95c4c9c4-7501-438b-a149-8cafa0f95988",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 3,
+      "name": "battery_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_03.png",
+        "slug_search": "BTS,BT21,Kpop,Cooky,JungKook,JK"
+      }
+    },
+    {
+      "id": "a61d0619-88c5-42fa-a61e-3ed6d8c6cf35",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 4,
+      "name": "battery_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130463_battery_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130463_battery_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_04.png",
+        "slug_search": "BTS,JungKook,Kpop"
+      }
+    },
+    {
+      "id": "2757a3f4-84a4-4740-a78c-28e994891890",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 5,
+      "name": "battery_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_05.png",
+        "slug_search": "Kpop,chibi,cute"
+      }
+    },
+    {
+      "id": "43063d31-c596-4999-b8e2-081b2e1bce57",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 6,
+      "name": "battery_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_06.png",
+        "slug_search": "BT21,BTS,Kpop"
+      }
+    },
+    {
+      "id": "3bba3ed4-2cc0-4d69-8a2a-faeffd89ed48",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 7,
+      "name": "battery_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130633_Emoji_07.png",
+        "slug_search": "JungKook,JK,BTS,Kpop"
+      }
+    },
+    {
+      "id": "4fc01605-8454-4f6d-91bc-89e195c2131a",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 8,
+      "name": "battery_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_08.png",
+        "slug_search": "jimin,chibi,BTS,Kpop"
+      }
+    },
+    {
+      "id": "f632bbed-3bb8-430a-8138-99888226a8a1",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 9,
+      "name": "battery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_09.png",
+        "slug_search": "KPop,girl,BlackPink,Rose"
+      }
+    },
+    {
+      "id": "38516156-0ea7-496d-a251-545a9c868794",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 10,
+      "name": "battery_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130458_battery_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130458_battery_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_10.png",
+        "slug_search": "BTS,BT21,Cooky"
+      }
+    },
+    {
+      "id": "adf4b86c-575f-4532-bae1-fb071380f3b4",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 11,
+      "name": "battery_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130458_battery_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130458_battery_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_11.png",
+        "slug_search": "kpop,cute,girl"
+      }
+    },
+    {
+      "id": "54fb1028-df3a-4d1d-9db4-3c79990e7549",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 12,
+      "name": "battery_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130458_battery_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130458_battery_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_12.png",
+        "slug_search": "Kpop,cute,girl"
+      }
+    },
+    {
+      "id": "c76d3c6e-b12f-4c03-b3d3-f7755e1a0abb",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 13,
+      "name": "battery_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130638_Emoji_13.png",
+        "slug_search": "BTS,BT21,RJ,cute,Kpop"
+      }
+    },
+    {
+      "id": "e9ae1692-4a17-4811-9a89-40db6500bd67",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 14,
+      "name": "battery_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_14.png",
+        "slug_search": "BTS,JungKook,cute,kpop"
+      }
+    },
+    {
+      "id": "96fdeb96-7f37-4174-a996-d63dd5b10da0",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 15,
+      "name": "battery_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_15.png",
+        "slug_search": "Blackpink,kpop,girl"
+      }
+    },
+    {
+      "id": "23d98712-2d15-4ad9-944a-5ead9ff9d13d",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 16,
+      "name": "battery_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130458_battery_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130458_battery_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_16.png",
+        "slug_search": "Rose,Blackpink,kpop"
+      }
+    },
+    {
+      "id": "2eb28b38-9421-4e57-a0fd-4503456125e9",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 17,
+      "name": "battery_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_17.png",
+        "slug_search": "Kpop,chibi,boy"
+      }
+    },
+    {
+      "id": "26c68177-381b-46fc-92d8-a166b42ed603",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 18,
+      "name": "battery_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_18.png",
+        "slug_search": "Bigbang,TOP,Kpop"
+      }
+    },
+    {
+      "id": "cda67c8c-125d-40ea-8dfa-27e5d2d346b6",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 19,
+      "name": "battery_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_19.png",
+        "slug_search": "kpop,boyband,bear,Bigbang"
+      }
+    },
+    {
+      "id": "6a93798e-f720-4f8b-ad9c-0ac70eacb577",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 20,
+      "name": "battery_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_20.png",
+        "slug_search": "Kpop,boy,chibi"
+      }
+    },
+    {
+      "id": "f006512d-a0c4-41f8-a83f-e1aa3ab060e2",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 21,
+      "name": "battery_21",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_21.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_21.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_21.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_21.png",
+        "slug_search": "Kpop,boy,chibi"
+      }
+    },
+    {
+      "id": "6d280b27-75c0-4050-9b4d-0ccc56954f85",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 22,
+      "name": "battery_22",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_22.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_22.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_22.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_22.png",
+        "slug_search": "Kpop,Boyband,Cute,chibi"
+      }
+    },
+    {
+      "id": "82869618-5be6-433f-9c7d-e2fb21a07865",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 23,
+      "name": "battery_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_23.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_23.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_23.png",
+        "slug_search": "BTS,Jungkook,BT21,Cooky"
+      }
+    },
+    {
+      "id": "9b731cfe-082a-4955-8984-9e268e745fe2",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 24,
+      "name": "battery_24",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130463_battery_24.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130463_battery_24.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_24.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_24.png",
+        "slug_search": "kpop,chibi,orange,boy"
+      }
+    },
+    {
+      "id": "388c6e35-e8dc-42df-871e-d3b75b9d3e68",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 25,
+      "name": "battery_25",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_25.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_25.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_25.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_25.png",
+        "slug_search": "Kpop,chibi,boy"
+      }
+    },
+    {
+      "id": "db4fadd2-530e-4763-8a9a-aa49c2fa6db9",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 26,
+      "name": "battery_26",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130458_battery_26.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130458_battery_26.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_26.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_26.png",
+        "slug_search": "Kpop,chibi,cute"
+      }
+    },
+    {
+      "id": "43b357e0-0b5b-4bcf-bbde-8eca308e0a0b",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 27,
+      "name": "battery_27",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_27.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_27.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_27.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_27.png",
+        "slug_search": "Kpop,chibi,sanrio"
+      }
+    },
+    {
+      "id": "0a69a28b-6b34-4c9d-812a-d73a460b13a9",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 28,
+      "name": "battery_28",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130458_battery_28.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130458_battery_28.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_28.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_28.png",
+        "slug_search": "Kpop,chibi,boy"
+      }
+    },
+    {
+      "id": "c04e191f-5267-498f-a5d2-47fa78c36e7c",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 29,
+      "name": "battery_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_29.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_29.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_29.png",
+        "slug_search": "Kpop,chibi"
+      }
+    },
+    {
+      "id": "35edada5-96de-46e2-a6a4-34fc8958324d",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 30,
+      "name": "battery_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750130453_battery_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130453_battery_30.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130688_bettry_30.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750130623_Emoji_30.png",
+        "slug_search": "Kpop,chibi,boy"
+      }
+    },
+    {
+      "id": "e00c8235-d204-43ba-b593-0ff18a1939e2",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 31,
+      "name": "battery_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882942_Battery_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_01.png",
+        "slug_search": "Blackpink,Rose,Kpop,chibi"
+      }
+    },
+    {
+      "id": "a227b76c-e559-4dfc-a8c0-8f32a7ef4ce8",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 32,
+      "name": "battery_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882942_Battery_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_02.png",
+        "slug_search": "Kpop,chibi,boy"
+      }
+    },
+    {
+      "id": "1ca3ea8e-d83a-4a31-9f6c-9be8adc9f980",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 33,
+      "name": "battery_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882942_Battery_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_03.png",
+        "slug_search": "Kpop,chibi,boy"
+      }
+    },
+    {
+      "id": "da0d2c88-8e3c-4068-86a9-0f1f6e3af318",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 34,
+      "name": "battery_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882628_battery_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882628_battery_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882942_Battery_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_04.png",
+        "slug_search": "Kpop,chibi,girl,cat"
+      }
+    },
+    {
+      "id": "44c99540-84d9-40f6-81b5-0393ddcf15c2",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 35,
+      "name": "battery_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882941_Battery_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882878_Emoji_Kpop_05.png",
+        "slug_search": "Kpop,chibi,girl"
+      }
+    },
+    {
+      "id": "a4340672-bdf5-4381-bd71-0f0e059e0e5d",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 36,
+      "name": "battery_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882941_Battery_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882878_Emoji_Kpop_06.png",
+        "slug_search": "Kpop,chibi,BTS"
+      }
+    },
+    {
+      "id": "53f78a27-a167-472c-a6a2-ed2efcfced3f",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 37,
+      "name": "battery_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882628_battery_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882628_battery_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882941_Battery_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_07.png",
+        "slug_search": "Kpop,chibi,girl"
+      }
+    },
+    {
+      "id": "eaeb2d54-f0da-4b6f-b5cf-d76555917a37",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 38,
+      "name": "battery_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882941_Battery_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_08.png",
+        "slug_search": "Kpop,chibi,girl"
+      }
+    },
+    {
+      "id": "da72c735-7af7-4a09-a6ae-ad01adc37efb",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 39,
+      "name": "battery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882941_Battery_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_09.png",
+        "slug_search": "Kpop,chibi,girl"
+      }
+    },
+    {
+      "id": "9ac4ff61-e1bc-4df8-93c3-164242b90dc8",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 40,
+      "name": "battery_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882629_battery_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882629_battery_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882942_Battery_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_10.png",
+        "slug_search": "Kpop,chibi,idol,got7"
+      }
+    },
+    {
+      "id": "6c8c9677-db2d-4fe7-b17b-26d749a05978",
+      "category_id": "51b37341-f450-4000-ae62-c98787fdfefe",
+      "priority": 41,
+      "name": "battery_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-07/1751882623_battery_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882623_battery_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882942_Battery_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-07/1751882873_Emoji_Kpop_11.png",
+        "slug_search": "Lisa,BlackPink,Kpop"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 41,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

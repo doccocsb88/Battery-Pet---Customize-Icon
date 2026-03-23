@@ -34,4 +34,19 @@
     <color name="onboarding_dot_inactive">#FFF2DDEB</color>
     <color name="onboarding_cta_gradient_start">#FFEC4899</color>
     <color name="onboarding_cta_gradient_end">#FFD47DFE</color>
+
+    <!-- Accessibility service usage dialog (dialog_request_accessibility_service.xml — decompiled 1.2.8) -->
+    <color name="accessibility_usage_dialog_surface">#FFFFFFFF</color>
+    <color name="accessibility_usage_dialog_text">#FF5C4B51</color>
+    <color name="accessibility_usage_dialog_link">#FF1D75F9</color>
+    <color name="accessibility_usage_dialog_highlight">#FFD47DFE</color>
+    <color name="accessibility_usage_cta_gradient_start">#FFFFABE5</color>
+    <color name="accessibility_usage_cta_gradient_end">#FFD47DFE</color>
+
+    <!-- Status Bar custom editor (fragment_status_bar_custom.xml — decompiled 1.2.8) -->
+    <color name="status_bar_editor_scaffold">#FFFEF5FA</color>
+    <color name="status_bar_preview_gradient_start">#FF4ADCEC</color>
+    <color name="status_bar_preview_gradient_end">#FF97F5FF</color>
+    <color name="status_bar_apply_gradient_start">#FFFFABE5</color>
+    <color name="status_bar_apply_gradient_end">#FFD47DFE</color>
 </resources>

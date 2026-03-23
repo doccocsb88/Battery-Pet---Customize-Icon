@@ -1,14 +1,19 @@
 package dev.hai.emojibattery.app
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import dev.hai.emojibattery.data.BundledVolioHomeRepository
 import dev.hai.emojibattery.data.HomeCatalogRepository
 import dev.hai.emojibattery.data.VolioHomeRepository
+import dev.hai.emojibattery.data.HomeStoreLocalImageResolver
+import dev.hai.emojibattery.data.PadVolioHomeRepository
 import dev.hai.emojibattery.data.VolioBatteryTrollRepository
 import dev.hai.emojibattery.data.VolioStickerRepository
 import dev.hai.emojibattery.data.volio.VolioConstants
 import dev.hai.emojibattery.model.AppUiState
+import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.AchievementTask
 import dev.hai.emojibattery.model.BatteryIconConfig
 import dev.hai.emojibattery.model.CustomizeEntry
@@ -41,6 +46,10 @@ import kotlinx.coroutines.withContext
 
 class EmojiBatteryViewModel(application: Application) : AndroidViewModel(application) {
     private var homeCategoryLoadJob: Job? = null
+
+    companion object {
+        private const val TAG = "HomeFeed"
+    }
 
     private val _uiState = MutableStateFlow(
         AppUiState(
@@ -75,19 +84,36 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
             )
         }
         viewModelScope.launch {
-            runCatching { VolioHomeRepository.fetchCategoryTabs() }
-                .onSuccess { remoteTabs ->
-                    if (remoteTabs.isNotEmpty()) {
-                        _uiState.update {
-                            it.copy(
-                                homeTabs = remoteTabs,
-                                selectedHomeCategoryId = remoteTabs.first().id,
-                                homeItemsByCategoryId = emptyMap(),
-                            )
-                        }
-                        loadHomeCategoryItems(remoteTabs.first().id)
-                    }
+            Log.d(TAG, "init: home tabs — PAD → bundled_volio → SampleCatalog (no Volio API)")
+            val app = getApplication<Application>()
+            val padTabs = runCatching { PadVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
+            val bundledTabs = if (padTabs.isEmpty()) {
+                runCatching { BundledVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
+            } else {
+                emptyList()
+            }
+            val tabs = when {
+                padTabs.isNotEmpty() -> {
+                    Log.d(TAG, "init: tabs from PAD count=${padTabs.size} firstId=${padTabs.first().id}")
+                    padTabs
                 }
+                bundledTabs.isNotEmpty() -> {
+                    Log.d(TAG, "init: tabs from bundled assets count=${bundledTabs.size} firstId=${bundledTabs.first().id}")
+                    bundledTabs
+                }
+                else -> {
+                    Log.w(TAG, "init: no PAD/bundled catalog — SampleCatalog tabs")
+                    HomeCatalogRepository.categoryTabs()
+                }
+            }
+            _uiState.update {
+                it.copy(
+                    homeTabs = tabs,
+                    selectedHomeCategoryId = tabs.first().id,
+                    homeItemsByCategoryId = emptyMap(),
+                )
+            }
+            loadHomeCategoryItems(tabs.first().id)
         }
     }
 
@@ -168,6 +194,10 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         _uiState.update { it.copy(infoMessage = null) }
     }
 
+    fun postInfoMessage(message: String) {
+        _uiState.update { it.copy(infoMessage = message) }
+    }
+
     fun selectMainSection(section: MainSection) {
         _uiState.update { it.copy(activeMainSection = section) }
     }
@@ -186,20 +216,39 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         homeCategoryLoadJob = viewModelScope.launch {
             _uiState.update { it.copy(homeCategoryLoadingId = categoryId) }
             val items = withContext(Dispatchers.IO) {
-                runCatching {
-                    if (isVolioCategoryId(categoryId)) {
-                        VolioHomeRepository.fetchItemsForCategory(categoryId)
-                    } else {
-                        HomeCatalogRepository.loadItemsForCategory(categoryId)
+                val app = getApplication<Application>()
+                val uuidCategory = isVolioCategoryId(categoryId)
+                Log.d(TAG, "loadHomeCategoryItems: categoryId=$categoryId offlineStore=$uuidCategory")
+                when {
+                    !uuidCategory -> {
+                        Log.d(TAG, "loadHomeCategoryItems: HomeCatalogRepository (sample ids)")
+                        runCatching { HomeCatalogRepository.loadItemsForCategory(categoryId) }
+                            .getOrElse { emptyList() }
                     }
-                }.getOrElse {
-                    if (isVolioCategoryId(categoryId)) {
-                        emptyList()
-                    } else {
-                        HomeCatalogRepository.loadItemsForCategory(categoryId)
+                    else -> {
+                        val padItems = runCatching { PadVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
+                            .getOrElse { emptyList() }
+                            .takeIf { it.isNotEmpty() }
+                        val merged = padItems
+                            ?: runCatching { BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
+                                .getOrElse { emptyList() }
+                                .takeIf { it.isNotEmpty() }
+                            ?: emptyList()
+                        when {
+                            padItems != null -> Log.d(TAG, "loadHomeCategoryItems: items from PAD count=${merged.size}")
+                            merged.isNotEmpty() -> Log.d(TAG, "loadHomeCategoryItems: items from bundled assets count=${merged.size}")
+                            else -> Log.w(TAG, "loadHomeCategoryItems: no PAD/bundled items for $categoryId")
+                        }
+                        HomeStoreLocalImageResolver.enrichItems(app, merged)
                     }
                 }
             }
+            val first = items.firstOrNull()
+            Log.d(
+                TAG,
+                "loadHomeCategoryItems: done categoryId=$categoryId count=${items.size} " +
+                    "firstThumbBlank=${first?.thumbnailUrl.isNullOrBlank()} firstTitle=${first?.title}",
+            )
             _uiState.update { state ->
                 state.copy(
                     homeItemsByCategoryId = state.homeItemsByCategoryId + (categoryId to items),
@@ -214,6 +263,35 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
 
     fun selectStatusTab(tab: StatusBarTab) {
         _uiState.update { it.copy(activeStatusBarTab = tab) }
+    }
+
+    /**
+     * Same store feed as the original app ([hungvv.OS.d] → [EmojiBatteryRepositoryImpl]):
+     * `List<EmojiBatteryModel>` for the status-bar editor. We map to [HomeBatteryItem] (Volio public API + bundled fallback).
+     */
+    fun loadStatusBarCatalog() {
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val categoryId = _uiState.value.homeTabs.firstOrNull()?.id
+                ?: withContext(Dispatchers.IO) {
+                    BundledVolioHomeRepository.fetchCategoryTabs(app).firstOrNull()?.id
+                }
+            if (categoryId == null) {
+                Log.w(TAG, "loadStatusBarCatalog: no category id (home tabs empty, no bundled categories)")
+                return@launch
+            }
+            val remote = runCatching {
+                withContext(Dispatchers.IO) { VolioHomeRepository.fetchItemsForCategory(categoryId) }
+            }.getOrNull()
+            val items: List<HomeBatteryItem> = when {
+                !remote.isNullOrEmpty() -> remote
+                else -> withContext(Dispatchers.IO) {
+                    BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId)
+                }
+            }
+            Log.d(TAG, "loadStatusBarCatalog: categoryId=$categoryId count=${items.size}")
+            _uiState.update { it.copy(statusBarCatalogItems = items) }
+        }
     }
 
     fun setAccessibilityGranted(granted: Boolean) {
@@ -237,6 +315,28 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         val theme = SampleCatalog.themePresets.firstOrNull { it.id == themeId } ?: return
         updateTheme(theme)
     }
+
+    /** Theme tab — background color row (original layoutColorBackground). */
+    fun setThemeBackgroundColor(color: Long) = updateConfig { copy(backgroundColor = color) }
+
+    /** Theme tab — remote / legacy template image URL (clears local drawable). */
+    fun setBackgroundTemplatePhoto(url: String?) = updateConfig {
+        copy(
+            backgroundTemplatePhotoUrl = url?.takeIf { it.isNotBlank() },
+            backgroundTemplateDrawableRes = null,
+        )
+    }
+
+    /** Theme tab — local template drawable ([R.drawable.theme_bg_template_XX], original ColorTemplate list). */
+    fun setBackgroundTemplateDrawable(drawableRes: Int?) = updateConfig {
+        copy(
+            backgroundTemplateDrawableRes = drawableRes?.takeIf { it != 0 },
+            backgroundTemplatePhotoUrl = null,
+        )
+    }
+
+    /** Percentage / accent color (see decompiled layout_choose_color_config — status bar editor). */
+    fun setAccentColor(color: Long) = updateConfig { copy(accentColor = color) }
 
     fun setStatusBarHeight(value: Float) = updateConfig { copy(statusBarHeight = value) }
 
@@ -671,6 +771,8 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
                 themePresetId = theme.id,
                 accentColor = theme.accent,
                 backgroundColor = theme.background,
+                backgroundTemplatePhotoUrl = null,
+                backgroundTemplateDrawableRes = null,
             )
         }
     }

@@ -1,0 +1,327 @@
+{
+  "data": [
+    {
+      "id": "a79d71e7-fea3-44e5-b8d1-746403126373",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 1,
+      "name": "Food_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_01.png",
+        "slug_search": "cake, cute, yellow"
+      }
+    },
+    {
+      "id": "6f364df3-3fcf-4ca2-b451-a14c621b45a7",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 2,
+      "name": "Food_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469462_Food_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469462_Food_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_02.png",
+        "slug_search": "food, cute, yellow"
+      }
+    },
+    {
+      "id": "5f829214-3193-4d2a-86ae-3eb072903964",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 3,
+      "name": "Food_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_03.png",
+        "slug_search": "food, cute, hamburger "
+      }
+    },
+    {
+      "id": "99d26d54-9a49-4143-9cd3-3d1e8609c4a0",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 4,
+      "name": "Food_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_04.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "ca5717a2-4e6b-4d69-8751-dbdba83ff98e",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 5,
+      "name": "Food_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469467_Food_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469467_Food_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_05.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "8ce26760-bde3-4af7-a2b6-f980b186fd8b",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 6,
+      "name": "Food_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_06.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "f21f0d47-5886-4208-8509-3c743a90f49b",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 7,
+      "name": "Food_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_07.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "b49c2cfd-fc81-4ef0-8f16-97798790f7c3",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 8,
+      "name": "Food_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_08.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "830d6f7c-6e3d-49aa-bb1e-2fca2d2f4166",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 9,
+      "name": "Food_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469467_Food_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469467_Food_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_09.png"
+      }
+    },
+    {
+      "id": "ab2f989c-743b-4ad7-b486-ce3a33097769",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 10,
+      "name": "Food_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_10.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "c086e08d-032c-4d1a-a822-94c98ee54b48",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 31,
+      "name": "Food_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_11.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "ffecf7af-b14f-47d4-891c-f860d33328af",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 32,
+      "name": "Food_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_12.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "0f241056-a9c6-4ad0-ad23-f60cb226a485",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 33,
+      "name": "Food_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_13.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "db2b3b1b-d552-49c1-a831-218dab049598",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 34,
+      "name": "Food_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469462_Food_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469462_Food_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_14.png"
+      }
+    },
+    {
+      "id": "5081f945-f60c-4025-a1c0-9227287e1871",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 35,
+      "name": "Food_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_15.png"
+      }
+    },
+    {
+      "id": "a5945064-e52b-4f0b-8d89-340571d01536",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 36,
+      "name": "Food_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469462_Food_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469462_Food_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_16.png"
+      }
+    },
+    {
+      "id": "b8d265e0-ead3-4044-82a3-015eb462d2c4",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 37,
+      "name": "Food_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_17.png"
+      }
+    },
+    {
+      "id": "04169892-4036-4b7a-9c9f-40fa178a7e2e",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 38,
+      "name": "Food_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_18.png"
+      }
+    },
+    {
+      "id": "f34ebfd1-23de-4ac7-a046-868bcd19237d",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 39,
+      "name": "Food_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_19.png",
+        "slug_search": "food, cute"
+      }
+    },
+    {
+      "id": "e677c3d4-84b4-4968-9847-80e8961d9a39",
+      "category_id": "04cf9760-e5b8-4098-b373-b7826304b755",
+      "priority": 40,
+      "name": "Food_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749469457_Food_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469457_Food_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469536_Food_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749469511_Food_20.png",
+        "slug_search": "food, cute"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 20,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

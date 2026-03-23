@@ -1,0 +1,333 @@
+{
+  "data": [
+    {
+      "id": "9cb2696e-d6bd-4f07-9e3b-68b2a64e4d89",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 2,
+      "name": "battery_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600305_bettry_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_01.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "ee600cac-7824-4d3c-b7ac-f68fe9c97580",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 3,
+      "name": "battery_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_02.png",
+        "slug_search": "Ballerina cappuccina, coffee, brainrot"
+      }
+    },
+    {
+      "id": "a7a58476-408a-4b3a-aa99-bcf9ec45aa81",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 4,
+      "name": "battery_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_03.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "cafbb64f-5d9c-49a5-a441-c8da2bb6b2bd",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 5,
+      "name": "battery_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600300_bettry_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_04.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "f972008f-bfa1-480d-bda0-38e968b597f6",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 6,
+      "name": "battery_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600206_battery_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600206_battery_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600300_bettry_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_05.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "5549d025-f5b1-40bb-9031-a224559eb00e",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 7,
+      "name": "battery_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600206_battery_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600206_battery_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600300_bettry_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_06.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "17c0f013-a570-4d0b-b193-fbde8d6bd62b",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 8,
+      "name": "battery_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_07.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "90004e6f-f888-44f4-83fa-c6334567fec3",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 9,
+      "name": "battery_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_08.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "96c190ce-deaf-47cd-9e97-126c77ea60ca",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 10,
+      "name": "battery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600206_battery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600206_battery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_09.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "831d2244-4b1a-49d6-a696-8684e47ab33e",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 11,
+      "name": "battery_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_10.png",
+        "slug_search": "brainrot, capybara"
+      }
+    },
+    {
+      "id": "5cd30105-1959-450f-8bcd-46259cc71e5e",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 12,
+      "name": "battery_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_11.png",
+        "slug_search": "brainrot, Tralalero Tralala"
+      }
+    },
+    {
+      "id": "e01df0eb-c213-44ec-8242-271260f3c3d4",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 13,
+      "name": "battery_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600211_battery_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600211_battery_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_12.png",
+        "slug_search": "brainrot, tung tung tung sahur"
+      }
+    },
+    {
+      "id": "0f0d65f4-e13c-466c-a39c-6e7bf5b9d4c4",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 14,
+      "name": "battery_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600206_battery_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600206_battery_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_13.png",
+        "slug_search": "brainrot, tung tung tung sahur"
+      }
+    },
+    {
+      "id": "1c0f54c3-c710-417b-98aa-bc15acfeae36",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 15,
+      "name": "battery_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_14.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "2edbd4f9-2984-40d0-b9db-46a685179c21",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 16,
+      "name": "battery_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_15.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "15a6bef4-dc87-4d88-b295-7cf00e433f20",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 17,
+      "name": "battery_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_16.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "44b783c9-33aa-4a1b-a1fe-1faca7658cd6",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 18,
+      "name": "battery_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_17.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "6e791d29-1e8e-4979-aaa4-f4441d1492ce",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 19,
+      "name": "battery_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_18.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "7fa69dbd-9f11-42eb-a77f-9c444565cbe4",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 20,
+      "name": "battery_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600337_Emoji_19.png",
+        "slug_search": "brainrot"
+      }
+    },
+    {
+      "id": "f27598ca-cd89-4bfc-a3b2-729022953eb4",
+      "category_id": "68e6df58-8088-459c-9eb4-29cfe7e71b2a",
+      "priority": 21,
+      "name": "battery_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-04/1751600201_battery_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600201_battery_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600301_bettry_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-07-04/1751600338_Emoji_20.png",
+        "slug_search": "Ballerina cappuccina, coffee, brainrot"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 20,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

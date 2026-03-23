@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified port of ic_headeline_text (section rail for seekbar/color rows). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="4dp"
+    android:height="12dp"
+    android:viewportWidth="4"
+    android:viewportHeight="12">
+    <path
+        android:fillColor="#FFD47DFE"
+        android:pathData="M0.5,2c0,-0.83 0.67,-1.5 1.5,-1.5s1.5,0.67 1.5,1.5v8c0,0.83 -0.67,1.5 -1.5,1.5s-1.5,-0.67 -1.5,-1.5z" />
+</vector>

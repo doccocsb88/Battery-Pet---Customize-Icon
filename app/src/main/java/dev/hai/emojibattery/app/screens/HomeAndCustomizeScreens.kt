@@ -4,6 +4,7 @@ package dev.hai.emojibattery.app.screens
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -38,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
@@ -77,6 +79,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
@@ -90,6 +93,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -151,7 +155,9 @@ import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.ui.navigation.AppRoute
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -170,31 +176,66 @@ internal fun HomeScreen(
         ?: SampleCatalog.homeCategories.map { HomeCategoryTab(it.id, it.title) }
     if (categories.isEmpty()) return
 
-    val initialPage = remember(uiState.selectedHomeCategoryId, categories) {
-        categories.indexOfFirst { it.id == uiState.selectedHomeCategoryId }
+    key(categories.joinToString { it.id }) {
+        val startPage = categories.indexOfFirst { it.id == uiState.selectedHomeCategoryId }
             .coerceIn(0, (categories.size - 1).coerceAtLeast(0))
-    }
-    val pagerState = rememberPagerState(
-        initialPage = initialPage,
-        pageCount = { categories.size },
-    )
-    val coroutineScope = rememberCoroutineScope()
+        val pagerState = rememberPagerState(
+            initialPage = startPage,
+            pageCount = { categories.size },
+        )
+        val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(categories.map { it.id }.joinToString(), uiState.selectedHomeCategoryId) {
-        val idx = categories.indexOfFirst { it.id == uiState.selectedHomeCategoryId }.coerceAtLeast(0)
-        if (pagerState.currentPage != idx) {
-            pagerState.scrollToPage(idx)
-        }
-    }
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.settledPage }
-            .distinctUntilChanged()
-            .collect { page ->
-                categories.getOrNull(page)?.id?.let(onSelectCategory)
+        LaunchedEffect(categories.map { it.id }.joinToString(), uiState.selectedHomeCategoryId) {
+            val idx = categories.indexOfFirst { it.id == uiState.selectedHomeCategoryId }.coerceAtLeast(0)
+            if (pagerState.currentPage != idx) {
+                pagerState.scrollToPage(idx)
             }
-    }
+        }
 
+        LaunchedEffect(pagerState, categories) {
+            snapshotFlow { pagerState.settledPage }
+                .distinctUntilChanged()
+                .collect { page ->
+                    val id = categories.getOrNull(page)?.id ?: return@collect
+                    if (id != uiState.selectedHomeCategoryId) {
+                        onSelectCategory(id)
+                    }
+                }
+        }
+
+        HomeScreenScaffold(
+            categories = categories,
+            pagerState = pagerState,
+            coroutineScope = coroutineScope,
+            uiState = uiState,
+            onSelectCategory = onSelectCategory,
+            onOpenStatusBarCustom = onOpenStatusBarCustom,
+            onOpenLegacyBattery = onOpenLegacyBattery,
+            onOpenSearch = onOpenSearch,
+            onOpenSticker = onOpenSticker,
+            onOpenBatteryTroll = onOpenBatteryTroll,
+            onOpenSettings = onOpenSettings,
+            onOpenFeedback = onOpenFeedback,
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
+@Composable
+private fun HomeScreenScaffold(
+    categories: List<HomeCategoryTab>,
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+    uiState: AppUiState,
+    onSelectCategory: (String) -> Unit,
+    onOpenStatusBarCustom: () -> Unit,
+    onOpenLegacyBattery: () -> Unit,
+    onOpenSearch: () -> Unit,
+    onOpenSticker: () -> Unit,
+    onOpenBatteryTroll: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenFeedback: () -> Unit,
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -277,6 +318,7 @@ internal fun HomeScreen(
                                     style = MaterialTheme.typography.titleLarge,
                                     modifier = Modifier.clickable {
                                         coroutineScope.launch {
+                                            onSelectCategory(category.id)
                                             pagerState.animateScrollToPage(index)
                                         }
                                     },
@@ -818,6 +860,7 @@ internal fun HomeBatteryGridCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .padding(horizontal = 7.dp, vertical = 7.dp)
@@ -832,8 +875,23 @@ internal fun HomeBatteryGridCard(
                 .border(width = 1.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.65f), shape = RoundedCornerShape(16.dp))
         ) {
             if (!item.thumbnailUrl.isNullOrBlank()) {
+                val request = ImageRequest.Builder(context)
+                    .data(item.thumbnailUrl)
+                    .listener(
+                        onError = { _, result ->
+                            Log.e(
+                                "HomeFeed",
+                                "Coil onError id=${item.id} url=${item.thumbnailUrl?.take(120)}",
+                                result.throwable,
+                            )
+                        },
+                        onSuccess = { _, _ ->
+                            Log.d("HomeFeed", "Coil onSuccess id=${item.id}")
+                        },
+                    )
+                    .build()
                 AsyncImage(
-                    model = item.thumbnailUrl,
+                    model = request,
                     contentDescription = item.title,
                     modifier = Modifier
                         .fillMaxSize()

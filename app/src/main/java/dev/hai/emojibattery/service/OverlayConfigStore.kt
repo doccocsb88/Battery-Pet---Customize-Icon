@@ -11,6 +11,10 @@ data class OverlaySnapshot(
     val batteryText: String,
     val accentColor: Long,
     val backgroundColor: Long,
+    /** Full-bleed status strip background when set (Theme background template). */
+    val backgroundTemplatePhotoUrl: String?,
+    /** Local drawable for theme template ([R.drawable.theme_bg_template_XX]); takes precedence over URL. */
+    val backgroundTemplateDrawableRes: Int?,
     val stickerEnabled: Boolean,
     val stickerGlyph: String,
     /** When set, overlay draws the Volio thumbnail instead of [stickerGlyph]. */
@@ -28,6 +32,8 @@ object OverlayConfigStore {
     private const val KEY_BATTERY_TEXT = "battery_text"
     private const val KEY_ACCENT = "accent"
     private const val KEY_BACKGROUND = "background"
+    private const val KEY_BACKGROUND_TEMPLATE_PHOTO = "background_template_photo"
+    private const val KEY_BACKGROUND_TEMPLATE_DRAWABLE = "background_template_drawable"
     private const val KEY_STICKER_ENABLED = "sticker_enabled"
     private const val KEY_STICKER_GLYPH = "sticker_glyph"
     private const val KEY_STICKER_THUMB_URL = "sticker_thumb_url"
@@ -45,6 +51,8 @@ object OverlayConfigStore {
             .putString(KEY_BATTERY_TEXT, "${battery.body} ${emoji.glyph}")
             .putLong(KEY_ACCENT, config.accentColor)
             .putLong(KEY_BACKGROUND, config.backgroundColor)
+            .putString(KEY_BACKGROUND_TEMPLATE_PHOTO, config.backgroundTemplatePhotoUrl.orEmpty())
+            .putInt(KEY_BACKGROUND_TEMPLATE_DRAWABLE, config.backgroundTemplateDrawableRes ?: 0)
             .apply()
     }
 
@@ -94,6 +102,8 @@ object OverlayConfigStore {
             batteryText = prefs.getString(KEY_BATTERY_TEXT, "").orEmpty(),
             accentColor = prefs.getLong(KEY_ACCENT, SampleCatalog.defaultConfig.accentColor),
             backgroundColor = prefs.getLong(KEY_BACKGROUND, SampleCatalog.defaultConfig.backgroundColor),
+            backgroundTemplatePhotoUrl = prefs.getString(KEY_BACKGROUND_TEMPLATE_PHOTO, null)?.takeIf { it.isNotBlank() },
+            backgroundTemplateDrawableRes = prefs.getInt(KEY_BACKGROUND_TEMPLATE_DRAWABLE, 0).takeIf { it != 0 },
             stickerEnabled = prefs.getBoolean(KEY_STICKER_ENABLED, false),
             stickerGlyph = prefs.getString(KEY_STICKER_GLYPH, "✨").orEmpty(),
             stickerThumbnailUrl = prefs.getString(KEY_STICKER_THUMB_URL, null)?.takeIf { it.isNotBlank() },

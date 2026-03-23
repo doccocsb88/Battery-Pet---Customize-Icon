@@ -3,6 +3,8 @@ package dev.hai.emojibattery.app
 import dev.hai.emojibattery.app.screens.*
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -12,7 +14,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -37,7 +41,9 @@ import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.locale.AppLanguageConfig
+import dev.hai.emojibattery.ui.accessibility.AccessibilityServiceUsageDialog
 import dev.hai.emojibattery.ui.navigation.AppRoute
+import co.q7labs.co.emoji.R
 
 @Composable
 fun EmojiBatteryApp(
@@ -60,6 +66,7 @@ fun EmojiBatteryApp(
         AppRoute.Gesture.route,
         AppRoute.Achievement.route,
     )
+    var showAccessibilityConsent by remember { mutableStateOf(false) }
 
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
@@ -107,11 +114,12 @@ fun EmojiBatteryApp(
             }
         },
     ) { padding ->
-        NavHost(
-            navController = navController,
-            startDestination = initialRoute ?: AppRoute.Splash.route,
-            modifier = Modifier.padding(padding),
-        ) {
+        Box(Modifier.padding(padding).fillMaxSize()) {
+            NavHost(
+                navController = navController,
+                startDestination = initialRoute ?: AppRoute.Splash.route,
+                modifier = Modifier.fillMaxSize(),
+            ) {
             composable(AppRoute.Splash.route) {
                 SplashRoute(
                     fastForward = uiState.splashDone,
@@ -182,8 +190,7 @@ fun EmojiBatteryApp(
                         if (isLast) navController.popBackStack()
                     },
                     onOpenAccessibility = {
-                        AccessibilityBridge.openSettings(context)
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        showAccessibilityConsent = true
                     },
                 )
             }
@@ -239,6 +246,9 @@ fun EmojiBatteryApp(
                 )
             }
             composable(AppRoute.StatusBarCustom.route) {
+                LaunchedEffect(Unit) {
+                    viewModel.loadStatusBarCatalog()
+                }
                 StatusBarCustomScreen(
                     uiState = uiState,
                     onBack = { navController.popBackStack() },
@@ -246,6 +256,10 @@ fun EmojiBatteryApp(
                     onSelectBattery = viewModel::selectBatteryPreset,
                     onSelectEmoji = viewModel::selectEmojiPreset,
                     onSelectTheme = viewModel::selectTheme,
+                    onSetThemeBackgroundColor = viewModel::setThemeBackgroundColor,
+                    onSetBackgroundTemplatePhoto = viewModel::setBackgroundTemplatePhoto,
+                    onSetBackgroundTemplateDrawable = viewModel::setBackgroundTemplateDrawable,
+                    onSetAccentColor = viewModel::setAccentColor,
                     onSetStatusBarHeight = viewModel::setStatusBarHeight,
                     onSetLeftMargin = viewModel::setStatusBarLeftMargin,
                     onSetRightMargin = viewModel::setStatusBarRightMargin,
@@ -263,10 +277,24 @@ fun EmojiBatteryApp(
                             OverlayAccessibilityService.requestRefresh(context)
                         }
                     },
-                    onAccessibilityChanged = {
-                        AccessibilityBridge.openSettings(context)
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                    onAccessibilityChanged = { checked ->
+                        if (!uiState.accessibilityGranted && checked) {
+                            showAccessibilityConsent = true
+                        } else {
+                            AccessibilityBridge.openSettings(context)
+                            viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        }
                     },
+                )
+            }
+            composable(AppRoute.BackgroundTemplateList.route) {
+                LaunchedEffect(Unit) {
+                    viewModel.loadStatusBarCatalog()
+                }
+                BackgroundTemplateListScreen(
+                    uiState = uiState,
+                    onBack = { navController.popBackStack() },
+                    onSelectPhotoUrl = viewModel::setBackgroundTemplatePhoto,
                 )
             }
             composable(AppRoute.LegacyBattery.route) {
@@ -319,8 +347,7 @@ fun EmojiBatteryApp(
                     onSelectRating = viewModel::setRatingSelection,
                     onCheckUpdate = viewModel::checkForUpdates,
                     onToggleAccessibility = {
-                        AccessibilityBridge.openSettings(context)
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        showAccessibilityConsent = true
                     },
                 )
             }
@@ -380,9 +407,13 @@ fun EmojiBatteryApp(
                     uiState = uiState,
                     onBack = { navController.popBackStack() },
                     onSelectTemplate = viewModel::selectRealTimeTemplate,
-                    onToggleAccessibility = {
-                        AccessibilityBridge.openSettings(context)
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                    onToggleAccessibility = { checked ->
+                        if (!uiState.accessibilityGranted && checked) {
+                            showAccessibilityConsent = true
+                        } else {
+                            AccessibilityBridge.openSettings(context)
+                            viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        }
                     },
                     onApply = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
@@ -406,9 +437,13 @@ fun EmojiBatteryApp(
                         navController.navigate(AppRoute.Tutorial.route)
                     },
                     onRefreshBatteryTrollCatalog = viewModel::refreshBatteryTrollCatalog,
-                    onToggleAccessibility = {
-                        AccessibilityBridge.openSettings(context)
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                    onToggleAccessibility = { checked ->
+                        if (!uiState.accessibilityGranted && checked) {
+                            showAccessibilityConsent = true
+                        } else {
+                            AccessibilityBridge.openSettings(context)
+                            viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        }
                     },
                     onApply = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
@@ -439,9 +474,13 @@ fun EmojiBatteryApp(
                         navController.navigate(AppRoute.Tutorial.route)
                     },
                     onRefreshStickerCatalog = viewModel::refreshStickerCatalog,
-                    onToggleAccessibility = {
-                        AccessibilityBridge.openSettings(context)
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                    onToggleAccessibility = { checked ->
+                        if (!uiState.accessibilityGranted && checked) {
+                            showAccessibilityConsent = true
+                        } else {
+                            AccessibilityBridge.openSettings(context)
+                            viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        }
                     },
                     onSave = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
@@ -481,6 +520,21 @@ fun EmojiBatteryApp(
                         subtitle = "Unknown feature route.",
                     )
                 }
+            }
+        }
+            if (showAccessibilityConsent) {
+                AccessibilityServiceUsageDialog(
+                    onDismiss = { showAccessibilityConsent = false },
+                    onConfirmOpenSettings = {
+                        showAccessibilityConsent = false
+                        AccessibilityBridge.openSettings(context)
+                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                    },
+                    onMissingConsent = {
+                        val msg = rawContext.getString(R.string.please_read_and_click) + " " + rawContext.getString(R.string.i_agree)
+                        viewModel.postInfoMessage(msg)
+                    },
+                )
             }
         }
     }

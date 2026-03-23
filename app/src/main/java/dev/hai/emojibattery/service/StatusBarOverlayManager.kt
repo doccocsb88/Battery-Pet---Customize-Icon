@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextClock
 import android.widget.TextView
 import coil.load
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 
 class StatusBarOverlayManager(
@@ -30,6 +31,7 @@ class StatusBarOverlayManager(
     private val windowManager = context.getSystemService(WindowManager::class.java)
 
     private val root = FrameLayout(context)
+    private val statusBackgroundImageView = ImageView(context)
     private val statusRow = LinearLayout(context)
     private val leftCluster = LinearLayout(context)
     private val rightCluster = LinearLayout(context)
@@ -85,6 +87,15 @@ class StatusBarOverlayManager(
         rightCluster.addView(batteryView)
         statusRow.addView(rightCluster)
 
+        statusBackgroundImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        statusBackgroundImageView.visibility = View.GONE
+        root.addView(
+            statusBackgroundImageView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+            ),
+        )
         root.addView(statusRow)
         val stickerLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
             topMargin = 64
@@ -120,7 +131,31 @@ class StatusBarOverlayManager(
             return
         }
         root.alpha = 1f
-        statusRow.setBackgroundColor(snapshot.backgroundColor.toInt())
+        val templateDrawableRes = snapshot.backgroundTemplateDrawableRes?.takeIf { it != 0 }
+        val templateUrl = snapshot.backgroundTemplatePhotoUrl?.takeIf { it.isNotBlank() }
+        // Prefer Volio `photo` URL (raster) over local XML shape drawables.
+        when {
+            templateUrl != null -> {
+                statusBackgroundImageView.visibility = View.VISIBLE
+                statusBackgroundImageView.load(templateUrl) {
+                    crossfade(true)
+                }
+                statusRow.setBackgroundColor(
+                    ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                )
+            }
+            templateDrawableRes != null -> {
+                statusBackgroundImageView.visibility = View.VISIBLE
+                statusBackgroundImageView.setImageResource(templateDrawableRes)
+                statusRow.setBackgroundColor(
+                    ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                )
+            }
+            else -> {
+                statusBackgroundImageView.visibility = View.GONE
+                statusRow.setBackgroundColor(snapshot.backgroundColor.toInt())
+            }
+        }
         batteryView.text = "${snapshot.batteryText} ${liveStatus.batteryPercent}%${if (liveStatus.charging) " +" else ""}"
         batteryView.setTextColor(snapshot.accentColor.toInt())
         clockView.setTextColor("#111111".toColorInt())

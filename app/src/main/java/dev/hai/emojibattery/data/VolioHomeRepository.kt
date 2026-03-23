@@ -1,6 +1,6 @@
 package dev.hai.emojibattery.data
 
-import co.q7labs.co.emoji.R
+import android.util.Log
 import dev.hai.emojibattery.data.volio.VolioConstants
 import dev.hai.emojibattery.data.volio.VolioNetwork
 import dev.hai.emojibattery.model.HomeBatteryItem
@@ -11,9 +11,16 @@ import dev.hai.emojibattery.model.HomeCategoryTab
  */
 object VolioHomeRepository {
 
+    private const val TAG = "HomeFeed"
+
     suspend fun fetchCategoryTabs(): List<HomeCategoryTab> {
         val response = VolioNetwork.api.categoriesAll(VolioConstants.PARENT_APP_ID)
+        Log.d(
+            TAG,
+            "categoriesAll status=${response.status} message=${response.message} rawCount=${response.data?.size}",
+        )
         val rows = response.data.orEmpty().filter { it.status != false }
+        Log.d(TAG, "categoriesAll activeCount=${rows.size} first=${rows.firstOrNull()?.id} ${rows.firstOrNull()?.name}")
         return rows.map { HomeCategoryTab(id = it.id, title = it.name.orEmpty()) }
     }
 
@@ -24,16 +31,11 @@ object VolioHomeRepository {
             limit = VolioConstants.ITEM_PAGE_SIZE,
         )
         val rows = response.data.orEmpty()
-        return rows.map { dto ->
-            HomeBatteryItem(
-                id = dto.id,
-                categoryId = categoryId,
-                title = dto.name.orEmpty(),
-                previewRes = R.drawable.ic_item_charge,
-                thumbnailUrl = dto.thumbnail?.takeIf { it.isNotBlank() },
-                premium = dto.isPro == true,
-                animated = dto.thumbnail?.endsWith(".gif", ignoreCase = true) == true,
-            )
-        }.shuffled()
+        Log.d(
+            TAG,
+            "items categoryId=$categoryId count=${rows.size} status=${response.status} " +
+                "firstThumb=${rows.firstOrNull()?.thumbnail?.take(96)}",
+        )
+        return rows.map { dto -> dto.toHomeBatteryItem(categoryId) }.shuffled()
     }
 }

@@ -81,6 +81,18 @@
     <string name="accessibility_bridge_active">Overlay service is active and ready to apply.</string>
     <string name="accessibility_bridge_disabled">Open Accessibility Settings to enable the overlay service.</string>
 
+    <!-- Accessibility service usage dialog (DialogRequestAccessibilityService / dialog_request_accessibility_service.xml) -->
+    <string name="accessibility_service_usage">Accessibility Service Usage</string>
+    <string name="display_label">Display</string>
+    <string name="please_agree_the_terms_of_service">Please agree the Terms of Service</string>
+    <string name="this_app_required_the_accessibility_services_permission_for">This app required the Accessibility Services permission for</string>
+    <string name="view_on_mobile_screen_and_to_detect_gestures_on_the_status_bar">view on mobile screen and to detect gestures on the status bar.</string>
+    <string name="start_accessibility_actions_action_to_home_back_show_recent_screen">Start accessibility actions: action to Home, Back, show Recent screen.</string>
+    <string name="the_application_commits_not_to_collect_or_share_any_user_information_about_this_accessibility_right">The application commits not to collect or share any user information about this accessibility right.</string>
+    <string name="i_have_read_and_agree_terms_of_service">I have read and agree terms of service</string>
+    <string name="please_read_and_click">Please read and click</string>
+    <string name="i_agree">I Agree</string>
+
     <!-- Overlay state -->
     <string name="overlay_active">Overlay active</string>
     <string name="overlay_inactive">Overlay inactive</string>
@@ -156,16 +168,26 @@
     <string name="achievement_progress_fraction">%1$d/%2$d</string>
 
     <!-- Status bar custom -->
-    <string name="status_bar_custom_title">Status Bar Custom</string>
+    <!-- Matches decompiled @string/status_bar_custom -->
+    <string name="status_bar_custom_title">Status Bar custom</string>
     <string name="status_bar_height">Status bar height</string>
     <string name="status_bar_left_margin">Status bar left margin</string>
     <string name="status_bar_right_margin">Status bar right margin</string>
     <string name="status_bar_icon_color">Status bar icon color</string>
     <string name="status_bar_background_color">Status bar background color</string>
+    <!-- Theme tab section title (original ColorTemplateFragment) -->
+    <string name="theme_background_color">Background color</string>
+    <string name="background_template">Background template</string>
+    <string name="background_template_empty">No background templates loaded. Check your connection or bundled catalog.</string>
     <string name="more_template">More template</string>
     <string name="customize_icon_heading">Customize Icon</string>
     <string name="restore_applied">Restore Applied</string>
     <string name="show_percentage">Show percentage</string>
+    <string name="percentage">Percentage</string>
+    <string name="color_percentage">Percentage Color</string>
+    <string name="view_more">View More</string>
+    <string name="show_more">Show more</string>
+    <string name="status_bar_value_dp">%1$ddp</string>
     <string name="animate_charge">Animate charge</string>
     <string name="show_stroke">Show stroke</string>
     <string name="battery_text_size">Battery text size</string>

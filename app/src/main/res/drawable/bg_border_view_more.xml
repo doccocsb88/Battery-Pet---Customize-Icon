@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Port of decompiled bg_border_black_99.xml (View More on SubCustomBattery). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="99dp" />
+    <gradient
+        android:angle="-90"
+        android:endColor="#ffffff"
+        android:startColor="#66ffffff" />
+    <stroke
+        android:width="1dp"
+        android:color="#d47dfe" />
+</shape>

@@ -145,6 +145,12 @@ data class HomeBatteryItem(
     val previewRes: Int,
     /** Remote preview from Volio CDN (original app); when set, UI prefers this over [previewRes]. */
     val thumbnailUrl: String? = null,
+    /** Art for Battery tab / battery column — from [VolioItemCustomFieldsDto.battery], else [thumbnailUrl]. */
+    val batteryArtUrl: String? = null,
+    /** Art for Emoji tab / emoji column — from [VolioItemCustomFieldsDto.emoji], else [thumbnailUrl]. */
+    val emojiArtUrl: String? = null,
+    /** Full background image for Theme → background template (Volio `photo`). */
+    val backgroundPhotoUrl: String? = null,
     val premium: Boolean = false,
     val animated: Boolean = false,
 )
@@ -194,6 +200,16 @@ data class BatteryIconConfig(
     val showStroke: Boolean = true,
     val accentColor: Long,
     val backgroundColor: Long,
+    /**
+     * Optional full-width status-bar background image URL (legacy / remote).
+     * Prefer [backgroundTemplateDrawableRes] for the Theme tab (matches original asset templates).
+     */
+    val backgroundTemplatePhotoUrl: String? = null,
+    /**
+     * Local background template preview (Theme tab) — `R.drawable.theme_bg_template_XX`,
+     * mirroring original `ColorTemplateLocalModel` indices 0–19.
+     */
+    val backgroundTemplateDrawableRes: Int? = null,
 )
 
 data class AppUiState(
@@ -211,6 +227,11 @@ data class AppUiState(
     /** Lazy-loaded, shuffled items per category id (mirrors SubHome per-category load). */
     val homeItemsByCategoryId: Map<String, List<HomeBatteryItem>> = emptyMap(),
     val homeCategoryLoadingId: String? = null,
+    /**
+     * Volio store emoji-battery rows for the Status Bar editor (decompiled: [EmojiBatteryRepository] + [hungvv.OS]).
+     * Shared by Battery / Emoji tabs like the original [EmojiBatteryModel] list.
+     */
+    val statusBarCatalogItems: List<HomeBatteryItem> = emptyList(),
     val activeStatusBarTab: StatusBarTab = StatusBarTab.Battery,
     val editingConfig: BatteryIconConfig,
     val appliedConfig: BatteryIconConfig,

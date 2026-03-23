@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "EmojiBatteryPort"
 include(":app")
+include(":store_pack")

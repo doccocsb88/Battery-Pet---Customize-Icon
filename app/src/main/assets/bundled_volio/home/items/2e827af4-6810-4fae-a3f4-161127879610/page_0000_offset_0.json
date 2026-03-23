@@ -1,0 +1,477 @@
+{
+  "data": [
+    {
+      "id": "f8b849a5-f5df-41cb-ab8d-b1c2638fb405",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 1,
+      "name": "BatteryIcon_Nature_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_01.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "7ac431d4-c37b-4794-85e4-411e840ee717",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 2,
+      "name": "BatteryIcon_Nature_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_02.png",
+        "slug_search": "nature, sea"
+      }
+    },
+    {
+      "id": "f510eacd-a5eb-4a67-bb84-38fc9ba57a13",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 3,
+      "name": "BatteryIcon_Nature_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_03.png",
+        "slug_search": "nature, mountain"
+      }
+    },
+    {
+      "id": "419e40ca-7717-4eaa-925e-f9dab67c431f",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 4,
+      "name": "BatteryIcon_Nature_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_04.png",
+        "slug_search": "nature, sun"
+      }
+    },
+    {
+      "id": "3945297d-1f6f-4068-94d6-16fbfdfffcf1",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 5,
+      "name": "BatteryIcon_Nature_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_05.png",
+        "slug_search": "nature, flower"
+      }
+    },
+    {
+      "id": "bdb4a762-76cb-4899-9403-94253d8cb90b",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 6,
+      "name": "BatteryIcon_Nature_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_06.png",
+        "slug_search": "nature, sun"
+      }
+    },
+    {
+      "id": "b13efc34-f273-4475-a6e8-4a81aa4b7824",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 7,
+      "name": "BatteryIcon_Nature_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_07.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "f6eb7a37-cef8-477b-9d03-5d3e889326f2",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 8,
+      "name": "BatteryIcon_Nature_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134385_Icon_Nature_08.png",
+        "slug_search": "nature, beach"
+      }
+    },
+    {
+      "id": "86597a92-d602-4481-ad48-d5d3f949a332",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 9,
+      "name": "BatteryIcon_Nature_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_09.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "b6072c2e-ad71-4c6f-a0f3-03401f0e28f9",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 10,
+      "name": "BatteryIcon_Nature_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134339_BatteryIcon_Nature_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134339_BatteryIcon_Nature_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_10.png",
+        "slug_search": "nature,winter"
+      }
+    },
+    {
+      "id": "7c1e2ea1-c6c9-4f1a-82a1-57c634eb33d1",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 11,
+      "name": "BatteryIcon_Nature_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134385_Icon_Nature_11.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "46ea488b-5223-4254-b94b-cc289f128ddd",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 12,
+      "name": "BatteryIcon_Nature_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_12.png",
+        "slug_search": "nature, autumn "
+      }
+    },
+    {
+      "id": "1daf4526-5af0-41f9-8b8c-0d68975195ca",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 13,
+      "name": "BatteryIcon_Nature_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_13.png",
+        "slug_search": "nature, autumn"
+      }
+    },
+    {
+      "id": "5b606545-f2d8-43d5-b83b-97ff0af78d76",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 14,
+      "name": "BatteryIcon_Nature_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_14.png",
+        "slug_search": "nature, flower, butterfly"
+      }
+    },
+    {
+      "id": "d33d41c5-04f1-46f2-8b1c-72910b8c0a02",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 15,
+      "name": "BatteryIcon_Nature_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134339_BatteryIcon_Nature_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134339_BatteryIcon_Nature_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_15.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "4d75377f-a6c2-42b1-a3f2-bc91a02c38f1",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 16,
+      "name": "BatteryIcon_Nature_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_16.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "571665d6-f25d-4b17-ac79-6b1e497bf677",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 17,
+      "name": "BatteryIcon_Nature_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_17.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "f8dd7d75-0137-433a-8967-07be745567d3",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 18,
+      "name": "BatteryIcon_Nature_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_18.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "08e47d6a-742d-4fc4-9587-47fdb3374952",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 19,
+      "name": "BatteryIcon_Nature_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_19.png",
+        "slug_search": "sunset, beach, nature"
+      }
+    },
+    {
+      "id": "bc31c9cc-ec2a-4c85-abdc-c8298ef1b56b",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 20,
+      "name": "BatteryIcon_Nature_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134339_BatteryIcon_Nature_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134339_BatteryIcon_Nature_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_20.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "98259d2c-a352-49cc-ad03-b58c03b19306",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 21,
+      "name": "BatteryIcon_Nature_21",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_21.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_21.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_21.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_21.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "86927078-fd31-49b9-9281-a6733bb86b4b",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 22,
+      "name": "BatteryIcon_Nature_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_23.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_23.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_23.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "0afb9684-179c-4fc0-b6c3-06b09fd71ae1",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 23,
+      "name": "BatteryIcon_Nature_24",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_24.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_24.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_24.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_24.png",
+        "slug_search": "nature, sunrise"
+      }
+    },
+    {
+      "id": "96dfcc9a-1562-4e6c-8cca-bb16686a43ae",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 24,
+      "name": "BatteryIcon_Nature_25",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_25.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_25.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_25.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_25.png",
+        "slug_search": "nature, winter"
+      }
+    },
+    {
+      "id": "17e105c7-81dc-48ce-9164-cbc07b98f9f1",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 25,
+      "name": "BatteryIcon_Nature_26",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_26.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_26.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_26.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_26.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "e6261863-71c6-459c-a195-5fb096942ad9",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 26,
+      "name": "BatteryIcon_Nature_27",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_27.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_27.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_27.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134385_Icon_Nature_27.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "bf909061-7aef-49cd-9bed-e281d9f9ba25",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 27,
+      "name": "BatteryIcon_Nature_28",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_28.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_28.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_28.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_28.png",
+        "slug_search": "nature, beach"
+      }
+    },
+    {
+      "id": "6baa2e64-8c29-4123-9dd8-546b6679f0f9",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 28,
+      "name": "BatteryIcon_Nature_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_29.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_29.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_29.png",
+        "slug_search": "nature"
+      }
+    },
+    {
+      "id": "20e709fe-acac-40f9-bf24-742369ffc725",
+      "category_id": "2e827af4-6810-4fae-a3f4-161127879610",
+      "priority": 29,
+      "name": "BatteryIcon_Nature_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-17/1750134334_BatteryIcon_Nature_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134334_BatteryIcon_Nature_30.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134401_Battery_Nature_30.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-06-17/1750134380_Icon_Nature_30.png",
+        "slug_search": "nature"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 29,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

@@ -1,0 +1,613 @@
+{
+  "data": [
+    {
+      "id": "40a6c8af-e9db-45c2-8e71-1f0a0cfe10b3",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 1,
+      "name": "Battery_Icon_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_01.png"
+      }
+    },
+    {
+      "id": "ffbed747-d132-4986-a126-7cdb70efcdf5",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 2,
+      "name": "Battery_Icon_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_02.png"
+      }
+    },
+    {
+      "id": "da29ffd0-90b8-4baf-97fa-8b900274b174",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 3,
+      "name": "Battery_Icon_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_03.png"
+      }
+    },
+    {
+      "id": "3c5465a7-434d-4cfe-b006-0c277816ddbc",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 4,
+      "name": "Battery_Icon_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926533_Battery_Icon_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926533_Battery_Icon_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_04.png"
+      }
+    },
+    {
+      "id": "b564aa35-36cd-4d54-bbc1-0486b6b90a6e",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 5,
+      "name": "Battery_Icon_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_05.png"
+      }
+    },
+    {
+      "id": "faec1d16-76dd-4dde-9986-47403265ed68",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 6,
+      "name": "Battery_Icon_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_06.png"
+      }
+    },
+    {
+      "id": "9f9cc691-1afe-47bb-8dfe-f0fdbd345d45",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 7,
+      "name": "Battery_Icon_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_07.png"
+      }
+    },
+    {
+      "id": "029ba5ce-eb9f-4c75-9933-ebed55549a74",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 8,
+      "name": "Battery_Icon_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_08.png"
+      }
+    },
+    {
+      "id": "f8b55747-3129-48cc-8a4b-908b79030b1e",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 9,
+      "name": "Battery_Icon_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_09.png"
+      }
+    },
+    {
+      "id": "7f70b0b4-fcc6-4605-b523-8666b60717c1",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 10,
+      "name": "Battery_Icon_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_10.png"
+      }
+    },
+    {
+      "id": "7f9ec91e-d58e-48e2-a011-1038ba5367f6",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 11,
+      "name": "Battery_Icon_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_11.png"
+      }
+    },
+    {
+      "id": "a47c8443-898e-4e75-b9c4-ab40606844f9",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 12,
+      "name": "Battery_Icon_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_12.png"
+      }
+    },
+    {
+      "id": "e0972878-1607-4244-b6d9-9853b2c5ca10",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 13,
+      "name": "Battery_Icon_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_13.png"
+      }
+    },
+    {
+      "id": "8dd303c0-966e-496d-bdc4-03b877612c6e",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 14,
+      "name": "Battery_Icon_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_14.png"
+      }
+    },
+    {
+      "id": "f5959034-afa1-4135-b68d-441abdf50327",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 15,
+      "name": "Battery_Icon_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_15.png"
+      }
+    },
+    {
+      "id": "c5e699b1-68f4-4be7-b70f-5860493227f9",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 16,
+      "name": "Battery_Icon_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_16.png"
+      }
+    },
+    {
+      "id": "f0b4d6ff-81a4-4f57-a210-ce652062fd86",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 17,
+      "name": "Battery_Icon_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_17.png"
+      }
+    },
+    {
+      "id": "0f0f7b1f-0af9-4d31-b226-f3bbae80bc67",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 18,
+      "name": "Battery_Icon_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926538_Battery_Icon_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926538_Battery_Icon_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_18.png"
+      }
+    },
+    {
+      "id": "41f5b569-abd3-470a-a48d-5feb068f259c",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 19,
+      "name": "Battery_Icon_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_19.png"
+      }
+    },
+    {
+      "id": "837ae968-a239-4b09-96e0-0fc6a5248809",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 20,
+      "name": "Battery_Icon_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764926528_Battery_Icon_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926528_Battery_Icon_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764926979_Battery_ChristmasCute_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927007_Emoji_ChristmasCute_20.png"
+      }
+    },
+    {
+      "id": "adf56b1d-eb2d-426f-a549-d0cd3d0da1fb",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 21,
+      "name": "Battery_Icon_Chibi Christmas_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_01.png"
+      }
+    },
+    {
+      "id": "92fc34e8-8f99-436c-a16a-296c2b863117",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 22,
+      "name": "Battery_Icon_Chibi Christmas_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_02.png"
+      }
+    },
+    {
+      "id": "cc5a46ce-03ff-4e9a-bdcc-c08882270e78",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 23,
+      "name": "Battery_Icon_Chibi Christmas_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_03.png"
+      }
+    },
+    {
+      "id": "a84475e3-9d07-4d3b-a402-f02792e731cb",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 24,
+      "name": "Battery_Icon_Chibi Christmas_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_04.png"
+      }
+    },
+    {
+      "id": "63103f1a-40f3-47bb-939b-3dcde7535698",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 25,
+      "name": "Battery_Icon_Chibi Christmas_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_05.png"
+      }
+    },
+    {
+      "id": "e8d6697a-b32b-464e-aed5-02a8c98c85aa",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 26,
+      "name": "Battery_Icon_Chibi Christmas_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_06.png"
+      }
+    },
+    {
+      "id": "b1e095d7-85ff-40b5-a1c4-3a12f6f916c0",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 27,
+      "name": "Battery_Icon_Chibi Christmas_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927170_Battery_Icon_ChibiChristmas_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927170_Battery_Icon_ChibiChristmas_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_07.png"
+      }
+    },
+    {
+      "id": "ccaf57fd-91a4-44e8-b77f-2df517ff70e8",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 28,
+      "name": "Battery_Icon_Chibi Christmas_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_08.png"
+      }
+    },
+    {
+      "id": "622145e3-20f7-4490-9884-8220f0bd89da",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 29,
+      "name": "Battery_Icon_Chibi Christmas_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_09.png"
+      }
+    },
+    {
+      "id": "e3440a90-3cfa-4ccc-8eba-b9e847a74a42",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 30,
+      "name": "Battery_Icon_Chibi Christmas_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_10.png"
+      }
+    },
+    {
+      "id": "be57078d-18e2-4c89-a8f1-010c200df170",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 31,
+      "name": "Battery_Icon_Chibi Christmas_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_11.png"
+      }
+    },
+    {
+      "id": "79703c25-5ede-4419-b9c1-c2110a12b345",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 32,
+      "name": "Battery_Icon_Chibi Christmas_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_12.png"
+      }
+    },
+    {
+      "id": "c1587b13-2309-4817-a087-cf8b14996c10",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 33,
+      "name": "Battery_Icon_Chibi Christmas_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_13.png"
+      }
+    },
+    {
+      "id": "dcbf3940-ba2c-4c2e-b01d-b7b4d62991c0",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 34,
+      "name": "Battery_Icon_Chibi Christmas_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_14.png"
+      }
+    },
+    {
+      "id": "95444769-cafa-415a-8212-92c39f844b3e",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 35,
+      "name": "Battery_Icon_Chibi Christmas_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927268_Battery_ChibiChistmas_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_15.png"
+      }
+    },
+    {
+      "id": "3087ec55-dcfd-4a9c-b3c8-fe945a82869f",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 36,
+      "name": "Battery_Icon_Chibi Christmas_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_16.png"
+      }
+    },
+    {
+      "id": "5978c84a-0200-40e3-adf5-0ba1e0455685",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 37,
+      "name": "Battery_Icon_Chibi Christmas_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_17.png"
+      }
+    },
+    {
+      "id": "74376166-1e7d-4cd5-adee-7a9803f35fa2",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 38,
+      "name": "Battery_Icon_Chibi Christmas_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_18.png"
+      }
+    },
+    {
+      "id": "c8ab8468-d06b-4cfc-ad40-2b5c52347634",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 39,
+      "name": "Battery_Icon_Chibi Christmas_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927268_Battery_ChibiChistmas_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_19.png"
+      }
+    },
+    {
+      "id": "bbbbd760-80f6-4e93-97b3-798281b6612c",
+      "category_id": "4dcf0fb0-819a-43d0-8bea-8b809e5e149f",
+      "priority": 40,
+      "name": "Battery_Icon_Chibi Christmas_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927165_Battery_Icon_ChibiChristmas_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927263_Battery_ChibiChistmas_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-12-05/1764927245_Emoji_ChibiChristmas_20.png"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 40,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

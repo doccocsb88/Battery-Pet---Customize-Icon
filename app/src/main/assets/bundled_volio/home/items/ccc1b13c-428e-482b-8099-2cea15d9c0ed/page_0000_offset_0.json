@@ -1,0 +1,763 @@
+{
+  "data": [
+    {
+      "id": "6d892f4c-4c1b-47ea-86c7-c86a87e22864",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 1,
+      "name": "battery_cartoon_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604252_bettry_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604261_Emoji_Cartoon_12.png"
+      }
+    },
+    {
+      "id": "46c3cba3-0308-45fe-a98d-fbbd3dec53e4",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 2,
+      "name": "emoji battery_01-2",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-07/1736237683_emojibattery_01-2.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237683_emojibattery_01-2.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237734_Battery_01-2.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237748_Emoji_01-2.png",
+        "slug_search": "animal, cat, cute"
+      }
+    },
+    {
+      "id": "acda7fbe-6924-4b05-b642-5e090e91061a",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 3,
+      "name": "emoji_battery_animal_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761939_emoji_battery_animal_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761939_emoji_battery_animal_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762046_battery_animal_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762052_emoji_animal_05.png",
+        "slug_search": "animal, polar bear"
+      }
+    },
+    {
+      "id": "a9f1bd77-74ce-4a40-a467-6418d5949015",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 4,
+      "name": "battery_cartoon_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604026_bettry_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604034_Emoji_Cartoon_03.png",
+        "slug_search": "animal, dog, shiba"
+      }
+    },
+    {
+      "id": "be0f15d3-33fb-47a8-b725-3cd248f29bb6",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 5,
+      "name": "emoji battery_01-3",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-07/1736237683_emojibattery_01-3.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237683_emojibattery_01-3.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237773_Battery_01-3.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736238372_Emoji_01-3.png",
+        "slug_search": "animal, cow, cute"
+      }
+    },
+    {
+      "id": "63bce75f-098b-4262-bdf8-111b69277063",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 6,
+      "name": "battery_cartoon_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604301_bettry_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604307_Emoji_Cartoon_14.png",
+        "slug_search": "animal, capybara"
+      }
+    },
+    {
+      "id": "11ece7a8-a7c1-4921-8cd7-e2e3acc0a9f4",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 7,
+      "name": "emoji battery_01-4",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-07/1736237683_emojibattery_01-4.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237683_emojibattery_01-4.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237791_Battery_01-4.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237798_Emoji_01-4.png",
+        "slug_search": "animal, dog, corgi, cute"
+      }
+    },
+    {
+      "id": "e2a4d914-57bb-4083-8cbe-002be36ea325",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 8,
+      "name": "emoji battery_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309864_emojibattery_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309864_emojibattery_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309885_Battery_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309890_Emoji_06.png",
+        "slug_search": "animal, pig"
+      }
+    },
+    {
+      "id": "2224885a-2faa-4101-9a07-6e96ad84f8b1",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 9,
+      "name": "battery_cartoon_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604222_bettry_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604229_Emoji_Cartoon_11.png",
+        "slug_search": "animal, cockroach"
+      }
+    },
+    {
+      "id": "a9af0e50-ae1b-479a-b582-f3208c51a726",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 10,
+      "name": "battery_cartoon_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604321_bettry_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604329_Emoji_Cartoon_15.png",
+        "slug_search": "animal, duck, cute"
+      }
+    },
+    {
+      "id": "3f0f2047-d04c-4575-b97e-1ffe9cd42905",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 11,
+      "name": "emoji battery_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309864_emojibattery_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309864_emojibattery_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309901_Battery_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309908_Emoji_07.png",
+        "slug_search": "animal, rabbit"
+      }
+    },
+    {
+      "id": "d39e5fe7-49b3-4210-9859-495c328318cd",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 12,
+      "name": "emoji battery_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309921_Battery_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309924_Emoji_08.png",
+        "slug_search": "animal, turtle "
+      }
+    },
+    {
+      "id": "6917ca34-5abb-4cee-bbfd-8abdde9c4231",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 13,
+      "name": "emoji battery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309934_Battery_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309937_Emoji_09.png",
+        "slug_search": "animal, hamster, mouse"
+      }
+    },
+    {
+      "id": "63e59d7a-b683-48b9-8e26-50850ef2326b",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 14,
+      "name": "emoji battery_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309946_Battery_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309951_Emoji_10.png",
+        "slug_search": "animal, guinea pig"
+      }
+    },
+    {
+      "id": "aae34237-8c31-43dd-8ad1-ce9097508c3d",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 15,
+      "name": "emoji battery_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309962_Battery_11.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309967_Emoji_11.png",
+        "slug_search": "animal, giraffe"
+      }
+    },
+    {
+      "id": "239d8c8c-64cf-412e-b94f-aa9e674395f0",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 16,
+      "name": "emoji battery_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310055_Battery_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310061_Emoji_16.png",
+        "slug_search": "animal, monkey"
+      }
+    },
+    {
+      "id": "ae8990f1-ed60-478c-a612-68d586270c13",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 17,
+      "name": "emoji battery_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-07/1736237683_emojibattery_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237683_emojibattery_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237694_Battery_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237701_Emoji_01.png"
+      }
+    },
+    {
+      "id": "0b40986e-43dd-49f1-8a2f-e986d3f38640",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 18,
+      "name": "emoji battery_01-1",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-07/1736237683_emojibattery_01-1.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237683_emojibattery_01-1.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736237711_Battery_01-1.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-07/1736238356_Emoji_01-1.png",
+        "slug_search": "animal, ladybug"
+      }
+    },
+    {
+      "id": "4d8d4b7b-9226-4ffc-b773-ebb81aa48ff2",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 19,
+      "name": "emoji battery_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309976_Battery_12.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309980_Emoji_12.png",
+        "slug_search": "Red panda, animal, cute"
+      }
+    },
+    {
+      "id": "5ce3acd9-d885-4b81-99fd-0cdcb0cfeb50",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 20,
+      "name": "emoji battery_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309997_Battery_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310002_Emoji_13.png",
+        "slug_search": "animal, fish"
+      }
+    },
+    {
+      "id": "d8e1ced7-eba2-4b17-91b7-50dee3f551b1",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 21,
+      "name": "emoji battery_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310014_Battery_14.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310018_Emoji_14.png",
+        "slug_search": "animal, cat, cute"
+      }
+    },
+    {
+      "id": "324a043f-5b36-4644-8faa-ae011d8c4ac5",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 22,
+      "name": "emoji battery_15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309865_emojibattery_15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309865_emojibattery_15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310030_Battery_15.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310044_Emoji_15.png",
+        "slug_search": "animal, frog"
+      }
+    },
+    {
+      "id": "854309bd-0ced-4bed-95d2-dbd17dbc1a6f",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 23,
+      "name": "emoji_battery_animal_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761939_emoji_battery_animal_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761939_emoji_battery_animal_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762065_battery_animal_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762073_emoji_animal_06.png",
+        "slug_search": "animal, polar bear"
+      }
+    },
+    {
+      "id": "f0281915-206a-4b01-a17e-e478e0630bb3",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 24,
+      "name": "emoji battery_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309866_emojibattery_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309866_emojibattery_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310071_Battery_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310074_Emoji_17.png",
+        "slug_search": "animal, turtle"
+      }
+    },
+    {
+      "id": "7cb14964-7ae1-4dff-9cda-1ad1bc66c245",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 25,
+      "name": "emoji battery_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309866_emojibattery_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309866_emojibattery_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310085_Battery_18.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310088_Emoji_18.png",
+        "slug_search": "animal, cat, cute"
+      }
+    },
+    {
+      "id": "08752830-7af2-4c1f-a5d8-fe12777139e0",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 26,
+      "name": "emoji battery_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309866_emojibattery_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309866_emojibattery_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310098_Battery_19.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310101_Emoji_19.png",
+        "slug_search": "animal, duck"
+      }
+    },
+    {
+      "id": "3e070be3-a3a2-4506-bcee-d364115bf35b",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 27,
+      "name": "emoji battery_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309866_emojibattery_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309866_emojibattery_20.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310114_Battery_20.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736310117_Emoji_20.png",
+        "slug_search": "animal, capybara"
+      }
+    },
+    {
+      "id": "b156dcfb-4333-4e89-b03c-c52f7dafb781",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 28,
+      "name": "emoji_battery_animal_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761938_emoji_battery_animal_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761938_emoji_battery_animal_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761963_battery_animal_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761968_emoji_animal_01.png",
+        "slug_search": "animal, rabbit"
+      }
+    },
+    {
+      "id": "c6ebc425-ff00-4c4d-82cb-b81f50793a7f",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 29,
+      "name": "emoji_battery_animal_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761938_emoji_battery_animal_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761938_emoji_battery_animal_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761979_battery_animal_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761988_emoji_animal_02.png",
+        "slug_search": "animal, cat, cute"
+      }
+    },
+    {
+      "id": "99d50bd2-5e13-490f-b230-0a597ea25d27",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 30,
+      "name": "emoji_battery_animal_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761938_emoji_battery_animal_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761938_emoji_battery_animal_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762005_battery_animal_03.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762012_emoji_animal_03.png",
+        "slug_search": "animal, tiger"
+      }
+    },
+    {
+      "id": "338a3e6a-bd8e-4cbd-8016-f73fd0507a1a",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 31,
+      "name": "emoji_battery_animal_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761938_emoji_battery_animal_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761938_emoji_battery_animal_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762027_battery_animal_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762033_emoji_animal_04.png",
+        "slug_search": "animal, panda"
+      }
+    },
+    {
+      "id": "769144a9-0c69-4f9a-9f22-842bf3ffb68a",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 32,
+      "name": "emoji_battery_animal_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761939_emoji_battery_animal_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761939_emoji_battery_animal_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762085_battery_animal_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762093_emoji_animal_07.png",
+        "slug_search": "animal, rabbit, carrot"
+      }
+    },
+    {
+      "id": "56fa6033-f3ce-451d-84c4-6f8a9a5d9959",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 33,
+      "name": "emoji_battery_animal_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761939_emoji_battery_animal_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761939_emoji_battery_animal_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762104_battery_animal_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762115_emoji_animal_08.png",
+        "slug_search": "animal, snail"
+      }
+    },
+    {
+      "id": "21abc4c2-99e0-4f82-9e1b-5f8834c9055f",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 34,
+      "name": "emoji_battery_animal_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761939_emoji_battery_animal_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761939_emoji_battery_animal_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762132_battery_animal_09.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762141_emoji_animal_09.png",
+        "slug_search": "pikachu"
+      }
+    },
+    {
+      "id": "f9657db4-52fe-4b4c-8a08-8050052d5143",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 35,
+      "name": "emoji_battery_animal_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761939_emoji_battery_animal_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761939_emoji_battery_animal_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762160_battery_animal_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736762169_emoji_animal_10.png",
+        "slug_search": "animal, snail"
+      }
+    },
+    {
+      "id": "aceb638a-270b-4581-8f93-abbcba1289ef",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 36,
+      "name": "battery_cartoon_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604361_bettry_17.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604376_Emoji_Cartoon_17.png",
+        "slug_search": "animal, sheep"
+      }
+    },
+    {
+      "id": "53c483e6-93d6-46d5-be3a-849d729e5b77",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 37,
+      "name": "battery_cartoon_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604342_bettry_16.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604350_Emoji_Cartoon_16.png",
+        "slug_search": "animal, deer"
+      }
+    },
+    {
+      "id": "a194b113-99b6-4d4c-b6a2-35a6be75b5f6",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 38,
+      "name": "battery_cartoon_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604275_bettry_13.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604292_Emoji_Cartoon_13.png",
+        "slug_search": "animal, duck"
+      }
+    },
+    {
+      "id": "ab2ee0f7-b0eb-4099-9da7-1cb0f5d71fff",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 39,
+      "name": "battery_cartoon_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604204_bettry_10.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604211_Emoji_Cartoon_10.png",
+        "slug_search": "animal, pig"
+      }
+    },
+    {
+      "id": "1bd20393-261a-44f3-b13d-c35c4e0fe02c",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 40,
+      "name": "battery_cartoon_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604137_bettry_07.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604145_Emoji_Cartoon_07.png",
+        "slug_search": "animal, pig, cute"
+      }
+    },
+    {
+      "id": "d76cd140-cfbe-4fad-91fc-71df5823657e",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 41,
+      "name": "battery_cartoon_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604156_bettry_08.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604166_Emoji_Cartoon_08.png",
+        "slug_search": "animal, crocodile"
+      }
+    },
+    {
+      "id": "4d8e853d-2cd8-4a35-81db-a8bd23304322",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 42,
+      "name": "battery_cartoon_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604064_bettry_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604071_Emoji_Cartoon_04.png",
+        "slug_search": "animal, giraffe"
+      }
+    },
+    {
+      "id": "9d0a79cd-e6ce-45ff-8645-6e433a7c79bb",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 43,
+      "name": "battery_cartoon_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604083_bettry_05.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604090_Emoji_Cartoon_05.png",
+        "slug_search": "animal, elephant"
+      }
+    },
+    {
+      "id": "1a82a310-853d-4ea3-81ef-cb48b291472f",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 44,
+      "name": "battery_cartoon_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603941_battery_cartoon_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603941_battery_cartoon_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604008_bettry_02.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746604015_Emoji_Cartoon_02.png",
+        "slug_search": "animal, dog, poodle"
+      }
+    },
+    {
+      "id": "1f895025-36ce-41dd-99fd-b737526968cf",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 45,
+      "name": "battery_cartoon_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603942_battery_cartoon_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-05-07/1746603942_battery_cartoon_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603965_bettry_01.png",
+        "emoji": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-05-07/1746603982_Emoji_Cartoon_01.png",
+        "slug_search": "animal, rabbit"
+      }
+    },
+    {
+      "id": "f07d0c10-8c39-4bc2-b913-db22e0511585",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 46,
+      "name": "emoji battery_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-08/1736309673_emojibattery_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309673_emojibattery_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309730_Battery_04.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-08/1736309735_Emoji_04.png",
+        "slug_search": "animal, duck, cute"
+      }
+    },
+    {
+      "id": "b5b5bcb1-1e4e-4988-a99f-fd5dd9983cea",
+      "category_id": "ccc1b13c-428e-482b-8099-2cea15d9c0ed",
+      "priority": 47,
+      "name": "emoji_battery_cute_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-01-13/1736761119_emoji_battery_cute_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761119_emoji_battery_cute_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "battery": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761234_battery_cute_06.png",
+        "emoji": "https://cdn-uploader.innovatex.one/data/store/2025-01-13/1736761239_emoji_cute_06.png",
+        "slug_search": "animal, cat, cute"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 47,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}
