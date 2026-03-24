@@ -17,3 +17,10 @@ dependencyResolutionManagement {
 rootProject.name = "EmojiBatteryPort"
 include(":app")
 include(":store_pack")
+
+val localStorePackDir = file("store_pack")
+if (localStorePackDir.exists()) {
+    project(":store_pack").projectDir = localStorePackDir
+} else {
+    project(":store_pack").projectDir = file("../store_pack")
+}

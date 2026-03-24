@@ -9,12 +9,17 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.BatteryManager
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.provider.Settings
 import android.telephony.PhoneStateListener
 import android.telephony.SignalStrength
 import android.telephony.TelephonyManager
 import android.view.accessibility.AccessibilityEvent
 import androidx.core.content.getSystemService
+import dev.hai.emojibattery.model.GestureAction
+import dev.hai.emojibattery.model.GestureTrigger
+import dev.hai.emojibattery.model.SampleCatalog
 
 class OverlayAccessibilityService : AccessibilityService() {
     private lateinit var overlayManager: StatusBarOverlayManager
@@ -61,7 +66,10 @@ class OverlayAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        overlayManager = StatusBarOverlayManager(this)
+        overlayManager = StatusBarOverlayManager(
+            context = this,
+            onGestureTrigger = ::handleOverlayGesture,
+        )
         registerRefreshReceiver()
         registerBatteryReceiver()
         registerConnectivityReceiver()
@@ -100,6 +108,8 @@ class OverlayAccessibilityService : AccessibilityService() {
     }
 
     private fun refreshOverlay() {
+        val gestureSnapshot = GestureSettingsStore.read(this)
+        overlayManager.setGestureEnabled(gestureSnapshot.gestureEnabled)
         overlayManager.render(
             OverlayConfigStore.read(this),
             StatusBarOverlayManager.LiveStatus(
@@ -176,6 +186,55 @@ class OverlayAccessibilityService : AccessibilityService() {
     private fun safeUnregister(registered: Boolean, receiver: BroadcastReceiver) {
         if (!registered) return
         runCatching { unregisterReceiver(receiver) }
+    }
+
+    private fun handleOverlayGesture(trigger: GestureTrigger) {
+        val settings = GestureSettingsStore.read(this)
+        if (!settings.gestureEnabled) return
+        if (settings.vibrateFeedback) vibrateOneShot(50L)
+        val action = settings.gestureActions[trigger]
+            ?: SampleCatalog.defaultGestureActions[trigger]
+            ?: GestureAction.DoNothing
+        runGestureAction(action)
+    }
+
+    private fun runGestureAction(action: GestureAction) {
+        when (action) {
+            GestureAction.OpenApp -> openApp()
+            GestureAction.DoNothing -> Unit
+            GestureAction.BackAction -> performGlobalAction(GLOBAL_ACTION_BACK)
+            GestureAction.HomeAction -> performGlobalAction(GLOBAL_ACTION_HOME)
+            GestureAction.RecentAction -> performGlobalAction(GLOBAL_ACTION_RECENTS)
+            GestureAction.NotificationCenter -> performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS)
+            GestureAction.ControlCenter -> performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS)
+            GestureAction.PowerSourceOptions -> performGlobalAction(GLOBAL_ACTION_POWER_DIALOG)
+            GestureAction.LockScreen -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN)
+                }
+            }
+            GestureAction.TakeScreenshot -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
+                }
+            }
+        }
+    }
+
+    private fun openApp() {
+        val launch = packageManager.getLaunchIntentForPackage(packageName) ?: return
+        launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(launch)
+    }
+
+    private fun vibrateOneShot(durationMs: Long) {
+        val vibrator = getSystemService<Vibrator>() ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(durationMs, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(durationMs)
+        }
     }
 
     companion object {

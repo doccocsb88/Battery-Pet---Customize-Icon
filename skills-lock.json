@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "android-playstore-setup": {
+      "source": "hitoshura25/claude-devtools",
+      "sourceType": "github",
+      "computedHash": "6b5a88d34cf4fef6dc2d813eeb21f54ae84a4446a850745eaa29a5a1a9a4c6f8"
+    },
+    "mobile-android-design": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "0dfa08663016e0faa2db0611420bd5c17ba2d635a057e17a6b71c2a0c3f2ed79"
+    },
+    "paywall-upgrade-cro": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "7d15dd44d5afc86d76266c4cd83c262867bbe41d1eb99ea7b4acaee74a339f5e"
+    }
+  }
+}

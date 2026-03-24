@@ -12,6 +12,9 @@ sealed class AppRoute(val route: String) {
     data object StatusBarCustom : AppRoute("statusbar_custom")
     data object Notch : AppRoute("notch")
     data object Animation : AppRoute("animation")
+    data object AnimationList : AppRoute("animation_list/{selectedId}") {
+        fun create(selectedId: Int): String = "animation_list/$selectedId"
+    }
     data object StatusBarBatteryList : AppRoute("statusbar_battery_list")
     data object StatusBarEmojiList : AppRoute("statusbar_emoji_list")
     /** Full list of local background templates, opened from Theme tab View More. */

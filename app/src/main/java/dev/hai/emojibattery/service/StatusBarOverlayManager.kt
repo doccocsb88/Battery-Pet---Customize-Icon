@@ -4,7 +4,11 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Typeface
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -15,9 +19,11 @@ import android.widget.TextView
 import coil.load
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
+import dev.hai.emojibattery.model.GestureTrigger
 
 class StatusBarOverlayManager(
     private val context: Context,
+    private val onGestureTrigger: (GestureTrigger) -> Unit = {},
 ) {
     data class LiveStatus(
         val batteryPercent: Int = 0,
@@ -44,8 +50,23 @@ class StatusBarOverlayManager(
     private val stickerImageView = ImageView(context)
     private val trollView = TextView(context)
     private val realtimeView = TextView(context)
+    private val gestureLayer = FrameLayout(context)
+    private val notchContainer = FrameLayout(context)
+    private val notchView = ImageView(context)
 
     private var attached = false
+    private var gestureEnabled = false
+    private var layoutParams: WindowManager.LayoutParams? = null
+
+    private val tapDelayMs = 200L
+    private val singleTapHandler = Handler(Looper.getMainLooper())
+    private var lastTapAt = 0L
+    private var horizontalTriggered = false
+    private var verticalTriggered = false
+    private var ignoredDoubleTap = false
+    private val singleTapRunnable = Runnable {
+        if (!ignoredDoubleTap) triggerGesture(GestureTrigger.SingleTap)
+    }
 
     init {
         root.layoutParams = FrameLayout.LayoutParams(
@@ -97,6 +118,14 @@ class StatusBarOverlayManager(
             ),
         )
         root.addView(statusRow)
+        root.addView(
+            gestureLayer,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                (40 * context.resources.displayMetrics.density).toInt(),
+                Gravity.TOP,
+            ),
+        )
         val stickerLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
             topMargin = 64
         }
@@ -122,6 +151,26 @@ class StatusBarOverlayManager(
             view.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         }
         stickerImageView.setPadding(18, 10, 18, 10)
+
+        notchView.scaleType = ImageView.ScaleType.FIT_XY
+        notchContainer.visibility = View.GONE
+        notchContainer.addView(
+            notchView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+            ),
+        )
+        root.addView(
+            notchContainer,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+            ),
+        )
+
+        setupGestureLayer()
     }
 
     fun render(snapshot: OverlaySnapshot, liveStatus: LiveStatus) {
@@ -197,17 +246,32 @@ class StatusBarOverlayManager(
         realtimeView.setBackgroundColor("#E7F0FF".toColorInt())
 
         statusRow.visibility = if (snapshot.statusBarEnabled) View.VISIBLE else View.GONE
+        applyNotch(snapshot.notchTemplateId, snapshot.statusBarEnabled)
     }
 
     fun detach() {
         if (!attached) return
         windowManager.removeView(root)
         attached = false
+        layoutParams = null
+        singleTapHandler.removeCallbacks(singleTapRunnable)
+    }
+
+    fun setGestureEnabled(enabled: Boolean) {
+        if (gestureEnabled == enabled) return
+        gestureEnabled = enabled
+        if (attached) {
+            val updated = createLayoutParams(gestureEnabled)
+            windowManager.updateViewLayout(root, updated)
+            layoutParams = updated
+        }
     }
 
     private fun ensureAttached() {
         if (attached) return
-        windowManager.addView(root, createLayoutParams())
+        val params = createLayoutParams(gestureEnabled)
+        layoutParams = params
+        windowManager.addView(root, params)
         attached = true
     }
 
@@ -219,19 +283,131 @@ class StatusBarOverlayManager(
         else -> "▰▰▰▰"
     }
 
-    private fun createLayoutParams(): WindowManager.LayoutParams {
+    private fun setupGestureLayer() {
+        val detector = GestureDetector(
+            context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(e: MotionEvent): Boolean {
+                    horizontalTriggered = false
+                    verticalTriggered = false
+                    ignoredDoubleTap = false
+                    return true
+                }
+
+                override fun onSingleTapUp(e: MotionEvent): Boolean {
+                    val now = System.currentTimeMillis()
+                    singleTapHandler.removeCallbacks(singleTapRunnable)
+                    if (now - lastTapAt < tapDelayMs) {
+                        ignoredDoubleTap = true
+                        lastTapAt = 0L
+                    } else {
+                        lastTapAt = now
+                        singleTapHandler.postDelayed(singleTapRunnable, tapDelayMs)
+                    }
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                    triggerGesture(GestureTrigger.LongPress)
+                }
+
+                override fun onScroll(
+                    e1: MotionEvent?,
+                    e2: MotionEvent,
+                    distanceX: Float,
+                    distanceY: Float,
+                ): Boolean {
+                    val start = e1 ?: return false
+                    val dx = e2.x - start.x
+                    val dy = e2.y - start.y
+                    val horizontalThresholdPx = 40f
+                    val verticalThresholdPx = 10f
+                    if (kotlin.math.abs(dx) > kotlin.math.abs(dy)) {
+                        if (!horizontalTriggered && kotlin.math.abs(dx) > horizontalThresholdPx) {
+                            triggerGesture(
+                                if (dx > 0f) GestureTrigger.SwipeLeftToRight
+                                else GestureTrigger.SwipeRightToLeft,
+                            )
+                            horizontalTriggered = true
+                        }
+                    } else if (!verticalTriggered && kotlin.math.abs(dy) > verticalThresholdPx) {
+                        if (dy > 0f) {
+                            triggerGesture(GestureTrigger.SwipeTopToBottom)
+                        }
+                        // Original app ignores bottom-to-top callback.
+                        verticalTriggered = true
+                    }
+                    return true
+                }
+            },
+        )
+        gestureLayer.setOnTouchListener { _, event ->
+            if (!gestureEnabled) return@setOnTouchListener false
+            detector.onTouchEvent(event)
+            true
+        }
+    }
+
+    private fun triggerGesture(trigger: GestureTrigger) {
+        if (!gestureEnabled) return
+        playNotchTapAnimation()
+        onGestureTrigger(trigger)
+    }
+
+    private fun playNotchTapAnimation() {
+        val target = if (notchContainer.visibility == View.VISIBLE) notchContainer else statusRow
+        target.animate().cancel()
+        target.scaleX = 1f
+        target.scaleY = 1f
+        target.alpha = 1f
+        target.animate()
+            .scaleX(0.94f)
+            .scaleY(0.94f)
+            .alpha(0.9f)
+            .setDuration(80L)
+            .withEndAction {
+                target.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .alpha(1f)
+                    .setDuration(110L)
+                    .start()
+            }
+            .start()
+    }
+
+    private fun applyNotch(templateId: Int, statusEnabled: Boolean) {
+        val notch = NotchTemplateCatalog.resolve(templateId)
+        val drawable = notch.drawableRes
+        if (!statusEnabled || drawable == null) {
+            notchContainer.visibility = View.GONE
+            return
+        }
+        val notchHeight = (18 * context.resources.displayMetrics.density).toInt().coerceAtLeast(12)
+        val notchWidth = (notchHeight * 960f / 132f).toInt()
+        val params = notchContainer.layoutParams as FrameLayout.LayoutParams
+        params.width = notchWidth
+        params.height = notchHeight
+        params.gravity = notch.gravity
+        notchContainer.layoutParams = params
+        notchView.setImageResource(drawable)
+        notchContainer.visibility = View.VISIBLE
+    }
+
+    private fun createLayoutParams(gestureEnabled: Boolean): WindowManager.LayoutParams {
         val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         } else {
             WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         }
+        // Original app toggles FLAG_NOT_TOUCHABLE based on gesture switch:
+        // enabled -> 0x880328, disabled -> 0x880338.
+        val flags = if (gestureEnabled) 0x880328 else 0x880338
         return WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             overlayType,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            flags,
             PixelFormat.TRANSLUCENT,
         ).apply {
             gravity = Gravity.TOP

@@ -214,6 +214,8 @@ internal fun StatusBarCustomScreen(
     onSelectBattery: (String) -> Unit,
     onSelectEmoji: (String) -> Unit,
     onSelectTheme: (String) -> Unit,
+    onViewMoreBatteryChoices: () -> Unit,
+    onViewMoreEmojiChoices: () -> Unit,
     onSetThemeBackgroundColor: (Long) -> Unit,
     onSetBackgroundTemplatePhoto: (String?) -> Unit,
     onViewMoreBackgroundTemplates: () -> Unit,
@@ -255,6 +257,8 @@ internal fun StatusBarCustomScreen(
         editorScrollState.scrollTo(0)
     }
 
+    val maxPreviewRows = 6
+    val maxVolioPreviewItems = StatusBarVolioGridColumns * maxPreviewRows
     Scaffold(
         containerColor = editorBg,
     ) { innerPadding ->
@@ -301,12 +305,26 @@ internal fun StatusBarCustomScreen(
                             when (uiState.activeStatusBarTab) {
                                 StatusBarTab.Battery -> {
                                     if (uiState.statusBarCatalogItems.isNotEmpty()) {
+                                        val previewItems = uiState.statusBarCatalogItems.take(maxVolioPreviewItems)
                                         StatusBarVolioChoiceGrid(
-                                            items = uiState.statusBarCatalogItems,
+                                            items = previewItems,
                                             selectedId = config.batteryPresetId,
                                             onSelect = onSelectBattery,
                                             previewImageUrl = { it.batteryArtUrl ?: it.thumbnailUrl },
                                         )
+                                        if (uiState.statusBarCatalogItems.size > maxVolioPreviewItems) {
+                                            OutlinedButton(
+                                                onClick = onViewMoreBatteryChoices,
+                                                modifier = Modifier.fillMaxWidth(),
+                                                shape = RoundedCornerShape(999.dp),
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.view_more),
+                                                    color = StrawberryMilk.Secondary,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                )
+                                            }
+                                        }
                                     } else {
                                         StatusBarChoiceGrid(
                                             maxItemsInEachRow = 4,
@@ -337,12 +355,26 @@ internal fun StatusBarCustomScreen(
                                 }
                                 StatusBarTab.Emoji -> {
                                     if (uiState.statusBarCatalogItems.isNotEmpty()) {
+                                        val previewItems = uiState.statusBarCatalogItems.take(maxVolioPreviewItems)
                                         StatusBarVolioChoiceGrid(
-                                            items = uiState.statusBarCatalogItems,
+                                            items = previewItems,
                                             selectedId = config.emojiPresetId,
                                             onSelect = onSelectEmoji,
                                             previewImageUrl = { it.emojiArtUrl ?: it.thumbnailUrl },
                                         )
+                                        if (uiState.statusBarCatalogItems.size > maxVolioPreviewItems) {
+                                            OutlinedButton(
+                                                onClick = onViewMoreEmojiChoices,
+                                                modifier = Modifier.fillMaxWidth(),
+                                                shape = RoundedCornerShape(999.dp),
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.view_more),
+                                                    color = StrawberryMilk.Secondary,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                )
+                                            }
+                                        }
                                     } else {
                                         StatusBarChoiceGrid(
                                             maxItemsInEachRow = 4,
@@ -893,6 +925,8 @@ private fun StatusBarBackgroundTemplateSection(
     onViewMore: () -> Unit,
 ) {
     val labelColor = colorResource(R.color.splash_title)
+    val maxPreviewRows = 6
+    val previewItems = StatusBarThemeTemplateCatalog.entries.take(3 * maxPreviewRows)
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -916,22 +950,25 @@ private fun StatusBarBackgroundTemplateSection(
             )
         }
         StatusBarLocalThemeTemplateGrid(
+            entries = previewItems,
             selectedPhotoUrl = selectedPhotoUrl,
             selectedDrawableRes = selectedDrawableRes,
             onSelectPhoto = onSelectPhoto,
         )
-        OutlinedButton(
-            onClick = onViewMore,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp),
-            shape = RoundedCornerShape(999.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.view_more),
-                color = StrawberryMilk.Secondary,
-                fontWeight = FontWeight.SemiBold,
-            )
+        if (StatusBarThemeTemplateCatalog.entries.size > previewItems.size) {
+            OutlinedButton(
+                onClick = onViewMore,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                shape = RoundedCornerShape(999.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.view_more),
+                    color = StrawberryMilk.Secondary,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
         }
     }
 }
@@ -939,11 +976,11 @@ private fun StatusBarBackgroundTemplateSection(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun StatusBarLocalThemeTemplateGrid(
+    entries: List<dev.hai.emojibattery.model.BackgroundTemplateEntry>,
     selectedPhotoUrl: String?,
     selectedDrawableRes: Int?,
     onSelectPhoto: (String?) -> Unit,
 ) {
-    val all = StatusBarThemeTemplateCatalog.entries
     val selectedAssetUrl = selectedPhotoUrl
         ?: StatusBarThemeTemplateCatalog.entryForPreviewDrawable(selectedDrawableRes)
             ?.let { StatusBarThemeTemplateCatalog.assetUri(it.assetRelativePath) }
@@ -953,7 +990,7 @@ private fun StatusBarLocalThemeTemplateGrid(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        all.forEach { entry ->
+        entries.forEach { entry ->
             val assetUrl = StatusBarThemeTemplateCatalog.assetUri(entry.assetRelativePath)
             val selected = assetUrl == selectedAssetUrl
             Surface(
@@ -987,7 +1024,7 @@ private fun StatusBarLocalThemeTemplateGrid(
                         contentDescription = itemIndexLabel(entry.index),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1f)
+                            .aspectRatio(2f)
                             .clip(RoundedCornerShape(10.dp)),
                         contentScale = ContentScale.Crop,
                     )

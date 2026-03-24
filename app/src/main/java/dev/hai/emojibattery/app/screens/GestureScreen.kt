@@ -94,7 +94,6 @@ internal fun GestureScreen(
         topBar = {
             OriginalTopShell(
                 title = stringResource(R.string.battery_icon_title),
-                onLeftPrimary = {},
                 onLeftSecondary = {},
                 onSearch = {},
             )

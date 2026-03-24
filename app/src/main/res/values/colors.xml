@@ -8,6 +8,7 @@
     <color name="brand_secondary">#D47DFE</color>
     <color name="brand_gradient_start">#EC4899</color>
     <color name="brand_gradient_end">#D47DFE</color>
+    <color name="ic_launcher_background">#FFE85BAE</color>
 
     <!-- Splash -->
     <color name="splash_gradient_top">#FFFFF5F7</color>

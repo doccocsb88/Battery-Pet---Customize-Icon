@@ -80,6 +80,7 @@
     <string name="accessibility_bridge_title">Accessibility Bridge</string>
     <string name="accessibility_bridge_active">Overlay service is active and ready to apply.</string>
     <string name="accessibility_bridge_disabled">Open Accessibility Settings to enable the overlay service.</string>
+    <string name="accessibility_desc">This app needs to be activated in Accessibility Service to show Emoji Battery view on bottom of mobile screen and start several. Accessibility actions: action to Home, Back, Take screenshots. No personal data is collected or shared.</string>
 
     <!-- Accessibility service usage dialog (DialogRequestAccessibilityService / dialog_request_accessibility_service.xml) -->
     <string name="accessibility_service_usage">Accessibility Service Usage</string>
@@ -145,6 +146,7 @@
     <string name="home_status_bar_customize">Status Bar Customize</string>
     <string name="home_notch">Notch</string>
     <string name="home_animation">Animation</string>
+    <string name="animation_list">Animation list</string>
     <string name="enable_animation">Enable animation</string>
     <string name="animation_size">Animation size</string>
     <string name="animation_style">Animation style</string>

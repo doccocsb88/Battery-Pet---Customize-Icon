@@ -4,6 +4,28 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val versionCodeBase = (findProperty("VERSION_CODE_BASE") as String?)?.toIntOrNull() ?: 1000
+val fallbackVersionCode = (findProperty("VERSION_CODE") as String?)?.toIntOrNull() ?: 1
+val computedVersionCode = System.getenv("GITHUB_RUN_NUMBER")
+    ?.toIntOrNull()
+    ?.let { versionCodeBase + it }
+    ?: fallbackVersionCode
+
+val signingStoreFilePath = System.getenv("SIGNING_KEY_STORE_FILE")
+    ?: (findProperty("SIGNING_KEY_STORE_FILE") as String?)
+val signingStorePassword = System.getenv("SIGNING_STORE_PASSWORD")
+    ?: (findProperty("SIGNING_STORE_PASSWORD") as String?)
+val signingKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
+    ?: (findProperty("SIGNING_KEY_ALIAS") as String?)
+val signingKeyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+    ?: (findProperty("SIGNING_KEY_PASSWORD") as String?)
+val hasReleaseSigning = listOf(
+    signingStoreFilePath,
+    signingStorePassword,
+    signingKeyAlias,
+    signingKeyPassword,
+).all { !it.isNullOrBlank() }
+
 android {
     namespace = "co.q7labs.co.emoji"
     compileSdk = 35
@@ -12,7 +34,7 @@ android {
         applicationId = "co.q7labs.co.emoji"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
+        versionCode = computedVersionCode
         versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -21,9 +43,23 @@ android {
         resourceConfigurations += listOf("en")
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(signingStoreFilePath!!)
+                storePassword = signingStorePassword
+                keyAlias = signingKeyAlias
+                keyPassword = signingKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

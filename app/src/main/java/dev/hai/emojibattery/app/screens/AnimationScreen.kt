@@ -1,5 +1,6 @@
 package dev.hai.emojibattery.app.screens
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,13 +13,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -36,10 +40,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import co.q7labs.co.emoji.R
 import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -49,9 +60,13 @@ import dev.hai.emojibattery.service.AnimationTemplateCatalog
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AnimationScreen(
     onBack: () -> Unit,
+    selectedFromList: Int?,
+    onConsumeListSelection: () -> Unit,
+    onOpenAnimationList: (Int) -> Unit,
 ) {
     val context = LocalContext.current
     val initialPrefs = remember { OverlayConfigStore.readAnimationPrefs(context) }
@@ -59,18 +74,35 @@ internal fun AnimationScreen(
     var enabled by remember { mutableStateOf(initialPrefs.enabled) }
     var sizePercent by remember { mutableIntStateOf(initialPrefs.sizePercent) }
     var selectedId by remember { mutableIntStateOf(initialPrefs.templateId) }
-    var expanded by remember { mutableStateOf(false) }
+    val titleColor = colorResource(R.color.splash_title)
 
+    if (selectedFromList != null && selectedFromList >= 0 && selectedFromList != selectedId) {
+        selectedId = selectedFromList
+        onConsumeListSelection()
+    }
     val selected = remember(selectedId) { AnimationTemplateCatalog.resolve(selectedId) }
-    val maxCollapsedCount = 18
-    val visibleTemplates = if (expanded) templates else templates.take(maxCollapsedCount)
+    val previewItems = templates.take(6)
 
     Scaffold(
         topBar = {
-            OriginalTopShell(
-                title = stringResource(R.string.home_animation),
-                onLeftSecondary = onBack,
-                onSearch = onBack,
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.home_animation),
+                        color = titleColor,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_back_40_new),
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = titleColor,
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -136,12 +168,12 @@ internal fun AnimationScreen(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(if (expanded) 500.dp else 360.dp),
+                            .height(220.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         contentPadding = PaddingValues(bottom = 6.dp),
                     ) {
-                        items(visibleTemplates) { template ->
+                        items(previewItems) { template ->
                             val isSelected = template.id == selectedId
                             Box(
                                 modifier = Modifier
@@ -163,7 +195,7 @@ internal fun AnimationScreen(
                             }
                         }
                     }
-                    if (!expanded && templates.size > maxCollapsedCount) {
+                    if (templates.size > previewItems.size) {
                         Text(
                             text = stringResource(R.string.view_more),
                             color = MaterialTheme.colorScheme.primary,
@@ -172,7 +204,7 @@ internal fun AnimationScreen(
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(999.dp))
                                 .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(999.dp))
-                                .clickable { expanded = true }
+                                .clickable { onOpenAnimationList(selectedId) }
                                 .padding(vertical = 10.dp),
                         )
                     }
@@ -200,7 +232,7 @@ internal fun AnimationScreen(
 }
 
 @Composable
-private fun AnimationPreview(
+internal fun AnimationPreview(
     template: AnimationTemplate,
     modifier: Modifier = Modifier,
 ) {
@@ -212,10 +244,24 @@ private fun AnimationPreview(
             modifier = modifier,
         )
     } else {
+        val context = LocalContext.current
+        val request = remember(template.assetPath) {
+            ImageRequest.Builder(context)
+                .data("file:///android_asset/${template.assetPath}")
+                .allowHardware(false)
+                .decoderFactory(
+                    if (Build.VERSION.SDK_INT >= 28) {
+                        ImageDecoderDecoder.Factory()
+                    } else {
+                        GifDecoder.Factory()
+                    },
+                )
+                .build()
+        }
         AsyncImage(
-            model = "file:///android_asset/${template.assetPath}",
+            model = request,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             modifier = modifier,
         )
     }

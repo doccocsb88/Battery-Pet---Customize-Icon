@@ -6,6 +6,7 @@ enum class MainSection(val title: String) {
     Home("Home"),
     Customize("Customize"),
     Gesture("Gesture"),
+    Settings("Settings"),
     Achievement("Achievement"),
 }
 
@@ -455,21 +456,21 @@ object SampleCatalog {
     val onboardingPages = listOf(
         OnboardingPage(
             id = "customize",
-            title = "Customize Your Status Bar",
-            body = "Battery, emoji, Wi-Fi, signal, theme, and date-time styles live in one editor.",
-            accentGlyph = "🔋",
+            title = "Unique Emoji Battery",
+            body = "Transform your phone's battery icon with playful emoji options to express your personality",
+            accentGlyph = "",
         ),
         OnboardingPage(
             id = "gesture",
-            title = "Control It With Gestures",
-            body = "Single tap, swipe, and long press can jump into the routes you use most often.",
-            accentGlyph = "👆",
+            title = "Easy Customization",
+            body = "Choose styles, colors, and effects in just a few taps.",
+            accentGlyph = "",
         ),
         OnboardingPage(
             id = "sticker",
-            title = "Sticker And Troll Overlays",
-            body = "Floating stickers and prank battery templates need the accessibility bridge before apply.",
-            accentGlyph = "✨",
+            title = "Animated Stickers",
+            body = "Place fun battery-themed stickers right on your screen.",
+            accentGlyph = "",
         ),
     )
 

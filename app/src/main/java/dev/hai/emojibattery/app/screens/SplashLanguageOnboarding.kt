@@ -418,144 +418,109 @@ internal fun OnboardingScreen(
     onNext: () -> Unit,
 ) {
     val page = SampleCatalog.onboardingPages[uiState.onboardingPage.coerceIn(0, SampleCatalog.onboardingPages.lastIndex)]
-    val isFirst = uiState.onboardingPage == 0
     val isLast = uiState.onboardingPage == SampleCatalog.onboardingPages.lastIndex
-    val gradient = Brush.horizontalGradient(
-        listOf(
-            colorResource(R.color.onboarding_cta_gradient_start),
-            colorResource(R.color.onboarding_cta_gradient_end),
-        ),
-    )
-    val onboardingBg = colorResource(R.color.onboarding_scaffold)
+    val imageRes = when (uiState.onboardingPage) {
+        0 -> R.drawable.img_onboard_1
+        1 -> R.drawable.img_onboard_2
+        else -> R.drawable.img_onboard_3
+    }
+    val titleColor = Color(0xFF5C4B51)
+    val bodyColor = Color(0xFF5C4B51)
+    val indicatorActive = Color(0xFFD47DFE)
+    val indicatorInactive = Color(0xFFD9D9D9)
+
     Scaffold(
-        containerColor = onboardingBg,
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { },
-                navigationIcon = {
-                    if (!isFirst) {
-                        TextButton(onClick = onPrevious) { Text(stringResource(R.string.onboarding_back)) }
-                    }
-                },
-                actions = { TextButton(onClick = onSkip) { Text(stringResource(R.string.onboarding_skip)) } },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = onboardingBg,
-                ),
-            )
-        },
+        containerColor = Color.White,
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(20.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                Surface(
-                    shape = RoundedCornerShape(32.dp),
-                    color = colorResource(R.color.onboarding_hero_card),
-                    border = BorderStroke(2.dp, colorResource(R.color.onboarding_hero_border)),
-                    shadowElevation = 6.dp,
-                ) {
-                    AnimatedContent(
-                        targetState = page.id,
-                        transitionSpec = { fadeIn(tween(280)) togetherWith fadeOut(tween(280)) },
-                        label = "onboarding_hero",
-                    ) { pageId ->
-                        val p = SampleCatalog.onboardingPages.first { it.id == pageId }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(dimensionResource(R.dimen.onboarding_hero_height))
-                                .background(colorResource(R.color.onboarding_hero_inner)),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
-                            ) {
-                                Text(p.accentGlyph, style = MaterialTheme.typography.displayLarge)
-                                Surface(
-                                    shape = RoundedCornerShape(18.dp),
-                                    color = colorResource(R.color.onboarding_chip_surface),
-                                ) {
-                                    Text(
-                                        stringResource(R.string.app_name).uppercase(),
-                                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                                        color = colorResource(R.color.onboarding_chip_magenta),
-                                        fontWeight = FontWeight.ExtraBold,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-                AnimatedContent(
-                    targetState = page.id,
-                    transitionSpec = { fadeIn(tween(320)) togetherWith fadeOut(tween(280)) },
-                    label = "onboarding_copy",
-                ) { pageId ->
-                    val p = SampleCatalog.onboardingPages.first { it.id == pageId }
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text(
-                            p.title,
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = colorResource(R.color.onboarding_title),
-                        )
-                        Text(
-                            p.body,
-                            color = colorResource(R.color.onboarding_body),
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    SampleCatalog.onboardingPages.forEachIndexed { index, _ ->
-                        Box(
-                            modifier = Modifier
-                                .size(width = if (index == uiState.onboardingPage) 28.dp else 10.dp, height = 10.dp)
-                                .clip(RoundedCornerShape(999.dp))
-                                .background(
-                                    if (index == uiState.onboardingPage) {
-                                        colorResource(R.color.onboarding_dot_active)
-                                    } else {
-                                        colorResource(R.color.onboarding_dot_inactive)
-                                    },
-                                ),
-                        )
-                    }
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentScale = ContentScale.Crop,
+            )
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = page.title,
+                color = titleColor,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            Spacer(Modifier.height(6.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = page.body,
+                    color = bodyColor,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 3,
+                )
+            }
+            Spacer(Modifier.height(20.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                SampleCatalog.onboardingPages.forEachIndexed { index, _ ->
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(if (index == uiState.onboardingPage) indicatorActive else indicatorInactive),
+                    )
                 }
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(
-                    onClick = onPrevious,
-                    enabled = !isFirst,
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(999.dp),
-                ) {
-                    Text(stringResource(R.string.onboarding_back))
-                }
+            Spacer(Modifier.height(20.dp))
+
+            if (isLast) {
                 Box(
                     modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(999.dp))
-                        .background(gradient),
-                ) {
-                    TextButton(onClick = onNext, modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            if (isLast) {
-                                stringResource(R.string.onboarding_get_started)
-                            } else {
-                                stringResource(R.string.onboarding_next)
-                            },
-                            color = Color.White,
-                            fontWeight = FontWeight.ExtraBold,
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color(0xFFFFABE5),
+                                    Color(0xFFD47DFE),
+                                ),
+                            ),
                         )
-                    }
+                        .clickable { onNext() }
+                        .padding(horizontal = 14.dp, vertical = 7.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.onboarding_get_started),
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
+            } else {
+                Text(
+                    text = stringResource(R.string.onboarding_next),
+                    color = indicatorActive,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.clickable { onNext() },
+                )
             }
+            Spacer(Modifier.height(16.dp))
         }
     }
 }

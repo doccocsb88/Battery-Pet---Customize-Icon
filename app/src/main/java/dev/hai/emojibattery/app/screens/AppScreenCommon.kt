@@ -42,8 +42,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -358,7 +358,7 @@ internal fun MainBottomBar(
         Triple(AppRoute.Home, MainSection.Home, Icons.Rounded.Home),
         Triple(AppRoute.Customize, MainSection.Customize, Icons.Rounded.AutoAwesome),
         Triple(AppRoute.Gesture, MainSection.Gesture, Icons.Rounded.TouchApp),
-        Triple(AppRoute.Achievement, MainSection.Achievement, Icons.Rounded.EmojiEvents),
+        Triple(AppRoute.Settings, MainSection.Settings, Icons.Rounded.Settings),
     )
     NavigationBar {
         items.forEach { (route, section, icon) ->

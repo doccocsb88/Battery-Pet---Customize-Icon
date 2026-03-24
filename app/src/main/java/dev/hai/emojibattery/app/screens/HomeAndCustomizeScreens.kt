@@ -169,7 +169,6 @@ internal fun HomeScreen(
     onOpenSearch: () -> Unit,
     onOpenSticker: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
-    onOpenSettings: () -> Unit,
     onOpenFeedback: () -> Unit,
 ) {
     val categories = uiState.homeTabs.takeIf { it.isNotEmpty() }
@@ -214,7 +213,6 @@ internal fun HomeScreen(
             onOpenSearch = onOpenSearch,
             onOpenSticker = onOpenSticker,
             onOpenBatteryTroll = onOpenBatteryTroll,
-            onOpenSettings = onOpenSettings,
             onOpenFeedback = onOpenFeedback,
         )
     }
@@ -233,7 +231,6 @@ private fun HomeScreenScaffold(
     onOpenSearch: () -> Unit,
     onOpenSticker: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
-    onOpenSettings: () -> Unit,
     onOpenFeedback: () -> Unit,
 ) {
     Scaffold(
@@ -241,7 +238,6 @@ private fun HomeScreenScaffold(
         topBar = {
             OriginalTopShell(
                 title = stringResource(R.string.battery_icon_title),
-                onLeftPrimary = onOpenSettings,
                 onLeftSecondary = onOpenFeedback,
                 onSearch = onOpenSearch,
             )
@@ -395,9 +391,10 @@ internal fun CustomizeHubScreen(
     onOpenSticker: () -> Unit,
     onOpenFeature: (CustomizeEntry) -> Unit,
     onOpenStatusBarCustom: () -> Unit,
+    onOpenNotch: () -> Unit,
+    onOpenAnimation: () -> Unit,
     onOpenRealTime: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
-    onOpenSettings: () -> Unit,
 ) {
     val gridEntries = listOf(
         CustomizeEntry.Emotion,
@@ -430,17 +427,11 @@ internal fun CustomizeHubScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            HomeRoundIcon(R.drawable.ic_settings_new, onOpenSettings)
                             HomeRoundIcon(R.drawable.ic_feeb_back_home, onOpenRealTime)
                         }
                         Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             HomeRoundIcon(R.drawable.ic_home_search, onOpenStatusBarCustom)
-                            Image(
-                                painter = painterResource(R.drawable.no_ads_on),
-                                contentDescription = stringResource(R.string.cd_ads_on),
-                                modifier = Modifier.size(width = 40.dp, height = 36.dp),
-                            )
                         }
                     }
                     EnableBanner(onStart = onOpenStatusBarCustom)
@@ -463,7 +454,6 @@ internal fun CustomizeHubScreen(
                 cta = stringResource(R.string.home_promo_stickers_cta),
                 onClick = onOpenSticker,
             )
-            FakeAdCard()
             PromoBannerCard(
                 backgroundRes = R.drawable.image_battery_troll_customize,
                 title = stringResource(R.string.home_promo_troll_title),
@@ -505,13 +495,13 @@ internal fun CustomizeHubScreen(
                     title = stringResource(R.string.home_notch),
                     iconRes = R.drawable.ic_item_notch,
                     modifier = Modifier.weight(1f),
-                    onClick = onOpenStatusBarCustom,
+                    onClick = onOpenNotch,
                 )
                 SmallCustomizeCard(
                     title = stringResource(R.string.home_animation),
                     iconRes = R.drawable.ic_item_animation,
                     modifier = Modifier.weight(1f),
-                    onClick = onOpenStatusBarCustom,
+                    onClick = onOpenAnimation,
                 )
             }
             Row(
@@ -630,50 +620,6 @@ internal fun PromoBannerCard(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-internal fun FakeAdCard() {
-    Surface(
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(66.dp)
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                )
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.secondary) {
-                            Text(stringResource(R.string.fake_ad_label), modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight.Bold)
-                        }
-                        Text(stringResource(R.string.fake_ad_capcut_title), color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge)
-                    }
-                    Text(stringResource(R.string.fake_ad_pangle_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(999.dp))
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(vertical = 18.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(stringResource(R.string.fake_ad_view_now), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineSmall)
             }
         }
     }
@@ -815,7 +761,6 @@ internal fun EnableBanner(
 @Composable
 internal fun OriginalTopShell(
     title: String,
-    onLeftPrimary: () -> Unit,
     onLeftSecondary: () -> Unit,
     onSearch: () -> Unit,
 ) {
@@ -836,7 +781,6 @@ internal fun OriginalTopShell(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    HomeRoundIcon(R.drawable.ic_settings_new, onLeftPrimary)
                     HomeRoundIcon(R.drawable.ic_feeb_back_home, onLeftSecondary)
                 }
                 Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)

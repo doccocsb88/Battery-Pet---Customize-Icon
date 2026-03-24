@@ -16,3 +16,9 @@ __pycache__/
 
 # Local crawls / decompile output (large; regenerate with scripts)
 volio_api_crawl/downloaded_assets/
+
+# Play Store release artifacts
+play-secrets/
+*.jks
+*.keystore
+service-account*.json

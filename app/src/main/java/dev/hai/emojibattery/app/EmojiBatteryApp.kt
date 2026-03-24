@@ -243,9 +243,31 @@ fun EmojiBatteryApp(
                     onBack = { navController.popBackStack() },
                 )
             }
-            composable(AppRoute.Animation.route) {
+            composable(AppRoute.Animation.route) { entry ->
+                val selectedFromList = entry.savedStateHandle.get<Int>("animation_selected_id")
                 AnimationScreen(
                     onBack = { navController.popBackStack() },
+                    selectedFromList = selectedFromList,
+                    onConsumeListSelection = { entry.savedStateHandle.remove<Int>("animation_selected_id") },
+                    onOpenAnimationList = { selectedId ->
+                        navController.navigate(AppRoute.AnimationList.create(selectedId))
+                    },
+                )
+            }
+            composable(
+                route = AppRoute.AnimationList.route,
+                arguments = listOf(navArgument("selectedId") { type = NavType.IntType }),
+            ) { entry ->
+                val selectedId = entry.arguments?.getInt("selectedId") ?: 0
+                AnimationListScreen(
+                    selectedId = selectedId,
+                    onBack = { navController.popBackStack() },
+                    onSelect = { id ->
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("animation_selected_id", id)
+                        navController.popBackStack()
+                    },
                 )
             }
             composable(AppRoute.Gesture.route) {

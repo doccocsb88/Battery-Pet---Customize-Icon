@@ -1,0 +1,26 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build signed release AAB and upload to Google Play internal track"
+  lane :internal do
+    gradle(task: "clean")
+    gradle(task: "bundle", build_type: "Release")
+
+    aab_path = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
+    aab_path ||= Dir["app/build/outputs/bundle/release/*.aab"].max_by { |f| File.mtime(f) }
+
+    UI.user_error!("Release AAB not found at app/build/outputs/bundle/release") unless aab_path
+
+    upload_to_play_store(
+      package_name: CredentialsManager::AppfileConfig.try_fetch_value(:package_name),
+      track: "internal",
+      aab: aab_path,
+      json_key_data: ENV.fetch("SERVICE_ACCOUNT_JSON_PLAINTEXT"),
+      skip_upload_apk: true,
+      skip_upload_screenshots: true,
+      skip_upload_images: false,
+      skip_upload_changelogs: false,
+      release_status: "completed"
+    )
+  end
+end

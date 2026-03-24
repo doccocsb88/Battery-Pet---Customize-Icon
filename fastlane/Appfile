@@ -1,0 +1,3 @@
+package_name("co.q7labs.co.emoji")
+
+json_key_data(ENV["SERVICE_ACCOUNT_JSON_PLAINTEXT"])
