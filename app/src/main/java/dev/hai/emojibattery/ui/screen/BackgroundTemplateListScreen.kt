@@ -1,4 +1,4 @@
-package dev.hai.emojibattery.app.screens
+package dev.hai.emojibattery.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

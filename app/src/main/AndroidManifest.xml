@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name="dev.hai.emojibattery.EmojiBatteryApplication"
+        android:name="dev.hai.emojibattery.app.EmojiBatteryApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EmojiBatteryPort">
         <activity
-            android:name="dev.hai.emojibattery.MainActivity"
+            android:name="dev.hai.emojibattery.app.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.EmojiBatteryPort">
             <intent-filter>

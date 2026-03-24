@@ -1,4 +1,4 @@
-package dev.hai.emojibattery
+package dev.hai.emojibattery.app
 
 import android.app.Application
 import dev.hai.emojibattery.locale.AppLocalePreferences

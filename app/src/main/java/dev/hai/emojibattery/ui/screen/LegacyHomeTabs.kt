@@ -1,4 +1,4 @@
-package dev.hai.emojibattery.app.screens
+package dev.hai.emojibattery.ui.screen
 
 
 import android.app.Activity
@@ -150,79 +150,122 @@ import dev.hai.emojibattery.ui.navigation.AppRoute
 import kotlinx.coroutines.delay
 
 @Composable
-internal fun TemplatePreviewCard(
-    title: String,
-    summary: String,
-    glyph: String,
-    tag: String,
+internal fun BatteryTabContent(
+    selectedId: String,
+    presets: List<BatteryPreset>,
+    batteryScale: Float,
+    showPercentage: Boolean,
+    showStroke: Boolean,
+    onSelectBattery: (String) -> Unit,
+    onSetBatteryScale: (Float) -> Unit,
+    onTogglePercentage: (Boolean) -> Unit,
+    onToggleStroke: (Boolean) -> Unit,
 ) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.72f)),
-        shape = RoundedCornerShape(28.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Surface(
-                shape = RoundedCornerShape(24.dp),
-                color = MaterialTheme.colorScheme.background.copy(alpha = 0.65f),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(88.dp)
-                        .padding(12.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(glyph, style = MaterialTheme.typography.displayMedium)
-                }
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text(stringResource(R.string.legacy_tab_battery_body), style = MaterialTheme.typography.titleMedium)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(presets) { preset ->
+                ChoiceChip(
+                    label = "${preset.body} ${preset.name}",
+                    selected = selectedId == preset.id,
+                    onClick = { onSelectBattery(preset.id) },
+                )
             }
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text(summary, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                AssistChip(onClick = {}, label = { Text(tag) })
+        }
+        SliderField(stringResource(R.string.legacy_slider_percentage_scale), batteryScale, 0.3f..1f, onSetBatteryScale)
+        SettingToggle(stringResource(R.string.show_percentage), showPercentage, onTogglePercentage)
+        SettingToggle(stringResource(R.string.show_stroke), showStroke, onToggleStroke)
+    }
+}
+
+@Composable
+internal fun EmojiTabContent(
+    selectedId: String,
+    presets: List<EmojiPreset>,
+    emojiScale: Float,
+    animateCharge: Boolean,
+    onSelectEmoji: (String) -> Unit,
+    onSetEmojiScale: (Float) -> Unit,
+    onToggleAnimate: (Boolean) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text(stringResource(R.string.legacy_tab_emoji_battery), style = MaterialTheme.typography.titleMedium)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(presets) { preset ->
+                ChoiceChip(
+                    label = "${preset.glyph} ${preset.name}",
+                    selected = selectedId == preset.id,
+                    onClick = { onSelectEmoji(preset.id) },
+                )
+            }
+        }
+        SliderField(stringResource(R.string.slider_emoji_size), emojiScale, 0.3f..1f, onSetEmojiScale)
+        SettingToggle(stringResource(R.string.animate_charge), animateCharge, onToggleAnimate)
+    }
+}
+
+@Composable
+internal fun ThemeTabContent(
+    selectedId: String,
+    presets: List<ThemePreset>,
+    onSelectTheme: (String) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text(stringResource(R.string.legacy_tab_theme_templates), style = MaterialTheme.typography.titleMedium)
+        presets.forEach { preset ->
+            Card(onClick = { onSelectTheme(preset.id) }) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(Color(preset.accent)),
+                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(preset.name, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            if (selectedId == preset.id) {
+                                stringResource(R.string.legacy_theme_status_active)
+                            } else {
+                                stringResource(R.string.legacy_theme_status_inactive)
+                            },
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-internal fun ContentTemplateCard(
-    template: ContentTemplate,
-    selected: Boolean,
-    onClick: () -> Unit,
+internal fun SettingsTabContent(
+    showPercentage: Boolean,
+    animateCharge: Boolean,
+    showStroke: Boolean,
+    onTogglePercentage: (Boolean) -> Unit,
+    onToggleAnimate: (Boolean) -> Unit,
+    onToggleStroke: (Boolean) -> Unit,
 ) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceVariant,
-        ),
-        modifier = Modifier.size(width = 168.dp, height = 150.dp),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(14.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        SettingToggle(stringResource(R.string.show_percentage), showPercentage, onTogglePercentage)
+        SettingToggle(stringResource(R.string.animate_charge), animateCharge, onToggleAnimate)
+        SettingToggle(stringResource(R.string.show_stroke), showStroke, onToggleStroke)
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(template.accentGlyph, style = MaterialTheme.typography.headlineMedium)
-                if (template.premium) {
-                    Text(stringResource(R.string.label_pro), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-                }
-            }
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(template.title, fontWeight = FontWeight.SemiBold)
-                Text(template.summary, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
-            }
-            Text(template.tag, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                stringResource(R.string.legacy_settings_tab_description),
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

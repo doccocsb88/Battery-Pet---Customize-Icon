@@ -1,6 +1,6 @@
 package dev.hai.emojibattery.app
 
-import dev.hai.emojibattery.app.screens.*
+import dev.hai.emojibattery.ui.screen.*
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
