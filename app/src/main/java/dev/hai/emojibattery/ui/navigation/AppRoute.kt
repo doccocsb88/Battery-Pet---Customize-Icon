@@ -10,6 +10,10 @@ sealed class AppRoute(val route: String) {
     data object Gesture : AppRoute("gesture")
     data object Achievement : AppRoute("achievement")
     data object StatusBarCustom : AppRoute("statusbar_custom")
+    data object Notch : AppRoute("notch")
+    data object Animation : AppRoute("animation")
+    data object StatusBarBatteryList : AppRoute("statusbar_battery_list")
+    data object StatusBarEmojiList : AppRoute("statusbar_emoji_list")
     /** Full list of local background templates, opened from Theme tab View More. */
     data object BackgroundTemplateList : AppRoute("background_template_list")
     data object LegacyBattery : AppRoute("legacy_battery")

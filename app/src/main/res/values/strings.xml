@@ -145,6 +145,9 @@
     <string name="home_status_bar_customize">Status Bar Customize</string>
     <string name="home_notch">Notch</string>
     <string name="home_animation">Animation</string>
+    <string name="enable_animation">Enable animation</string>
+    <string name="animation_size">Animation size</string>
+    <string name="animation_style">Animation style</string>
     <string name="home_customize_icon_row">Customize Icon</string>
     <string name="home_enable_banner">Enable emoji battery to begin</string>
     <string name="home_start">Start</string>

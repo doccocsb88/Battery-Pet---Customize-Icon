@@ -25,6 +25,15 @@ data class OverlaySnapshot(
     val realTimeEnabled: Boolean,
     val realTimeGlyph: String,
     val realTimeTitle: String,
+    /** Original notch selector ID (-1 hide, 1..13 visible variants). */
+    val notchTemplateId: Int,
+)
+
+data class AnimationOverlayPrefs(
+    val enabled: Boolean,
+    /** 0..100 scale from original seekbar style. */
+    val sizePercent: Int,
+    val templateId: Int,
 )
 
 object OverlayConfigStore {
@@ -43,6 +52,10 @@ object OverlayConfigStore {
     private const val KEY_REALTIME_ENABLED = "realtime_enabled"
     private const val KEY_REALTIME_GLYPH = "realtime_glyph"
     private const val KEY_REALTIME_TITLE = "realtime_title"
+    private const val KEY_NOTCH_TEMPLATE_ID = "notch_template_id"
+    private const val KEY_ANIMATION_ENABLED = "animation_enabled"
+    private const val KEY_ANIMATION_SIZE_PERCENT = "animation_size_percent"
+    private const val KEY_ANIMATION_TEMPLATE_ID = "animation_template_id"
 
     /**
      * Persists the status-bar editor config for the accessibility overlay (original app: one **BatteryConfig**
@@ -119,6 +132,34 @@ object OverlayConfigStore {
             .apply()
     }
 
+    fun saveNotchTemplateId(context: Context, templateId: Int) {
+        prefs(context).edit()
+            .putInt(KEY_NOTCH_TEMPLATE_ID, templateId)
+            .apply()
+    }
+
+    fun saveAnimationPrefs(
+        context: Context,
+        enabled: Boolean,
+        sizePercent: Int,
+        templateId: Int,
+    ) {
+        prefs(context).edit()
+            .putBoolean(KEY_ANIMATION_ENABLED, enabled)
+            .putInt(KEY_ANIMATION_SIZE_PERCENT, sizePercent.coerceIn(0, 100))
+            .putInt(KEY_ANIMATION_TEMPLATE_ID, templateId)
+            .apply()
+    }
+
+    fun readAnimationPrefs(context: Context): AnimationOverlayPrefs {
+        val prefs = prefs(context)
+        return AnimationOverlayPrefs(
+            enabled = prefs.getBoolean(KEY_ANIMATION_ENABLED, false),
+            sizePercent = prefs.getInt(KEY_ANIMATION_SIZE_PERCENT, 50).coerceIn(0, 100),
+            templateId = prefs.getInt(KEY_ANIMATION_TEMPLATE_ID, 0),
+        )
+    }
+
     fun read(context: Context): OverlaySnapshot {
         val prefs = prefs(context)
         return OverlaySnapshot(
@@ -136,6 +177,8 @@ object OverlayConfigStore {
             realTimeEnabled = prefs.getBoolean(KEY_REALTIME_ENABLED, false),
             realTimeGlyph = prefs.getString(KEY_REALTIME_GLYPH, "⚡").orEmpty(),
             realTimeTitle = prefs.getString(KEY_REALTIME_TITLE, "Real Time").orEmpty(),
+            // Match original "dynamic notch" preview behavior by default.
+            notchTemplateId = prefs.getInt(KEY_NOTCH_TEMPLATE_ID, 8),
         )
     }
 

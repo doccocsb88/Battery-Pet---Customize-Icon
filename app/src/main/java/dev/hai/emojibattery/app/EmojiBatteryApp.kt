@@ -65,7 +65,7 @@ fun EmojiBatteryApp(
         AppRoute.Home.route,
         AppRoute.Customize.route,
         AppRoute.Gesture.route,
-        AppRoute.Achievement.route,
+        AppRoute.Settings.route,
     )
     var showAccessibilityConsent by remember { mutableStateOf(false) }
 
@@ -208,7 +208,6 @@ fun EmojiBatteryApp(
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
                     onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
-                    onOpenSettings = { navController.navigate(AppRoute.Settings.route) },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
                 )
             }
@@ -233,9 +232,20 @@ fun EmojiBatteryApp(
                         viewModel.selectStatusTab(StatusBarTab.Battery)
                         navController.navigate(AppRoute.StatusBarCustom.route)
                     },
+                    onOpenNotch = { navController.navigate(AppRoute.Notch.route) },
+                    onOpenAnimation = { navController.navigate(AppRoute.Animation.route) },
                     onOpenRealTime = { navController.navigate(AppRoute.RealTime.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
-                    onOpenSettings = { navController.navigate(AppRoute.Settings.route) },
+                )
+            }
+            composable(AppRoute.Notch.route) {
+                NotchScreen(
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable(AppRoute.Animation.route) {
+                AnimationScreen(
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable(AppRoute.Gesture.route) {
@@ -264,6 +274,8 @@ fun EmojiBatteryApp(
                     onSelectBattery = viewModel::selectBatteryPreset,
                     onSelectEmoji = viewModel::selectEmojiPreset,
                     onSelectTheme = viewModel::selectTheme,
+                    onViewMoreBatteryChoices = { navController.navigate(AppRoute.StatusBarBatteryList.route) },
+                    onViewMoreEmojiChoices = { navController.navigate(AppRoute.StatusBarEmojiList.route) },
                     onSetThemeBackgroundColor = viewModel::setThemeBackgroundColor,
                     onSetBackgroundTemplatePhoto = viewModel::setBackgroundTemplatePhoto,
                     onViewMoreBackgroundTemplates = {
@@ -310,6 +322,32 @@ fun EmojiBatteryApp(
                     uiState = uiState,
                     onBack = { navController.popBackStack() },
                     onSelectPhotoUrl = viewModel::setBackgroundTemplatePhoto,
+                )
+            }
+            composable(AppRoute.StatusBarBatteryList.route) {
+                LaunchedEffect(Unit) {
+                    viewModel.loadStatusBarCatalog()
+                }
+                StatusBarCatalogListScreen(
+                    uiState = uiState,
+                    title = StatusBarTab.Battery.title,
+                    selectedId = uiState.editingConfig.batteryPresetId,
+                    onBack = { navController.popBackStack() },
+                    onSelectId = viewModel::selectBatteryPreset,
+                    previewImageUrl = { it.batteryArtUrl ?: it.thumbnailUrl },
+                )
+            }
+            composable(AppRoute.StatusBarEmojiList.route) {
+                LaunchedEffect(Unit) {
+                    viewModel.loadStatusBarCatalog()
+                }
+                StatusBarCatalogListScreen(
+                    uiState = uiState,
+                    title = StatusBarTab.Emoji.title,
+                    selectedId = uiState.editingConfig.emojiPresetId,
+                    onBack = { navController.popBackStack() },
+                    onSelectId = viewModel::selectEmojiPreset,
+                    previewImageUrl = { it.emojiArtUrl ?: it.thumbnailUrl },
                 )
             }
             composable(AppRoute.LegacyBattery.route) {
