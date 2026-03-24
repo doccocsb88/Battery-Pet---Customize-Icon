@@ -20,6 +20,7 @@ import coil.load
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 import dev.hai.emojibattery.model.GestureTrigger
+import kotlin.math.roundToInt
 
 class StatusBarOverlayManager(
     private val context: Context,
@@ -220,6 +221,14 @@ class StatusBarOverlayManager(
         signalView.setTextColor("#333333".toColorInt())
 
         if (snapshot.stickerEnabled) {
+            val stickerScale = (0.6f + snapshot.stickerSize * 0.8f).coerceIn(0.6f, 1.6f)
+            stickerEmojiView.scaleX = stickerScale
+            stickerEmojiView.scaleY = stickerScale
+            stickerImageView.scaleX = stickerScale
+            stickerImageView.scaleY = stickerScale
+            stickerEmojiView.rotation = snapshot.stickerRotation
+            stickerImageView.rotation = snapshot.stickerRotation
+            updateStickerPosition(snapshot.stickerOffsetX, snapshot.stickerOffsetY)
             val url = snapshot.stickerThumbnailUrl?.takeIf { it.isNotBlank() }
             if (url != null) {
                 stickerImageView.visibility = View.VISIBLE
@@ -247,6 +256,23 @@ class StatusBarOverlayManager(
 
         statusRow.visibility = if (snapshot.statusBarEnabled) View.VISIBLE else View.GONE
         applyNotch(snapshot.notchTemplateId, snapshot.statusBarEnabled)
+    }
+
+    private fun updateStickerPosition(offsetX: Float, offsetY: Float) {
+        val density = context.resources.displayMetrics.density
+        val screenWidth = context.resources.displayMetrics.widthPixels
+        val stickerFrameWidth = (56f * density).roundToInt()
+        val minTop = (28f * density).roundToInt()
+        val travelY = (96f * density).roundToInt()
+        val left = ((screenWidth - stickerFrameWidth) * offsetX.coerceIn(0f, 1f)).roundToInt()
+        val top = minTop + (travelY * offsetY.coerceIn(0f, 1f)).roundToInt()
+        listOf(stickerImageView, stickerEmojiView).forEach { view ->
+            val params = view.layoutParams as FrameLayout.LayoutParams
+            params.gravity = Gravity.TOP or Gravity.START
+            params.leftMargin = left
+            params.topMargin = top
+            view.layoutParams = params
+        }
     }
 
     fun detach() {

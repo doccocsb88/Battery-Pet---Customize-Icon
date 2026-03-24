@@ -446,11 +446,16 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
                     ),
                 )
             } else if (state.stickerPlacements.any { it.stickerId == stickerId }) {
-                state.copy(selectedStickerId = stickerId, infoMessage = "Sticker already added. Opened for editing.")
+                state.copy(
+                    selectedStickerId = stickerId,
+                    showStickerAdjustmentPanel = true,
+                    infoMessage = "Sticker already added. Opened for editing.",
+                )
             } else {
                 state.copy(
                     stickerPlacements = state.stickerPlacements + StickerPlacement(stickerId = stickerId),
                     selectedStickerId = stickerId,
+                    showStickerAdjustmentPanel = true,
                     infoMessage = "Sticker added.",
                 )
             }
@@ -458,7 +463,7 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun selectSticker(stickerId: String) {
-        _uiState.update { it.copy(selectedStickerId = stickerId) }
+        _uiState.update { it.copy(selectedStickerId = stickerId, showStickerAdjustmentPanel = true) }
     }
 
     fun removeSticker(stickerId: String) {
@@ -467,6 +472,7 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
             state.copy(
                 stickerPlacements = updated,
                 selectedStickerId = updated.lastOrNull()?.stickerId,
+                showStickerAdjustmentPanel = updated.isNotEmpty(),
                 infoMessage = "Sticker removed.",
             )
         }
@@ -480,19 +486,46 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         updateSelectedSticker { copy(speed = value) }
     }
 
+    fun updateSelectedStickerRotation(value: Float) {
+        updateSelectedSticker { copy(rotation = value.coerceIn(-180f, 180f)) }
+    }
+
+    fun nudgeSelectedSticker(deltaX: Float, deltaY: Float) {
+        updateSelectedSticker {
+            copy(
+                offsetX = (offsetX + deltaX).coerceIn(0f, 1f),
+                offsetY = (offsetY + deltaY).coerceIn(0f, 1f),
+            )
+        }
+    }
+
+    fun dismissStickerAdjustmentPanel() {
+        _uiState.update { it.copy(showStickerAdjustmentPanel = false) }
+    }
+
     fun saveStickerOverlay() {
         _uiState.update { state ->
             when {
                 state.stickerPlacements.isEmpty() -> state.copy(infoMessage = "Please select at least one sticker.")
                 !state.accessibilityGranted -> state.copy(infoMessage = "Enable accessibility bridge before saving sticker overlay.")
-                else -> state.copy(stickerOverlayEnabled = true, infoMessage = "Sticker overlay saved.")
+                else -> state.copy(
+                    stickerOverlayEnabled = true,
+                    showStickerAdjustmentPanel = false,
+                    infoMessage = "Sticker overlay saved.",
+                )
             }
         }
         advanceAchievement("save_sticker")
     }
 
     fun turnOffStickerOverlay() {
-        _uiState.update { it.copy(stickerOverlayEnabled = false, infoMessage = "Sticker overlay turned off.") }
+        _uiState.update {
+            it.copy(
+                stickerOverlayEnabled = false,
+                showStickerAdjustmentPanel = false,
+                infoMessage = "Sticker overlay turned off.",
+            )
+        }
     }
 
     fun setGestureEnabled(enabled: Boolean) {
@@ -611,8 +644,36 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    fun setBatteryTrollEnabled(enabled: Boolean) {
+        _uiState.update { it.copy(trollFeatureEnabled = enabled) }
+    }
+
+    fun setBatteryTrollUseRealBattery(useRealBattery: Boolean) {
+        _uiState.update { it.copy(trollUseRealBattery = useRealBattery) }
+    }
+
     fun setTrollMessage(message: String) {
         _uiState.update { it.copy(trollMessage = message) }
+    }
+
+    fun setTrollShowPercentage(enabled: Boolean) {
+        _uiState.update { it.copy(trollShowPercentage = enabled) }
+    }
+
+    fun setTrollPercentageSizeDp(value: Int) {
+        _uiState.update { it.copy(trollPercentageSizeDp = value.coerceIn(5, 40)) }
+    }
+
+    fun setTrollEmojiSizeDp(value: Int) {
+        _uiState.update { it.copy(trollEmojiSizeDp = value.coerceIn(20, 80)) }
+    }
+
+    fun setTrollRandomizedMode(enabled: Boolean) {
+        _uiState.update { it.copy(trollRandomizedMode = enabled) }
+    }
+
+    fun setTrollShowEmoji(enabled: Boolean) {
+        _uiState.update { it.copy(trollShowEmoji = enabled) }
     }
 
     fun setTrollAutoDrop(enabled: Boolean) {
@@ -623,10 +684,16 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
                 state.copy(infoMessage = "Enable accessibility bridge before applying a Battery Troll overlay.")
+            } else if (!state.trollFeatureEnabled) {
+                state.copy(
+                    trollOverlayEnabled = false,
+                    infoMessage = "Battery Troll is disabled.",
+                )
             } else {
+                val appliedMessage = if (state.trollUseRealBattery) "Real battery" else state.trollMessage
                 state.copy(
                     trollOverlayEnabled = true,
-                    infoMessage = "Battery Troll overlay applied with message '${state.trollMessage}'.",
+                    infoMessage = "Battery Troll overlay applied with message '$appliedMessage'.",
                 )
             }
         }

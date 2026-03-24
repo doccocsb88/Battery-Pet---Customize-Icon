@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -29,6 +30,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -44,6 +47,10 @@ import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,6 +72,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -84,6 +92,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -103,6 +112,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -167,7 +177,9 @@ internal fun EmojiStickerScreen(
     onSelectSticker: (String) -> Unit,
     onRemoveSticker: (String) -> Unit,
     onUpdateStickerSize: (Float) -> Unit,
-    onUpdateStickerSpeed: (Float) -> Unit,
+    onUpdateStickerRotation: (Float) -> Unit,
+    onNudgeStickerPosition: (Float, Float) -> Unit,
+    onDismissStickerAdjustment: () -> Unit,
     onOpenTutorial: () -> Unit,
     onRefreshStickerCatalog: () -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
@@ -186,6 +198,11 @@ internal fun EmojiStickerScreen(
     val selectedSticker = uiState.selectedStickerId?.let { uiState.stickerPresetForId(it) }
     val selectedPlacement = uiState.selectedStickerId?.let { id ->
         uiState.stickerPlacements.firstOrNull { it.stickerId == id }
+    }
+    val maxStickerSlots = when {
+        uiState.premiumUnlocked -> SampleCatalog.PREMIUM_STICKER_SLOTS
+        uiState.unlockedFeatureKeys.contains(SampleCatalog.FEATURE_EXTRA_STICKER_SLOT) -> SampleCatalog.REWARD_EXTRA_STICKER_SLOTS
+        else -> SampleCatalog.FREE_STICKER_SLOTS
     }
     val stickerScroll = rememberScrollState()
 
@@ -376,7 +393,11 @@ internal fun EmojiStickerScreen(
                             fontWeight = FontWeight.SemiBold,
                         )
                         Text(
-                            stringResource(R.string.sticker_added_count, uiState.stickerPlacements.size),
+                            stringResource(
+                                R.string.sticker_added_progress_count,
+                                uiState.stickerPlacements.size,
+                                maxStickerSlots,
+                            ),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
@@ -390,7 +411,7 @@ internal fun EmojiStickerScreen(
                     } else {
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.height(88.dp),
+                            modifier = Modifier.height(112.dp),
                         ) {
                             items(uiState.stickerPlacements, key = { it.stickerId }) { placement ->
                                 val sticker = uiState.stickerPresetForId(placement.stickerId)
@@ -418,8 +439,11 @@ internal fun EmojiStickerScreen(
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
-                        SliderField(stringResource(R.string.sticker_size_slider), selectedPlacement.size, 0.2f..1f, onUpdateStickerSize)
-                        SliderField(stringResource(R.string.sticker_speed_slider), selectedPlacement.speed, 0.2f..1f, onUpdateStickerSpeed)
+                        Text(
+                            stringResource(R.string.sticker_adjustment_inline_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     } else {
                         Text(
                             stringResource(R.string.sticker_select_to_edit_hint),
@@ -481,6 +505,16 @@ internal fun EmojiStickerScreen(
                     }
                 }
             }
+        }
+        if (uiState.showStickerAdjustmentPanel && selectedSticker != null && selectedPlacement != null) {
+            StickerAdjustmentOverlay(
+                sticker = selectedSticker,
+                placement = selectedPlacement,
+                onDismiss = onDismissStickerAdjustment,
+                onUpdateSize = onUpdateStickerSize,
+                onUpdateRotation = onUpdateStickerRotation,
+                onNudgePosition = onNudgeStickerPosition,
+            )
         }
     }
 }
@@ -584,7 +618,7 @@ internal fun StickerPreviewCard(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall,
             )
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(116.dp)
@@ -592,13 +626,17 @@ internal fun StickerPreviewCard(
                     .background(MaterialTheme.colorScheme.surfaceVariant),
             ) {
                 if (selectedSticker != null) {
+                    val placement = selectedPlacement
+                    val normalizedSize = placement?.size?.coerceIn(0.2f, 1f) ?: 0.5f
+                    val stickerSize = (36.dp + (normalizedSize * 56f).dp)
+                    val x = (maxWidth - stickerSize) * (placement?.offsetX?.coerceIn(0f, 1f) ?: 0.5f)
+                    val y = (maxHeight - stickerSize) * (placement?.offsetY?.coerceIn(0f, 1f) ?: 0.5f)
                     StickerMediaPreview(
                         selectedSticker,
                         Modifier
-                            .align(Alignment.Center)
-                            .padding(top = ((1f - (selectedPlacement?.speed ?: 0.5f)) * 24f).dp)
-                            .fillMaxSize()
-                            .padding(12.dp),
+                            .offset(x = x, y = y)
+                            .size(stickerSize)
+                            .graphicsLayer(rotationZ = placement?.rotation ?: 0f),
                     )
                 } else {
                     Text(
@@ -615,7 +653,7 @@ internal fun StickerPreviewCard(
                         R.string.sticker_stats_line,
                         selectedSticker.name,
                         (selectedPlacement.size * 100).toInt(),
-                        (selectedPlacement.speed * 100).toInt(),
+                        selectedPlacement.rotation.toInt(),
                     ),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodySmall,
@@ -626,6 +664,206 @@ internal fun StickerPreviewCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodySmall,
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StickerAdjustmentOverlay(
+    sticker: StickerPreset,
+    placement: StickerPlacement,
+    onDismiss: () -> Unit,
+    onUpdateSize: (Float) -> Unit,
+    onUpdateRotation: (Float) -> Unit,
+    onNudgePosition: (Float, Float) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .zIndex(10f),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.28f))
+                .clickable(onClick = onDismiss),
+        )
+        StickerAdjustmentPanel(
+            sticker = sticker,
+            placement = placement,
+            onDismiss = onDismiss,
+            onUpdateSize = onUpdateSize,
+            onUpdateRotation = onUpdateRotation,
+            onNudgePosition = onNudgePosition,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = 16.dp),
+        )
+    }
+}
+
+@Composable
+private fun StickerAdjustmentPanel(
+    sticker: StickerPreset,
+    placement: StickerPlacement,
+    onDismiss: () -> Unit,
+    onUpdateSize: (Float) -> Unit,
+    onUpdateRotation: (Float) -> Unit,
+    onNudgePosition: (Float, Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shape = RoundedCornerShape(18.dp),
+        color = Color.White,
+        shadowElevation = 6.dp,
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(10.dp, RoundedCornerShape(18.dp)),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Spacer(Modifier.width(28.dp))
+                Text(
+                    stringResource(R.string.sticker_adjustment_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                )
+                Surface(
+                    onClick = onDismiss,
+                    shape = CircleShape,
+                    color = Color(0xFF8E6178),
+                ) {
+                    Text(
+                        stringResource(R.string.multiply_sign),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+            }
+            Text(
+                "${sticker.glyph} ${sticker.name}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_bullet2),
+                            contentDescription = null,
+                            modifier = Modifier.size(width = 4.dp, height = 12.dp),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.sticker_size_slider),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                    Slider(
+                        value = placement.size.coerceIn(0.2f, 1f),
+                        valueRange = 0.2f..1f,
+                        onValueChange = onUpdateSize,
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color(0xFFD960F8),
+                            activeTrackColor = Color(0xFFD960F8),
+                            inactiveTrackColor = Color(0xFFF6DFF5),
+                        ),
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_bullet2),
+                            contentDescription = null,
+                            modifier = Modifier.size(width = 4.dp, height = 12.dp),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.sticker_rotate_slider),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                    Slider(
+                        value = placement.rotation.coerceIn(-180f, 180f),
+                        valueRange = -180f..180f,
+                        onValueChange = onUpdateRotation,
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color(0xFFD960F8),
+                            activeTrackColor = Color(0xFFD960F8),
+                            inactiveTrackColor = Color(0xFFF6DFF5),
+                        ),
+                    )
+                }
+                Column(
+                    modifier = Modifier.width(104.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Surface(
+                        onClick = { onNudgePosition(0f, -0.06f) },
+                        shape = CircleShape,
+                        color = Color(0xFFF7F5F7),
+                    ) {
+                        Icon(
+                            Icons.Rounded.KeyboardArrowUp,
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp),
+                        )
+                    }
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Surface(
+                            onClick = { onNudgePosition(-0.06f, 0f) },
+                            shape = CircleShape,
+                            color = Color(0xFFF7F5F7),
+                        ) {
+                            Icon(
+                                Icons.Rounded.KeyboardArrowLeft,
+                                contentDescription = null,
+                                modifier = Modifier.padding(8.dp),
+                            )
+                        }
+                        Surface(
+                            onClick = { onNudgePosition(0.06f, 0f) },
+                            shape = CircleShape,
+                            color = Color(0xFFF7F5F7),
+                        ) {
+                            Icon(
+                                Icons.Rounded.KeyboardArrowRight,
+                                contentDescription = null,
+                                modifier = Modifier.padding(8.dp),
+                            )
+                        }
+                    }
+                    Surface(
+                        onClick = { onNudgePosition(0f, 0.06f) },
+                        shape = CircleShape,
+                        color = Color(0xFFF7F5F7),
+                    ) {
+                        Icon(
+                            Icons.Rounded.KeyboardArrowDown,
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp),
+                        )
+                    }
+                }
             }
         }
     }
@@ -704,32 +942,53 @@ internal fun AddedStickerChip(
     onSelect: () -> Unit,
     onRemove: () -> Unit,
 ) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
-        ),
-        border = if (selected) BorderStroke(1.dp, MaterialTheme.colorScheme.secondary) else null,
-        onClick = onSelect,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(if (selected) Color(0xFFF8DFF8) else MaterialTheme.colorScheme.surfaceVariant)
+                .clickable(onClick = onSelect),
+            contentAlignment = Alignment.Center,
         ) {
             if (sticker.thumbnailUrl != null) {
                 AsyncImage(
                     model = sticker.thumbnailUrl,
                     contentDescription = sticker.name,
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(34.dp),
                     contentScale = ContentScale.Fit,
                 )
             } else {
                 Text(sticker.glyph)
             }
-            Text(sticker.name, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodySmall)
-            TextButton(onClick = onRemove) {
-                Text(stringResource(R.string.multiply_sign), color = MaterialTheme.colorScheme.onSurface)
+            Surface(
+                onClick = onRemove,
+                shape = CircleShape,
+                color = Color.Black.copy(alpha = 0.8f),
+                modifier = Modifier.align(Alignment.TopEnd),
+            ) {
+                Text(
+                    "−",
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 0.dp),
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodySmall,
+                )
             }
+        }
+        Surface(
+            onClick = onSelect,
+            shape = RoundedCornerShape(16.dp),
+            color = Color(0xFFF7DFF8),
+        ) {
+            Text(
+                stringResource(R.string.sticker_position_chip),
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                color = Color(0xFF8D5578),
+                style = MaterialTheme.typography.labelMedium,
+            )
         }
     }
 }

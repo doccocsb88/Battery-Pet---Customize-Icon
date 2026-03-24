@@ -89,6 +89,11 @@ data class StickerPlacement(
     val stickerId: String,
     val size: Float = 0.5f,
     val speed: Float = 0.5f,
+    val rotation: Float = 0f,
+    /** Normalized X anchor inside preview/overlay region (0f..1f). */
+    val offsetX: Float = 0.5f,
+    /** Normalized Y anchor inside preview/overlay region (0f..1f). */
+    val offsetY: Float = 0.5f,
 )
 
 data class FeatureConfig(
@@ -239,6 +244,7 @@ data class AppUiState(
     val featureConfigs: Map<CustomizeEntry, FeatureConfig> = SampleCatalog.defaultFeatureConfigs,
     val stickerPlacements: List<StickerPlacement> = emptyList(),
     val selectedStickerId: String? = null,
+    val showStickerAdjustmentPanel: Boolean = false,
     val stickerOverlayEnabled: Boolean = false,
     val gestureEnabled: Boolean = false,
     val vibrateFeedback: Boolean = true,
@@ -247,6 +253,15 @@ data class AppUiState(
     val selectedRealTimeTemplateId: String = SampleCatalog.realTimeTemplates.first().id,
     val selectedBatteryTrollTemplateId: String = SampleCatalog.batteryTrollTemplates.first().id,
     val trollMessage: String = SampleCatalog.batteryTrollTemplates.first().prankMessage,
+    val trollFeatureEnabled: Boolean = true,
+    val trollUseRealBattery: Boolean = false,
+    val trollShowPercentage: Boolean = true,
+    /** Slider value displayed as dp in the original layout. */
+    val trollPercentageSizeDp: Int = 5,
+    /** Slider value displayed as dp in the original layout. */
+    val trollEmojiSizeDp: Int = 40,
+    val trollRandomizedMode: Boolean = false,
+    val trollShowEmoji: Boolean = true,
     val trollAutoDrop: Boolean = true,
     val trollOverlayEnabled: Boolean = false,
     val tutorialCompleted: Boolean = false,

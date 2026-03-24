@@ -216,8 +216,6 @@ fun EmojiBatteryApp(
                     onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
                     onOpenFeature = { entry ->
                         when (entry) {
-                            CustomizeEntry.Charge,
-                            CustomizeEntry.Emotion,
                             CustomizeEntry.Theme,
                             CustomizeEntry.Settings,
                             -> {
@@ -232,6 +230,7 @@ fun EmojiBatteryApp(
                         viewModel.selectStatusTab(StatusBarTab.Battery)
                         navController.navigate(AppRoute.StatusBarCustom.route)
                     },
+                    onOpenSearch = { navController.navigate(AppRoute.Search.route) },
                     onOpenNotch = { navController.navigate(AppRoute.Notch.route) },
                     onOpenAnimation = { navController.navigate(AppRoute.Animation.route) },
                     onOpenRealTime = { navController.navigate(AppRoute.RealTime.route) },
@@ -511,6 +510,13 @@ fun EmojiBatteryApp(
                     onBack = { navController.popBackStack() },
                     onSelectTemplate = viewModel::selectBatteryTrollTemplate,
                     onSetMessage = viewModel::setTrollMessage,
+                    onSetFeatureEnabled = viewModel::setBatteryTrollEnabled,
+                    onSetUseRealBattery = viewModel::setBatteryTrollUseRealBattery,
+                    onSetShowPercentage = viewModel::setTrollShowPercentage,
+                    onSetPercentageSize = viewModel::setTrollPercentageSizeDp,
+                    onSetEmojiSize = viewModel::setTrollEmojiSizeDp,
+                    onSetRandomizedMode = viewModel::setTrollRandomizedMode,
+                    onSetShowEmoji = viewModel::setTrollShowEmoji,
                     onToggleAutoDrop = viewModel::setTrollAutoDrop,
                     onOpenTutorial = {
                         viewModel.replayTutorial()
@@ -548,7 +554,9 @@ fun EmojiBatteryApp(
                     onSelectSticker = viewModel::selectSticker,
                     onRemoveSticker = viewModel::removeSticker,
                     onUpdateStickerSize = viewModel::updateSelectedStickerSize,
-                    onUpdateStickerSpeed = viewModel::updateSelectedStickerSpeed,
+                    onUpdateStickerRotation = viewModel::updateSelectedStickerRotation,
+                    onNudgeStickerPosition = viewModel::nudgeSelectedSticker,
+                    onDismissStickerAdjustment = viewModel::dismissStickerAdjustmentPanel,
                     onOpenTutorial = {
                         viewModel.replayTutorial()
                         navController.navigate(AppRoute.Tutorial.route)

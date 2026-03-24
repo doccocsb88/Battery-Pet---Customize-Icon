@@ -391,6 +391,7 @@ internal fun CustomizeHubScreen(
     onOpenSticker: () -> Unit,
     onOpenFeature: (CustomizeEntry) -> Unit,
     onOpenStatusBarCustom: () -> Unit,
+    onOpenSearch: () -> Unit,
     onOpenNotch: () -> Unit,
     onOpenAnimation: () -> Unit,
     onOpenRealTime: () -> Unit,
@@ -431,10 +432,10 @@ internal fun CustomizeHubScreen(
                         }
                         Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            HomeRoundIcon(R.drawable.ic_home_search, onOpenStatusBarCustom)
+                            HomeRoundIcon(R.drawable.ic_home_search, onOpenSearch)
                         }
                     }
-                    EnableBanner(onStart = onOpenStatusBarCustom)
+                    EnableBanner(onStart = onOpenSearch)
                 }
             }
         },
