@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
  * Primary CTA gradient: pink → magenta violet.
  */
 object StrawberryMilk {
-    val Background = Color(0xFFFFF0F3)
+    val Background = Color(0xFFFBF9F8)
     val Surface = Color.White
     val Primary = Color(0xFFEC4899)
     val OnPrimary = Color.White

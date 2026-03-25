@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -84,6 +85,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -148,6 +150,7 @@ import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import kotlinx.coroutines.delay
+import java.util.Locale
 
 @Composable
 internal fun PermissionBanner(
@@ -360,14 +363,64 @@ internal fun MainBottomBar(
         Triple(AppRoute.Gesture, MainSection.Gesture, Icons.Rounded.TouchApp),
         Triple(AppRoute.Settings, MainSection.Settings, Icons.Rounded.Settings),
     )
-    NavigationBar {
+    val barShape = RoundedCornerShape(topStart = 48.dp, topEnd = 48.dp)
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding(),
+        color = Color.Transparent,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 24.dp,
+                    shape = barShape,
+                    ambientColor = Color.Black.copy(alpha = 0.06f),
+                    spotColor = Color.Black.copy(alpha = 0.06f),
+                )
+                .clip(barShape)
+                .background(Color(0xFFFFFFFF))
+                .padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 10.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
         items.forEach { (route, section, icon) ->
-            NavigationBarItem(
-                selected = currentRoute == route.route,
-                onClick = { onNavigate(route, section) },
-                icon = { Icon(icon, contentDescription = section.title) },
-                label = { Text(section.title) },
-            )
+            val selected = currentRoute == route.route
+            val itemColor = if (selected) Color(0xFF3C637E) else Color(0xFF94A3B8)
+            val iconSize = 24.dp
+
+            Column(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(if (selected) Color(0xFFAFD6F6) else Color.Transparent)
+                    .clickable { onNavigate(route, section) }
+                    .widthIn(min = if (selected) 122.dp else 92.dp)
+                    .padding(
+                        horizontal = if (selected) 22.dp else 10.dp,
+                        vertical = 10.dp,
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = section.title,
+                    modifier = Modifier.size(iconSize),
+                    tint = itemColor,
+                )
+                Text(
+                    text = section.title.uppercase(Locale.ROOT),
+                    color = itemColor,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 11.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 1.2.sp,
+                    ),
+                )
+            }
+        }
         }
     }
 }

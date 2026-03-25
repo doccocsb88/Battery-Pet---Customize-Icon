@@ -247,133 +247,91 @@ private fun HomeScreenScaffold(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 8.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                items(
+                    count = categories.size,
+                    key = { index -> categories[index].id },
+                ) { index ->
+                    val category = categories[index]
+                    val selected = pagerState.settledPage == index
+                    Surface(
+                        shape = RoundedCornerShape(999.dp),
+                        color = if (selected) Color(0xFFAFD6F6) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                    ) {
+                        Text(
+                            text = if (category.id == "hot") "HOT" else category.title.uppercase(),
+                            color = if (selected) Color(0xFF3C637E) else MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.8.sp,
+                            ),
+                            modifier = Modifier
+                                .clickable {
+                                    coroutineScope.launch {
+                                        onSelectCategory(category.id)
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                }
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                        )
+                    }
+                }
+            }
+
             Surface(
                 modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(24.dp),
-                color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 3.dp,
+                shape = RoundedCornerShape(32.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f),
             ) {
-                Box(Modifier.fillMaxSize()) {
-                    // layer-list drawables are not supported by painterResource; draw equivalent wash in Compose
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer(alpha = 0.06f)
-                            .drawBehind {
-                                drawRect(
-                                    brush = Brush.linearGradient(
-                                        colorStops = arrayOf(
-                                            0f to StrawberryMilk.Background,
-                                            0.5f to Color(
-                                                red = (StrawberryMilk.Background.red + StrawberryMilk.PrimaryContainer.red) / 2f,
-                                                green = (StrawberryMilk.Background.green + StrawberryMilk.PrimaryContainer.green) / 2f,
-                                                blue = (StrawberryMilk.Background.blue + StrawberryMilk.PrimaryContainer.blue) / 2f,
-                                                alpha = 1f,
-                                            ),
-                                            1f to StrawberryMilk.PrimaryContainer,
-                                        ),
-                                        start = Offset(size.width, 0f),
-                                        end = Offset(0f, size.height),
-                                    ),
-                                )
-                                drawRect(
-                                    brush = Brush.linearGradient(
-                                        colors = listOf(StrawberryMilk.Primary.copy(alpha = 0.094f), Color.Transparent),
-                                        start = Offset(0f, size.height),
-                                        end = Offset(size.width, 0f),
-                                    ),
-                                )
-                            },
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 14.dp),
-                    ) {
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(24.dp),
-                        ) {
-                            items(
-                                count = categories.size,
-                                key = { index -> categories[index].id },
-                            ) { index ->
-                                val category = categories[index]
-                                val selected = pagerState.settledPage == index
-                                Text(
-                                    text = when {
-                                        category.id == "hot" -> "🔥 ${category.title}"
-                                        else -> category.title
-                                    },
-                                    color = if (selected) MaterialTheme.colorScheme.onSurface
-                                    else MaterialTheme.colorScheme.outline.copy(alpha = 0.55f),
-                                    fontWeight = FontWeight.ExtraBold,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    modifier = Modifier.clickable {
-                                        coroutineScope.launch {
-                                            onSelectCategory(category.id)
-                                            pagerState.animateScrollToPage(index)
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .padding(start = 16.dp, top = 8.dp)
-                                .size(width = 70.dp, height = 2.dp)
-                                .clip(RoundedCornerShape(999.dp))
-                                .background(StrawberryCtaGradientBrush),
-                        )
-                        HorizontalPager(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            state = pagerState,
-                            beyondViewportPageCount = 1,
-                        ) { page ->
-                            val categoryId = categories[page].id
-                            val gridItems = uiState.homeItemsByCategoryId[categoryId].orEmpty()
-                            val loading = uiState.homeCategoryLoadingId == categoryId && gridItems.isEmpty()
+                HorizontalPager(
+                    modifier = Modifier.fillMaxSize(),
+                    state = pagerState,
+                    beyondViewportPageCount = 1,
+                ) { page ->
+                    val categoryId = categories[page].id
+                    val gridItems = uiState.homeItemsByCategoryId[categoryId].orEmpty()
+                    val loading = uiState.homeCategoryLoadingId == categoryId && gridItems.isEmpty()
 
-                            if (loading) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center,
+                    if (loading) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            items(gridItems.chunked(3)) { rowItems ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 ) {
-                                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                                }
-                            } else {
-                                LazyColumn(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentPadding = PaddingValues(horizontal = 9.dp, vertical = 12.dp),
-                                ) {
-                                    items(gridItems.chunked(3)) { rowItems ->
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.spacedBy(0.dp),
-                                        ) {
-                                            rowItems.forEach { item ->
-                                                HomeBatteryGridCard(
-                                                    item = item,
-                                                    onClick = {
-                                                        when {
-                                                            item.animated -> onOpenSticker()
-                                                            item.title.contains("Troll", ignoreCase = true) -> onOpenBatteryTroll()
-                                                            item.title.contains("Search", ignoreCase = true) -> onOpenSearch()
-                                                            else -> onOpenStatusBarCustom()
-                                                        }
-                                                    },
-                                                    modifier = Modifier.weight(1f),
-                                                )
-                                            }
-                                            repeat(3 - rowItems.size) {
-                                                Spacer(Modifier.weight(1f))
-                                            }
-                                        }
+                                    rowItems.forEach { item ->
+                                        HomeBatteryGridCard(
+                                            item = item,
+                                            onClick = {
+                                                when {
+                                                    item.animated -> onOpenSticker()
+                                                    item.title.contains("Troll", ignoreCase = true) -> onOpenBatteryTroll()
+                                                    item.title.contains("Search", ignoreCase = true) -> onOpenSearch()
+                                                    else -> onOpenStatusBarCustom()
+                                                }
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                    }
+                                    repeat(3 - rowItems.size) {
+                                        Spacer(Modifier.weight(1f))
                                     }
                                 }
                             }
@@ -398,14 +356,15 @@ internal fun CustomizeHubScreen(
     onOpenBatteryTroll: () -> Unit,
 ) {
     val gridEntries = listOf(
-        CustomizeEntry.Emotion,
+                CustomizeEntry.Hotspot,
         CustomizeEntry.Wifi,
+                CustomizeEntry.Signal,
         CustomizeEntry.Data,
-        CustomizeEntry.Signal,
-        CustomizeEntry.Airplane,
-        CustomizeEntry.Hotspot,
         CustomizeEntry.Ringer,
         CustomizeEntry.Charge,
+                CustomizeEntry.Emotion,
+                        CustomizeEntry.Airplane,
+
         CustomizeEntry.DateTime,
     )
     Scaffold(
@@ -787,11 +746,7 @@ internal fun OriginalTopShell(
                 Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     HomeRoundIcon(R.drawable.ic_home_search, onSearch)
-                    Image(
-                        painter = painterResource(R.drawable.no_ads_on),
-                        contentDescription = stringResource(R.string.cd_ads_on),
-                        modifier = Modifier.size(width = 40.dp, height = 36.dp),
-                    )
+                    Spacer(Modifier.width(16.dp))
                 }
             }
             EnableBanner(onStart = onSearch)
@@ -808,7 +763,7 @@ internal fun HomeBatteryGridCard(
     val context = LocalContext.current
     Column(
         modifier = modifier
-            .padding(horizontal = 7.dp, vertical = 7.dp)
+            .padding(horizontal = 6.dp, vertical = 6.dp)
             .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -816,8 +771,10 @@ internal fun HomeBatteryGridCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp))
-                .border(width = 1.dp, color = MaterialTheme.colorScheme.outline.copy(alpha = 0.65f), shape = RoundedCornerShape(16.dp))
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(24.dp),
+                ),
         ) {
             if (!item.thumbnailUrl.isNullOrBlank()) {
                 val request = ImageRequest.Builder(context)
@@ -840,7 +797,7 @@ internal fun HomeBatteryGridCard(
                     contentDescription = item.title,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(10.dp),
+                        .padding(12.dp),
                     contentScale = ContentScale.Fit,
                 )
             } else {
@@ -849,7 +806,7 @@ internal fun HomeBatteryGridCard(
                     contentDescription = item.title,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(10.dp),
+                        .padding(12.dp),
                 )
             }
             if (item.premium) {
@@ -868,7 +825,7 @@ internal fun HomeBatteryGridCard(
                         .align(Alignment.TopStart)
                         .padding(4.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surface),
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
                 ) {
                     Text(
                         stringResource(R.string.label_gif),
@@ -936,15 +893,15 @@ internal fun customizeLabel(entry: CustomizeEntry): String = when (entry) {
 }
 
 internal fun customizeIconRes(entry: CustomizeEntry): Int = when (entry) {
+    CustomizeEntry.Ringer -> R.drawable.ic_item_ringer
     CustomizeEntry.Emotion -> R.drawable.ic_item_emotion
     CustomizeEntry.Wifi -> R.drawable.ic_item_wifi
-    CustomizeEntry.Data -> R.drawable.ic_item_data
-    CustomizeEntry.Signal -> R.drawable.ic_item_signal
     CustomizeEntry.Airplane -> R.drawable.ic_item_airplane
     CustomizeEntry.Hotspot -> R.drawable.ic_item_hotspot
-    CustomizeEntry.Ringer -> R.drawable.ic_item_ringer
     CustomizeEntry.Charge -> R.drawable.ic_item_charge
     CustomizeEntry.DateTime -> R.drawable.ic_item_date_time
+    CustomizeEntry.Data -> R.drawable.ic_item_data
     CustomizeEntry.Theme -> R.drawable.img_btn_status_bar_new
     CustomizeEntry.Settings -> R.drawable.ic_item_animation
+    CustomizeEntry.Signal -> R.drawable.ic_item_signal
 }
