@@ -1,11 +1,10 @@
 <resources>
     <string name="battery_icon_title">Battery Icon</string>
 
-    <string name="app_name">Emoji Battery Port</string>
+    <string name="app_name">Battery Pet</string>
     <string name="splash_tagline">Customize your status bar battery &amp; emoji</string>
     <!-- Splash / language / onboarding — aligned with decompiled strings.xml -->
     <string name="loading_dot">Loading...</string>
-    <string name="this_action_may_be_content_ads">(This action may be content ADS)</string>
     <string name="select_your_language">Select your language</string>
     <string name="language">Language</string>
     <string name="language_default">Default</string>
@@ -62,7 +61,6 @@
     <!-- Common -->
     <string name="cd_back">Back</string>
     <string name="cd_clear">Clear</string>
-    <string name="cd_ads_on">Ads on</string>
     <string name="cd_premium">Premium</string>
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
@@ -196,10 +194,8 @@
     <string name="home_customize_icon_row">Customize Icon</string>
     <string name="home_enable_banner">Enable emoji battery to begin</string>
     <string name="home_start">Start</string>
-    <string name="fake_ad_label">Ad</string>
     <string name="fake_ad_view_now">VIEW NOW</string>
     <string name="fake_ad_capcut_title">CapCut</string>
-    <string name="fake_ad_pangle_subtitle">Pangle Test Ads - 2</string>
 
     <!-- Search -->
     <string name="search_screen_title">Search template</string>
@@ -241,7 +237,7 @@
     <string name="battery_text_size">Battery text size</string>
     <string name="emoji_size_label">Emoji size</string>
     <string name="legacy_battery_flow_title">Legacy Battery Flow</string>
-    <string name="legacy_battery_flow_subtitle">Port of the older `BatteryFragment` path that separately chooses battery body and emoji.</string>
+    <string name="legacy_battery_flow_subtitle">Choose battery body and emoji style.</string>
     <string name="label_battery_body">Battery body</string>
     <string name="label_emoji">Emoji</string>
     <string name="slider_battery_percentage_size">Battery percentage size</string>
@@ -296,7 +292,6 @@
     <string name="feedback_chip_5_stars">5 stars</string>
     <string name="feedback_chip_cant_allow_permission">Can\'t allow permission</string>
     <string name="feedback_chip_feature_error">Feature error</string>
-    <string name="feedback_chip_cant_close_ads">I can\'t close the ads</string>
     <string name="feedback_chip_cant_exit_app">I can\'t exit the app</string>
     <string name="feedback_chip_cant_navigate">I can\'t navigate to the next screen</string>
 </resources>

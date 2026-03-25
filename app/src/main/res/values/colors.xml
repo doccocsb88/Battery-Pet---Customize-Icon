@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Brand: Strawberry Milk (Soft Kawaii 2.0) — keep in sync with ui/theme/StrawberryMilk.kt -->
-    <color name="seed">#EC4899</color>
+    <color name="seed">#8FB6D4</color>
     <color name="surface_soft">#FFF0F3</color>
     <!-- Use in @drawable vectors / gradients (XML cannot use Compose Color) -->
-    <color name="brand_primary">#EC4899</color>
-    <color name="brand_secondary">#D47DFE</color>
-    <color name="brand_gradient_start">#EC4899</color>
-    <color name="brand_gradient_end">#D47DFE</color>
+    <color name="brand_primary">#8FB6D4</color>
+    <color name="brand_secondary">#3C637E</color>
+    <color name="brand_gradient_start">#8FB6D4</color>
+    <color name="brand_gradient_end">#3C637E</color>
     <color name="ic_launcher_background">#FFE85BAE</color>
 
     <!-- Splash -->
@@ -40,14 +40,14 @@
     <color name="accessibility_usage_dialog_surface">#FFFFFFFF</color>
     <color name="accessibility_usage_dialog_text">#FF5C4B51</color>
     <color name="accessibility_usage_dialog_link">#FF1D75F9</color>
-    <color name="accessibility_usage_dialog_highlight">#FFD47DFE</color>
-    <color name="accessibility_usage_cta_gradient_start">#FFFFABE5</color>
-    <color name="accessibility_usage_cta_gradient_end">#FFD47DFE</color>
+    <color name="accessibility_usage_dialog_highlight">#FF3C637E</color>
+    <color name="accessibility_usage_cta_gradient_start">#FF8FB6D4</color>
+    <color name="accessibility_usage_cta_gradient_end">#FF3C637E</color>
 
     <!-- Status Bar custom editor (fragment_status_bar_custom.xml — decompiled 1.2.8) -->
-    <color name="status_bar_editor_scaffold">#FFFEF5FA</color>
+    <color name="status_bar_editor_scaffold">#FFFBF9F8</color>
     <color name="status_bar_preview_gradient_start">#FF4ADCEC</color>
     <color name="status_bar_preview_gradient_end">#FF97F5FF</color>
-    <color name="status_bar_apply_gradient_start">#FFFFABE5</color>
-    <color name="status_bar_apply_gradient_end">#FFD47DFE</color>
+    <color name="status_bar_apply_gradient_start">#FF8FB6D4</color>
+    <color name="status_bar_apply_gradient_end">#FF3C637E</color>
 </resources>

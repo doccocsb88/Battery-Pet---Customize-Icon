@@ -31,6 +31,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -44,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -59,6 +62,10 @@ import dev.hai.emojibattery.ui.gesture.actionLabelRes
 import dev.hai.emojibattery.ui.gesture.rowIconRes
 import dev.hai.emojibattery.ui.gesture.triggerLabelRes
 import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
+
+private val GestureIconBlue = Color(0xFF8FB6D4)
+private val ToggleCheckedBlue = Color(0xFF8FB6D4)
+private val ToggleUncheckedGray = Color(0xFF94A3B8)
 
 /**
  * Order matches [fragment_guesture.xml](decompiled): Single tap → up/down → L→R → R→L → long press.
@@ -190,6 +197,7 @@ private fun GestureMappingRowWithIcon(
             painter = painterResource(iconRes),
             contentDescription = null,
             modifier = Modifier.size(32.dp),
+            colorFilter = ColorFilter.tint(GestureIconBlue),
         )
         Column(
             modifier = Modifier.weight(1f),
@@ -343,23 +351,29 @@ internal fun GestureSwitchRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(painter = painterResource(iconRes), contentDescription = title, modifier = Modifier.size(32.dp))
+            Image(
+                painter = painterResource(iconRes),
+                contentDescription = title,
+                modifier = Modifier.size(32.dp),
+                colorFilter = ColorFilter.tint(GestureIconBlue),
+            )
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(title, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyLarge)
                 Text(description, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
             }
         }
-        IconButton(onClick = { onToggle(!enabled) }) {
-            Image(
-                painter = painterResource(
-                    if (enabled) R.drawable.ic_switch_button_enabled
-                    else R.drawable.ic_switch_button_disable,
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(width = 40.dp, height = 20.dp)
-                    .graphicsLayer { alpha = 1f },
-            )
-        }
+        Switch(
+            checked = enabled,
+            onCheckedChange = onToggle,
+            modifier = Modifier.graphicsLayer { alpha = 1f },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = ToggleCheckedBlue,
+                checkedBorderColor = ToggleCheckedBlue,
+                uncheckedThumbColor = Color.White,
+                uncheckedTrackColor = ToggleUncheckedGray,
+                uncheckedBorderColor = ToggleUncheckedGray,
+            ),
+        )
     }
 }

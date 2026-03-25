@@ -199,6 +199,7 @@ fun EmojiBatteryApp(
                 HomeScreen(
                     uiState = uiState,
                     onSelectCategory = viewModel::selectHomeCategory,
+                    onOpenAccessibility = { showAccessibilityConsent = true },
                     onOpenStatusBarCustom = {
                         viewModel.selectMainSection(MainSection.Home)
                         viewModel.selectStatusTab(StatusBarTab.Battery)

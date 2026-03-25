@@ -46,6 +46,7 @@ import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -86,6 +87,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
@@ -149,6 +151,9 @@ import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import kotlinx.coroutines.delay
 
+private val SearchAccentBlue = Color(0xFF8FB6D4)
+private val SearchNeutralBorder = Color(0xFFD8DDE2)
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun SearchScreen(
@@ -165,7 +170,7 @@ internal fun SearchScreen(
             template.tags.any { it.contains(query, ignoreCase = true) }
     }
 
-    Scaffold(containerColor = Color.White) { innerPadding ->
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -190,7 +195,8 @@ internal fun SearchScreen(
             }
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, SearchNeutralBorder),
             ) {
                 Row(
                     modifier = Modifier
@@ -199,7 +205,12 @@ internal fun SearchScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Image(painter = painterResource(R.drawable.ic_home_search), contentDescription = null, modifier = Modifier.size(20.dp))
+                    Image(
+                        painter = painterResource(R.drawable.ic_home_search),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                        colorFilter = ColorFilter.tint(SearchAccentBlue),
+                    )
                     BasicTextField(
                         value = uiState.searchQuery,
                         onValueChange = onQueryChange,
@@ -215,7 +226,11 @@ internal fun SearchScreen(
                     )
                     if (uiState.searchQuery.isNotBlank()) {
                         IconButton(onClick = { onQueryChange("") }, modifier = Modifier.size(20.dp)) {
-                            Image(painter = painterResource(R.drawable.ic_search_clear), contentDescription = stringResource(R.string.cd_clear))
+                            Image(
+                                painter = painterResource(R.drawable.ic_search_clear),
+                                contentDescription = stringResource(R.string.cd_clear),
+                                colorFilter = ColorFilter.tint(Color(0xFF94A3B8)),
+                            )
                         }
                     }
                 }
@@ -227,9 +242,8 @@ internal fun SearchScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     SampleCatalog.mostSearchedTags.forEach { tag ->
-                        ChoiceChip(
+                        SearchKeywordChip(
                             label = tag,
-                            selected = false,
                             onClick = { onQueryChange(tag) },
                         )
                     }
@@ -318,7 +332,10 @@ internal fun SearchTemplateCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 template.tags.take(4).forEach { tag ->
-                    AssistChip(onClick = onClick, label = { Text(tag) })
+                    SearchKeywordChip(
+                        label = tag,
+                        onClick = onClick,
+                    )
                 }
             }
             Text(
@@ -328,6 +345,29 @@ internal fun SearchTemplateCard(
             )
         }
     }
+}
+
+@Composable
+private fun SearchKeywordChip(
+    label: String,
+    onClick: () -> Unit,
+) {
+    AssistChip(
+        onClick = onClick,
+        label = {
+            Text(
+                text = label,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.labelLarge,
+            )
+        },
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(1.dp, SearchNeutralBorder),
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            labelColor = MaterialTheme.colorScheme.onSurface,
+        ),
+    )
 }
 
 @Composable

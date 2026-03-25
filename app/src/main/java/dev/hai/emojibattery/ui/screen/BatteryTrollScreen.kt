@@ -64,8 +64,8 @@ import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 
 private val TrollCardShape = RoundedCornerShape(20.dp)
-private val TrollStrokeColor = Color(0xFFD48DF6)
-private val TrollSoftPink = Color(0xFFFEEBFA)
+private val TrollStrokeColor = Color(0xFF8FB6D4)
+private val TrollSoftPink = Color(0xFFF2F2F2)
 private val TrollPanelColor = Color.White
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -103,7 +103,7 @@ internal fun BatteryTrollScreen(
     var editText by remember(uiState.trollMessage) { mutableStateOf(uiState.trollMessage) }
 
     Scaffold(
-        containerColor = Color(0xFFFEF5FA),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Row(
                 modifier = Modifier
@@ -123,7 +123,7 @@ internal fun BatteryTrollScreen(
                     text = stringResource(R.string.battery_troll_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF4A3F46),
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Spacer(Modifier.weight(1f))
                 Text(text = selected.accentGlyph, style = MaterialTheme.typography.headlineMedium)
@@ -133,7 +133,7 @@ internal fun BatteryTrollScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFFEF5FA))
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
             ) {
                 Box(
@@ -178,7 +178,7 @@ internal fun BatteryTrollScreen(
                         Text(
                             text = stringResource(R.string.enable_disable_emoji_battery),
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color(0xFF4A3F46),
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Switch(
                             checked = uiState.trollFeatureEnabled,
@@ -248,7 +248,7 @@ internal fun BatteryTrollScreen(
                                         text = stringResource(R.string.edit),
                                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
                                         style = MaterialTheme.typography.titleMedium,
-                                        color = if (uiState.trollUseRealBattery) Color(0xFFB8B0B4) else Color(0xFF4A3F46),
+                                        color = if (uiState.trollUseRealBattery) Color(0xFFB8B0B4) else MaterialTheme.colorScheme.onSurface,
                                     )
                                 }
                             }
@@ -309,7 +309,7 @@ internal fun BatteryTrollScreen(
                             text = stringResource(R.string.funny_emoji_battery),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF4A3F46),
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             TrollModeRadio(
@@ -357,7 +357,7 @@ internal fun BatteryTrollScreen(
                                 text = stringResource(R.string.show_emoji),
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF4A3F46),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Switch(
                                 checked = uiState.trollShowEmoji,
@@ -402,11 +402,11 @@ internal fun BatteryTrollScreen(
                                 text = stringResource(R.string.battery_troll_templates),
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF4A3F46),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Surface(
                                 shape = RoundedCornerShape(16.dp),
-                                color = Color(0xFFF4E2F1),
+                                color = Color(0xFFEAF3FA),
                                 modifier = Modifier.clickable(onClick = onOpenTutorial),
                             ) {
                                 Text(
@@ -448,7 +448,7 @@ internal fun BatteryTrollScreen(
                         Text(
                             text = stringResource(R.string.battery_troll_auto_drop),
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color(0xFF4A3F46),
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Switch(checked = uiState.trollAutoDrop, onCheckedChange = onToggleAutoDrop)
                     }
@@ -558,14 +558,14 @@ private fun TrollModeRadio(
         Icon(
             imageVector = Icons.Rounded.CheckCircle,
             contentDescription = null,
-            tint = if (selected) TrollStrokeColor else Color(0xFFE6DFE3),
+            tint = if (selected) TrollStrokeColor else Color(0xFFD8DDE2),
             modifier = Modifier.size(20.dp),
         )
         Spacer(Modifier.width(8.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.titleMedium,
-            color = if (selected) TrollStrokeColor else Color(0xFF4A3F46),
+            color = if (selected) TrollStrokeColor else MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.SemiBold,
         )
     }
@@ -591,7 +591,7 @@ private fun TrollSliderRow(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF4A3F46),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.SemiBold,
             )
             if (!lockToggle) {
@@ -612,7 +612,7 @@ private fun TrollSliderRow(
                 text = "${sliderValue.toInt()}$valueSuffix",
                 modifier = Modifier.padding(start = 10.dp),
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF4A3F46),
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -631,10 +631,10 @@ private fun TrollTemplateChip(
             .height(74.dp),
         onClick = onClick,
         enabled = enabled,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9E5F2)),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F2F2)),
         border = BorderStroke(
             if (selected) 1.5.dp else 0.5.dp,
-            if (selected) TrollStrokeColor else Color(0xFFDCCFD7),
+            if (selected) TrollStrokeColor else Color(0xFFD8DDE2),
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
@@ -662,10 +662,10 @@ private fun TemplateGrid(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(1f),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9E5F2)),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F2F2)),
                         border = BorderStroke(
                             if (template.id == selectedId) 1.5.dp else 0.5.dp,
-                            if (template.id == selectedId) TrollStrokeColor else Color(0xFFE7DDE3),
+                            if (template.id == selectedId) TrollStrokeColor else Color(0xFFD8DDE2),
                         ),
                         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                     ) {
@@ -681,7 +681,7 @@ private fun TemplateGrid(
                                 text = template.title,
                                 style = MaterialTheme.typography.labelSmall,
                                 textAlign = TextAlign.Center,
-                                color = Color(0xFF4A3F46),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 2,
                             )
                         }

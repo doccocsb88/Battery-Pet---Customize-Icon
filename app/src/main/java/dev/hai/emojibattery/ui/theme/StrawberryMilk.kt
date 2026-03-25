@@ -4,26 +4,26 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 /**
- * Design tokens: **Strawberry Milk** (Soft Kawaii 2.0).
- * Primary CTA gradient: pink → magenta violet.
+ * Design tokens for the app palette.
+ * Primary CTA gradient: soft blue -> slate blue.
  */
 object StrawberryMilk {
     val Background = Color(0xFFFBF9F8)
     val Surface = Color.White
-    val Primary = Color(0xFFEC4899)
+    val Primary = Color(0xFF8FB6D4)
     val OnPrimary = Color.White
-    val Secondary = Color(0xFFD47DFE)
+    val Secondary = Color(0xFF3C637E)
     val OnSecondary = Color.White
-    val Tertiary = Color(0xFFF9A8D4)
+    val Tertiary = Color(0xFF76916B)
     val OnSurface = Color(0xFF5C4B51)
-    val OnSurfaceVariant = Color(0xFF6D5A62)
-    val SurfaceVariant = Color(0xFFFFE4EC)
-    val PrimaryContainer = Color(0xFFFCE7F3)
-    val OnPrimaryContainer = Color(0xFF5C4B51)
-    val SecondaryContainer = Color(0xFFF3E8FF)
-    val Outline = Color(0xFFFBCFE8)
+    val OnSurfaceVariant = Color(0xFF7B6E75)
+    val SurfaceVariant = Color(0xFFF2F2F2)
+    val PrimaryContainer = Color(0xFFEAF3FA)
+    val OnPrimaryContainer = Color(0xFF3C637E)
+    val SecondaryContainer = Color(0xFFDCE8F3)
+    val Outline = Color(0xFFD8DDE2)
     /** Badge “Popular” on paywall / highlights */
-    val PopularBadge = Color(0xFFC026D3)
+    val PopularBadge = Color(0xFF3C637E)
 }
 
 /** Primary horizontal gradient for CTAs (Language Next, Apply, paywall weekly, etc.). */

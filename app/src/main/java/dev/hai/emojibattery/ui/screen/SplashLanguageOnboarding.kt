@@ -274,13 +274,6 @@ internal fun SplashRoute(
                 trackColor = colorResource(R.color.splash_progress_track),
             )
             Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.this_action_may_be_content_ads),
-                color = colorResource(R.color.splash_ads_hint),
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 12.dp),
-            )
         }
     }
 }

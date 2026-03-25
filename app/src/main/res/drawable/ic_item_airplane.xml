@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector android:height="40.0dp" android:width="40.0dp" android:viewportWidth="40.0" android:viewportHeight="40.0"
-  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt">
-    <path android:fillColor="#ffffff" android:pathData="M12,0L28,0A12,12 0,0 1,40 12L40,28A12,12 0,0 1,28 40L12,40A12,12 0,0 1,0 28L0,12A12,12 0,0 1,12 0z" />
-    <path android:fillColor="@drawable/ic_item_airplane_gradient" android:pathData="M27.5,20C27.5,19.4 26.975,18.875 26.375,18.875H22.25L18.5,12.875H17L18.875,18.875H14.75L13.625,17.375H12.5L13.25,20L12.5,22.625H13.625L14.75,21.125H18.875L17,27.125H18.5L22.25,21.125H26.375C26.975,21.125 27.5,20.6 27.5,20Z" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M12,0L28,0A12,12 0,0 1,40 12L40,28A12,12 0,0 1,28 40L12,40A12,12 0,0 1,0 28L0,12A12,12 0,0 1,12 0z" />
+    <path
+        android:fillColor="#E8C9A8"
+        android:pathData="M27.5,20C27.5,19.4 26.975,18.875 26.375,18.875H22.25L18.5,12.875H17L18.875,18.875H14.75L13.625,17.375H12.5L13.25,20L12.5,22.625H13.625L14.75,21.125H18.875L17,27.125H18.5L22.25,21.125H26.375C26.975,21.125 27.5,20.6 27.5,20Z" />
 </vector>

@@ -1053,6 +1053,7 @@ private fun StatusBarLocalThemeTemplateGrid(
 
 private fun itemIndexLabel(index: Int): String = "template ${index + 1}"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LegacyBatteryScreen(
     uiState: AppUiState,
@@ -1064,11 +1065,40 @@ internal fun LegacyBatteryScreen(
     onApply: () -> Unit,
 ) {
     val config = uiState.editingConfig
-    ScreenContainer(
-        title = stringResource(R.string.legacy_battery_flow_title),
-        subtitle = stringResource(R.string.legacy_battery_flow_subtitle),
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.legacy_battery_flow_title),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.ExtraBold,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_back_40_new),
+                            contentDescription = stringResource(R.string.cd_back),
+                            modifier = Modifier.size(32.dp),
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                ),
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 14.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
             BatteryPreviewCard(uiState = uiState)
             Text(stringResource(R.string.label_battery_body), style = MaterialTheme.typography.titleMedium)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -1093,9 +1123,10 @@ internal fun LegacyBatteryScreen(
             SliderField(stringResource(R.string.slider_battery_percentage_size), config.batteryPercentScale, 0.3f..1f, onSetBatteryScale)
             SliderField(stringResource(R.string.slider_emoji_size), config.emojiScale, 0.3f..1f, onSetEmojiScale)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.onboarding_back)) }
-                Button(onClick = onApply, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.apply_legacy_flow)) }
+                OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.common_cancel)) }
+                Button(onClick = onApply, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.apply)) }
             }
+            Spacer(Modifier.height(20.dp))
         }
     }
 }

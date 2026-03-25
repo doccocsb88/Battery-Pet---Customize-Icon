@@ -1,22 +1,14 @@
 package dev.hai.emojibattery.ui.screen
 
-
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.util.Log
-
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,9 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -41,129 +31,51 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AutoAwesome
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.EmojiEvents
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.TouchApp
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.HomeCategoryTab
 import dev.hai.emojibattery.model.AppUiState
-import dev.hai.emojibattery.model.AchievementTask
-import dev.hai.emojibattery.model.BatteryPreset
-import dev.hai.emojibattery.model.BatteryTrollTemplate
-import dev.hai.emojibattery.model.ContentTemplate
 import dev.hai.emojibattery.model.CustomizeEntry
-import dev.hai.emojibattery.model.EmojiPreset
-import dev.hai.emojibattery.model.FeatureConfig
-import dev.hai.emojibattery.model.GestureAction
-import dev.hai.emojibattery.model.GestureTrigger
-import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.SampleCatalog
-import dev.hai.emojibattery.model.SearchTemplate
 import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
-import dev.hai.emojibattery.ui.theme.StrawberryMilk
-import dev.hai.emojibattery.model.StickerPlacement
-import dev.hai.emojibattery.model.StickerPreset
-import dev.hai.emojibattery.model.batteryTrollTemplateForId
-import dev.hai.emojibattery.model.stickerPresetForId
-import dev.hai.emojibattery.model.StatusBarTab
-import dev.hai.emojibattery.model.ThemePreset
-import dev.hai.emojibattery.billing.BillingUiState
-import dev.hai.emojibattery.billing.GooglePlayPurchaseService
-import dev.hai.emojibattery.billing.PurchaseService
-import dev.hai.emojibattery.paywall.LegalWebViewScreen
-import dev.hai.emojibattery.paywall.PaywallScreen
-import dev.hai.emojibattery.service.AccessibilityBridge
-import dev.hai.emojibattery.service.OverlayAccessibilityService
-import dev.hai.emojibattery.service.OverlayConfigStore
-import dev.hai.emojibattery.ui.navigation.AppRoute
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 internal fun HomeScreen(
     uiState: AppUiState,
     onSelectCategory: (String) -> Unit,
+    onOpenAccessibility: () -> Unit,
     onOpenStatusBarCustom: () -> Unit,
     onOpenLegacyBattery: () -> Unit,
     onOpenSearch: () -> Unit,
@@ -208,6 +120,7 @@ internal fun HomeScreen(
             coroutineScope = coroutineScope,
             uiState = uiState,
             onSelectCategory = onSelectCategory,
+            onOpenAccessibility = onOpenAccessibility,
             onOpenStatusBarCustom = onOpenStatusBarCustom,
             onOpenLegacyBattery = onOpenLegacyBattery,
             onOpenSearch = onOpenSearch,
@@ -226,6 +139,7 @@ private fun HomeScreenScaffold(
     coroutineScope: CoroutineScope,
     uiState: AppUiState,
     onSelectCategory: (String) -> Unit,
+    onOpenAccessibility: () -> Unit,
     onOpenStatusBarCustom: () -> Unit,
     onOpenLegacyBattery: () -> Unit,
     onOpenSearch: () -> Unit,
@@ -240,6 +154,8 @@ private fun HomeScreenScaffold(
                 title = stringResource(R.string.battery_icon_title),
                 onLeftSecondary = onOpenFeedback,
                 onSearch = onOpenSearch,
+                showEnableBanner = !uiState.accessibilityGranted,
+                onStart = onOpenAccessibility,
             )
         },
     ) { innerPadding ->
@@ -262,7 +178,7 @@ private fun HomeScreenScaffold(
                     val selected = pagerState.settledPage == index
                     Surface(
                         shape = RoundedCornerShape(999.dp),
-                        color = if (selected) Color(0xFFAFD6F6) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                        color = if (selected) Color(0xFF8FB6D4) else Color(0xFFF2F2F2),
                     ) {
                         Text(
                             text = if (category.id == "hot") "HOT" else category.title.uppercase(),
@@ -287,7 +203,7 @@ private fun HomeScreenScaffold(
             Surface(
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(32.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f),
+                color = MaterialTheme.colorScheme.background,
             ) {
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
@@ -394,7 +310,6 @@ internal fun CustomizeHubScreen(
                             HomeRoundIcon(R.drawable.ic_home_search, onOpenSearch)
                         }
                     }
-                    EnableBanner(onStart = onOpenSearch)
                 }
             }
         },
@@ -420,7 +335,6 @@ internal fun CustomizeHubScreen(
                 body = stringResource(R.string.home_promo_troll_body),
                 cta = stringResource(R.string.home_promo_troll_cta),
                 leadingIconRes = R.drawable.ic_battery_troll_customize_32,
-                badge = stringResource(R.string.home_badge_new),
                 onClick = onOpenBatteryTroll,
             )
             Surface(
@@ -557,6 +471,7 @@ internal fun PromoBannerCard(
                             painter = painterResource(leadingIconRes),
                             contentDescription = null,
                             modifier = Modifier.size(22.dp),
+                            colorFilter = ColorFilter.tint(Color(0xFF8FB6D4)),
                         )
                     }
                 }
@@ -569,7 +484,7 @@ internal fun PromoBannerCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(999.dp))
-                        .background(MaterialTheme.colorScheme.primary)
+                        .background(Color(0xFF8FB6D4))
                         .border(BorderStroke(3.dp, Color.White), RoundedCornerShape(999.dp))
                         .padding(horizontal = 18.dp, vertical = 10.dp),
                 ) {
@@ -610,6 +525,7 @@ internal fun SmallCustomizeCard(
                 painter = painterResource(iconRes),
                 contentDescription = title,
                 modifier = Modifier.size(40.dp),
+                colorFilter = ColorFilter.tint(Color(0xFF8FB6D4)),
             )
             Text(
                 title,
@@ -650,6 +566,7 @@ internal fun CustomizeIconGridItem(
                         painter = painterResource(customizeIconRes(entry)),
                         contentDescription = customizeLabel(entry),
                         modifier = Modifier.size(54.dp),
+                        colorFilter = ColorFilter.tint(Color(0xFF8FB6D4)),
                     )
                 }
             }
@@ -686,11 +603,10 @@ internal fun HomeRoundIcon(
 internal fun EnableBanner(
     onStart: () -> Unit,
 ) {
-    val scheme = MaterialTheme.colorScheme
     Surface(
         shape = RoundedCornerShape(28.dp),
-        color = scheme.primaryContainer,
-        border = BorderStroke(2.dp, scheme.outline),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, Color(0xFFD8DDE2)),
     ) {
         Row(
             modifier = Modifier
@@ -701,17 +617,21 @@ internal fun EnableBanner(
         ) {
             Text(
                 stringResource(R.string.home_enable_banner),
-                color = scheme.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.ExtraBold,
                 style = MaterialTheme.typography.titleLarge,
             )
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(22.dp))
-                    .background(StrawberryCtaGradientBrush),
+                    .background(Color(0xFF8FB6D4)),
             ) {
                 TextButton(onClick = onStart) {
-                    Text(stringResource(R.string.home_start), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.ExtraBold)
+                    Text(
+                        stringResource(R.string.home_start),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                    )
                 }
             }
         }
@@ -723,6 +643,8 @@ internal fun OriginalTopShell(
     title: String,
     onLeftSecondary: () -> Unit,
     onSearch: () -> Unit,
+    showEnableBanner: Boolean = false,
+    onStart: (() -> Unit)? = null,
 ) {
     Surface(
         color = MaterialTheme.colorScheme.surface,
@@ -749,7 +671,9 @@ internal fun OriginalTopShell(
                     Spacer(Modifier.width(16.dp))
                 }
             }
-            EnableBanner(onStart = onSearch)
+            if (showEnableBanner) {
+                EnableBanner(onStart = onStart ?: onSearch)
+            }
         }
     }
 }

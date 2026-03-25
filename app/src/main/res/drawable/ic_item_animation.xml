@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector android:height="40.0dp" android:width="40.0dp" android:viewportWidth="40.0" android:viewportHeight="40.0"
-  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt">
-    <path android:fillColor="@drawable/ic_item_animation_gradient" android:pathData="M8,0L32,0A8,8 0,0 1,40 8L40,32A8,8 0,0 1,32 40L8,40A8,8 0,0 1,0 32L0,8A8,8 0,0 1,8 0z" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#87DEF7"
+        android:pathData="M8,0L32,0A8,8 0,0 1,40 8L40,32A8,8 0,0 1,32 40L8,40A8,8 0,0 1,0 32L0,8A8,8 0,0 1,8 0z" />
     <group>
         <clip-path android:pathData="M8,8h24v24h-24z" />
         <path android:fillColor="#ffffff" android:pathData="M30.274,22.046C30.274,21.9 30.246,21.755 30.19,21.62C30.134,21.485 30.052,21.362 29.949,21.258C29.845,21.155 29.722,21.073 29.587,21.017C29.452,20.961 29.307,20.933 29.161,20.933H28.645C28.337,20.944 28.028,20.907 27.731,20.822C27.476,20.666 27.249,20.467 27.06,20.234L25.187,18.217L24.483,20.595L24.656,20.853L26.414,22.806C26.867,23.26 27.676,23.157 27.676,23.157H29.223C29.507,23.142 29.774,23.018 29.97,22.811C30.166,22.605 30.275,22.331 30.274,22.046Z" />

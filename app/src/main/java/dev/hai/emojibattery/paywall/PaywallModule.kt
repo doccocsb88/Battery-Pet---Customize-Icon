@@ -2,29 +2,32 @@ package dev.hai.emojibattery.paywall
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AutoAwesome
-import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,24 +40,69 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import co.q7labs.co.emoji.R
-import dev.hai.emojibattery.billing.BillingPlan
 import dev.hai.emojibattery.billing.BillingUiState
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.model.PaywallState
 import dev.hai.emojibattery.ui.theme.StrawberryMilk
-import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
+
+// ─── Alpine Design Tokens ────────────────────────────────────────
+private object Alpine {
+    // Surface hierarchy (stacked paper metaphor)
+    val Surface = Color(0xFFFFFBFE)
+    val SurfaceLow = Color(0xFFFFF5F8)
+    val SurfaceLowest = Color.White
+    val SurfaceHigh = Color(0xFFFFE8EF)
+
+    // Tonal atmosphere
+    val Primary = Color(0xFFEC4899)
+    val PrimaryDeep = Color(0xFFBE185D)
+    val Secondary = Color(0xFFD47DFE)
+    val OnSurface = Color(0xFF3D2B33)
+    val OnSurfaceVariant = Color(0xFF8B7580)
+    val OnPrimary = Color.White
+
+    // Decorative
+    val Accent = Color(0xFFF9A8D4)
+    val GlassWhite = Color(0x33FFFFFF)
+
+    // Radii (no 90° corners)
+    val RoundFull = RoundedCornerShape(50)
+    val RoundXL = RoundedCornerShape(28.dp)
+    val RoundLG = RoundedCornerShape(22.dp)
+    val RoundMD = RoundedCornerShape(16.dp)
+
+    // Gradients
+    val HeroGradient: Brush
+        get() = Brush.verticalGradient(
+            listOf(Primary, Secondary),
+        )
+    val CtaGradient: Brush
+        get() = Brush.horizontalGradient(
+            listOf(Primary, Secondary),
+        )
+    val AmbientShadowColor = Color(0x0F3D2B33)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,367 +153,493 @@ fun PaywallScreen(
             weeklySecondaryLine = null
         }
     }
-    val scheme = MaterialTheme.colorScheme
+
+    // Track which plan is selected: 0=monthly, 1=lifetime
+    var selectedPlan by remember { mutableStateOf(1) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(scheme.background),
+            .background(Alpine.SurfaceLow),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 24.dp),
+                .verticalScroll(rememberScrollState()),
         ) {
-            Image(
-                painter = painterResource(R.drawable.img_header_iap_full),
-                contentDescription = null,
+            // ─── Hero Section with gradient + header image ───
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(280.dp),
-                contentScale = ContentScale.Crop,
-            )
-
-            PaywallBenefitRow(
-                iconTint = scheme.onSurface,
-                labelColor = scheme.onSurface,
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            BoxWithConstraints(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .height(166.dp),
+                    .height(300.dp),
             ) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    PaywallPriceCard(
-                        modifier = Modifier.weight(1f),
-                        title = stringResource(R.string.monthly),
-                        price = monthPriceLabel,
-                        titleColor = scheme.onSurfaceVariant,
-                        priceColor = scheme.primary,
-                        footnote = stringResource(R.string.auto_renew_monthly_n_cancel_anytime),
-                        footnoteColor = scheme.onSurfaceVariant,
-                        onClick = {
-                            monthly?.let { onPurchase(it.productId, it.offerToken) }
-                        },
-                        enabled = monthly != null && !billingState.purchaseInFlight,
-                    )
-                    PaywallPriceCard(
-                        modifier = Modifier.weight(1f),
-                        title = stringResource(R.string.life_time),
-                        price = lifetimePriceLabel,
-                        titleColor = scheme.onSurfaceVariant,
-                        priceColor = scheme.primary,
-                        footnote = stringResource(R.string.one_time_payment),
-                        footnoteColor = scheme.onSurfaceVariant,
-                        onClick = {
-                            lifetime?.let { onPurchase(it.productId, null) }
-                        },
-                        enabled = lifetime != null && !billingState.purchaseInFlight,
-                    )
-                }
-                Surface(
+                // Background gradient atmosphere
+                Box(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 0.dp, end = 0.dp),
-                    shape = RoundedCornerShape(
-                        topStart = 8.dp,
-                        topEnd = 8.dp,
-                        bottomStart = 8.dp,
-                        bottomEnd = 0.dp,
-                    ),
-                    color = StrawberryMilk.PopularBadge,
+                        .fillMaxSize()
+                        .background(Alpine.HeroGradient),
+                )
+                // Header image with overlay blend
+                Image(
+                    painter = painterResource(R.drawable.img_header_iap_full),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer { alpha = 0.35f },
+                    contentScale = ContentScale.Crop,
+                )
+                // Gradient fade to surface
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(Color.Transparent, Alpine.SurfaceLow),
+                            ),
+                        ),
+                )
+                // Headline text overlay
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 28.dp, bottom = 44.dp),
                 ) {
                     Text(
-                        text = stringResource(R.string.popular),
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 4.dp),
-                        color = Color.White,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
+                        text = "✨",
+                        fontSize = 40.sp,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "Unlock\nEverything",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontSize = 32.sp,
+                            lineHeight = 36.sp,
+                            letterSpacing = (-0.02).sp,
+                        ),
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Alpine.OnPrimary,
                     )
                 }
+                // Decorative floating emoji (whimsical offset)
+                Text(
+                    text = "🌸",
+                    fontSize = 48.sp,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = 12.dp, y = 60.dp)
+                        .graphicsLayer { alpha = 0.6f },
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            // ─── Benefits Section (tonal layer) ───
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                AlpineBenefitRow(glyph = "💎", text = stringResource(R.string.unlimited_library_icon_sticker))
+                AlpineBenefitRow(glyph = "🚫", text = stringResource(R.string.no_ad_experience_2))
+                AlpineBenefitRow(glyph = "🚀", text = stringResource(R.string.early_update_new_feature))
+            }
 
-            PaywallWeeklyCta(
+            Spacer(Modifier.height(28.dp))
+
+            // ─── Plan Selection Cards ───
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                AlpinePlanCard(
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.monthly).uppercase(),
+                    price = monthPriceLabel,
+                    footnote = stringResource(R.string.auto_renew_monthly_n_cancel_anytime),
+                    selected = selectedPlan == 0,
+                    badge = null,
+                    onClick = {
+                        selectedPlan = 0
+                    },
+                    enabled = monthly != null && !billingState.purchaseInFlight,
+                )
+                AlpinePlanCard(
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.life_time).uppercase(),
+                    price = lifetimePriceLabel,
+                    footnote = stringResource(R.string.one_time_payment),
+                    selected = selectedPlan == 1,
+                    badge = stringResource(R.string.popular),
+                    onClick = {
+                        selectedPlan = 1
+                    },
+                    enabled = lifetime != null && !billingState.purchaseInFlight,
+                )
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            // ─── Primary CTA (River Stone Pill) ───
+            AlpineCtaButton(
                 primaryLine = weeklyPrimaryLine,
                 secondaryLine = weeklySecondaryLine,
                 hasFreeTrial = weekly != null && billingState.weeklyHasFreeTrial,
-                loading = billingState.loading,
-                purchaseInFlight = billingState.purchaseInFlight,
-                weeklyAvailable = weekly != null,
+                enabled = weekly != null && !billingState.purchaseInFlight && !billingState.loading,
                 onClick = {
                     weekly?.let { onPurchase(it.productId, it.offerToken) }
                 },
             )
 
+            // ─── Subscribe Selected Plan ───
+            if (selectedPlan == 0 && monthly != null) {
+                AlpineSecondaryCtaButton(
+                    text = "${stringResource(R.string.monthly)} · ${monthly.displayPrice}",
+                    enabled = !billingState.purchaseInFlight,
+                    onClick = { onPurchase(monthly.productId, monthly.offerToken) },
+                )
+            } else if (selectedPlan == 1 && lifetime != null) {
+                AlpineSecondaryCtaButton(
+                    text = "${stringResource(R.string.life_time)} · ${lifetime.displayPrice}",
+                    enabled = !billingState.purchaseInFlight,
+                    onClick = { onPurchase(lifetime.productId, null) },
+                )
+            }
+
             if (!loadingPrices && monthly == null && lifetime == null && weekly == null && billingState.errorMessage == null) {
                 Text(
                     text = stringResource(R.string.paywall_catalog_hint),
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
                     style = MaterialTheme.typography.bodySmall,
-                    color = scheme.onSurfaceVariant,
+                    color = Alpine.OnSurfaceVariant,
                 )
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp, start = 16.dp, end = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.terms_amp_conditions),
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable(onClick = onOpenTerms),
-                    color = scheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                )
-                Box(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .height(13.dp)
-                        .background(scheme.onSurfaceVariant),
-                )
-                Text(
-                    text = stringResource(R.string.privacy_policy),
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable(onClick = onOpenPolicy),
-                    color = scheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                )
-            }
-
-            paywall?.let {
-                Text(
-                    text = it.title,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = scheme.onSurface,
-                )
-                Text(
-                    text = it.message,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = scheme.onSurfaceVariant,
-                )
-            }
-
+            // ─── Error Message ───
             billingState.errorMessage?.let { message ->
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(12.dp),
+                        .padding(horizontal = 24.dp, vertical = 12.dp),
+                    shape = Alpine.RoundLG,
                     color = MaterialTheme.colorScheme.errorContainer,
                 ) {
                     Text(
                         text = message,
-                        modifier = Modifier.padding(14.dp),
+                        modifier = Modifier.padding(16.dp),
                         color = MaterialTheme.colorScheme.onErrorContainer,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
 
+            Spacer(Modifier.height(8.dp))
+
+            // ─── Paywall context ───
+            paywall?.let {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(
+                        text = it.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Alpine.OnSurface,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = it.message,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Alpine.OnSurfaceVariant,
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // ─── Legal Links (no dividers — Alpine rule) ───
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.terms_amp_conditions),
+                    modifier = Modifier.clickable(onClick = onOpenTerms),
+                    color = Alpine.OnSurfaceVariant,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Medium,
+                )
+                Text(
+                    text = "  ·  ",
+                    color = Alpine.OnSurfaceVariant.copy(alpha = 0.4f),
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                Text(
+                    text = stringResource(R.string.privacy_policy),
+                    modifier = Modifier.clickable(onClick = onOpenPolicy),
+                    color = Alpine.OnSurfaceVariant,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // ─── Restore / Manage ───
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Center,
             ) {
                 TextButton(onClick = onRestore) {
-                    Text(stringResource(R.string.paywall_restore))
+                    Text(
+                        stringResource(R.string.paywall_restore),
+                        color = Alpine.Primary,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
                 TextButton(onClick = onManageSubscriptions) {
-                    Text(stringResource(R.string.paywall_manage_subscriptions))
+                    Text(
+                        stringResource(R.string.paywall_manage_subscriptions),
+                        color = Alpine.Primary,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
             }
+
+            Spacer(Modifier.height(24.dp))
         }
 
-        IconButton(
-            onClick = onClose,
+        // ─── Close button (glassmorphism pill) ───
+        Box(
             modifier = Modifier
-                .padding(4.dp)
-                .alpha(0.5f),
+                .padding(top = 12.dp, start = 12.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.25f))
+                .clickable(onClick = onClose),
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_close_40_2),
+                imageVector = Icons.Rounded.Close,
                 contentDescription = null,
-                tint = scheme.onSurfaceVariant,
+                tint = Alpine.OnPrimary,
+                modifier = Modifier.size(20.dp),
             )
         }
     }
 }
 
+// ─── Benefit Row ─────────────────────────────────────────────────
 @Composable
-private fun PaywallBenefitRow(
-    iconTint: Color,
-    labelColor: Color,
+private fun AlpineBenefitRow(
+    glyph: String,
+    text: String,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        PaywallBenefitCell(
-            icon = { Icon(Icons.Outlined.AutoAwesome, contentDescription = null, tint = iconTint) },
-            label = stringResource(R.string.unlimited_library_icon_sticker),
-            labelColor = labelColor,
-        )
-        PaywallBenefitCell(
-            icon = { Icon(Icons.Outlined.Block, contentDescription = null, tint = iconTint) },
-            label = stringResource(R.string.no_ad_experience_2),
-            labelColor = labelColor,
-        )
-        PaywallBenefitCell(
-            icon = { Icon(Icons.Outlined.NewReleases, contentDescription = null, tint = iconTint) },
-            label = stringResource(R.string.early_update_new_feature),
-            labelColor = labelColor,
-        )
-    }
-}
-
-@Composable
-private fun PaywallBenefitCell(
-    icon: @Composable () -> Unit,
-    label: String,
-    labelColor: Color,
-) {
-    Column(
-        modifier = Modifier.width(110.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Box(
-            modifier = Modifier.size(56.dp),
-            contentAlignment = Alignment.Center,
+        // Tonal icon container
+        Surface(
+            shape = Alpine.RoundMD,
+            color = Alpine.SurfaceHigh.copy(alpha = 0.7f),
+            modifier = Modifier.size(48.dp),
         ) {
-            icon()
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = glyph, fontSize = 22.sp)
+            }
         }
         Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = labelColor,
-            textAlign = TextAlign.Center,
-            maxLines = 2,
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            color = Alpine.OnSurface,
+            fontWeight = FontWeight.SemiBold,
         )
     }
 }
 
+// ─── Plan Selection Card ─────────────────────────────────────────
 @Composable
-private fun PaywallPriceCard(
+private fun AlpinePlanCard(
     modifier: Modifier = Modifier,
-    title: String,
+    label: String,
     price: String,
-    titleColor: Color,
-    priceColor: Color,
     footnote: String,
-    footnoteColor: Color,
+    selected: Boolean,
+    badge: String?,
     onClick: () -> Unit,
     enabled: Boolean,
 ) {
-    Box(
-        modifier = modifier
-            .height(152.dp)
-            .clickable(enabled = enabled, onClick = onClick),
-    ) {
-        Image(
-            painter = painterResource(R.drawable.bg_package_price),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds,
-        )
-        Column(
+    val bgColor by animateColorAsState(
+        targetValue = if (selected) Alpine.SurfaceLowest else Alpine.SurfaceLow,
+        animationSpec = tween(250),
+        label = "planBg",
+    )
+    val scale by animateFloatAsState(
+        targetValue = if (selected) 1.03f else 1f,
+        animationSpec = tween(200),
+        label = "planScale",
+    )
+
+    Box(modifier = modifier) {
+        Surface(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp, vertical = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
+                .fillMaxWidth()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .clickable(enabled = enabled, onClick = onClick),
+            shape = Alpine.RoundXL,
+            color = bgColor,
+            shadowElevation = if (selected) 0.dp else 0.dp,
+            tonalElevation = if (selected) 2.dp else 0.dp,
         ) {
-            Text(
-                text = title.uppercase(),
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-                color = titleColor,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = price,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = priceColor,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = footnote,
-                style = MaterialTheme.typography.bodySmall,
-                color = footnoteColor,
-                textAlign = TextAlign.Center,
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        letterSpacing = 0.05.sp,
+                    ),
+                    fontWeight = FontWeight.Bold,
+                    color = if (selected) Alpine.Primary else Alpine.OnSurfaceVariant,
+                )
+                Text(
+                    text = price,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = if (selected) Alpine.PrimaryDeep else Alpine.OnSurface,
+                )
+                Text(
+                    text = footnote,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Alpine.OnSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 16.sp,
+                )
+            }
+        }
+
+        // "Popular" badge — floating pill
+        if (badge != null) {
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .offset(y = (-10).dp),
+                shape = Alpine.RoundFull,
+                color = StrawberryMilk.PopularBadge,
+            ) {
+                Text(
+                    text = badge,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    color = Alpine.OnPrimary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
     }
 }
 
+// ─── Primary CTA (weekly / free trial) ───────────────────────────
 @Composable
-private fun PaywallWeeklyCta(
+private fun AlpineCtaButton(
     primaryLine: String,
     secondaryLine: String?,
     hasFreeTrial: Boolean,
-    loading: Boolean,
-    purchaseInFlight: Boolean,
-    weeklyAvailable: Boolean,
+    enabled: Boolean,
     onClick: () -> Unit,
 ) {
-    Column(
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.97f else 1f,
+        animationSpec = tween(100),
+        label = "ctaScale",
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .defaultMinSize(minHeight = 56.dp)
-            .background(StrawberryCtaGradientBrush, RoundedCornerShape(50.dp))
+            .padding(horizontal = 20.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clip(Alpine.RoundFull)
+            .background(Alpine.CtaGradient)
             .clickable(
-                enabled = weeklyAvailable && !purchaseInFlight && !loading,
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled,
                 onClick = onClick,
             )
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        contentAlignment = Alignment.Center,
     ) {
-        if (hasFreeTrial && secondaryLine != null) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = primaryLine,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-            )
-            Text(
-                text = secondaryLine,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White,
-            )
-        } else {
-            Text(
-                text = primaryLine,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
+                fontWeight = FontWeight.ExtraBold,
+                color = Alpine.OnPrimary,
                 textAlign = TextAlign.Center,
             )
+            if (hasFreeTrial && secondaryLine != null) {
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = secondaryLine,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Alpine.OnPrimary.copy(alpha = 0.85f),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
+    }
+}
+
+// ─── Secondary CTA (subscribe selected plan) ────────────────────
+@Composable
+private fun AlpineSecondaryCtaButton(
+    text: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+            .clip(Alpine.RoundFull)
+            .background(Alpine.SurfaceHigh)
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 24.dp, vertical = 14.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = Alpine.PrimaryDeep,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
