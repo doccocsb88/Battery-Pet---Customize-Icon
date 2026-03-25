@@ -1144,15 +1144,18 @@ internal fun OriginalStatusTabStrip(
         color = StrawberryMilk.SecondaryContainer.copy(alpha = 0.85f),
         shadowElevation = 0.dp,
     ) {
-        LazyRow(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            items(StatusBarTab.entries) { tab ->
+            StatusBarTab.entries.forEach { tab ->
                 val isSelected = tab == selected
                 Box(
                     modifier = Modifier
+                        .weight(1f)
                         .clip(RoundedCornerShape(999.dp))
                         .then(
                             if (isSelected) {
@@ -1162,7 +1165,8 @@ internal fun OriginalStatusTabStrip(
                             },
                         )
                         .clickable { onSelect(tab) }
-                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         tab.title,

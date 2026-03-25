@@ -24,10 +24,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -57,7 +60,6 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import dev.hai.emojibattery.service.AnimationTemplate
 import dev.hai.emojibattery.service.AnimationTemplateCatalog
-import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +69,7 @@ internal fun AnimationScreen(
     selectedFromList: Int?,
     onConsumeListSelection: () -> Unit,
     onOpenAnimationList: (Int) -> Unit,
+    onApply: (enabled: Boolean, sizePercent: Int, templateId: Int) -> Unit,
 ) {
     val context = LocalContext.current
     val initialPrefs = remember { OverlayConfigStore.readAnimationPrefs(context) }
@@ -115,6 +118,9 @@ internal fun AnimationScreen(
         ) {
             Card(
                 shape = RoundedCornerShape(16.dp),
+                colors = androidx.compose.material3.CardDefaults.cardColors(
+                    containerColor = Color(0xFFF2F2F2),
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(110.dp),
@@ -149,6 +155,14 @@ internal fun AnimationScreen(
                         Switch(
                             checked = enabled,
                             onCheckedChange = { enabled = it },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color.White,
+                                checkedTrackColor = Color(0xFF8FB6D4),
+                                checkedBorderColor = Color(0xFF8FB6D4),
+                                uncheckedThumbColor = Color.White,
+                                uncheckedTrackColor = Color(0xFF94A3B8),
+                                uncheckedBorderColor = Color(0xFF94A3B8),
+                            ),
                         )
                     }
                     Text(
@@ -180,7 +194,7 @@ internal fun AnimationScreen(
                                     .fillMaxWidth()
                                     .height(98.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .background(Color(0xFFF2F2F2))
                                     .border(
                                         width = if (isSelected) 2.dp else 1.dp,
                                         color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
@@ -196,30 +210,26 @@ internal fun AnimationScreen(
                         }
                     }
                     if (templates.size > previewItems.size) {
-                        Text(
-                            text = stringResource(R.string.view_more),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleSmall,
+                        OutlinedButton(
+                            onClick = { onOpenAnimationList(selectedId) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(999.dp))
-                                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(999.dp))
-                                .clickable { onOpenAnimationList(selectedId) }
-                                .padding(vertical = 10.dp),
-                        )
+                                .padding(top = 4.dp),
+                            shape = RoundedCornerShape(999.dp),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.view_more),
+                                color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
                     }
                 }
             }
 
             Button(
                 onClick = {
-                    OverlayConfigStore.saveAnimationPrefs(
-                        context = context,
-                        enabled = enabled,
-                        sizePercent = sizePercent,
-                        templateId = selectedId,
-                    )
-                    OverlayAccessibilityService.requestRefresh(context)
+                    onApply(enabled, sizePercent, selectedId)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -525,7 +525,6 @@ internal fun SmallCustomizeCard(
                 painter = painterResource(iconRes),
                 contentDescription = title,
                 modifier = Modifier.size(40.dp),
-                colorFilter = ColorFilter.tint(Color(0xFF8FB6D4)),
             )
             Text(
                 title,
@@ -566,7 +565,6 @@ internal fun CustomizeIconGridItem(
                         painter = painterResource(customizeIconRes(entry)),
                         contentDescription = customizeLabel(entry),
                         modifier = Modifier.size(54.dp),
-                        colorFilter = ColorFilter.tint(Color(0xFF8FB6D4)),
                     )
                 }
             }

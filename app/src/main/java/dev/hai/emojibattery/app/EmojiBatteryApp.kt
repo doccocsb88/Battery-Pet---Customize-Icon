@@ -252,6 +252,22 @@ fun EmojiBatteryApp(
                     onOpenAnimationList = { selectedId ->
                         navController.navigate(AppRoute.AnimationList.create(selectedId))
                     },
+                    onApply = { enabled, sizePercent, templateId ->
+                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        OverlayConfigStore.saveAnimationPrefs(
+                            context = context,
+                            enabled = enabled,
+                            sizePercent = sizePercent,
+                            templateId = templateId,
+                        )
+                        if (AccessibilityBridge.isEnabled(context)) {
+                            OverlayAccessibilityService.requestRefresh(context)
+                            viewModel.postInfoMessage(rawContext.getString(R.string.animation_apply_success))
+                        } else {
+                            showAccessibilityConsent = true
+                            viewModel.postInfoMessage(rawContext.getString(R.string.accessibility_bridge_required_short))
+                        }
+                    },
                 )
             }
             composable(
