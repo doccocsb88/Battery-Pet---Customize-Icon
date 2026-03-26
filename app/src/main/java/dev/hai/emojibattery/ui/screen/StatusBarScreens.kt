@@ -95,7 +95,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
@@ -544,19 +543,21 @@ private fun StatusBarLivePreviewCard(
     val emojiArtDrawableRes = emojiVolio?.previewRes?.takeIf { it != 0 }
     val horizontalStart = (8f + config.leftMargin.coerceIn(0f, 1f) * 88f).dp
     val horizontalEnd = (8f + config.rightMargin.coerceIn(0f, 1f) * 88f).dp
-    val verticalPad = (6f + config.statusBarHeight.coerceIn(0f, 1f) * 10f).dp
-    val statusScale = 0.8f + (config.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
+    val verticalPad = (4f + config.statusBarHeight.coerceIn(0f, 1f) * 12f).dp
+    val previewHeight = (62f + config.statusBarHeight.coerceIn(0f, 1f) * 34f).dp
     val rowBgColor = Color(config.backgroundColor).copy(alpha = if (config.backgroundTemplateDrawableRes != null || !config.backgroundTemplatePhotoUrl.isNullOrBlank()) 0.66f else 1f)
     val batteryFontSize = (11f + (config.batteryPercentScale.coerceIn(0f, 1f) * 11f)).sp
+    val emojiPreviewSize = (10f + config.emojiScale.coerceIn(0f, 1f) * 20f).dp
+    val emojiPreviewTextSize = (10f + config.emojiScale.coerceIn(0f, 1f) * 14f).sp
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.status_bar_editor_scaffold)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(previewHeight)
                 .padding(4.dp)
                 .clip(RoundedCornerShape(12.dp)),
         ) {
@@ -593,8 +594,7 @@ private fun StatusBarLivePreviewCard(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = horizontalStart, end = horizontalEnd, top = verticalPad, bottom = verticalPad)
-                    .graphicsLayer(scaleY = statusScale),
+                    .padding(start = horizontalStart, end = horizontalEnd),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -602,7 +602,9 @@ private fun StatusBarLivePreviewCard(
                     color = rowBgColor,
                     shape = RoundedCornerShape(14.dp),
                     border = if (config.showStroke) BorderStroke(1.dp, Color.White.copy(alpha = 0.35f)) else null,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = verticalPad, bottom = verticalPad),
                 ) {
                     Row(
                         modifier = Modifier
@@ -650,7 +652,7 @@ private fun StatusBarLivePreviewCard(
                                     model = emojiArtUrl,
                                     contentDescription = emojiVolio?.title,
                                     modifier = Modifier
-                                        .size(16.dp)
+                                        .size(emojiPreviewSize)
                                         .clip(RoundedCornerShape(5.dp)),
                                     contentScale = ContentScale.Crop,
                                 )
@@ -658,14 +660,14 @@ private fun StatusBarLivePreviewCard(
                                 Image(
                                     painter = painterResource(emojiArtDrawableRes),
                                     contentDescription = emojiVolio?.title,
-                                    modifier = Modifier.size(16.dp),
+                                    modifier = Modifier.size(emojiPreviewSize),
                                     contentScale = ContentScale.Fit,
                                 )
                             } else {
                                 Text(
                                     emojiGlyph,
                                     color = Color(0xFF333333),
-                                    fontSize = 13.sp,
+                                    fontSize = emojiPreviewTextSize,
                                 )
                             }
                             if (batteryArtUrl != null) {

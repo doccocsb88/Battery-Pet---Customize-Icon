@@ -278,6 +278,14 @@ class StatusBarOverlayManager(
         val batteryDrawable = snapshot.batteryArtDrawableRes?.takeIf { it != 0 }
         val emojiUrl = snapshot.emojiArtUrl?.takeIf { it.isNotBlank() }
         val emojiDrawable = snapshot.emojiArtDrawableRes?.takeIf { it != 0 }
+        val emojiScale = snapshot.emojiScale.coerceIn(0f, 1f)
+        val emojiSizePx = ((10f + emojiScale * 20f) * context.resources.displayMetrics.density).roundToInt().coerceAtLeast((12f * context.resources.displayMetrics.density).roundToInt())
+        (emojiArtView.layoutParams as LinearLayout.LayoutParams).also { params ->
+            params.width = emojiSizePx
+            params.height = emojiSizePx
+            emojiArtView.layoutParams = params
+        }
+        emojiTextView.textSize = (10f + emojiScale * 14f)
         when {
             emojiUrl != null -> {
                 emojiArtView.visibility = View.VISIBLE
