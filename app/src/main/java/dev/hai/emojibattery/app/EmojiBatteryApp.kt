@@ -200,9 +200,15 @@ fun EmojiBatteryApp(
                     uiState = uiState,
                     onSelectCategory = viewModel::selectHomeCategory,
                     onOpenAccessibility = { showAccessibilityConsent = true },
-                    onOpenStatusBarCustom = {
+                    onOpenStatusBarCustom = { selectedItem ->
                         viewModel.selectMainSection(MainSection.Home)
                         viewModel.selectStatusTab(StatusBarTab.Battery)
+                        if (selectedItem != null) {
+                            viewModel.stageStatusBarSelectionFromHome(
+                                categoryId = selectedItem.categoryId,
+                                selectedItemId = selectedItem.id,
+                            )
+                        }
                         navController.navigate(AppRoute.StatusBarCustom.route)
                     },
                     onOpenLegacyBattery = { navController.navigate(AppRoute.LegacyBattery.route) },
@@ -234,7 +240,7 @@ fun EmojiBatteryApp(
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
                     onOpenNotch = { navController.navigate(AppRoute.Notch.route) },
                     onOpenAnimation = { navController.navigate(AppRoute.Animation.route) },
-                    onOpenRealTime = { navController.navigate(AppRoute.RealTime.route) },
+                    onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
                 )
             }
@@ -307,7 +313,10 @@ fun EmojiBatteryApp(
                 }
                 StatusBarCustomScreen(
                     uiState = uiState,
-                    onBack = { navController.popBackStack() },
+                    onBack = {
+                        viewModel.clearStagedStatusBarSelectionFromHome()
+                        navController.popBackStack()
+                    },
                     onSelectTab = viewModel::selectStatusTab,
                     onSelectBattery = viewModel::selectBatteryPreset,
                     onSelectEmoji = viewModel::selectEmojiPreset,

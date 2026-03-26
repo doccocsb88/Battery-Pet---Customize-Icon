@@ -232,6 +232,8 @@ data class AppUiState(
     val homeTabs: List<HomeCategoryTab> = emptyList(),
     /** Lazy-loaded, shuffled items per category id (mirrors SubHome per-category load). */
     val homeItemsByCategoryId: Map<String, List<HomeBatteryItem>> = emptyMap(),
+    /** True while waiting for on-demand PAD (`store_pack`) before reading offline home catalog. */
+    val padCatalogLoading: Boolean = false,
     val homeCategoryLoadingId: String? = null,
     /**
      * Volio store emoji-battery rows for the Status Bar editor (decompiled: [EmojiBatteryRepository] + [hungvv.OS]).

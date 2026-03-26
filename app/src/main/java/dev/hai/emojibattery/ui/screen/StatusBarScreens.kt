@@ -56,7 +56,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilledTonalButton
@@ -70,20 +69,23 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -155,6 +157,9 @@ import dev.hai.emojibattery.model.ThemePreset
 import dev.hai.emojibattery.billing.BillingUiState
 import dev.hai.emojibattery.billing.GooglePlayPurchaseService
 import dev.hai.emojibattery.billing.PurchaseService
+import dev.hai.emojibattery.data.PadBackgroundTemplateCategory
+import dev.hai.emojibattery.data.PadBackgroundTemplateItem
+import dev.hai.emojibattery.data.PadBackgroundTemplateRepository
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
 import dev.hai.emojibattery.service.AccessibilityBridge
@@ -198,6 +203,12 @@ private val StatusBarPercentageColorPresets = listOf<Long>(
     0xFFFFEB3B,
 )
 
+private data class StatusBarTemplateUiEntry(
+    val key: String,
+    val assetUrl: String,
+    val label: String,
+)
+
 /** Volio row for editor selection, or null if still using [SampleCatalog] ids. */
 private fun statusBarBatteryItem(uiState: AppUiState, batteryPresetId: String): HomeBatteryItem? =
     uiState.statusBarCatalogItems.firstOrNull { it.id == batteryPresetId }
@@ -237,7 +248,6 @@ internal fun StatusBarCustomScreen(
     val emojiPresets = SampleCatalog.emojiPresets
     val themePresets = SampleCatalog.themePresets
     val editorBg = colorResource(R.color.status_bar_editor_scaffold)
-    val titleColor = colorResource(R.color.splash_title)
     val previewBrush = Brush.verticalGradient(
         listOf(
             colorResource(R.color.status_bar_preview_gradient_start),
@@ -265,18 +275,19 @@ internal fun StatusBarCustomScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(editorScrollState)
-                .padding(bottom = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(0.dp),
+                .padding(innerPadding),
         ) {
             StatusBarCustomHeader(
                 title = stringResource(R.string.status_bar_custom_title),
-                titleColor = titleColor,
                 onBack = onBack,
+                onApply = onApply,
+                applyBrush = applyBrush,
             )
             Column(
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(editorScrollState)
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = onAccessibilityChanged)
@@ -452,31 +463,6 @@ internal fun StatusBarCustomScreen(
                     }
                 }
             }
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(44.dp)
-                        .clip(RoundedCornerShape(100.dp))
-                        .background(applyBrush)
-                        .clickable(onClick = onApply),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        stringResource(R.string.apply),
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
-                    )
-                }
-            }
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)),
-            )
         }
     }
 }
@@ -484,37 +470,52 @@ internal fun StatusBarCustomScreen(
 @Composable
 private fun StatusBarCustomHeader(
     title: String,
-    titleColor: Color,
     onBack: () -> Unit,
+    onApply: () -> Unit,
+    applyBrush: Brush,
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
             onClick = onBack,
-            modifier = Modifier.align(Alignment.CenterStart),
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_back_40_new),
                 contentDescription = stringResource(R.string.cd_back),
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(36.dp),
             )
         }
         Text(
             text = title,
             modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
-                .padding(horizontal = 48.dp),
-            textAlign = TextAlign.Center,
+                .padding(start = 4.dp),
             maxLines = 1,
-            color = titleColor,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = MaterialTheme.typography.headlineSmall.fontFamily,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
         )
+        Spacer(Modifier.weight(1f))
+        Box(
+            modifier = Modifier
+                .height(34.dp)
+                .clip(RoundedCornerShape(999.dp))
+                .background(applyBrush)
+                .clickable(onClick = onApply)
+                .padding(horizontal = 14.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.apply),
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+            )
+        }
     }
 }
 
@@ -925,8 +926,86 @@ private fun StatusBarBackgroundTemplateSection(
     onViewMore: () -> Unit,
 ) {
     val labelColor = colorResource(R.color.splash_title)
+    val context = LocalContext.current.applicationContext
     val maxPreviewRows = 6
-    val previewItems = StatusBarThemeTemplateCatalog.entries.take(3 * maxPreviewRows)
+    val maxPreviewItems = 3 * maxPreviewRows
+    val padCategories = remember { mutableStateListOf<PadBackgroundTemplateCategory>() }
+    val loadedItemsByPack = remember { mutableStateMapOf<String, List<PadBackgroundTemplateItem>>() }
+    val attemptedPacks = remember { mutableStateMapOf<String, Boolean>() }
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    var loadingPack by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        padCategories.clear()
+        padCategories.addAll(PadBackgroundTemplateRepository.loadCategories(context))
+    }
+
+    val selectedCategory = padCategories.getOrNull((selectedTabIndex - 1).coerceAtLeast(0))
+        ?.takeIf { selectedTabIndex > 0 }
+
+    LaunchedEffect(selectedCategory?.deliveryPackName) {
+        val category = selectedCategory ?: return@LaunchedEffect
+        val cached = loadedItemsByPack[category.deliveryPackName]
+        if (cached != null && cached.isNotEmpty()) return@LaunchedEffect
+        attemptedPacks[category.deliveryPackName] = true
+        loadingPack = category.deliveryPackName
+        val loaded = PadBackgroundTemplateRepository.loadItemsForCategory(context, category)
+        if (loaded.isNotEmpty()) {
+            loadedItemsByPack[category.deliveryPackName] = loaded
+        } else {
+            loadedItemsByPack.remove(category.deliveryPackName)
+        }
+        loadingPack = null
+    }
+
+    val selectedAssetUrl = selectedPhotoUrl
+        ?: StatusBarThemeTemplateCatalog.entryForPreviewDrawable(selectedDrawableRes)
+            ?.let { StatusBarThemeTemplateCatalog.assetUri(it.assetRelativePath) }
+
+    val tabs = buildList {
+        add("Built-in")
+        addAll(padCategories.map { it.title?.takeIf { name -> name.isNotBlank() } ?: it.packName })
+    }
+
+    val entries: List<StatusBarTemplateUiEntry> = if (selectedTabIndex == 0) {
+        StatusBarThemeTemplateCatalog.entries.take(maxPreviewItems).map { entry ->
+            StatusBarTemplateUiEntry(
+                key = "builtin_${entry.index}",
+                assetUrl = StatusBarThemeTemplateCatalog.assetUri(entry.assetRelativePath),
+                label = itemIndexLabel(entry.index),
+            )
+        }
+    } else {
+        val category = selectedCategory
+        if (category == null) {
+            emptyList()
+        } else {
+            loadedItemsByPack[category.deliveryPackName]
+                .orEmpty()
+                .take(maxPreviewItems)
+                .map { item ->
+                    StatusBarTemplateUiEntry(
+                        key = "${category.deliveryPackName}_${item.id}",
+                        assetUrl = item.assetUrl,
+                        label = item.name,
+                    )
+                }
+        }
+    }
+
+    val selectedDeliveryPack = selectedCategory?.deliveryPackName
+    val isSelectedCategoryLoading = selectedTabIndex > 0 && (
+        loadingPack == selectedDeliveryPack ||
+            (selectedDeliveryPack != null &&
+                attemptedPacks[selectedDeliveryPack] != true &&
+                !loadedItemsByPack.containsKey(selectedDeliveryPack))
+        )
+    val shouldShowEmpty = selectedTabIndex > 0 &&
+        !isSelectedCategoryLoading &&
+        selectedDeliveryPack != null &&
+        attemptedPacks[selectedDeliveryPack] == true &&
+        entries.isEmpty()
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -949,13 +1028,53 @@ private fun StatusBarBackgroundTemplateSection(
                 fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
             )
         }
-        StatusBarLocalThemeTemplateGrid(
-            entries = previewItems,
-            selectedPhotoUrl = selectedPhotoUrl,
-            selectedDrawableRes = selectedDrawableRes,
-            onSelectPhoto = onSelectPhoto,
-        )
-        if (StatusBarThemeTemplateCatalog.entries.size > previewItems.size) {
+        ScrollableTabRow(
+            selectedTabIndex = selectedTabIndex.coerceAtMost((tabs.size - 1).coerceAtLeast(0)),
+            edgePadding = 0.dp,
+            divider = {},
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = {
+                        Text(
+                            text = title,
+                            maxLines = 1,
+                        )
+                    },
+                )
+            }
+        }
+        when {
+            isSelectedCategoryLoading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(88.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            shouldShowEmpty -> {
+                Text(
+                    text = "No templates available in this category.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+
+            else -> {
+                StatusBarTemplateGrid(
+                    entries = entries,
+                    selectedAssetUrl = selectedAssetUrl,
+                    onSelectPhoto = onSelectPhoto,
+                )
+            }
+        }
+        if (selectedTabIndex == 0 && StatusBarThemeTemplateCatalog.entries.size > maxPreviewItems) {
             OutlinedButton(
                 onClick = onViewMore,
                 modifier = Modifier
@@ -975,15 +1094,11 @@ private fun StatusBarBackgroundTemplateSection(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun StatusBarLocalThemeTemplateGrid(
-    entries: List<dev.hai.emojibattery.model.BackgroundTemplateEntry>,
-    selectedPhotoUrl: String?,
-    selectedDrawableRes: Int?,
+private fun StatusBarTemplateGrid(
+    entries: List<StatusBarTemplateUiEntry>,
+    selectedAssetUrl: String?,
     onSelectPhoto: (String?) -> Unit,
 ) {
-    val selectedAssetUrl = selectedPhotoUrl
-        ?: StatusBarThemeTemplateCatalog.entryForPreviewDrawable(selectedDrawableRes)
-            ?.let { StatusBarThemeTemplateCatalog.assetUri(it.assetRelativePath) }
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         maxItemsInEachRow = 3,
@@ -991,14 +1106,13 @@ private fun StatusBarLocalThemeTemplateGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         entries.forEach { entry ->
-            val assetUrl = StatusBarThemeTemplateCatalog.assetUri(entry.assetRelativePath)
-            val selected = assetUrl == selectedAssetUrl
+            val selected = entry.assetUrl == selectedAssetUrl
             Surface(
                 onClick = {
                     if (selected) {
                         onSelectPhoto(null)
                     } else {
-                        onSelectPhoto(assetUrl)
+                        onSelectPhoto(entry.assetUrl)
                     }
                 },
                 modifier = Modifier.fillMaxWidth(0.31f),
@@ -1020,8 +1134,8 @@ private fun StatusBarLocalThemeTemplateGrid(
                     contentAlignment = Alignment.Center,
                 ) {
                     AsyncImage(
-                        model = assetUrl,
-                        contentDescription = itemIndexLabel(entry.index),
+                        model = entry.assetUrl,
+                        contentDescription = entry.label,
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(2f)
@@ -1068,27 +1182,31 @@ internal fun LegacyBatteryScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.legacy_battery_flow_title),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.ExtraBold,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_back_40_new),
+                        contentDescription = stringResource(R.string.cd_back),
+                        modifier = Modifier.size(36.dp),
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_back_40_new),
-                            contentDescription = stringResource(R.string.cd_back),
-                            modifier = Modifier.size(32.dp),
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
-            )
+                }
+                Text(
+                    text = stringResource(R.string.legacy_battery_flow_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = "🍼",
+                    style = MaterialTheme.typography.headlineMedium,
+                )
+            }
         },
     ) { innerPadding ->
         Column(

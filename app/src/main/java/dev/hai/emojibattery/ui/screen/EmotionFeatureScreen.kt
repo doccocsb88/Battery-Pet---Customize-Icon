@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -73,50 +74,76 @@ internal fun EmotionFeatureScreen(
             }
         },
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 12.dp),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                border = BorderStroke(1.dp, Color(0xFF8FB6D4)),
-                color = Color(0xFFF2F2F2),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = stringResource(R.string.enable_disable_emoji_battery),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Switch(
-                        checked = config.enabled,
-                        onCheckedChange = onToggleEnabled,
-                    )
-                }
-            }
-
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = Color.White,
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+            item {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(18.dp),
+                    border = BorderStroke(1.dp, Color(0xFF8FB6D4)),
+                    color = Color(0xFFF2F2F2),
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
+                        Text(
+                            text = stringResource(R.string.enable_disable_emoji_battery),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Switch(
+                            checked = config.enabled,
+                            onCheckedChange = onToggleEnabled,
+                        )
+                    }
+                }
+            }
+
+            item {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.White,
+                ) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_bullet2),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(5.dp, 18.dp),
+                                )
+                                Text(
+                                    text = stringResource(R.string.enable_emotion),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
+                            Switch(
+                                checked = config.enabled,
+                                onCheckedChange = onToggleEnabled,
+                            )
+                        }
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -127,63 +154,42 @@ internal fun EmotionFeatureScreen(
                                 modifier = Modifier.size(5.dp, 18.dp),
                             )
                             Text(
-                                text = stringResource(R.string.enable_emotion),
+                                text = stringResource(R.string.emotion_list),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
-                        Switch(
-                            checked = config.enabled,
-                            onCheckedChange = onToggleEnabled,
-                        )
-                    }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_bullet2),
-                            contentDescription = null,
-                            modifier = Modifier.size(5.dp, 18.dp),
-                        )
-                        Text(
-                            text = stringResource(R.string.emotion_list),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-
-                    EmotionOptions.chunked(3).forEach { row ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        ) {
-                            row.forEach { item ->
-                                val selected = item.id == selectedId
-                                Surface(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .aspectRatio(1f)
-                                        .clickable(enabled = config.enabled) {
-                                            onSelectVariant(item.id)
-                                            onApply()
-                                        },
-                                    shape = RoundedCornerShape(14.dp),
-                                    border = BorderStroke(
-                                        if (selected) 1.dp else 0.5.dp,
-                                        if (selected) Color(0xFF8FB6D4) else Color(0xFFD8DDE2),
-                                    ),
-                                    color = if (selected) Color(0xFFEAF3FA) else Color(0xFFF8F8F8),
-                                ) {
-                                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                                        Text(text = item.glyph, style = MaterialTheme.typography.displaySmall)
+                        EmotionOptions.chunked(3).forEach { row ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
+                                row.forEach { item ->
+                                    val selected = item.id == selectedId
+                                    Surface(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .aspectRatio(1f)
+                                            .clickable(enabled = config.enabled) {
+                                                onSelectVariant(item.id)
+                                                onApply()
+                                            },
+                                        shape = RoundedCornerShape(14.dp),
+                                        border = BorderStroke(
+                                            if (selected) 1.dp else 0.5.dp,
+                                            if (selected) Color(0xFF8FB6D4) else Color(0xFFD8DDE2),
+                                        ),
+                                        color = if (selected) Color(0xFFEAF3FA) else Color(0xFFF8F8F8),
+                                    ) {
+                                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                                            Text(text = item.glyph, style = MaterialTheme.typography.displaySmall)
+                                        }
                                     }
                                 }
+                                repeat(3 - row.size) { Spacer(modifier = Modifier.weight(1f)) }
                             }
-                            repeat(3 - row.size) { Spacer(modifier = Modifier.weight(1f)) }
                         }
                     }
                 }

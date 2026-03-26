@@ -3,14 +3,15 @@ package dev.hai.emojibattery.app
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.hai.emojibattery.data.BundledVolioHomeRepository
 import dev.hai.emojibattery.data.HomeCatalogRepository
-import dev.hai.emojibattery.data.VolioHomeRepository
 import dev.hai.emojibattery.data.HomeStoreLocalImageResolver
 import dev.hai.emojibattery.data.PadVolioHomeRepository
 import dev.hai.emojibattery.data.VolioBatteryTrollRepository
 import dev.hai.emojibattery.data.VolioStickerRepository
+import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import dev.hai.emojibattery.data.volio.VolioConstants
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.HomeBatteryItem
@@ -43,12 +44,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
-class EmojiBatteryViewModel(application: Application) : AndroidViewModel(application) {
+class EmojiBatteryViewModel(
+    application: Application,
+    private val savedStateHandle: SavedStateHandle,
+) : AndroidViewModel(application) {
     private var homeCategoryLoadJob: Job? = null
 
     companion object {
         private const val TAG = "HomeFeed"
+        private const val PENDING_HOME_STATUSBAR_CATEGORY_ID = "pending_home_statusbar_category_id"
+        private const val PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID = "pending_home_statusbar_selected_item_id"
     }
 
     private val _uiState = MutableStateFlow(
@@ -81,11 +88,18 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
                 languageChosen = englishOnly || AppLocalePreferences.isLanguageFlowCompleted(app),
                 onboardingCompleted = AppFlowPreferences.isOnboardingDone(app),
                 selectedLocaleTag = resolvedLocaleTag,
+                padCatalogLoading = true,
             )
         }
         viewModelScope.launch {
             Log.d(TAG, "init: home tabs — PAD → bundled_volio → SampleCatalog (no Volio API)")
             val app = getApplication<Application>()
+            val padReady = withContext(Dispatchers.IO) {
+                withTimeoutOrNull(12_000L) {
+                    runCatching { StoreOnDemandAssetPack.waitUntilCompleted(app) }.getOrDefault(false)
+                } ?: false
+            }
+            Log.d(TAG, "init: waitUntilCompleted(PAD) -> $padReady")
             val padTabs = runCatching { PadVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
             val bundledTabs = if (padTabs.isEmpty()) {
                 runCatching { BundledVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
@@ -111,6 +125,7 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
                     homeTabs = tabs,
                     selectedHomeCategoryId = tabs.first().id,
                     homeItemsByCategoryId = emptyMap(),
+                    padCatalogLoading = false,
                 )
             }
             loadHomeCategoryItems(tabs.first().id)
@@ -225,22 +240,7 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
                         runCatching { HomeCatalogRepository.loadItemsForCategory(categoryId) }
                             .getOrElse { emptyList() }
                     }
-                    else -> {
-                        val padItems = runCatching { PadVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
-                            .getOrElse { emptyList() }
-                            .takeIf { it.isNotEmpty() }
-                        val merged = padItems
-                            ?: runCatching { BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
-                                .getOrElse { emptyList() }
-                                .takeIf { it.isNotEmpty() }
-                            ?: emptyList()
-                        when {
-                            padItems != null -> Log.d(TAG, "loadHomeCategoryItems: items from PAD count=${merged.size}")
-                            merged.isNotEmpty() -> Log.d(TAG, "loadHomeCategoryItems: items from bundled assets count=${merged.size}")
-                            else -> Log.w(TAG, "loadHomeCategoryItems: no PAD/bundled items for $categoryId")
-                        }
-                        HomeStoreLocalImageResolver.enrichItems(app, merged)
-                    }
+                    else -> loadOfflineHomeStoreItems(app, categoryId)
                 }
             }
             val first = items.firstOrNull()
@@ -270,13 +270,18 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
-     * Same store feed as the original app ([hungvv.OS.d] → [EmojiBatteryRepositoryImpl]):
-     * `List<EmojiBatteryModel>` for the status-bar editor. We map to [HomeBatteryItem] (Volio public API + bundled fallback).
+     * Offline store feed for the status-bar editor.
+     * Uses PAD first, then bundled assets fallback (no Volio network).
      */
     fun loadStatusBarCatalog() {
         viewModelScope.launch {
             val app = getApplication<Application>()
-            val categoryId = _uiState.value.homeTabs.firstOrNull()?.id
+            val pendingCategoryId = savedStateHandle.get<String>(PENDING_HOME_STATUSBAR_CATEGORY_ID)
+            val pendingSelectedId = savedStateHandle.get<String>(PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID)
+            val hasPendingHomeSelection = !pendingCategoryId.isNullOrBlank() && !pendingSelectedId.isNullOrBlank()
+            val categoryId = pendingCategoryId?.takeIf { it.isNotBlank() }
+                ?: _uiState.value.selectedHomeCategoryId.takeIf { it.isNotBlank() }
+                ?: _uiState.value.homeTabs.firstOrNull()?.id
                 ?: withContext(Dispatchers.IO) {
                     BundledVolioHomeRepository.fetchCategoryTabs(app).firstOrNull()?.id
                 }
@@ -284,18 +289,46 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
                 Log.w(TAG, "loadStatusBarCatalog: no category id (home tabs empty, no bundled categories)")
                 return@launch
             }
-            val remote = runCatching {
-                withContext(Dispatchers.IO) { VolioHomeRepository.fetchItemsForCategory(categoryId) }
-            }.getOrNull()
-            val items: List<HomeBatteryItem> = when {
-                !remote.isNullOrEmpty() -> remote
-                else -> withContext(Dispatchers.IO) {
-                    BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId)
+            val items = withContext(Dispatchers.IO) {
+                if (isVolioCategoryId(categoryId)) {
+                    loadOfflineHomeStoreItems(app, categoryId)
+                } else {
+                    runCatching { HomeCatalogRepository.loadItemsForCategory(categoryId) }
+                        .getOrElse { emptyList() }
                 }
             }
             Log.d(TAG, "loadStatusBarCatalog: categoryId=$categoryId count=${items.size}")
-            _uiState.update { it.copy(statusBarCatalogItems = items) }
+            _uiState.update { state ->
+                var updated = state.copy(statusBarCatalogItems = items)
+                if (hasPendingHomeSelection) {
+                    val selected = items.firstOrNull { it.id == pendingSelectedId } ?: items.firstOrNull()
+                    if (selected != null) {
+                        updated = updated.copy(
+                            editingConfig = updated.editingConfig.copy(
+                                batteryPresetId = selected.id,
+                                emojiPresetId = selected.id,
+                            ),
+                        )
+                    }
+                }
+                updated
+            }
+            if (hasPendingHomeSelection) {
+                savedStateHandle[PENDING_HOME_STATUSBAR_CATEGORY_ID] = null
+                savedStateHandle[PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID] = null
+            }
         }
+    }
+
+    fun stageStatusBarSelectionFromHome(categoryId: String, selectedItemId: String) {
+        if (categoryId.isBlank() || selectedItemId.isBlank()) return
+        savedStateHandle[PENDING_HOME_STATUSBAR_CATEGORY_ID] = categoryId
+        savedStateHandle[PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID] = selectedItemId
+    }
+
+    fun clearStagedStatusBarSelectionFromHome() {
+        savedStateHandle[PENDING_HOME_STATUSBAR_CATEGORY_ID] = null
+        savedStateHandle[PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID] = null
     }
 
     fun setAccessibilityGranted(granted: Boolean) {
@@ -398,8 +431,9 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
     fun refreshStickerCatalog() {
         viewModelScope.launch {
             _uiState.update { it.copy(stickerCatalogLoading = true) }
+            val app = getApplication<Application>()
             val list = withContext(Dispatchers.IO) {
-                runCatching { VolioStickerRepository.fetchStickerPresets() }.getOrElse { emptyList() }
+                runCatching { VolioStickerRepository.fetchStickerPresets(app) }.getOrElse { emptyList() }
             }
             _uiState.update {
                 it.copy(
@@ -893,6 +927,26 @@ class EmojiBatteryViewModel(application: Application) : AndroidViewModel(applica
                 },
             )
         }
+    }
+
+    private suspend fun loadOfflineHomeStoreItems(
+        app: Application,
+        categoryId: String,
+    ): List<HomeBatteryItem> {
+        val padItems = runCatching { PadVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
+            .getOrElse { emptyList() }
+            .takeIf { it.isNotEmpty() }
+        val merged = padItems
+            ?: runCatching { BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
+                .getOrElse { emptyList() }
+                .takeIf { it.isNotEmpty() }
+            ?: emptyList()
+        when {
+            padItems != null -> Log.d(TAG, "offlineStore: items from PAD count=${merged.size}")
+            merged.isNotEmpty() -> Log.d(TAG, "offlineStore: items from bundled assets count=${merged.size}")
+            else -> Log.w(TAG, "offlineStore: no PAD/bundled items for $categoryId")
+        }
+        return HomeStoreLocalImageResolver.enrichItems(app, merged)
     }
 
     private fun hasFeatureAccess(state: AppUiState, featureKey: String): Boolean {

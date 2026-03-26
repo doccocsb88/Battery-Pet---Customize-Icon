@@ -417,13 +417,15 @@ internal fun OnboardingScreen(
         1 -> R.drawable.img_onboard_2
         else -> R.drawable.img_onboard_3
     }
-    val titleColor = Color(0xFF5C4B51)
-    val bodyColor = Color(0xFF5C4B51)
-    val indicatorActive = Color(0xFFD47DFE)
-    val indicatorInactive = Color(0xFFD9D9D9)
+    val titleColor = colorResource(R.color.onboarding_title)
+    val bodyColor = colorResource(R.color.onboarding_body)
+    val indicatorActive = colorResource(R.color.onboarding_dot_active)
+    val indicatorInactive = colorResource(R.color.onboarding_dot_inactive)
+    val ctaGradientStart = colorResource(R.color.onboarding_cta_gradient_start)
+    val ctaGradientEnd = colorResource(R.color.onboarding_cta_gradient_end)
 
     Scaffold(
-        containerColor = Color.White,
+        containerColor = colorResource(R.color.onboarding_scaffold),
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -489,8 +491,8 @@ internal fun OnboardingScreen(
                         .background(
                             Brush.horizontalGradient(
                                 listOf(
-                                    Color(0xFFFFABE5),
-                                    Color(0xFFD47DFE),
+                                    ctaGradientStart,
+                                    ctaGradientEnd,
                                 ),
                             ),
                         )

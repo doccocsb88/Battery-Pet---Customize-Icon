@@ -86,7 +86,14 @@ android {
         }
     }
 
-    assetPacks += ":store_pack"
+    assetPacks += listOf(
+        ":store_pack",
+        ":theme_pack_ocean",
+        ":theme_pack_floralgarden",
+        ":theme_pack_countryside",
+        ":theme_pack_fantasy",
+        ":theme_pack_chinese_spring_landscape",
+    )
 }
 
 dependencies {

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,8 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,14 +36,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import co.q7labs.co.emoji.R
 import coil.compose.AsyncImage
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.ui.theme.StrawberryMilk
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun StatusBarCatalogListScreen(
     uiState: AppUiState,
@@ -53,41 +52,40 @@ internal fun StatusBarCatalogListScreen(
     onSelectId: (String) -> Unit,
     previewImageUrl: (HomeBatteryItem) -> String?,
 ) {
-    val titleColor = colorResource(R.color.splash_title)
     val editorBg = colorResource(R.color.status_bar_editor_scaffold)
     val items = uiState.statusBarCatalogItems
 
     Scaffold(
         containerColor = editorBg,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        title,
-                        color = titleColor,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    androidx.compose.foundation.Image(
+                        painter = painterResource(R.drawable.ic_back_40_new),
+                        contentDescription = stringResource(R.string.cd_back),
+                        modifier = Modifier.size(36.dp),
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_back_40_new),
-                            contentDescription = stringResource(R.string.cd_back),
-                            tint = titleColor,
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Rounded.Check,
-                            contentDescription = stringResource(R.string.apply),
-                            tint = StrawberryMilk.Secondary,
-                        )
-                    }
-                },
-            )
+                }
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.weight(1f))
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Rounded.Check,
+                        contentDescription = stringResource(R.string.apply),
+                        tint = StrawberryMilk.Secondary,
+                    )
+                }
+            }
         },
     ) { padding ->
         BoxWithConstraints(

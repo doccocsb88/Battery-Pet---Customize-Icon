@@ -50,33 +50,30 @@ internal fun NotchScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            Surface(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
-                shadowElevation = 6.dp,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(onClick = onBack) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_back_40_new),
-                            contentDescription = stringResource(R.string.cd_back),
-                            modifier = Modifier.size(40.dp),
-                        )
-                    }
-                    Text(
-                        stringResource(R.string.home_notch),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.onSurface,
+                IconButton(onClick = onBack) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_back_40_new),
+                        contentDescription = stringResource(R.string.cd_back),
+                        modifier = Modifier.size(36.dp),
                     )
-                    Spacer(Modifier.size(40.dp))
                 }
+                Text(
+                    text = stringResource(R.string.home_notch),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = "🍼",
+                    style = MaterialTheme.typography.headlineMedium,
+                )
             }
         },
     ) { innerPadding ->

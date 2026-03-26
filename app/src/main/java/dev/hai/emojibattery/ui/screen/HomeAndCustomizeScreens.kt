@@ -64,6 +64,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.HomeCategoryTab
+import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.SampleCatalog
@@ -76,13 +77,33 @@ internal fun HomeScreen(
     uiState: AppUiState,
     onSelectCategory: (String) -> Unit,
     onOpenAccessibility: () -> Unit,
-    onOpenStatusBarCustom: () -> Unit,
+    onOpenStatusBarCustom: (HomeBatteryItem?) -> Unit,
     onOpenLegacyBattery: () -> Unit,
     onOpenSearch: () -> Unit,
     onOpenSticker: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
     onOpenFeedback: () -> Unit,
 ) {
+    if (uiState.padCatalogLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                Text(
+                    text = stringResource(R.string.common_loading_ellipsis),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+        }
+        return
+    }
+
     val categories = uiState.homeTabs.takeIf { it.isNotEmpty() }
         ?: SampleCatalog.homeCategories.map { HomeCategoryTab(it.id, it.title) }
     if (categories.isEmpty()) return
@@ -140,7 +161,7 @@ private fun HomeScreenScaffold(
     uiState: AppUiState,
     onSelectCategory: (String) -> Unit,
     onOpenAccessibility: () -> Unit,
-    onOpenStatusBarCustom: () -> Unit,
+    onOpenStatusBarCustom: (HomeBatteryItem?) -> Unit,
     onOpenLegacyBattery: () -> Unit,
     onOpenSearch: () -> Unit,
     onOpenSticker: () -> Unit,
@@ -240,7 +261,7 @@ private fun HomeScreenScaffold(
                                                     item.animated -> onOpenSticker()
                                                     item.title.contains("Troll", ignoreCase = true) -> onOpenBatteryTroll()
                                                     item.title.contains("Search", ignoreCase = true) -> onOpenSearch()
-                                                    else -> onOpenStatusBarCustom()
+                                                    else -> onOpenStatusBarCustom(item)
                                                 }
                                             },
                                             modifier = Modifier.weight(1f),
@@ -268,7 +289,7 @@ internal fun CustomizeHubScreen(
     onOpenSearch: () -> Unit,
     onOpenNotch: () -> Unit,
     onOpenAnimation: () -> Unit,
-    onOpenRealTime: () -> Unit,
+    onOpenFeedback: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
 ) {
     val gridEntries = listOf(
@@ -303,7 +324,7 @@ internal fun CustomizeHubScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            HomeRoundIcon(R.drawable.ic_feeb_back_home, onOpenRealTime)
+                            HomeRoundIcon(R.drawable.ic_feeb_back_home, onOpenFeedback)
                         }
                         Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {

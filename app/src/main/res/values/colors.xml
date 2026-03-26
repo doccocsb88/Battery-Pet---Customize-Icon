@@ -22,19 +22,19 @@
     <color name="splash_ads_hint">#FFD47DFE</color>
 
     <!-- Onboarding -->
-    <color name="onboarding_scaffold">#FFFFF0F3</color>
-    <color name="onboarding_top_bar">#FFFFF0F3</color>
+    <color name="onboarding_scaffold">#FFFBF9F8</color>
+    <color name="onboarding_top_bar">#FFFBF9F8</color>
     <color name="onboarding_hero_card">#FFFFFFFF</color>
-    <color name="onboarding_hero_inner">#FFFFFBFC</color>
-    <color name="onboarding_hero_border">#FFFBCFE8</color>
-    <color name="onboarding_chip_surface">#FFFCE7F3</color>
-    <color name="onboarding_chip_magenta">#FFEC4899</color>
-    <color name="onboarding_title">#FF5F4B54</color>
-    <color name="onboarding_body">#FF8D7680</color>
-    <color name="onboarding_dot_active">#FFEC4899</color>
-    <color name="onboarding_dot_inactive">#FFF2DDEB</color>
-    <color name="onboarding_cta_gradient_start">#FFEC4899</color>
-    <color name="onboarding_cta_gradient_end">#FFD47DFE</color>
+    <color name="onboarding_hero_inner">#FFF8FBFE</color>
+    <color name="onboarding_hero_border">#FFD8DDE2</color>
+    <color name="onboarding_chip_surface">#FFEAF3FA</color>
+    <color name="onboarding_chip_magenta">#FF3C637E</color>
+    <color name="onboarding_title">#FF5C4B51</color>
+    <color name="onboarding_body">#FF5C4B51</color>
+    <color name="onboarding_dot_active">#FF8FB6D4</color>
+    <color name="onboarding_dot_inactive">#FFD8DDE2</color>
+    <color name="onboarding_cta_gradient_start">#FF8FB6D4</color>
+    <color name="onboarding_cta_gradient_end">#FF3C637E</color>
 
     <!-- Accessibility service usage dialog (dialog_request_accessibility_service.xml — decompiled 1.2.8) -->
     <color name="accessibility_usage_dialog_surface">#FFFFFFFF</color>

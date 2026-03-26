@@ -27,10 +27,14 @@ object StoreOnDemandAssetPack {
      * @return false if state is missing or not completed (e.g. Play services unavailable).
      */
     suspend fun waitUntilCompleted(context: Context): Boolean {
+        return waitUntilCompleted(context, PACK_NAME)
+    }
+
+    suspend fun waitUntilCompleted(context: Context, packName: String): Boolean {
         val assetPackManager = manager(context)
-        assetPackManager.fetch(listOf(PACK_NAME)).await()
-        val states = assetPackManager.getPackStates(listOf(PACK_NAME)).await()
-        val state = states.packStates()[PACK_NAME] ?: return false
+        assetPackManager.fetch(listOf(packName)).await()
+        val states = assetPackManager.getPackStates(listOf(packName)).await()
+        val state = states.packStates()[packName] ?: return false
         return state.status() == AssetPackStatus.COMPLETED
     }
 
@@ -39,7 +43,11 @@ object StoreOnDemandAssetPack {
      * Null if the pack is not on device or not completed yet.
      */
     fun assetsRootOrNull(context: Context): File? {
-        val location = manager(context).getPackLocation(PACK_NAME) ?: return null
+        return assetsRootOrNull(context, PACK_NAME)
+    }
+
+    fun assetsRootOrNull(context: Context, packName: String): File? {
+        val location = manager(context).getPackLocation(packName) ?: return null
         val path = location.assetsPath() ?: return null
         return File(path)
     }

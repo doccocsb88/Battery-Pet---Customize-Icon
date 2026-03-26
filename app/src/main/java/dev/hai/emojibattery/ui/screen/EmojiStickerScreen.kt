@@ -57,7 +57,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilledTonalButton
@@ -79,7 +78,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -209,29 +207,31 @@ internal fun EmojiStickerScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.status_bar_sticker_title),
-                        fontWeight = FontWeight.SemiBold,
-                        style = MaterialTheme.typography.titleLarge,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_back_40_new),
+                        contentDescription = stringResource(R.string.cd_back),
+                        modifier = Modifier.size(36.dp),
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_back_40_new),
-                            contentDescription = stringResource(R.string.cd_back),
-                            modifier = Modifier.size(40.dp),
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-                ),
-            )
+                }
+                Text(
+                    text = stringResource(R.string.status_bar_sticker_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = "🍼",
+                    style = MaterialTheme.typography.headlineMedium,
+                )
+            }
         },
     ) { innerPadding ->
         Column(

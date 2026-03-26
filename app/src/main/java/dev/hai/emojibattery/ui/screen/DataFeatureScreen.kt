@@ -52,8 +52,9 @@ internal fun DataFeatureScreen(
         ?: FeatureConfig(variant = "5G")
     val colorOptions = WifiColorOptions
     val styleOptions = listOf("2G", "3G", "4G", "5G", "6G")
-    val selectedStyle = styleOptions.firstOrNull { it.equals(config.variant, ignoreCase = true) } ?: "5G"
-    val selectedColorId = colorOptions.firstOrNull { it.id == config.variant }?.id ?: colorOptions[1].id
+    val selection = parseDataVariant(config.variant, styleOptions, colorOptions.map { it.id })
+    val selectedStyle = selection.style
+    val selectedColorId = selection.colorId
     val sliderDp = (10f + (26f * config.intensity)).coerceIn(10f, 36f)
 
     Scaffold(
@@ -149,6 +150,7 @@ internal fun DataFeatureScreen(
                                     val intensity = ((dpValue - 10f) / 26f).coerceIn(0.1f, 1f)
                                     onSetIntensity(intensity)
                                 },
+                                onValueChangeFinished = onApply,
                                 valueRange = 10f..36f,
                                 modifier = Modifier.weight(1f),
                             )
@@ -188,8 +190,8 @@ internal fun DataFeatureScreen(
                                 Surface(
                                     modifier = Modifier
                                         .size(42.dp)
-                                        .clickable(enabled = config.enabled) {
-                                            onSelectVariant(option.id)
+                                        .clickable {
+                                            onSelectVariant(encodeDataVariant(selectedStyle, option.id))
                                             onApply()
                                         },
                                     shape = CircleShape,
@@ -242,8 +244,8 @@ internal fun DataFeatureScreen(
                                         modifier = Modifier
                                             .weight(1f)
                                             .aspectRatio(1f)
-                                            .clickable(enabled = config.enabled) {
-                                                onSelectVariant(style)
+                                            .clickable {
+                                                onSelectVariant(encodeDataVariant(style, selectedColorId))
                                                 onApply()
                                             },
                                         shape = RoundedCornerShape(14.dp),
@@ -272,3 +274,29 @@ internal fun DataFeatureScreen(
         }
     }
 }
+
+private data class DataSelection(
+    val style: String,
+    val colorId: String,
+)
+
+private fun parseDataVariant(
+    raw: String?,
+    styleOptions: List<String>,
+    colorIds: List<String>,
+): DataSelection {
+    val defaultStyle = styleOptions.firstOrNull { it.equals("5G", ignoreCase = true) } ?: styleOptions.first()
+    val defaultColor = colorIds.firstOrNull { it == "blue" } ?: colorIds.first()
+    val source = raw.orEmpty()
+    if ("::" !in source) {
+        val style = styleOptions.firstOrNull { it.equals(source, ignoreCase = true) } ?: defaultStyle
+        val color = colorIds.firstOrNull { it.equals(source, ignoreCase = true) } ?: defaultColor
+        return DataSelection(style = style, colorId = color)
+    }
+    val parts = source.split("::", limit = 2)
+    val style = styleOptions.firstOrNull { it.equals(parts.getOrNull(0).orEmpty(), ignoreCase = true) } ?: defaultStyle
+    val color = colorIds.firstOrNull { it.equals(parts.getOrNull(1).orEmpty(), ignoreCase = true) } ?: defaultColor
+    return DataSelection(style = style, colorId = color)
+}
+
+private fun encodeDataVariant(style: String, colorId: String): String = "$style::$colorId"
