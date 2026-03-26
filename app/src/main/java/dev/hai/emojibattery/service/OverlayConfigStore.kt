@@ -10,6 +10,12 @@ import dev.hai.emojibattery.model.stickerPresetForId
 data class OverlaySnapshot(
     val statusBarEnabled: Boolean,
     val batteryText: String,
+    val batteryBody: String,
+    val emojiGlyph: String,
+    val batteryArtUrl: String?,
+    val batteryArtDrawableRes: Int?,
+    val emojiArtUrl: String?,
+    val emojiArtDrawableRes: Int?,
     val accentColor: Long,
     val backgroundColor: Long,
     /** Full-bleed status strip background when set (Theme background template). */
@@ -31,6 +37,18 @@ data class OverlaySnapshot(
     val realTimeTitle: String,
     /** Original notch selector ID (-1 hide, 1..13 visible variants). */
     val notchTemplateId: Int,
+    val statusBarHeight: Float,
+    val leftMargin: Float,
+    val rightMargin: Float,
+    val batteryPercentScale: Float,
+    val emojiScale: Float,
+    val showPercentage: Boolean,
+    val animateCharge: Boolean,
+    val showStroke: Boolean,
+    val animationEnabled: Boolean,
+    val animationSizePercent: Int,
+    val animationAssetPath: String?,
+    val animationIsLottie: Boolean,
 )
 
 data class AnimationOverlayPrefs(
@@ -44,6 +62,12 @@ object OverlayConfigStore {
     private const val PREFS = "overlay_config"
     private const val KEY_STATUS_ENABLED = "status_enabled"
     private const val KEY_BATTERY_TEXT = "battery_text"
+    private const val KEY_BATTERY_BODY = "battery_body"
+    private const val KEY_EMOJI_GLYPH = "emoji_glyph"
+    private const val KEY_BATTERY_ART_URL = "battery_art_url"
+    private const val KEY_BATTERY_ART_DRAWABLE = "battery_art_drawable"
+    private const val KEY_EMOJI_ART_URL = "emoji_art_url"
+    private const val KEY_EMOJI_ART_DRAWABLE = "emoji_art_drawable"
     private const val KEY_ACCENT = "accent"
     private const val KEY_BACKGROUND = "background"
     private const val KEY_BACKGROUND_TEMPLATE_PHOTO = "background_template_photo"
@@ -61,6 +85,14 @@ object OverlayConfigStore {
     private const val KEY_REALTIME_GLYPH = "realtime_glyph"
     private const val KEY_REALTIME_TITLE = "realtime_title"
     private const val KEY_NOTCH_TEMPLATE_ID = "notch_template_id"
+    private const val KEY_STATUS_BAR_HEIGHT = "status_bar_height"
+    private const val KEY_STATUS_LEFT_MARGIN = "status_left_margin"
+    private const val KEY_STATUS_RIGHT_MARGIN = "status_right_margin"
+    private const val KEY_BATTERY_PERCENT_SCALE = "battery_percent_scale"
+    private const val KEY_EMOJI_SCALE = "emoji_scale"
+    private const val KEY_SHOW_PERCENTAGE = "show_percentage"
+    private const val KEY_ANIMATE_CHARGE = "animate_charge"
+    private const val KEY_SHOW_STROKE = "show_stroke"
     private const val KEY_ANIMATION_ENABLED = "animation_enabled"
     private const val KEY_ANIMATION_SIZE_PERCENT = "animation_size_percent"
     private const val KEY_ANIMATION_TEMPLATE_ID = "animation_template_id"
@@ -79,13 +111,37 @@ object OverlayConfigStore {
     ) {
         val batteryBody = batteryBodyForOverlay(config.batteryPresetId, volioCatalogItems)
         val emojiGlyph = emojiGlyphForOverlay(config.emojiPresetId, volioCatalogItems)
+        val batteryItem = volioCatalogItems.firstOrNull { it.id == config.batteryPresetId }
+        val batteryArtUrl = batteryItem?.batteryArtUrl
+            ?.takeIf { it.isNotBlank() }
+            ?: batteryItem?.thumbnailUrl?.takeIf { it.isNotBlank() }
+        val batteryArtDrawableRes = batteryItem?.previewRes?.takeIf { it != 0 }
+        val emojiItem = volioCatalogItems.firstOrNull { it.id == config.emojiPresetId }
+        val emojiArtUrl = emojiItem?.emojiArtUrl
+            ?.takeIf { it.isNotBlank() }
+            ?: emojiItem?.thumbnailUrl?.takeIf { it.isNotBlank() }
+        val emojiArtDrawableRes = emojiItem?.previewRes?.takeIf { it != 0 }
         prefs(context).edit()
             .putBoolean(KEY_STATUS_ENABLED, true)
             .putString(KEY_BATTERY_TEXT, "$batteryBody $emojiGlyph")
+            .putString(KEY_BATTERY_BODY, batteryBody)
+            .putString(KEY_EMOJI_GLYPH, emojiGlyph)
+            .putString(KEY_BATTERY_ART_URL, batteryArtUrl.orEmpty())
+            .putInt(KEY_BATTERY_ART_DRAWABLE, batteryArtDrawableRes ?: 0)
+            .putString(KEY_EMOJI_ART_URL, emojiArtUrl.orEmpty())
+            .putInt(KEY_EMOJI_ART_DRAWABLE, emojiArtDrawableRes ?: 0)
             .putLong(KEY_ACCENT, config.accentColor)
             .putLong(KEY_BACKGROUND, config.backgroundColor)
             .putString(KEY_BACKGROUND_TEMPLATE_PHOTO, config.backgroundTemplatePhotoUrl.orEmpty())
             .putInt(KEY_BACKGROUND_TEMPLATE_DRAWABLE, config.backgroundTemplateDrawableRes ?: 0)
+            .putFloat(KEY_STATUS_BAR_HEIGHT, config.statusBarHeight.coerceIn(0f, 1f))
+            .putFloat(KEY_STATUS_LEFT_MARGIN, config.leftMargin.coerceIn(0f, 1f))
+            .putFloat(KEY_STATUS_RIGHT_MARGIN, config.rightMargin.coerceIn(0f, 1f))
+            .putFloat(KEY_BATTERY_PERCENT_SCALE, config.batteryPercentScale.coerceIn(0f, 1f))
+            .putFloat(KEY_EMOJI_SCALE, config.emojiScale.coerceIn(0f, 1f))
+            .putBoolean(KEY_SHOW_PERCENTAGE, config.showPercentage)
+            .putBoolean(KEY_ANIMATE_CHARGE, config.animateCharge)
+            .putBoolean(KEY_SHOW_STROKE, config.showStroke)
             .apply()
     }
 
@@ -179,9 +235,18 @@ object OverlayConfigStore {
 
     fun read(context: Context): OverlaySnapshot {
         val prefs = prefs(context)
+        val animationEnabled = prefs.getBoolean(KEY_ANIMATION_ENABLED, false)
+        val animationSizePercent = prefs.getInt(KEY_ANIMATION_SIZE_PERCENT, 50).coerceIn(0, 100)
+        val animationTemplate = AnimationTemplateCatalog.resolve(prefs.getInt(KEY_ANIMATION_TEMPLATE_ID, 0))
         return OverlaySnapshot(
             statusBarEnabled = prefs.getBoolean(KEY_STATUS_ENABLED, false),
             batteryText = prefs.getString(KEY_BATTERY_TEXT, "").orEmpty(),
+            batteryBody = prefs.getString(KEY_BATTERY_BODY, "▰▰▰▱").orEmpty().ifBlank { "▰▰▰▱" },
+            emojiGlyph = prefs.getString(KEY_EMOJI_GLYPH, "●").orEmpty().ifBlank { "●" },
+            batteryArtUrl = prefs.getString(KEY_BATTERY_ART_URL, null)?.takeIf { it.isNotBlank() },
+            batteryArtDrawableRes = prefs.getInt(KEY_BATTERY_ART_DRAWABLE, 0).takeIf { it != 0 },
+            emojiArtUrl = prefs.getString(KEY_EMOJI_ART_URL, null)?.takeIf { it.isNotBlank() },
+            emojiArtDrawableRes = prefs.getInt(KEY_EMOJI_ART_DRAWABLE, 0).takeIf { it != 0 },
             accentColor = prefs.getLong(KEY_ACCENT, SampleCatalog.defaultConfig.accentColor),
             backgroundColor = prefs.getLong(KEY_BACKGROUND, SampleCatalog.defaultConfig.backgroundColor),
             backgroundTemplatePhotoUrl = prefs.getString(KEY_BACKGROUND_TEMPLATE_PHOTO, null)?.takeIf { it.isNotBlank() },
@@ -200,6 +265,18 @@ object OverlayConfigStore {
             realTimeTitle = prefs.getString(KEY_REALTIME_TITLE, "Real Time").orEmpty(),
             // Match original "dynamic notch" preview behavior by default.
             notchTemplateId = prefs.getInt(KEY_NOTCH_TEMPLATE_ID, 8),
+            statusBarHeight = prefs.getFloat(KEY_STATUS_BAR_HEIGHT, SampleCatalog.defaultConfig.statusBarHeight).coerceIn(0f, 1f),
+            leftMargin = prefs.getFloat(KEY_STATUS_LEFT_MARGIN, SampleCatalog.defaultConfig.leftMargin).coerceIn(0f, 1f),
+            rightMargin = prefs.getFloat(KEY_STATUS_RIGHT_MARGIN, SampleCatalog.defaultConfig.rightMargin).coerceIn(0f, 1f),
+            batteryPercentScale = prefs.getFloat(KEY_BATTERY_PERCENT_SCALE, SampleCatalog.defaultConfig.batteryPercentScale).coerceIn(0f, 1f),
+            emojiScale = prefs.getFloat(KEY_EMOJI_SCALE, SampleCatalog.defaultConfig.emojiScale).coerceIn(0f, 1f),
+            showPercentage = prefs.getBoolean(KEY_SHOW_PERCENTAGE, SampleCatalog.defaultConfig.showPercentage),
+            animateCharge = prefs.getBoolean(KEY_ANIMATE_CHARGE, SampleCatalog.defaultConfig.animateCharge),
+            showStroke = prefs.getBoolean(KEY_SHOW_STROKE, SampleCatalog.defaultConfig.showStroke),
+            animationEnabled = animationEnabled,
+            animationSizePercent = animationSizePercent,
+            animationAssetPath = animationTemplate.assetPath,
+            animationIsLottie = animationTemplate.isLottie,
         )
     }
 

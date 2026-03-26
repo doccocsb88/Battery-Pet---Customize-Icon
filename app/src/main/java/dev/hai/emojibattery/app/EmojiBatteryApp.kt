@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -259,14 +260,19 @@ fun EmojiBatteryApp(
                         navController.navigate(AppRoute.AnimationList.create(selectedId))
                     },
                     onApply = { enabled, sizePercent, templateId ->
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        val accessibilityEnabled = AccessibilityBridge.isEnabled(context)
+                        Log.d(
+                            "AnimationApply",
+                            "apply clicked enabled=$enabled sizePercent=$sizePercent templateId=$templateId accessibility=$accessibilityEnabled",
+                        )
+                        viewModel.syncAccessibilityGranted(accessibilityEnabled)
                         OverlayConfigStore.saveAnimationPrefs(
                             context = context,
                             enabled = enabled,
                             sizePercent = sizePercent,
                             templateId = templateId,
                         )
-                        if (AccessibilityBridge.isEnabled(context)) {
+                        if (accessibilityEnabled) {
                             OverlayAccessibilityService.requestRefresh(context)
                             viewModel.postInfoMessage(rawContext.getString(R.string.animation_apply_success))
                         } else {

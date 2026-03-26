@@ -527,10 +527,27 @@ private fun StatusBarLivePreviewCard(
     val config = uiState.editingConfig
     val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
     val emojiVolio = statusBarEmojiItem(uiState, config.emojiPresetId)
-    val batteryText = batteryVolio?.title?.take(10)
-        ?: SampleCatalog.batteryPresets.firstOrNull { it.id == config.batteryPresetId }?.body
-        ?: "▰"
-    val emojiGlyph = SampleCatalog.emojiPresets.firstOrNull { it.id == config.emojiPresetId }?.glyph ?: "✨"
+    val batteryBody = SampleCatalog.batteryPresets.firstOrNull { it.id == config.batteryPresetId }?.body
+        ?: if (batteryVolio != null) "▰▰▰▱" else "▰▰▰▱"
+    val emojiGlyph = SampleCatalog.emojiPresets.firstOrNull { it.id == config.emojiPresetId }?.glyph
+        ?: if (emojiVolio != null) "●" else "●"
+    val batteryText = batteryBody
+    val demoPercent = 56
+    val percentageText = if (config.showPercentage) " $demoPercent%" else ""
+    val chargeSuffix = if (config.animateCharge) " ⚡" else ""
+    val rightText = "$batteryText$percentageText$chargeSuffix".trim()
+    val batteryArtUrl = batteryVolio?.batteryArtUrl?.takeIf { it.isNotBlank() }
+        ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
+    val batteryArtDrawableRes = batteryVolio?.previewRes?.takeIf { it != 0 }
+    val emojiArtUrl = emojiVolio?.emojiArtUrl?.takeIf { it.isNotBlank() }
+        ?: emojiVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
+    val emojiArtDrawableRes = emojiVolio?.previewRes?.takeIf { it != 0 }
+    val horizontalStart = (8f + config.leftMargin.coerceIn(0f, 1f) * 88f).dp
+    val horizontalEnd = (8f + config.rightMargin.coerceIn(0f, 1f) * 88f).dp
+    val verticalPad = (6f + config.statusBarHeight.coerceIn(0f, 1f) * 10f).dp
+    val statusScale = 0.8f + (config.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
+    val rowBgColor = Color(config.backgroundColor).copy(alpha = if (config.backgroundTemplateDrawableRes != null || !config.backgroundTemplatePhotoUrl.isNullOrBlank()) 0.66f else 1f)
+    val batteryFontSize = (11f + (config.batteryPercentScale.coerceIn(0f, 1f) * 11f)).sp
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
@@ -576,74 +593,111 @@ private fun StatusBarLivePreviewCard(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                    .padding(start = horizontalStart, end = horizontalEnd, top = verticalPad, bottom = verticalPad)
+                    .graphicsLayer(scaleY = statusScale),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                Surface(
+                    color = rowBgColor,
+                    shape = RoundedCornerShape(14.dp),
+                    border = if (config.showStroke) BorderStroke(1.dp, Color.White.copy(alpha = 0.35f)) else null,
+                    modifier = Modifier.fillMaxSize(),
                 ) {
-                    Text(
-                        stringResource(R.string.demo_time),
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
-                    )
-                    val emojiUrl = emojiVolio?.emojiArtUrl?.takeIf { !it.isNullOrBlank() }
-                        ?: emojiVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
-                    if (emojiUrl != null) {
-                        AsyncImage(
-                            model = emojiUrl,
-                            contentDescription = emojiVolio?.title,
-                            modifier = Modifier
-                                .size(22.dp)
-                                .clip(RoundedCornerShape(6.dp)),
-                            contentScale = ContentScale.Crop,
-                        )
-                    } else {
-                        Text(
-                            emojiGlyph,
-                            fontSize = 14.sp,
-                        )
-                    }
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        "▯▯▯",
-                        color = Color.Black.copy(alpha = 0.55f),
-                        fontSize = 12.sp,
-                    )
-                    val batUrl = batteryVolio?.batteryArtUrl?.takeIf { !it.isNullOrBlank() }
-                        ?: batteryVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
-                    if (batUrl != null) {
-                        AsyncImage(
-                            model = batUrl,
-                            contentDescription = batteryVolio?.title,
-                            modifier = Modifier
-                                .size(26.dp)
-                                .clip(RoundedCornerShape(6.dp)),
-                            contentScale = ContentScale.Crop,
-                        )
-                    }
-                    Text(
-                        text = buildString {
-                            if (batUrl == null) append(batteryText)
-                            if (config.showPercentage) {
-                                if (batUrl == null) append(" ")
-                                append((config.batteryPercentScale * 100).toInt())
-                                append("%")
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 10.dp, end = 10.dp, top = 4.dp, bottom = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(1.dp),
+                        ) {
+                            Text(
+                                stringResource(R.string.demo_time),
+                                color = Color.Black,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
+                            )
+                            Text(
+                                stringResource(R.string.demo_date),
+                                color = Color(0xFF555555),
+                                fontSize = 10.sp,
+                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                "WIFI",
+                                color = Color(0xFF333333),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
+                            )
+                            Text(
+                                "▰▰▰▱",
+                                color = Color(0xFF333333),
+                                fontSize = 11.sp,
+                                fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
+                            )
+                            if (emojiArtUrl != null) {
+                                AsyncImage(
+                                    model = emojiArtUrl,
+                                    contentDescription = emojiVolio?.title,
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    contentScale = ContentScale.Crop,
+                                )
+                            } else if (emojiArtDrawableRes != null) {
+                                Image(
+                                    painter = painterResource(emojiArtDrawableRes),
+                                    contentDescription = emojiVolio?.title,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                )
+                            } else {
+                                Text(
+                                    emojiGlyph,
+                                    color = Color(0xFF333333),
+                                    fontSize = 13.sp,
+                                )
                             }
-                        },
-                        color = Color(config.accentColor),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
-                    )
+                            if (batteryArtUrl != null) {
+                                AsyncImage(
+                                    model = batteryArtUrl,
+                                    contentDescription = batteryVolio?.title,
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    contentScale = ContentScale.Crop,
+                                )
+                            } else if (batteryArtDrawableRes != null) {
+                                Image(
+                                    painter = painterResource(batteryArtDrawableRes),
+                                    contentDescription = batteryVolio?.title,
+                                    modifier = Modifier.size(18.dp),
+                                    contentScale = ContentScale.Fit,
+                                )
+                            }
+                            Text(
+                                if (batteryArtUrl != null || batteryArtDrawableRes != null) {
+                                    "${percentageText.trim()}$chargeSuffix".trim()
+                                } else {
+                                    rightText
+                                },
+                                color = Color(config.accentColor),
+                                fontSize = batteryFontSize,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+                            )
+                        }
+                    }
                 }
             }
         }

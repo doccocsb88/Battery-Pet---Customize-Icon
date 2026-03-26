@@ -3,9 +3,11 @@ package dev.hai.emojibattery.service
 import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -17,6 +19,8 @@ import android.widget.LinearLayout
 import android.widget.TextClock
 import android.widget.TextView
 import coil.load
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieDrawable
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 import dev.hai.emojibattery.model.GestureTrigger
@@ -26,6 +30,10 @@ class StatusBarOverlayManager(
     private val context: Context,
     private val onGestureTrigger: (GestureTrigger) -> Unit = {},
 ) {
+    companion object {
+        private const val TAG = "AnimationOverlay"
+    }
+
     data class LiveStatus(
         val batteryPercent: Int = 0,
         val charging: Boolean = false,
@@ -46,11 +54,16 @@ class StatusBarOverlayManager(
     private val dateView = TextClock(context)
     private val wifiView = TextView(context)
     private val signalView = TextView(context)
+    private val emojiArtView = ImageView(context)
+    private val emojiTextView = TextView(context)
     private val batteryView = TextView(context)
+    private val batteryArtView = ImageView(context)
     private val stickerEmojiView = TextView(context)
     private val stickerImageView = ImageView(context)
     private val trollView = TextView(context)
     private val realtimeView = TextView(context)
+    private val animationImageView = ImageView(context)
+    private val animationLottieView = LottieAnimationView(context)
     private val gestureLayer = FrameLayout(context)
     private val notchContainer = FrameLayout(context)
     private val notchView = ImageView(context)
@@ -58,6 +71,8 @@ class StatusBarOverlayManager(
     private var attached = false
     private var gestureEnabled = false
     private var layoutParams: WindowManager.LayoutParams? = null
+    private var currentAnimationKey: String? = null
+    private var currentAnimationIsLottie: Boolean? = null
 
     private val tapDelayMs = 200L
     private val singleTapHandler = Handler(Looper.getMainLooper())
@@ -102,10 +117,26 @@ class StatusBarOverlayManager(
         signalView.textSize = 11f
         wifiView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         signalView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
+        emojiTextView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         signalView.setPadding(12, 0, 0, 0)
+        emojiArtView.setPadding(12, 0, 0, 0)
+        emojiTextView.setPadding(12, 0, 0, 0)
         batteryView.setPadding(12, 0, 0, 0)
+        batteryArtView.setPadding(12, 0, 0, 0)
+        emojiArtView.scaleType = ImageView.ScaleType.FIT_CENTER
+        emojiArtView.adjustViewBounds = true
+        batteryArtView.scaleType = ImageView.ScaleType.FIT_CENTER
+        batteryArtView.adjustViewBounds = true
+        emojiTextView.textSize = 13f
+        val emojiArtSize = (16 * context.resources.displayMetrics.density).toInt().coerceAtLeast(12)
+        emojiArtView.layoutParams = LinearLayout.LayoutParams(emojiArtSize, emojiArtSize)
+        val artSize = (18 * context.resources.displayMetrics.density).toInt().coerceAtLeast(14)
+        batteryArtView.layoutParams = LinearLayout.LayoutParams(artSize, artSize)
         rightCluster.addView(wifiView)
         rightCluster.addView(signalView)
+        rightCluster.addView(emojiArtView)
+        rightCluster.addView(emojiTextView)
+        rightCluster.addView(batteryArtView)
         rightCluster.addView(batteryView)
         statusRow.addView(rightCluster)
 
@@ -145,6 +176,32 @@ class StatusBarOverlayManager(
             topMargin = 64
             marginStart = 24
         })
+        animationImageView.scaleType = ImageView.ScaleType.FIT_CENTER
+        animationImageView.adjustViewBounds = true
+        animationLottieView.scaleType = ImageView.ScaleType.FIT_CENTER
+        animationLottieView.repeatCount = LottieDrawable.INFINITE
+        root.addView(
+            animationImageView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+            ).apply {
+                topMargin = (2 * context.resources.displayMetrics.density).roundToInt()
+            },
+        )
+        root.addView(
+            animationLottieView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+            ).apply {
+                topMargin = (2 * context.resources.displayMetrics.density).roundToInt()
+            },
+        )
+        animationImageView.visibility = View.GONE
+        animationLottieView.visibility = View.GONE
 
         listOf(stickerEmojiView, trollView, realtimeView).forEach { view ->
             view.textSize = 18f
@@ -176,7 +233,7 @@ class StatusBarOverlayManager(
 
     fun render(snapshot: OverlaySnapshot, liveStatus: LiveStatus) {
         ensureAttached()
-        if (!snapshot.statusBarEnabled && !snapshot.stickerEnabled && !snapshot.trollEnabled && !snapshot.realTimeEnabled) {
+        if (!snapshot.statusBarEnabled && !snapshot.stickerEnabled && !snapshot.trollEnabled && !snapshot.realTimeEnabled && !snapshot.animationEnabled) {
             root.alpha = 0f
             return
         }
@@ -190,24 +247,79 @@ class StatusBarOverlayManager(
                 statusBackgroundImageView.load(templateUrl) {
                     crossfade(true)
                 }
-                statusRow.setBackgroundColor(
-                    ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                applyStatusRowBackground(
+                    baseColor = ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                    showStroke = snapshot.showStroke,
                 )
             }
             templateDrawableRes != null -> {
                 statusBackgroundImageView.visibility = View.VISIBLE
                 statusBackgroundImageView.setImageResource(templateDrawableRes)
-                statusRow.setBackgroundColor(
-                    ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                applyStatusRowBackground(
+                    baseColor = ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                    showStroke = snapshot.showStroke,
                 )
             }
             else -> {
                 statusBackgroundImageView.visibility = View.GONE
-                statusRow.setBackgroundColor(snapshot.backgroundColor.toInt())
+                applyStatusRowBackground(
+                    baseColor = snapshot.backgroundColor.toInt(),
+                    showStroke = snapshot.showStroke,
+                )
             }
         }
-        batteryView.text = "${snapshot.batteryText} ${liveStatus.batteryPercent}%${if (liveStatus.charging) " +" else ""}"
+        val percentageText = if (snapshot.showPercentage) " ${liveStatus.batteryPercent}%" else ""
+        val chargeSuffix = if (liveStatus.charging && snapshot.animateCharge) " ⚡" else ""
+        val batteryLabel = snapshot.batteryBody.takeIf { it.isNotBlank() }
+            ?: snapshot.batteryText.takeIf { it.isNotBlank() }
+            ?: "▰▰▰▱"
+        val emojiLabel = snapshot.emojiGlyph.takeIf { it.isNotBlank() } ?: "●"
+        val batteryUrl = snapshot.batteryArtUrl?.takeIf { it.isNotBlank() }
+        val batteryDrawable = snapshot.batteryArtDrawableRes?.takeIf { it != 0 }
+        val emojiUrl = snapshot.emojiArtUrl?.takeIf { it.isNotBlank() }
+        val emojiDrawable = snapshot.emojiArtDrawableRes?.takeIf { it != 0 }
+        when {
+            emojiUrl != null -> {
+                emojiArtView.visibility = View.VISIBLE
+                emojiTextView.visibility = View.GONE
+                emojiArtView.load(emojiUrl) {
+                    crossfade(true)
+                }
+            }
+            emojiDrawable != null -> {
+                emojiArtView.visibility = View.VISIBLE
+                emojiTextView.visibility = View.GONE
+                emojiArtView.setImageResource(emojiDrawable)
+            }
+            else -> {
+                emojiArtView.visibility = View.GONE
+                emojiTextView.visibility = View.VISIBLE
+                emojiTextView.text = emojiLabel
+            }
+        }
+        if (batteryUrl != null) {
+            batteryArtView.visibility = View.VISIBLE
+            batteryArtView.load(batteryUrl) {
+                crossfade(true)
+            }
+            batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
+        } else if (batteryDrawable != null) {
+            batteryArtView.visibility = View.VISIBLE
+            batteryArtView.setImageResource(batteryDrawable)
+            batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
+        } else {
+            batteryArtView.visibility = View.GONE
+            batteryView.text = "$batteryLabel$percentageText$chargeSuffix".trim()
+        }
         batteryView.setTextColor(snapshot.accentColor.toInt())
+        batteryView.textSize = (11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f))
+        val statusScale = 0.8f + (snapshot.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
+        statusRow.scaleY = statusScale
+        val density = context.resources.displayMetrics.density
+        val leftPadding = ((8f + snapshot.leftMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
+        val rightPadding = ((8f + snapshot.rightMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
+        val topBottomPadding = ((6f + snapshot.statusBarHeight.coerceIn(0f, 1f) * 10f) * density).roundToInt()
+        statusRow.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding)
         clockView.setTextColor("#111111".toColorInt())
         dateView.setTextColor("#555555".toColorInt())
         wifiView.text = when {
@@ -254,8 +366,79 @@ class StatusBarOverlayManager(
         realtimeView.visibility = if (snapshot.realTimeEnabled) View.VISIBLE else View.GONE
         realtimeView.setBackgroundColor("#E7F0FF".toColorInt())
 
+        renderAnimation(snapshot)
+
         statusRow.visibility = if (snapshot.statusBarEnabled) View.VISIBLE else View.GONE
         applyNotch(snapshot.notchTemplateId, snapshot.statusBarEnabled)
+    }
+
+    private fun applyStatusRowBackground(baseColor: Int, showStroke: Boolean) {
+        val density = context.resources.displayMetrics.density
+        val drawable = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = 14f * density
+            setColor(baseColor)
+            if (showStroke) {
+                setStroke((1f * density).roundToInt().coerceAtLeast(1), ColorUtils.setAlphaComponent(0xFFFFFFFF.toInt(), 0x55))
+            }
+        }
+        statusRow.background = drawable
+    }
+
+    private fun renderAnimation(snapshot: OverlaySnapshot) {
+        if (!snapshot.animationEnabled || snapshot.animationAssetPath.isNullOrBlank()) {
+            if (animationImageView.visibility != View.GONE || animationLottieView.visibility != View.GONE) {
+                Log.d(TAG, "Animation hidden (disabled or missing asset)")
+            }
+            animationImageView.visibility = View.GONE
+            animationLottieView.cancelAnimation()
+            animationLottieView.visibility = View.GONE
+            currentAnimationKey = null
+            currentAnimationIsLottie = null
+            return
+        }
+        val density = context.resources.displayMetrics.density
+        val sizeDp = 14 + (snapshot.animationSizePercent * 26 / 100)
+        val sizePx = (sizeDp * density).roundToInt().coerceAtLeast((12 * density).roundToInt())
+        (animationImageView.layoutParams as FrameLayout.LayoutParams).also { params ->
+            params.width = sizePx
+            params.height = sizePx
+            animationImageView.layoutParams = params
+        }
+        (animationLottieView.layoutParams as FrameLayout.LayoutParams).also { params ->
+            params.width = sizePx
+            params.height = sizePx
+            animationLottieView.layoutParams = params
+        }
+
+        val keyChanged = currentAnimationKey != snapshot.animationAssetPath || currentAnimationIsLottie != snapshot.animationIsLottie
+        if (snapshot.animationIsLottie) {
+            animationImageView.visibility = View.GONE
+            animationLottieView.visibility = View.VISIBLE
+            if (keyChanged) {
+                animationLottieView.setAnimation(snapshot.animationAssetPath)
+                animationLottieView.playAnimation()
+                currentAnimationKey = snapshot.animationAssetPath
+                currentAnimationIsLottie = true
+                Log.d(TAG, "Applied Lottie animation asset=${snapshot.animationAssetPath} size=${snapshot.animationSizePercent}%")
+            } else if (!animationLottieView.isAnimating) {
+                animationLottieView.playAnimation()
+            }
+            return
+        }
+
+        animationLottieView.cancelAnimation()
+        animationLottieView.visibility = View.GONE
+        animationImageView.visibility = View.VISIBLE
+        if (keyChanged) {
+            val assetUrl = "file:///android_asset/${snapshot.animationAssetPath}"
+            animationImageView.load(assetUrl) {
+                crossfade(false)
+            }
+            currentAnimationKey = snapshot.animationAssetPath
+            currentAnimationIsLottie = false
+            Log.d(TAG, "Applied GIF animation asset=${snapshot.animationAssetPath} size=${snapshot.animationSizePercent}%")
+        }
     }
 
     private fun updateStickerPosition(offsetX: Float, offsetY: Float) {
