@@ -161,6 +161,27 @@ import kotlinx.coroutines.delay
 private const val STICKER_CATALOG_COLUMNS = 4
 private const val STICKER_CATALOG_ROWS = 4
 private const val STICKERS_PER_CATALOG_PAGE = STICKER_CATALOG_COLUMNS * STICKER_CATALOG_ROWS
+private val StickerUiPrimary = Color(0xFF8FB6D4)
+private val StickerUiSecondary = Color(0xFF76916B)
+private val StickerUiTertiary = Color(0xFFD9B99B)
+private val StickerUiText = Color(0xFF3C3C3C)
+
+private fun maxStickerSlotsForUi(state: AppUiState): Int = when {
+    state.premiumUnlocked -> SampleCatalog.PREMIUM_STICKER_SLOTS
+    state.unlockedFeatureKeys.contains(SampleCatalog.FEATURE_EXTRA_STICKER_SLOT) -> SampleCatalog.REWARD_EXTRA_STICKER_SLOTS
+    else -> SampleCatalog.FREE_STICKER_SLOTS
+}
+
+private fun hasStickerFeatureAccess(state: AppUiState, featureKey: String): Boolean {
+    return state.premiumUnlocked || state.unlockedFeatureKeys.contains(featureKey)
+}
+
+private fun shouldShowStickerPaywallBadge(state: AppUiState, sticker: StickerPreset): Boolean {
+    val premiumLocked = sticker.premium && !hasStickerFeatureAccess(state, "sticker:${sticker.id}")
+    val alreadyAdded = state.stickerPlacements.any { it.stickerId == sticker.id }
+    val slotsLocked = !alreadyAdded && state.stickerPlacements.size >= maxStickerSlotsForUi(state)
+    return premiumLocked || slotsLocked
+}
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -225,11 +246,6 @@ internal fun EmojiStickerScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = "🍼",
-                    style = MaterialTheme.typography.headlineMedium,
                 )
             }
         },
@@ -536,10 +552,12 @@ private fun StickerCatalogGridPage(
             ) {
                 rowStickers.forEach { sticker ->
                     Box(modifier = Modifier.weight(1f)) {
+                        val showPaywallBadge = shouldShowStickerPaywallBadge(uiState, sticker)
                         StickerCatalogCard(
                             sticker = sticker,
                             selected = uiState.selectedStickerId == sticker.id,
                             added = uiState.stickerPlacements.any { it.stickerId == sticker.id },
+                            showPaywallBadge = showPaywallBadge,
                             onClick = { onAddSticker(sticker.id) },
                         )
                     }
@@ -649,12 +667,7 @@ internal fun StickerPreviewCard(
             }
             if (selectedSticker != null && selectedPlacement != null) {
                 Text(
-                    stringResource(
-                        R.string.sticker_stats_line,
-                        selectedSticker.name,
-                        (selectedPlacement.size * 100).toInt(),
-                        selectedPlacement.rotation.toInt(),
-                    ),
+                    "size ${(selectedPlacement.size * 100).toInt()}% · rotate ${selectedPlacement.rotation.toInt()}°",
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -687,7 +700,7 @@ private fun StickerAdjustmentOverlay(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.28f))
+                .background(StickerUiText.copy(alpha = 0.28f))
                 .clickable(onClick = onDismiss),
         )
         StickerAdjustmentPanel(
@@ -735,28 +748,29 @@ private fun StickerAdjustmentPanel(
                 Text(
                     stringResource(R.string.sticker_adjustment_title),
                     style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = StickerUiText,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
                 )
                 Surface(
                     onClick = onDismiss,
                     shape = CircleShape,
-                    color = Color(0xFF8E6178),
+                    color = StickerUiPrimary,
+                    modifier = Modifier.size(40.dp),
                 ) {
-                    Text(
-                        stringResource(R.string.multiply_sign),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium,
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            stringResource(R.string.multiply_sign),
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
                 }
             }
-            Text(
-                "${sticker.glyph} ${sticker.name}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -766,16 +780,17 @@ private fun StickerAdjustmentPanel(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_bullet2),
-                            contentDescription = null,
-                            modifier = Modifier.size(width = 4.dp, height = 12.dp),
+                        Box(
+                            modifier = Modifier
+                                .size(width = 4.dp, height = 12.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(StickerUiPrimary),
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
                             stringResource(R.string.sticker_size_slider),
                             style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = StickerUiText,
                         )
                     }
                     Slider(
@@ -783,22 +798,23 @@ private fun StickerAdjustmentPanel(
                         valueRange = 0.2f..1f,
                         onValueChange = onUpdateSize,
                         colors = SliderDefaults.colors(
-                            thumbColor = Color(0xFFD960F8),
-                            activeTrackColor = Color(0xFFD960F8),
-                            inactiveTrackColor = Color(0xFFF6DFF5),
+                            thumbColor = StickerUiSecondary,
+                            activeTrackColor = StickerUiSecondary,
+                            inactiveTrackColor = StickerUiPrimary.copy(alpha = 0.28f),
                         ),
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_bullet2),
-                            contentDescription = null,
-                            modifier = Modifier.size(width = 4.dp, height = 12.dp),
+                        Box(
+                            modifier = Modifier
+                                .size(width = 4.dp, height = 12.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(StickerUiPrimary),
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
                             stringResource(R.string.sticker_rotate_slider),
                             style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = StickerUiText,
                         )
                     }
                     Slider(
@@ -806,9 +822,9 @@ private fun StickerAdjustmentPanel(
                         valueRange = -180f..180f,
                         onValueChange = onUpdateRotation,
                         colors = SliderDefaults.colors(
-                            thumbColor = Color(0xFFD960F8),
-                            activeTrackColor = Color(0xFFD960F8),
-                            inactiveTrackColor = Color(0xFFF6DFF5),
+                            thumbColor = StickerUiSecondary,
+                            activeTrackColor = StickerUiSecondary,
+                            inactiveTrackColor = StickerUiPrimary.copy(alpha = 0.28f),
                         ),
                     )
                 }
@@ -820,47 +836,51 @@ private fun StickerAdjustmentPanel(
                     Surface(
                         onClick = { onNudgePosition(0f, -0.06f) },
                         shape = CircleShape,
-                        color = Color(0xFFF7F5F7),
+                        color = StickerUiPrimary.copy(alpha = 0.18f),
                     ) {
                         Icon(
                             Icons.Rounded.KeyboardArrowUp,
                             contentDescription = null,
                             modifier = Modifier.padding(8.dp),
+                            tint = StickerUiText,
                         )
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Surface(
                             onClick = { onNudgePosition(-0.06f, 0f) },
                             shape = CircleShape,
-                            color = Color(0xFFF7F5F7),
+                            color = StickerUiPrimary.copy(alpha = 0.18f),
                         ) {
                             Icon(
                                 Icons.Rounded.KeyboardArrowLeft,
                                 contentDescription = null,
                                 modifier = Modifier.padding(8.dp),
+                                tint = StickerUiText,
                             )
                         }
                         Surface(
                             onClick = { onNudgePosition(0.06f, 0f) },
                             shape = CircleShape,
-                            color = Color(0xFFF7F5F7),
+                            color = StickerUiPrimary.copy(alpha = 0.18f),
                         ) {
                             Icon(
                                 Icons.Rounded.KeyboardArrowRight,
                                 contentDescription = null,
                                 modifier = Modifier.padding(8.dp),
+                                tint = StickerUiText,
                             )
                         }
                     }
                     Surface(
                         onClick = { onNudgePosition(0f, 0.06f) },
                         shape = CircleShape,
-                        color = Color(0xFFF7F5F7),
+                        color = StickerUiPrimary.copy(alpha = 0.18f),
                     ) {
                         Icon(
                             Icons.Rounded.KeyboardArrowDown,
                             contentDescription = null,
                             modifier = Modifier.padding(8.dp),
+                            tint = StickerUiText,
                         )
                     }
                 }
@@ -874,6 +894,7 @@ internal fun StickerCatalogCard(
     sticker: StickerPreset,
     selected: Boolean,
     added: Boolean,
+    showPaywallBadge: Boolean,
     onClick: () -> Unit,
 ) {
     Card(
@@ -903,33 +924,16 @@ internal fun StickerCatalogCard(
                         .background(Color.Black.copy(alpha = 0.08f)),
                 )
             }
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (sticker.premium) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_diamond),
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
-                    )
-                }
-                if (sticker.animated) {
-                    Surface(
-                        shape = RoundedCornerShape(4.dp),
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
-                    ) {
-                        Text(
-                            stringResource(R.string.label_gif),
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                }
+            if (showPaywallBadge) {
+                Image(
+                    painter = painterResource(R.drawable.ic_sticker_premium_badge),
+                    contentDescription = stringResource(R.string.cd_premium),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(6.dp)
+                        .size(22.dp),
+                    contentScale = ContentScale.Fit,
+                )
             }
         }
     }
@@ -950,7 +954,15 @@ internal fun AddedStickerChip(
             modifier = Modifier
                 .size(56.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(if (selected) Color(0xFFF8DFF8) else MaterialTheme.colorScheme.surfaceVariant)
+                .background(
+                    if (selected) StickerUiPrimary.copy(alpha = 0.22f)
+                    else StickerUiTertiary.copy(alpha = 0.26f),
+                )
+                .border(
+                    width = 1.dp,
+                    color = if (selected) StickerUiPrimary else StickerUiSecondary.copy(alpha = 0.35f),
+                    shape = RoundedCornerShape(12.dp),
+                )
                 .clickable(onClick = onSelect),
             contentAlignment = Alignment.Center,
         ) {
@@ -967,26 +979,34 @@ internal fun AddedStickerChip(
             Surface(
                 onClick = onRemove,
                 shape = CircleShape,
-                color = Color.Black.copy(alpha = 0.8f),
-                modifier = Modifier.align(Alignment.TopEnd),
+                color = StickerUiText,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 4.dp, y = (-4).dp)
+                    .zIndex(1f),
             ) {
-                Text(
-                    "−",
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 0.dp),
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodySmall,
-                )
+                Box(
+                    modifier = Modifier.size(18.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        "×",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
         }
         Surface(
             onClick = onSelect,
             shape = RoundedCornerShape(16.dp),
-            color = Color(0xFFF7DFF8),
+            color = StickerUiPrimary.copy(alpha = 0.2f),
         ) {
             Text(
                 stringResource(R.string.sticker_position_chip),
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                color = Color(0xFF8D5578),
+                color = StickerUiText,
                 style = MaterialTheme.typography.labelMedium,
             )
         }

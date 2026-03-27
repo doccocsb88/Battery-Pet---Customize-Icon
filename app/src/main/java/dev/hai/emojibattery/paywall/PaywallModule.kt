@@ -64,26 +64,31 @@ import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.billing.BillingUiState
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.model.PaywallState
-import dev.hai.emojibattery.ui.theme.StrawberryMilk
 
 // ─── Alpine Design Tokens ────────────────────────────────────────
 private object Alpine {
+    // Requested palette
+    private val Blue = Color(0xFF8FB6D4)
+    private val Green = Color(0xFF76916B)
+    private val Sand = Color(0xFFD9B99B)
+    private val Ink = Color(0xFF3C3C3C)
+
     // Surface hierarchy (stacked paper metaphor)
-    val Surface = Color(0xFFFFFBFE)
-    val SurfaceLow = Color(0xFFFFF5F8)
+    val Surface = Color.White
+    val SurfaceLow = Sand.copy(alpha = 0.16f)
     val SurfaceLowest = Color.White
-    val SurfaceHigh = Color(0xFFFFE8EF)
+    val SurfaceHigh = Blue.copy(alpha = 0.18f)
 
     // Tonal atmosphere
-    val Primary = Color(0xFFEC4899)
-    val PrimaryDeep = Color(0xFFBE185D)
-    val Secondary = Color(0xFFD47DFE)
-    val OnSurface = Color(0xFF3D2B33)
-    val OnSurfaceVariant = Color(0xFF8B7580)
+    val Primary = Blue
+    val PrimaryDeep = Green
+    val Secondary = Sand
+    val OnSurface = Ink
+    val OnSurfaceVariant = Ink.copy(alpha = 0.72f)
     val OnPrimary = Color.White
 
     // Decorative
-    val Accent = Color(0xFFF9A8D4)
+    val Accent = Sand
     val GlassWhite = Color(0x33FFFFFF)
 
     // Radii (no 90° corners)
@@ -99,9 +104,9 @@ private object Alpine {
         )
     val CtaGradient: Brush
         get() = Brush.horizontalGradient(
-            listOf(Primary, Secondary),
+            listOf(Primary, PrimaryDeep),
         )
-    val AmbientShadowColor = Color(0x0F3D2B33)
+    val AmbientShadowColor = Ink.copy(alpha = 0.09f)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -324,12 +329,12 @@ fun PaywallScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 12.dp),
                     shape = Alpine.RoundLG,
-                    color = MaterialTheme.colorScheme.errorContainer,
+                    color = Alpine.Secondary.copy(alpha = 0.35f),
                 ) {
                     Text(
                         text = message,
                         modifier = Modifier.padding(16.dp),
-                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        color = Alpine.OnSurface,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -426,7 +431,7 @@ fun PaywallScreen(
                 .padding(top = 12.dp, start = 12.dp)
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Color.Black.copy(alpha = 0.25f))
+                .background(Alpine.OnSurface.copy(alpha = 0.28f))
                 .clickable(onClick = onClose),
             contentAlignment = Alignment.Center,
         ) {
@@ -545,7 +550,7 @@ private fun AlpinePlanCard(
                     .align(Alignment.TopCenter)
                     .offset(y = (-10).dp),
                 shape = Alpine.RoundFull,
-                color = StrawberryMilk.PopularBadge,
+                color = Alpine.PrimaryDeep,
             ) {
                 Text(
                     text = badge,

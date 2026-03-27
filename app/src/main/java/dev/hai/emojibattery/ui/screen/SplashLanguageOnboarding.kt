@@ -170,7 +170,13 @@ internal fun SplashRoute(
     fastForward: Boolean,
     onFinish: () -> Unit,
 ) {
-    // Original SplashActivity: ~700ms logo overshoot + ValueAnimator on progress; total ~1.2s before ads/navigation.
+    // Keep splash visible for at least 2s before navigating.
+    val splashMinDurationMs = 12_000L
+    val splashColorPrimary = Color(0xFF8FB6D4)
+    val splashColorSecondary = Color(0xFF76916B)
+    val splashColorTertiary = Color(0xFFD9B99B)
+    val splashColorText = Color(0xFF3C3C3C)
+
     var launchLogo by remember { mutableStateOf(false) }
     var progressTarget by remember { mutableStateOf(0f) }
     LaunchedEffect(fastForward) {
@@ -182,7 +188,7 @@ internal fun SplashRoute(
         }
         launchLogo = true
         progressTarget = 1f
-        delay(1200)
+        delay(splashMinDurationMs)
         onFinish()
     }
     val logoScale by animateFloatAsState(
@@ -211,9 +217,9 @@ internal fun SplashRoute(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        colorResource(R.color.splash_gradient_top),
-                        colorResource(R.color.splash_gradient_mid),
-                        colorResource(R.color.splash_gradient_bottom),
+                        splashColorPrimary,
+                        splashColorSecondary,
+                        splashColorTertiary,
                     ),
                 ),
             ),
@@ -227,7 +233,7 @@ internal fun SplashRoute(
         ) {
             Surface(
                 shape = RoundedCornerShape(28.dp),
-                color = colorResource(R.color.splash_logo_plate),
+                color = Color.White.copy(alpha = 0.92f),
                 tonalElevation = 0.dp,
                 shadowElevation = 4.dp,
                 modifier = Modifier
@@ -251,27 +257,27 @@ internal fun SplashRoute(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(R.color.splash_title),
+                color = splashColorText,
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.splash_tagline),
                 style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(R.color.splash_subtitle),
+                color = splashColorText.copy(alpha = 0.82f),
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(24.dp))
             Text(
                 text = stringResource(R.string.loading_dot),
-                color = colorResource(R.color.splash_loading_accent),
+                color = splashColorText,
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(Modifier.height(8.dp))
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier.fillMaxWidth(0.55f),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = colorResource(R.color.splash_progress_track),
+                color = splashColorText,
+                trackColor = Color.White.copy(alpha = 0.55f),
             )
             Spacer(Modifier.height(8.dp))
         }
