@@ -32,6 +32,8 @@ private fun VolioEmojiBatteryItemDto.toBatteryTrollTemplate(): BatteryTrollTempl
     val contentUrl = customFields?.content?.takeIf { it.isNotBlank() }
     val lottieUrl = contentUrl?.takeIf { it.endsWith(".json", ignoreCase = true) }
     val thumb = thumbnail?.takeIf { it.isNotBlank() }
+    val emojiThumb = customFields?.emoji?.takeIf { it.isNotBlank() }
+    val batteryThumb = customFields?.battery?.takeIf { it.isNotBlank() }
     val title = name?.takeIf { it.isNotBlank() } ?: "Battery Troll"
     val animated = lottieUrl != null || thumb?.endsWith(".gif", ignoreCase = true) == true
     val prank = title.replace("\n", " ").trim().let { if (it.length > 16) it.take(16) + "…" else it }
@@ -44,5 +46,7 @@ private fun VolioEmojiBatteryItemDto.toBatteryTrollTemplate(): BatteryTrollTempl
         premium = isPro == true,
         thumbnailUrl = thumb,
         lottieUrl = lottieUrl,
+        emojiThumbnailUrl = emojiThumb ?: thumb,
+        batteryThumbnailUrl = batteryThumb ?: thumb,
     )
 }

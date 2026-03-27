@@ -1,0 +1,265 @@
+{
+  "data": [
+    {
+      "id": "1677d30f-612b-40d0-be98-472c046d868c",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 2,
+      "name": "Battery 6",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758013756_Battery1_emotion1_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758013756_Battery1_emotion1_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014490_1.zip"
+      }
+    },
+    {
+      "id": "21867d24-09e5-4dc0-a3c0-2f3afaad6c78",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 3,
+      "name": "Battery2",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758014532_Battery2_emotion_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014532_Battery2_emotion_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014547_2.zip"
+      }
+    },
+    {
+      "id": "0a60b400-53da-41d2-b5f2-6050e1100dba",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 4,
+      "name": "battery7",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758015095_battery7.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015095_battery7.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015379_7.zip"
+      }
+    },
+    {
+      "id": "acbde012-4c5c-4909-8fc0-7b11b3aed883",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 5,
+      "name": "Battery3",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758014532_Battery3_emotion_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014532_Battery3_emotion_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014559_3.zip"
+      }
+    },
+    {
+      "id": "564d70a8-0e91-4f00-aa4f-04078ee29f01",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 6,
+      "name": "Battery8",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758015100_Battery8.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015100_Battery8.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015391_8.zip"
+      }
+    },
+    {
+      "id": "32a1a52e-5fd6-4ad7-a850-3b895be07006",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 7,
+      "name": "Battery9",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758015095_Battery9.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015095_Battery9.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015402_9.zip"
+      }
+    },
+    {
+      "id": "616b202f-a8b9-4baa-b59c-28f6038a94da",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 8,
+      "name": "Battery10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758015095_Battery10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015095_Battery10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015415_10.zip"
+      }
+    },
+    {
+      "id": "9f05be8d-5a93-4144-8a81-4eb52cb7279a",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 9,
+      "name": "Battery5",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758014532_Battery5_emotion_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014532_Battery5_emotion_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014590_5.zip"
+      }
+    },
+    {
+      "id": "9787f525-4b2d-4bfa-b7cb-5bc8f52320e0",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 10,
+      "name": "Battery4",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758014532_Battery4_emotion_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014532_Battery4_emotion_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014574_4.zip"
+      }
+    },
+    {
+      "id": "b990c8a9-baa1-47b2-9df3-06e0dfce73c0",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 31,
+      "name": "Battery14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758016677_Battery14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016677_Battery14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016697_14.zip"
+      }
+    },
+    {
+      "id": "a5740e75-ec71-45ae-bfca-a96fe380703b",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 31,
+      "name": "Battery 17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758016649_Battery17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016649_Battery17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016711_17.zip"
+      }
+    },
+    {
+      "id": "8c8b975d-20e5-43df-a594-28f940f739ae",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 32,
+      "name": "Battery 18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758016649_Battery18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016649_Battery18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016726_18.zip"
+      }
+    },
+    {
+      "id": "3658c37d-8931-4f23-9bd5-f0098c86004f",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 32,
+      "name": "Battery 16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758016677_Battery16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016677_Battery16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758017325_16.zip"
+      }
+    },
+    {
+      "id": "49afad8b-3a5f-4f08-9c80-59db3809aaae",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 33,
+      "name": "Battery 13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758016649_Battery13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016649_Battery13.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016833_13.zip"
+      }
+    },
+    {
+      "id": "444527db-d774-4e6c-94a4-042d7ea28c50",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 34,
+      "name": "Battery 15",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758016649_Battery15.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016649_Battery15.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758016845_15.zip"
+      }
+    },
+    {
+      "id": "d0571979-4f52-4b9f-92bf-553abca5d013",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 35,
+      "name": "Battery1",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758014537_Battery6_emotion_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014537_Battery6_emotion_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758014607_6.zip"
+      }
+    },
+    {
+      "id": "d1c65971-66ee-459a-a485-03b8c4aa4dfa",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 35,
+      "name": "Battery11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758015095_Battery11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015095_Battery11.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015425_11.zip"
+      }
+    },
+    {
+      "id": "f637e9ca-7543-4e27-b481-3ba8e70a1160",
+      "category_id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "priority": 36,
+      "name": "Battery12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-09-16/1758015095_Battery12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015095_Battery12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "contentZip": "https://cdn-uploader.innovatex.one/data/store/2025-09-16/1758015438_12.zip"
+      }
+    }
+  ],
+  "message": "success",
+  "metadata": {
+    "limit": 500,
+    "offset": 0,
+    "length": 18,
+    "is_last": true,
+    "path": "https://stores.volio.vn/stores/api/v5.0/public/items"
+  },
+  "status": 200
+}

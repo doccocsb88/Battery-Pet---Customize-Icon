@@ -1,0 +1,13 @@
+{
+  "message": "success",
+  "data": [
+    {
+      "id": "782d369e-e9e8-4f3b-a9f9-950f128aee3c",
+      "name": "All",
+      "status": true,
+      "priority": 0,
+      "parent_id": ""
+    }
+  ],
+  "status": 200
+}

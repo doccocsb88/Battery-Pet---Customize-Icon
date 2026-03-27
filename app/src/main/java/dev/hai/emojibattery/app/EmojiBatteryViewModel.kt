@@ -8,12 +8,14 @@ import androidx.lifecycle.viewModelScope
 import dev.hai.emojibattery.data.BundledVolioHomeRepository
 import dev.hai.emojibattery.data.HomeCatalogRepository
 import dev.hai.emojibattery.data.HomeStoreLocalImageResolver
+import dev.hai.emojibattery.data.PadVolioBatteryTrollRepository
 import dev.hai.emojibattery.data.PadVolioHomeRepository
 import dev.hai.emojibattery.data.VolioBatteryTrollRepository
 import dev.hai.emojibattery.data.VolioStickerRepository
 import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import dev.hai.emojibattery.data.volio.VolioConstants
 import dev.hai.emojibattery.model.AppUiState
+import dev.hai.emojibattery.model.BatteryTrollTemplate
 import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.AchievementTask
 import dev.hai.emojibattery.model.BatteryIconConfig
@@ -445,12 +447,26 @@ class EmojiBatteryViewModel(
     }
 
     fun refreshBatteryTrollCatalog() {
-        if (VolioConstants.BATTERY_TROLL_PARENT_ID.isBlank()) return
         viewModelScope.launch {
             _uiState.update { it.copy(batteryTrollCatalogLoading = true) }
-            val list = withContext(Dispatchers.IO) {
-                runCatching { VolioBatteryTrollRepository.fetchTemplates() }.getOrElse { emptyList() }
+            val app = getApplication<Application>()
+            val result: Pair<List<BatteryTrollTemplate>, String> = withContext(Dispatchers.IO) {
+                val fromPad = runCatching { PadVolioBatteryTrollRepository.fetchTemplates(app) }
+                    .getOrElse { emptyList() }
+                    .takeIf { it.isNotEmpty() }
+                if (fromPad != null) {
+                    fromPad to "pad"
+                } else if (VolioConstants.BATTERY_TROLL_PARENT_ID.isNotBlank()) {
+                    runCatching { VolioBatteryTrollRepository.fetchTemplates() }.getOrElse { emptyList() } to "volio_api"
+                } else {
+                    emptyList<BatteryTrollTemplate>() to "sample_fallback"
+                }
             }
+            val (list, source) = result
+            Log.d(
+                TAG,
+                "refreshBatteryTrollCatalog: source=$source count=${list.size} parentIdSet=${VolioConstants.BATTERY_TROLL_PARENT_ID.isNotBlank()}",
+            )
             _uiState.update {
                 it.copy(
                     batteryTrollCatalogRemote = list,

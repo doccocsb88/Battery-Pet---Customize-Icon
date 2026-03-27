@@ -44,18 +44,30 @@ object HomeStoreLocalImageResolver {
         }
     }
 
+    private fun sanitizeLikeCrawler(input: String): String =
+        input.replace(Regex("[^a-zA-Z0-9._-]+"), "_")
+
     /**
      * Prefer local/PAD file URI; otherwise returns [remoteUrlOrName] (typically https).
+     *
+     * [roleHints] match crawl filename prefixes:
+     * - `thumbnail`
+     * - `photo`
+     * - `custom_fields_battery`
+     * - `custom_fields_emoji`
      */
-    fun resolveThumbnailModel(
+    fun resolveModel(
         context: Context,
         categoryId: String,
         itemId: String,
         remoteUrlOrName: String?,
+        roleHints: List<String>,
     ): String? {
         val raw = remoteUrlOrName?.trim()?.takeIf { it.isNotEmpty() } ?: return null
         val hint = hintFromUrlOrName(raw)
+        val sanitizedHint = sanitizeLikeCrawler(hint)
         val prefix = "${categoryId}_${itemId}_"
+        val roles = roleHints.map(::sanitizeLikeCrawler)
 
         val padRoot = StoreOnDemandAssetPack.assetsRootOrNull(context.applicationContext)
         if (padRoot != null) {
@@ -63,14 +75,19 @@ object HomeStoreLocalImageResolver {
             if (dir.isDirectory) {
                 val fromPad = dir.listFiles()
                     ?.asSequence()
-                    ?.filter { it.isFile && it.name.startsWith(prefix) && it.name.contains(hint) }
-                    ?.firstOrNull()
+                    ?.filter { it.isFile && it.name.startsWith(prefix) }
+                    ?.filter { file -> roles.any { role -> file.name.contains("${role}__") } }
+                    ?.firstOrNull { file ->
+                        file.name.contains(hint) || file.name.contains(sanitizedHint)
+                    }
                 if (fromPad != null) return Uri.fromFile(fromPad).toString()
             }
         }
 
         val fromAssets = assetFlatNames(context.assets).firstOrNull { name ->
-            name.startsWith(prefix) && name.contains(hint)
+            name.startsWith(prefix) &&
+                roles.any { role -> name.contains("${role}__") } &&
+                (name.contains(hint) || name.contains(sanitizedHint))
         }
         if (fromAssets != null) {
             return "file:///android_asset/$ASSET_HOME_FLAT/$fromAssets"
@@ -81,9 +98,49 @@ object HomeStoreLocalImageResolver {
 
     fun enrichItems(context: Context, items: List<HomeBatteryItem>): List<HomeBatteryItem> =
         items.map { item ->
-            val resolved = resolveThumbnailModel(context, item.categoryId, item.id, item.thumbnailUrl)
-                ?: item.thumbnailUrl
-            if (resolved == item.thumbnailUrl) item else item.copy(thumbnailUrl = resolved)
+            val thumbnailSource = item.thumbnailUrl
+            val batterySource = item.batteryArtUrl ?: item.thumbnailUrl
+            val emojiSource = item.emojiArtUrl ?: item.thumbnailUrl
+            val backgroundSource = item.backgroundPhotoUrl ?: item.thumbnailUrl
+
+            val resolvedThumb = resolveModel(
+                context = context,
+                categoryId = item.categoryId,
+                itemId = item.id,
+                remoteUrlOrName = thumbnailSource,
+                roleHints = listOf("thumbnail", "photo"),
+            ) ?: thumbnailSource
+
+            val resolvedBattery = resolveModel(
+                context = context,
+                categoryId = item.categoryId,
+                itemId = item.id,
+                remoteUrlOrName = batterySource,
+                roleHints = listOf("custom_fields_battery", "battery", "thumbnail"),
+            ) ?: batterySource
+
+            val resolvedEmoji = resolveModel(
+                context = context,
+                categoryId = item.categoryId,
+                itemId = item.id,
+                remoteUrlOrName = emojiSource,
+                roleHints = listOf("custom_fields_emoji", "emoji", "thumbnail"),
+            ) ?: emojiSource
+
+            val resolvedBackground = resolveModel(
+                context = context,
+                categoryId = item.categoryId,
+                itemId = item.id,
+                remoteUrlOrName = backgroundSource,
+                roleHints = listOf("photo", "thumbnail"),
+            ) ?: backgroundSource
+
+            item.copy(
+                thumbnailUrl = resolvedThumb,
+                batteryArtUrl = resolvedBattery,
+                emojiArtUrl = resolvedEmoji,
+                backgroundPhotoUrl = resolvedBackground,
+            )
         }
 
     private fun hintFromUrlOrName(raw: String): String {

@@ -305,7 +305,10 @@ class StatusBarOverlayManager(
                 emojiTextView.text = emojiLabel
             }
         }
-        if (batteryUrl != null) {
+        if (snapshot.trollEnabled) {
+            batteryArtView.visibility = View.GONE
+            batteryView.text = snapshot.trollMessage.trim()
+        } else if (batteryUrl != null) {
             batteryArtView.visibility = View.VISIBLE
             batteryArtView.load(batteryUrl) {
                 crossfade(true)
@@ -366,8 +369,9 @@ class StatusBarOverlayManager(
             stickerEmojiView.visibility = View.GONE
         }
 
-        trollView.text = "Fake ${snapshot.trollMessage}"
-        trollView.visibility = if (snapshot.trollEnabled) View.VISIBLE else View.GONE
+        trollView.text = snapshot.trollMessage.trim()
+        // Keep legacy floating badge hidden; troll now renders in the status-row battery slot.
+        trollView.visibility = View.GONE
         trollView.setBackgroundColor("#FFF2D9".toColorInt())
 
         realtimeView.text = "${snapshot.realTimeGlyph} ${snapshot.realTimeTitle}"
@@ -376,7 +380,7 @@ class StatusBarOverlayManager(
 
         renderAnimation(snapshot)
 
-        statusRow.visibility = if (snapshot.statusBarEnabled) View.VISIBLE else View.GONE
+        statusRow.visibility = if (snapshot.statusBarEnabled || snapshot.trollEnabled) View.VISIBLE else View.GONE
         applyNotch(snapshot.notchTemplateId, snapshot.statusBarEnabled)
     }
 

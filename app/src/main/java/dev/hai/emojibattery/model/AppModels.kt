@@ -120,6 +120,10 @@ data class BatteryTrollTemplate(
     val premium: Boolean = false,
     val thumbnailUrl: String? = null,
     val lottieUrl: String? = null,
+    /** Dedicated preview for Show Emoji row (Volio custom_fields.emoji). */
+    val emojiThumbnailUrl: String? = null,
+    /** Dedicated preview for Show Battery row (Volio custom_fields.battery). */
+    val batteryThumbnailUrl: String? = null,
 )
 
 data class AchievementTask(

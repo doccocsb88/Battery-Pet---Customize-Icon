@@ -142,6 +142,7 @@
     <string name="customized">Customized</string>
     <string name="randomized">Randomized</string>
     <string name="show_emoji">Show Emoji</string>
+    <string name="show_battery">Show Battery</string>
     <string name="use_only_one_funny_piece_of_content">Use only one funny piece of content</string>
     <string name="battery_troll_intro">Pick a fake battery label and apply the overlay when accessibility is enabled.</string>
     <string name="battery_troll_templates">Troll templates</string>

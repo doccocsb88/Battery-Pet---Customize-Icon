@@ -68,6 +68,12 @@ private val TrollStrokeColor = Color(0xFF8FB6D4)
 private val TrollSoftPink = Color(0xFFF2F2F2)
 private val TrollPanelColor = Color.White
 
+private enum class TrollMediaMode {
+    Generic,
+    Emoji,
+    Battery,
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun BatteryTrollScreen(
@@ -373,6 +379,26 @@ internal fun BatteryTrollScreen(
                                     template = template,
                                     selected = template.id == uiState.selectedBatteryTrollTemplateId,
                                     enabled = uiState.trollShowEmoji,
+                                    mode = TrollMediaMode.Emoji,
+                                    onClick = { onSelectTemplate(template.id) },
+                                )
+                            }
+                        }
+                        Text(
+                            text = stringResource(R.string.show_battery),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            templateLibrary.forEach { template ->
+                                TrollBatteryChip(
+                                    template = template,
+                                    selected = template.id == uiState.selectedBatteryTrollTemplateId,
+                                    enabled = uiState.trollShowEmoji,
                                     onClick = { onSelectTemplate(template.id) },
                                 )
                             }
@@ -623,6 +649,7 @@ private fun TrollTemplateChip(
     template: BatteryTrollTemplate,
     selected: Boolean,
     enabled: Boolean,
+    mode: TrollMediaMode,
     onClick: () -> Unit,
 ) {
     Card(
@@ -639,7 +666,33 @@ private fun TrollTemplateChip(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            TrollMediaPreview(template, Modifier.size(44.dp))
+            TrollMediaPreview(template, Modifier.size(44.dp), mode = mode)
+        }
+    }
+}
+
+@Composable
+private fun TrollBatteryChip(
+    template: BatteryTrollTemplate,
+    selected: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .width(74.dp)
+            .height(74.dp),
+        onClick = onClick,
+        enabled = enabled,
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F2F2)),
+        border = BorderStroke(
+            if (selected) 1.5.dp else 0.5.dp,
+            if (selected) TrollStrokeColor else Color(0xFFD8DDE2),
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            BatteryThumbPreview(template)
         }
     }
 }
@@ -697,7 +750,13 @@ private fun TemplateGrid(
 private fun TrollMediaPreview(
     template: BatteryTrollTemplate,
     modifier: Modifier = Modifier,
+    mode: TrollMediaMode = TrollMediaMode.Generic,
 ) {
+    val imageUrl = when (mode) {
+        TrollMediaMode.Emoji -> template.emojiThumbnailUrl ?: template.thumbnailUrl
+        TrollMediaMode.Battery -> template.batteryThumbnailUrl ?: template.thumbnailUrl
+        TrollMediaMode.Generic -> template.thumbnailUrl
+    }
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         when {
             template.lottieUrl != null -> {
@@ -709,9 +768,9 @@ private fun TrollMediaPreview(
                 )
             }
 
-            template.thumbnailUrl != null -> {
+            imageUrl != null -> {
                 AsyncImage(
-                    model = template.thumbnailUrl,
+                    model = imageUrl,
                     contentDescription = template.title,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit,
@@ -722,5 +781,40 @@ private fun TrollMediaPreview(
                 Text(template.accentGlyph, style = MaterialTheme.typography.headlineMedium)
             }
         }
+    }
+}
+
+@Composable
+private fun BatteryThumbPreview(template: BatteryTrollTemplate) {
+    Row(
+        modifier = Modifier
+            .width(44.dp)
+            .height(24.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(6.dp))
+                .background(Color.White)
+                .border(1.dp, Color(0xFF1A1A1A), RoundedCornerShape(6.dp)),
+            contentAlignment = Alignment.Center,
+        ) {
+            TrollMediaPreview(
+                template = template,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(3.dp),
+                mode = TrollMediaMode.Battery,
+            )
+        }
+        Box(
+            modifier = Modifier
+                .width(3.dp)
+                .height(10.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(Color(0xFF1A1A1A)),
+        )
     }
 }
