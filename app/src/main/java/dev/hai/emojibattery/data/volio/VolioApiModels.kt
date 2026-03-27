@@ -16,6 +16,7 @@ data class VolioCategoryDto(
 
 data class VolioItemCustomFieldsDto(
     @SerializedName("content") val content: String?,
+    @SerializedName("contentZip") val contentZip: String? = null,
     /** Battery art URL (Volio store; original [EmojiBatteryModel] battery preview). */
     @SerializedName("battery") val battery: String? = null,
     /** Emoji / sticker art URL for the emoji column. */

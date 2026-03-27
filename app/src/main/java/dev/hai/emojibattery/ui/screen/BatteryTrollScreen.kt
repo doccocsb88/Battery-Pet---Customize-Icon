@@ -102,8 +102,23 @@ internal fun BatteryTrollScreen(
     } else {
         SampleCatalog.batteryTrollTemplates
     }
-    val selected = uiState.batteryTrollTemplateForId(uiState.selectedBatteryTrollTemplateId)
+    val selected = templateLibrary.firstOrNull { it.id == uiState.selectedBatteryTrollTemplateId }
+        ?: templateLibrary.firstOrNull()
         ?: SampleCatalog.batteryTrollTemplates.first()
+
+    LaunchedEffect(templateLibrary, uiState.selectedBatteryTrollTemplateId) {
+        if (templateLibrary.isNotEmpty() && templateLibrary.none { it.id == uiState.selectedBatteryTrollTemplateId }) {
+            onSelectTemplate(templateLibrary.first().id)
+        }
+    }
+    val emojiChoices = selected.emojiOptionsUrls.ifEmpty {
+        listOfNotNull(selected.emojiThumbnailUrl ?: selected.thumbnailUrl)
+    }
+    val batteryChoices = selected.batteryOptionsUrls.ifEmpty {
+        listOfNotNull(selected.batteryThumbnailUrl ?: selected.thumbnailUrl)
+    }
+    var selectedEmojiIndex by remember(selected.id, emojiChoices) { mutableStateOf(0) }
+    var selectedBatteryIndex by remember(selected.id, batteryChoices) { mutableStateOf(0) }
 
     var showEditDialog by remember { mutableStateOf(false) }
     var editText by remember(uiState.trollMessage) { mutableStateOf(uiState.trollMessage) }
@@ -370,18 +385,23 @@ internal fun BatteryTrollScreen(
                                 onCheckedChange = onSetShowEmoji,
                             )
                         }
-                        FlowRow(
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            templateLibrary.forEach { template ->
-                                TrollTemplateChip(
-                                    template = template,
-                                    selected = template.id == uiState.selectedBatteryTrollTemplateId,
-                                    enabled = uiState.trollShowEmoji,
-                                    mode = TrollMediaMode.Emoji,
-                                    onClick = { onSelectTemplate(template.id) },
-                                )
+                            repeat(5) { index ->
+                                val imageUrl = emojiChoices.getOrNull(index)
+                                if (imageUrl != null) {
+                                    TrollImageChip(
+                                        imageUrl = imageUrl,
+                                        selected = index == selectedEmojiIndex,
+                                        enabled = uiState.trollShowEmoji,
+                                        onClick = { selectedEmojiIndex = index },
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                } else {
+                                    Spacer(Modifier.weight(1f))
+                                }
                             }
                         }
                         Text(
@@ -390,17 +410,23 @@ internal fun BatteryTrollScreen(
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
-                        FlowRow(
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            templateLibrary.forEach { template ->
-                                TrollBatteryChip(
-                                    template = template,
-                                    selected = template.id == uiState.selectedBatteryTrollTemplateId,
-                                    enabled = uiState.trollShowEmoji,
-                                    onClick = { onSelectTemplate(template.id) },
-                                )
+                            repeat(5) { index ->
+                                val imageUrl = batteryChoices.getOrNull(index)
+                                if (imageUrl != null) {
+                                    TrollBatteryImageChip(
+                                        imageUrl = imageUrl,
+                                        selected = index == selectedBatteryIndex,
+                                        enabled = uiState.trollShowEmoji,
+                                        onClick = { selectedBatteryIndex = index },
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                } else {
+                                    Spacer(Modifier.weight(1f))
+                                }
                             }
                         }
                     }
@@ -672,6 +698,37 @@ private fun TrollTemplateChip(
 }
 
 @Composable
+private fun TrollImageChip(
+    imageUrl: String,
+    selected: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier
+            .aspectRatio(1f),
+        onClick = onClick,
+        enabled = enabled,
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F2F2)),
+        border = BorderStroke(
+            if (selected) 1.5.dp else 0.5.dp,
+            if (selected) TrollStrokeColor else Color(0xFFD8DDE2),
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                modifier = Modifier.size(44.dp),
+                contentScale = ContentScale.Fit,
+            )
+        }
+    }
+}
+
+@Composable
 private fun TrollBatteryChip(
     template: BatteryTrollTemplate,
     selected: Boolean,
@@ -693,6 +750,39 @@ private fun TrollBatteryChip(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             BatteryThumbPreview(template)
+        }
+    }
+}
+
+@Composable
+private fun TrollBatteryImageChip(
+    imageUrl: String,
+    selected: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier
+            .aspectRatio(1f),
+        onClick = onClick,
+        enabled = enabled,
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F2F2)),
+        border = BorderStroke(
+            if (selected) 1.5.dp else 0.5.dp,
+            if (selected) TrollStrokeColor else Color(0xFFD8DDE2),
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+                contentScale = ContentScale.Fit,
+            )
         }
     }
 }

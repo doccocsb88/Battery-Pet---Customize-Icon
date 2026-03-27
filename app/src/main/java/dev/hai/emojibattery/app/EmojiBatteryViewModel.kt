@@ -456,8 +456,6 @@ class EmojiBatteryViewModel(
                     .takeIf { it.isNotEmpty() }
                 if (fromPad != null) {
                     fromPad to "pad"
-                } else if (VolioConstants.BATTERY_TROLL_PARENT_ID.isNotBlank()) {
-                    runCatching { VolioBatteryTrollRepository.fetchTemplates() }.getOrElse { emptyList() } to "volio_api"
                 } else {
                     emptyList<BatteryTrollTemplate>() to "sample_fallback"
                 }
