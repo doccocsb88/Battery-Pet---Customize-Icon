@@ -7,12 +7,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.hai.emojibattery.data.BundledVolioHomeRepository
 import dev.hai.emojibattery.data.HomeCatalogRepository
+import dev.hai.emojibattery.data.HomeCategoryPackResolver
 import dev.hai.emojibattery.data.HomeStoreLocalImageResolver
 import dev.hai.emojibattery.data.PadVolioBatteryTrollRepository
 import dev.hai.emojibattery.data.PadVolioHomeRepository
 import dev.hai.emojibattery.data.VolioBatteryTrollRepository
 import dev.hai.emojibattery.data.VolioStickerRepository
-import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import dev.hai.emojibattery.data.volio.VolioConstants
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.BatteryTrollTemplate
@@ -46,7 +46,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 
 class EmojiBatteryViewModel(
     application: Application,
@@ -94,33 +93,15 @@ class EmojiBatteryViewModel(
             )
         }
         viewModelScope.launch {
-            Log.d(TAG, "init: home tabs — PAD → bundled_volio → SampleCatalog (no Volio API)")
+            Log.d(TAG, "init: home tabs — bundled_volio → SampleCatalog (per-category PAD for items)")
             val app = getApplication<Application>()
-            val padReady = withContext(Dispatchers.IO) {
-                withTimeoutOrNull(12_000L) {
-                    runCatching { StoreOnDemandAssetPack.waitUntilCompleted(app) }.getOrDefault(false)
-                } ?: false
-            }
-            Log.d(TAG, "init: waitUntilCompleted(PAD) -> $padReady")
-            val padTabs = runCatching { PadVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
-            val bundledTabs = if (padTabs.isEmpty()) {
-                runCatching { BundledVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
+            val bundledTabs = runCatching { BundledVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
+            val tabs = if (bundledTabs.isNotEmpty()) {
+                Log.d(TAG, "init: tabs from bundled assets count=${bundledTabs.size} firstId=${bundledTabs.first().id}")
+                bundledTabs
             } else {
-                emptyList()
-            }
-            val tabs = when {
-                padTabs.isNotEmpty() -> {
-                    Log.d(TAG, "init: tabs from PAD count=${padTabs.size} firstId=${padTabs.first().id}")
-                    padTabs
-                }
-                bundledTabs.isNotEmpty() -> {
-                    Log.d(TAG, "init: tabs from bundled assets count=${bundledTabs.size} firstId=${bundledTabs.first().id}")
-                    bundledTabs
-                }
-                else -> {
-                    Log.w(TAG, "init: no PAD/bundled catalog — SampleCatalog tabs")
-                    HomeCatalogRepository.categoryTabs()
-                }
+                Log.w(TAG, "init: no bundled catalog — SampleCatalog tabs")
+                HomeCatalogRepository.categoryTabs()
             }
             _uiState.update {
                 it.copy(
@@ -986,6 +967,7 @@ class EmojiBatteryViewModel(
         app: Application,
         categoryId: String,
     ): List<HomeBatteryItem> {
+        val packName = HomeCategoryPackResolver.packNameFor(categoryId)
         val padItems = runCatching { PadVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
             .getOrElse { emptyList() }
             .takeIf { it.isNotEmpty() }
@@ -995,11 +977,11 @@ class EmojiBatteryViewModel(
                 .takeIf { it.isNotEmpty() }
             ?: emptyList()
         when {
-            padItems != null -> Log.d(TAG, "offlineStore: items from PAD count=${merged.size}")
+            padItems != null -> Log.d(TAG, "offlineStore: items from PAD count=${merged.size} pack=$packName")
             merged.isNotEmpty() -> Log.d(TAG, "offlineStore: items from bundled assets count=${merged.size}")
             else -> Log.w(TAG, "offlineStore: no PAD/bundled items for $categoryId")
         }
-        return HomeStoreLocalImageResolver.enrichItems(app, merged)
+        return HomeStoreLocalImageResolver.enrichItems(app, merged, packName = packName)
     }
 
     private fun hasFeatureAccess(state: AppUiState, featureKey: String): Boolean {

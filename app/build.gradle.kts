@@ -4,6 +4,14 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val dynamicHomeAssetPackModules = rootDir.listFiles()
+    ?.asSequence()
+    ?.filter { it.isDirectory && it.name.startsWith("home_pack_") }
+    ?.map { ":${it.name}" }
+    ?.sorted()
+    ?.toList()
+    .orEmpty()
+
 val versionCodeBase = (findProperty("VERSION_CODE_BASE") as String?)?.toIntOrNull() ?: 1000
 val fallbackVersionCode = (findProperty("VERSION_CODE") as String?)?.toIntOrNull() ?: 1
 val computedVersionCode = System.getenv("GITHUB_RUN_NUMBER")
@@ -93,7 +101,7 @@ android {
         ":theme_pack_countryside",
         ":theme_pack_fantasy",
         ":theme_pack_chinese_spring_landscape",
-    )
+    ) + dynamicHomeAssetPackModules
 }
 
 dependencies {

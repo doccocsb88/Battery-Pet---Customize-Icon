@@ -62,6 +62,7 @@ object HomeStoreLocalImageResolver {
         itemId: String,
         remoteUrlOrName: String?,
         roleHints: List<String>,
+        packName: String? = null,
     ): String? {
         val raw = remoteUrlOrName?.trim()?.takeIf { it.isNotEmpty() } ?: return null
         val hint = hintFromUrlOrName(raw)
@@ -69,19 +70,27 @@ object HomeStoreLocalImageResolver {
         val prefix = "${categoryId}_${itemId}_"
         val roles = roleHints.map(::sanitizeLikeCrawler)
 
-        val padRoot = StoreOnDemandAssetPack.assetsRootOrNull(context.applicationContext)
-        if (padRoot != null) {
-            val dir = File(padRoot, "store/downloaded_assets/home")
-            if (dir.isDirectory) {
-                val fromPad = dir.listFiles()
-                    ?.asSequence()
-                    ?.filter { it.isFile && it.name.startsWith(prefix) }
-                    ?.filter { file -> roles.any { role -> file.name.contains("${role}__") } }
-                    ?.firstOrNull { file ->
-                        file.name.contains(hint) || file.name.contains(sanitizedHint)
-                    }
-                if (fromPad != null) return Uri.fromFile(fromPad).toString()
+        val padRoots = buildList {
+            val app = context.applicationContext
+            packName?.takeIf { it.isNotBlank() }?.let { specific ->
+                StoreOnDemandAssetPack.assetsRootOrNull(app, packName = specific)?.let(::add)
             }
+            StoreOnDemandAssetPack.assetsRootOrNull(app)?.let { default ->
+                if (!contains(default)) add(default)
+            }
+        }
+
+        for (padRoot in padRoots) {
+            val dir = File(padRoot, "store/downloaded_assets/home")
+            if (!dir.isDirectory) continue
+            val fromPad = dir.listFiles()
+                ?.asSequence()
+                ?.filter { it.isFile && it.name.startsWith(prefix) }
+                ?.filter { file -> roles.any { role -> file.name.contains("${role}__") } }
+                ?.firstOrNull { file ->
+                    file.name.contains(hint) || file.name.contains(sanitizedHint)
+                }
+            if (fromPad != null) return Uri.fromFile(fromPad).toString()
         }
 
         val fromAssets = assetFlatNames(context.assets).firstOrNull { name ->
@@ -96,7 +105,11 @@ object HomeStoreLocalImageResolver {
         return raw
     }
 
-    fun enrichItems(context: Context, items: List<HomeBatteryItem>): List<HomeBatteryItem> =
+    fun enrichItems(
+        context: Context,
+        items: List<HomeBatteryItem>,
+        packName: String? = null,
+    ): List<HomeBatteryItem> =
         items.map { item ->
             val thumbnailSource = item.thumbnailUrl
             val batterySource = item.batteryArtUrl ?: item.thumbnailUrl
@@ -109,6 +122,7 @@ object HomeStoreLocalImageResolver {
                 itemId = item.id,
                 remoteUrlOrName = thumbnailSource,
                 roleHints = listOf("thumbnail", "photo"),
+                packName = packName,
             ) ?: thumbnailSource
 
             val resolvedBattery = resolveModel(
@@ -117,6 +131,7 @@ object HomeStoreLocalImageResolver {
                 itemId = item.id,
                 remoteUrlOrName = batterySource,
                 roleHints = listOf("custom_fields_battery", "battery", "thumbnail"),
+                packName = packName,
             ) ?: batterySource
 
             val resolvedEmoji = resolveModel(
@@ -125,6 +140,7 @@ object HomeStoreLocalImageResolver {
                 itemId = item.id,
                 remoteUrlOrName = emojiSource,
                 roleHints = listOf("custom_fields_emoji", "emoji", "thumbnail"),
+                packName = packName,
             ) ?: emojiSource
 
             val resolvedBackground = resolveModel(
@@ -133,6 +149,7 @@ object HomeStoreLocalImageResolver {
                 itemId = item.id,
                 remoteUrlOrName = backgroundSource,
                 roleHints = listOf("photo", "thumbnail"),
+                packName = packName,
             ) ?: backgroundSource
 
             item.copy(

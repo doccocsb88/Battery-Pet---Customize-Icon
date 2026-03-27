@@ -1,14 +1,13 @@
 package dev.hai.emojibattery.data
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
-import dev.hai.emojibattery.data.volio.VolioCategoryDto
 import dev.hai.emojibattery.data.volio.VolioEmojiBatteryItemDto
 import dev.hai.emojibattery.data.volio.VolioListResponse
 import dev.hai.emojibattery.model.HomeBatteryItem
-import dev.hai.emojibattery.model.HomeCategoryTab
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -19,22 +18,26 @@ import java.io.File
  */
 object PadVolioHomeRepository {
 
-    private val gson = Gson()
-    private val categoryListType = object : TypeToken<VolioListResponse<VolioCategoryDto>>() {}.type
-    private val itemListType = object : TypeToken<VolioListResponse<VolioEmojiBatteryItemDto>>() {}.type
+    private const val TAG = "PadVolioHome"
 
-    suspend fun fetchCategoryTabs(context: Context): List<HomeCategoryTab> = withContext(Dispatchers.IO) {
-        val file = StoreOnDemandAssetPack.storeFileOrNull(context, "store/home/categories_all.json")
-            ?: return@withContext emptyList()
-        val json = file.readText(Charsets.UTF_8)
-        val response: VolioListResponse<VolioCategoryDto> = gson.fromJson(json, categoryListType)
-        val rows = response.data.orEmpty().filter { it.status != false }
-        rows.map { HomeCategoryTab(id = it.id, title = it.name.orEmpty()) }
-    }
+    private val gson = Gson()
+    private val itemListType = object : TypeToken<VolioListResponse<VolioEmojiBatteryItemDto>>() {}.type
 
     suspend fun fetchItemsForCategory(context: Context, categoryId: String): List<HomeBatteryItem> =
         withContext(Dispatchers.IO) {
-            val root = StoreOnDemandAssetPack.assetsRootOrNull(context) ?: return@withContext emptyList()
+            val packName = HomeCategoryPackResolver.packNameFor(categoryId)
+            val ready = StoreOnDemandAssetPack.waitUntilCompleted(
+                context = context.applicationContext,
+                packName = packName,
+            )
+            if (!ready) {
+                Log.d(TAG, "fetchItemsForCategory: pack not ready category=$categoryId pack=$packName")
+                return@withContext emptyList()
+            }
+            val root = StoreOnDemandAssetPack.assetsRootOrNull(
+                context = context.applicationContext,
+                packName = packName,
+            ) ?: return@withContext emptyList()
             val dir = File(root, "store/home/items/$categoryId")
             if (!dir.isDirectory) return@withContext emptyList()
             val files = dir.listFiles()
@@ -51,6 +54,7 @@ object PadVolioHomeRepository {
                 val response: VolioListResponse<VolioEmojiBatteryItemDto> = gson.fromJson(json, itemListType)
                 merged.addAll(response.data.orEmpty())
             }
+            Log.d(TAG, "fetchItemsForCategory: category=$categoryId pack=$packName items=${merged.size}")
             merged.map { dto -> dto.toHomeBatteryItem(categoryId) }.shuffled()
         }
 }
