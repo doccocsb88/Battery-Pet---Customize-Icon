@@ -3,6 +3,7 @@ package dev.hai.emojibattery.data.assets
 import android.content.Context
 import com.google.android.play.core.assetpacks.AssetPackManagerFactory
 import com.google.android.play.core.assetpacks.model.AssetPackStatus
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import java.io.File
 
@@ -33,9 +34,23 @@ object StoreOnDemandAssetPack {
     suspend fun waitUntilCompleted(context: Context, packName: String): Boolean {
         val assetPackManager = manager(context)
         assetPackManager.fetch(listOf(packName)).await()
-        val states = assetPackManager.getPackStates(listOf(packName)).await()
-        val state = states.packStates()[packName] ?: return false
-        return state.status() == AssetPackStatus.COMPLETED
+        val deadline = System.currentTimeMillis() + DEFAULT_WAIT_TIMEOUT_MS
+        while (true) {
+            val states = assetPackManager.getPackStates(listOf(packName)).await()
+            val state = states.packStates()[packName] ?: return false
+            when (state.status()) {
+                AssetPackStatus.COMPLETED -> return true
+                AssetPackStatus.FAILED,
+                AssetPackStatus.CANCELED,
+                AssetPackStatus.NOT_INSTALLED,
+                AssetPackStatus.UNKNOWN,
+                AssetPackStatus.REQUIRES_USER_CONFIRMATION,
+                AssetPackStatus.WAITING_FOR_WIFI,
+                -> return false
+            }
+            if (System.currentTimeMillis() >= deadline) return false
+            delay(POLL_DELAY_MS)
+        }
     }
 
     /**
@@ -61,3 +76,5 @@ object StoreOnDemandAssetPack {
         return child.takeIf { it.exists() }
     }
 }
+    private const val DEFAULT_WAIT_TIMEOUT_MS = 30_000L
+    private const val POLL_DELAY_MS = 300L

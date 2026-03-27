@@ -43,7 +43,7 @@ import dev.hai.emojibattery.service.OverlayConfigStore
 internal fun NotchScreen(
     onBack: () -> Unit,
 ) {
-    val templates = remember { (-1..13).map { NotchTemplateCatalog.resolve(it) } }
+    val templates = remember { (listOf(-1) + (1..13)).map { NotchTemplateCatalog.resolve(it) } }
     val context = LocalContext.current
     var selectedId by remember { mutableIntStateOf(OverlayConfigStore.read(context).notchTemplateId) }
 
@@ -68,11 +68,6 @@ internal fun NotchScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = "🍼",
-                    style = MaterialTheme.typography.headlineMedium,
                 )
             }
         },

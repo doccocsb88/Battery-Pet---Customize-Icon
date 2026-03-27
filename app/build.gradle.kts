@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-val dynamicHomeAssetPackModules = rootDir.listFiles()
+val dynamicHomeAssetPackModules = File(rootDir, "app_pack").listFiles()
     ?.asSequence()
     ?.filter { it.isDirectory && it.name.startsWith("home_pack_") }
     ?.map { ":${it.name}" }

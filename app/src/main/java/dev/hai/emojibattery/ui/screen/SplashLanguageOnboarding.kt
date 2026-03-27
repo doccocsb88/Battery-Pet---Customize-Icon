@@ -170,25 +170,32 @@ internal fun SplashRoute(
     fastForward: Boolean,
     onFinish: () -> Unit,
 ) {
-    // Keep splash visible for at least 2s before navigating.
-    val splashMinDurationMs = 12_000L
+    // Show app icon for 1s, then show loading for at least 2s.
+    val iconPhaseDurationMs = 1_000L
+    val loadingPhaseDurationMs = 2_000L
     val splashColorPrimary = Color(0xFF8FB6D4)
     val splashColorSecondary = Color(0xFF76916B)
     val splashColorTertiary = Color(0xFFD9B99B)
     val splashColorText = Color(0xFF3C3C3C)
 
     var launchLogo by remember { mutableStateOf(false) }
+    var showLoading by remember { mutableStateOf(false) }
     var progressTarget by remember { mutableStateOf(0f) }
     LaunchedEffect(fastForward) {
         if (fastForward) {
             launchLogo = true
+            showLoading = true
             progressTarget = 1f
             onFinish()
             return@LaunchedEffect
         }
         launchLogo = true
+        showLoading = false
+        progressTarget = 0f
+        delay(iconPhaseDurationMs)
+        showLoading = true
         progressTarget = 1f
-        delay(splashMinDurationMs)
+        delay(loadingPhaseDurationMs)
         onFinish()
     }
     val logoScale by animateFloatAsState(
@@ -266,20 +273,22 @@ internal fun SplashRoute(
                 color = splashColorText.copy(alpha = 0.82f),
                 textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = stringResource(R.string.loading_dot),
-                color = splashColorText,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Spacer(Modifier.height(8.dp))
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier.fillMaxWidth(0.55f),
-                color = splashColorText,
-                trackColor = Color.White.copy(alpha = 0.55f),
-            )
-            Spacer(Modifier.height(8.dp))
+            if (showLoading) {
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    text = stringResource(R.string.loading_dot),
+                    color = splashColorText,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(8.dp))
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier.fillMaxWidth(0.55f),
+                    color = splashColorText,
+                    trackColor = Color.White.copy(alpha = 0.55f),
+                )
+                Spacer(Modifier.height(8.dp))
+            }
         }
     }
 }

@@ -545,7 +545,7 @@ private fun StatusBarLivePreviewCard(
     val horizontalEnd = (8f + config.rightMargin.coerceIn(0f, 1f) * 88f).dp
     val verticalPad = (4f + config.statusBarHeight.coerceIn(0f, 1f) * 12f).dp
     val previewHeight = (62f + config.statusBarHeight.coerceIn(0f, 1f) * 34f).dp
-    val rowBgColor = Color(config.backgroundColor).copy(alpha = if (config.backgroundTemplateDrawableRes != null || !config.backgroundTemplatePhotoUrl.isNullOrBlank()) 0.66f else 1f)
+    val rowBgColor = Color.Transparent
     val batteryFontSize = (11f + (config.batteryPercentScale.coerceIn(0f, 1f) * 11f)).sp
     val emojiPreviewSize = (10f + config.emojiScale.coerceIn(0f, 1f) * 20f).dp
     val emojiPreviewTextSize = (10f + config.emojiScale.coerceIn(0f, 1f) * 14f).sp
@@ -571,11 +571,6 @@ private fun StatusBarLivePreviewCard(
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .background(Color(config.backgroundColor).copy(alpha = 0.45f)),
-                    )
                 }
                 templateRes != null -> {
                     ThemeShapeDrawableImage(
@@ -583,13 +578,8 @@ private fun StatusBarLivePreviewCard(
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                     )
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .background(Color(config.backgroundColor).copy(alpha = 0.45f)),
-                    )
                 }
-                else -> Box(Modifier.fillMaxSize().background(previewBrush))
+                else -> Box(Modifier.fillMaxSize().background(Color(config.backgroundColor)))
             }
             Row(
                 modifier = Modifier
@@ -601,7 +591,7 @@ private fun StatusBarLivePreviewCard(
                 Surface(
                     color = rowBgColor,
                     shape = RoundedCornerShape(14.dp),
-                    border = if (config.showStroke) BorderStroke(1.dp, Color.White.copy(alpha = 0.35f)) else null,
+                    border = null,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = verticalPad, bottom = verticalPad),
@@ -848,6 +838,7 @@ private fun StatusBarThemeBackgroundColorRow(
     }
 
     if (showRgbPicker) {
+        val dialogTextColor = colorResource(R.color.splash_title)
         AlertDialog(
             onDismissRequest = { showRgbPicker = false },
             title = { Text(stringResource(R.string.theme_background_color)) },
@@ -881,14 +872,24 @@ private fun StatusBarThemeBackgroundColorRow(
                         showRgbPicker = false
                     },
                 ) {
-                    Text(stringResource(R.string.apply))
+                    Text(
+                        text = stringResource(R.string.apply),
+                        color = StrawberryMilk.Secondary,
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showRgbPicker = false }) {
-                    Text(stringResource(android.R.string.cancel))
+                    Text(
+                        text = stringResource(android.R.string.cancel),
+                        color = StrawberryMilk.Secondary,
+                    )
                 }
             },
+            containerColor = Color.White,
+            tonalElevation = 0.dp,
+            titleContentColor = dialogTextColor,
+            textContentColor = dialogTextColor,
         )
     }
 
@@ -1105,12 +1106,18 @@ private fun StatusBarBackgroundTemplateSection(
         when {
             isSelectedCategoryLoading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(88.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    CircularProgressIndicator()
+                    StatusBarTemplatePlaceholderGrid(count = 12)
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.55f)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
 
@@ -1142,6 +1149,35 @@ private fun StatusBarBackgroundTemplateSection(
                     text = stringResource(R.string.view_more),
                     color = StrawberryMilk.Secondary,
                     fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun StatusBarTemplatePlaceholderGrid(count: Int) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        maxItemsInEachRow = 3,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        repeat(count) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(0.31f),
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(6.dp)
+                        .aspectRatio(2f)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)),
                 )
             }
         }

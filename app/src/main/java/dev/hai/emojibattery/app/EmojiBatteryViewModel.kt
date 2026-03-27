@@ -337,7 +337,13 @@ class EmojiBatteryViewModel(
     }
 
     /** Theme tab — background color row (original layoutColorBackground). */
-    fun setThemeBackgroundColor(color: Long) = updateConfig { copy(backgroundColor = color) }
+    fun setThemeBackgroundColor(color: Long) = updateConfig {
+        copy(
+            backgroundColor = color,
+            backgroundTemplatePhotoUrl = null,
+            backgroundTemplateDrawableRes = null,
+        )
+    }
 
     /** Theme tab — remote / legacy template image URL (clears local drawable). */
     fun setBackgroundTemplatePhoto(url: String?) = updateConfig {

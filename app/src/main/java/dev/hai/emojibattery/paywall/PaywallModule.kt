@@ -178,63 +178,13 @@ fun PaywallScreen(
                     .fillMaxWidth()
                     .height(300.dp),
             ) {
-                // Background gradient atmosphere
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Alpine.HeroGradient),
-                )
                 // Header image with overlay blend
                 Image(
                     painter = painterResource(R.drawable.img_header_iap_full),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer { alpha = 0.35f },
+                        .fillMaxSize(),
                     contentScale = ContentScale.Crop,
-                )
-                // Gradient fade to surface
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .align(Alignment.BottomCenter)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color.Transparent, Alpine.SurfaceLow),
-                            ),
-                        ),
-                )
-                // Headline text overlay
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 28.dp, bottom = 44.dp),
-                ) {
-                    Text(
-                        text = "✨",
-                        fontSize = 40.sp,
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = "Unlock\nEverything",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontSize = 32.sp,
-                            lineHeight = 36.sp,
-                            letterSpacing = (-0.02).sp,
-                        ),
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Alpine.OnPrimary,
-                    )
-                }
-                // Decorative floating emoji (whimsical offset)
-                Text(
-                    text = "🌸",
-                    fontSize = 48.sp,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = 12.dp, y = 60.dp)
-                        .graphicsLayer { alpha = 0.6f },
                 )
             }
 
@@ -246,7 +196,7 @@ fun PaywallScreen(
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 AlpineBenefitRow(glyph = "💎", text = stringResource(R.string.unlimited_library_icon_sticker))
-                AlpineBenefitRow(glyph = "🚫", text = stringResource(R.string.no_ad_experience_2))
+//                AlpineBenefitRow(glyph = "🚫", text = stringResource(R.string.no_ad_experience_2))
                 AlpineBenefitRow(glyph = "🚀", text = stringResource(R.string.early_update_new_feature))
             }
 

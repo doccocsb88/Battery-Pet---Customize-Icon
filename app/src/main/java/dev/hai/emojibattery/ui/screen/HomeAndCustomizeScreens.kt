@@ -328,7 +328,7 @@ internal fun CustomizeHubScreen(
                         }
                         Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            HomeRoundIcon(R.drawable.ic_home_search, onOpenSearch)
+                            Spacer(Modifier.width(40.dp))
                         }
                     }
                 }
@@ -686,8 +686,7 @@ internal fun OriginalTopShell(
                 }
                 Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    HomeRoundIcon(R.drawable.ic_home_search, onSearch)
-                    Spacer(Modifier.width(16.dp))
+                    Spacer(Modifier.width(40.dp))
                 }
             }
             if (showEnableBanner) {

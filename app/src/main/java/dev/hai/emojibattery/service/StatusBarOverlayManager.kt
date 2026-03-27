@@ -3,6 +3,7 @@ package dev.hai.emojibattery.service
 import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Handler
@@ -281,7 +282,7 @@ class StatusBarOverlayManager(
                     crossfade(true)
                 }
                 applyStatusRowBackground(
-                    baseColor = ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                    baseColor = android.graphics.Color.TRANSPARENT,
                     showStroke = snapshot.showStroke,
                 )
             }
@@ -289,12 +290,15 @@ class StatusBarOverlayManager(
                 statusBackgroundImageView.visibility = View.VISIBLE
                 statusBackgroundImageView.setImageResource(templateDrawableRes)
                 applyStatusRowBackground(
-                    baseColor = ColorUtils.setAlphaComponent(snapshot.backgroundColor.toInt(), 0xA8),
+                    baseColor = android.graphics.Color.TRANSPARENT,
                     showStroke = snapshot.showStroke,
                 )
             }
             else -> {
+                // Solid colors are more reliable when applied directly to the status row background.
+                // Using an ImageView with WRAP_CONTENT can lead to missing fill on some runtime layouts.
                 statusBackgroundImageView.visibility = View.GONE
+                statusBackgroundImageView.setImageDrawable(null)
                 applyStatusRowBackground(
                     baseColor = snapshot.backgroundColor.toInt(),
                     showStroke = snapshot.showStroke,
