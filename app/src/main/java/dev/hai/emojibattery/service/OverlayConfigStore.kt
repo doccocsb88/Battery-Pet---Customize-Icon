@@ -1,6 +1,7 @@
 package dev.hai.emojibattery.service
 
 import android.content.Context
+import org.json.JSONArray
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.BatteryIconConfig
 import dev.hai.emojibattery.model.HomeBatteryItem
@@ -35,7 +36,14 @@ data class OverlaySnapshot(
     val trollMessage: String,
     val trollBatteryArtUrl: String?,
     val trollEmojiArtUrl: String?,
+    val trollBatteryOptionsUrls: List<String>,
+    val trollEmojiOptionsUrls: List<String>,
     val trollShowEmoji: Boolean,
+    val trollUseRealBattery: Boolean,
+    val trollRandomizedMode: Boolean,
+    val trollShowPercentage: Boolean,
+    val trollPercentageSizeDp: Int,
+    val trollEmojiSizeDp: Int,
     val realTimeEnabled: Boolean,
     val realTimeGlyph: String,
     val realTimeTitle: String,
@@ -87,7 +95,14 @@ object OverlayConfigStore {
     private const val KEY_TROLL_MESSAGE = "troll_message"
     private const val KEY_TROLL_BATTERY_ART_URL = "troll_battery_art_url"
     private const val KEY_TROLL_EMOJI_ART_URL = "troll_emoji_art_url"
+    private const val KEY_TROLL_BATTERY_OPTIONS_URLS = "troll_battery_options_urls"
+    private const val KEY_TROLL_EMOJI_OPTIONS_URLS = "troll_emoji_options_urls"
     private const val KEY_TROLL_SHOW_EMOJI = "troll_show_emoji"
+    private const val KEY_TROLL_USE_REAL_BATTERY = "troll_use_real_battery"
+    private const val KEY_TROLL_RANDOMIZED_MODE = "troll_randomized_mode"
+    private const val KEY_TROLL_SHOW_PERCENTAGE = "troll_show_percentage"
+    private const val KEY_TROLL_PERCENTAGE_SIZE_DP = "troll_percentage_size_dp"
+    private const val KEY_TROLL_EMOJI_SIZE_DP = "troll_emoji_size_dp"
     private const val KEY_REALTIME_ENABLED = "realtime_enabled"
     private const val KEY_REALTIME_GLYPH = "realtime_glyph"
     private const val KEY_REALTIME_TITLE = "realtime_title"
@@ -192,12 +207,18 @@ object OverlayConfigStore {
 
     fun saveBatteryTroll(context: Context, uiState: AppUiState) {
         val selectedTemplate = uiState.batteryTrollTemplateForId(uiState.selectedBatteryTrollTemplateId)
+        val batteryOptions = selectedTemplate?.batteryOptionsUrls
+            ?.filter { it.isNotBlank() }
+            .orEmpty()
+        val emojiOptions = selectedTemplate?.emojiOptionsUrls
+            ?.filter { it.isNotBlank() }
+            .orEmpty()
         val batteryUrl = uiState.trollSelectedBatteryUrl
-            ?: selectedTemplate?.batteryOptionsUrls?.firstOrNull()
+            ?: batteryOptions.firstOrNull()
             ?: selectedTemplate?.batteryThumbnailUrl
             ?: selectedTemplate?.thumbnailUrl
         val emojiUrl = uiState.trollSelectedEmojiUrl
-            ?: selectedTemplate?.emojiOptionsUrls?.firstOrNull()
+            ?: emojiOptions.firstOrNull()
             ?: selectedTemplate?.emojiThumbnailUrl
             ?: selectedTemplate?.thumbnailUrl
         prefs(context).edit()
@@ -205,7 +226,14 @@ object OverlayConfigStore {
             .putString(KEY_TROLL_MESSAGE, uiState.trollMessage)
             .putString(KEY_TROLL_BATTERY_ART_URL, batteryUrl.orEmpty())
             .putString(KEY_TROLL_EMOJI_ART_URL, emojiUrl.orEmpty())
+            .putString(KEY_TROLL_BATTERY_OPTIONS_URLS, encodeStringList(batteryOptions))
+            .putString(KEY_TROLL_EMOJI_OPTIONS_URLS, encodeStringList(emojiOptions))
             .putBoolean(KEY_TROLL_SHOW_EMOJI, uiState.trollShowEmoji)
+            .putBoolean(KEY_TROLL_USE_REAL_BATTERY, uiState.trollUseRealBattery)
+            .putBoolean(KEY_TROLL_RANDOMIZED_MODE, uiState.trollRandomizedMode)
+            .putBoolean(KEY_TROLL_SHOW_PERCENTAGE, uiState.trollShowPercentage)
+            .putInt(KEY_TROLL_PERCENTAGE_SIZE_DP, uiState.trollPercentageSizeDp.coerceIn(5, 40))
+            .putInt(KEY_TROLL_EMOJI_SIZE_DP, uiState.trollEmojiSizeDp.coerceIn(20, 80))
             .apply()
     }
 
@@ -214,6 +242,8 @@ object OverlayConfigStore {
             .putBoolean(KEY_TROLL_ENABLED, false)
             .remove(KEY_TROLL_BATTERY_ART_URL)
             .remove(KEY_TROLL_EMOJI_ART_URL)
+            .remove(KEY_TROLL_BATTERY_OPTIONS_URLS)
+            .remove(KEY_TROLL_EMOJI_OPTIONS_URLS)
             .apply()
     }
 
@@ -283,7 +313,14 @@ object OverlayConfigStore {
             trollMessage = prefs.getString(KEY_TROLL_MESSAGE, "999").orEmpty(),
             trollBatteryArtUrl = prefs.getString(KEY_TROLL_BATTERY_ART_URL, null)?.takeIf { it.isNotBlank() },
             trollEmojiArtUrl = prefs.getString(KEY_TROLL_EMOJI_ART_URL, null)?.takeIf { it.isNotBlank() },
+            trollBatteryOptionsUrls = decodeStringList(prefs.getString(KEY_TROLL_BATTERY_OPTIONS_URLS, null)),
+            trollEmojiOptionsUrls = decodeStringList(prefs.getString(KEY_TROLL_EMOJI_OPTIONS_URLS, null)),
             trollShowEmoji = prefs.getBoolean(KEY_TROLL_SHOW_EMOJI, true),
+            trollUseRealBattery = prefs.getBoolean(KEY_TROLL_USE_REAL_BATTERY, false),
+            trollRandomizedMode = prefs.getBoolean(KEY_TROLL_RANDOMIZED_MODE, false),
+            trollShowPercentage = prefs.getBoolean(KEY_TROLL_SHOW_PERCENTAGE, true),
+            trollPercentageSizeDp = prefs.getInt(KEY_TROLL_PERCENTAGE_SIZE_DP, 5).coerceIn(5, 40),
+            trollEmojiSizeDp = prefs.getInt(KEY_TROLL_EMOJI_SIZE_DP, 40).coerceIn(20, 80),
             realTimeEnabled = prefs.getBoolean(KEY_REALTIME_ENABLED, false),
             realTimeGlyph = prefs.getString(KEY_REALTIME_GLYPH, "⚡").orEmpty(),
             realTimeTitle = prefs.getString(KEY_REALTIME_TITLE, "Real Time").orEmpty(),
@@ -305,4 +342,23 @@ object OverlayConfigStore {
     }
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+
+    private fun encodeStringList(values: List<String>): String {
+        val array = JSONArray()
+        values.forEach { array.put(it) }
+        return array.toString()
+    }
+
+    private fun decodeStringList(raw: String?): List<String> {
+        if (raw.isNullOrBlank()) return emptyList()
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (index in 0 until array.length()) {
+                    val value = array.optString(index).trim()
+                    if (value.isNotEmpty()) add(value)
+                }
+            }
+        }.getOrElse { emptyList() }
+    }
 }

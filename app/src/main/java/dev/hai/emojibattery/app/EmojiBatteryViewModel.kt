@@ -690,12 +690,7 @@ class EmojiBatteryViewModel(
         val defaultBattery = template.batteryOptionsUrls.firstOrNull()
             ?: template.batteryThumbnailUrl
             ?: template.thumbnailUrl
-        val resolvedMessage = template.prankMessage
-            .takeIf {
-                it.isNotBlank() &&
-                    !it.matches(Regex("(?i)^battery\\d+\$"))
-            }
-            ?: "999%"
+        val resolvedMessage = resolveTrollMessage(template.prankMessage)
         _uiState.update {
             it.copy(
                 selectedBatteryTrollTemplateId = templateId,
@@ -724,6 +719,18 @@ class EmojiBatteryViewModel(
 
     fun setTrollMessage(message: String) {
         _uiState.update { it.copy(trollMessage = message) }
+    }
+
+    private fun resolveTrollMessage(rawMessage: String?): String {
+        val value = rawMessage?.trim().orEmpty()
+        if (value.isBlank()) return "999%"
+        val normalized = value.lowercase()
+            .replace("_", "")
+            .replace("-", "")
+            .replace(" ", "")
+        // Volio templates often have message placeholders like "Battery6", "Battery 6", or "battery6emotion05".
+        if (normalized.matches(Regex("^battery\\d+([a-z]+\\d*)*\$"))) return "999%"
+        return value
     }
 
     fun setTrollShowPercentage(enabled: Boolean) {

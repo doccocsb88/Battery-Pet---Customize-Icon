@@ -25,6 +25,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 import dev.hai.emojibattery.model.GestureTrigger
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 class StatusBarOverlayManager(
     private val context: Context,
@@ -76,6 +77,9 @@ class StatusBarOverlayManager(
     private var layoutParams: WindowManager.LayoutParams? = null
     private var currentAnimationKey: String? = null
     private var currentAnimationIsLottie: Boolean? = null
+    private var lastTrollShuffleAt: Long = 0L
+    private var currentTrollBatteryArtUrl: String? = null
+    private var currentTrollEmojiArtUrl: String? = null
 
     private val tapDelayMs = 200L
     private val singleTapHandler = Handler(Looper.getMainLooper())
@@ -306,8 +310,9 @@ class StatusBarOverlayManager(
         val batteryDrawable = snapshot.batteryArtDrawableRes?.takeIf { it != 0 }
         val emojiUrl = snapshot.emojiArtUrl?.takeIf { it.isNotBlank() }
         val emojiDrawable = snapshot.emojiArtDrawableRes?.takeIf { it != 0 }
+        val (effectiveTrollBatteryUrl, effectiveTrollEmojiUrl) = resolveTrollArtSelection(snapshot)
         val effectiveEmojiUrl = if (snapshot.trollEnabled) {
-            snapshot.trollEmojiArtUrl?.takeIf { it.isNotBlank() && snapshot.trollShowEmoji }
+            effectiveTrollEmojiUrl?.takeIf { snapshot.trollShowEmoji }
         } else {
             emojiUrl
         }
@@ -320,13 +325,19 @@ class StatusBarOverlayManager(
         }
         emojiTextView.textSize = (10f + emojiScale * 14f)
         if (snapshot.trollEnabled) {
-            val trollBatteryUrl = snapshot.trollBatteryArtUrl?.takeIf { it.isNotBlank() }
+            val density = context.resources.displayMetrics.density
+            val trollArtSizePx = (snapshot.trollEmojiSizeDp.coerceIn(20, 80) * density).roundToInt().coerceAtLeast((14f * density).roundToInt())
+            (trollArtContainer.layoutParams as LinearLayout.LayoutParams).also { params ->
+                params.width = trollArtSizePx
+                params.height = trollArtSizePx
+                trollArtContainer.layoutParams = params
+            }
             emojiArtView.visibility = View.GONE
             emojiTextView.visibility = View.GONE
             batteryArtView.visibility = View.GONE
-            if (trollBatteryUrl != null) {
+            if (effectiveTrollBatteryUrl != null) {
                 trollArtContainer.visibility = View.VISIBLE
-                trollBatteryArtView.load(trollBatteryUrl) {
+                trollBatteryArtView.load(effectiveTrollBatteryUrl) {
                     crossfade(true)
                 }
                 if (effectiveEmojiUrl != null) {
@@ -338,12 +349,28 @@ class StatusBarOverlayManager(
                     trollEmojiArtView.visibility = View.GONE
                     trollEmojiArtView.setImageDrawable(null)
                 }
-                batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
+                val trollPercentageText = if (snapshot.trollShowPercentage && snapshot.trollUseRealBattery) {
+                    " ${liveStatus.batteryPercent}%"
+                } else {
+                    ""
+                }
+                val trollChargeSuffix = if (snapshot.trollUseRealBattery && liveStatus.charging && snapshot.animateCharge) {
+                    " ⚡"
+                } else {
+                    ""
+                }
+                batteryView.text = if (snapshot.trollUseRealBattery) {
+                    "${trollPercentageText.trim()}$trollChargeSuffix".trim()
+                } else if (snapshot.trollShowPercentage) {
+                    snapshot.trollMessage.trim()
+                } else {
+                    ""
+                }
             } else {
                 trollArtContainer.visibility = View.GONE
                 trollBatteryArtView.setImageDrawable(null)
                 trollEmojiArtView.setImageDrawable(null)
-                batteryView.text = snapshot.trollMessage.trim()
+                batteryView.text = if (snapshot.trollShowPercentage) snapshot.trollMessage.trim() else ""
             }
         } else {
             trollArtContainer.visibility = View.GONE
@@ -384,7 +411,11 @@ class StatusBarOverlayManager(
             }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
-        batteryView.textSize = (11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f))
+        batteryView.textSize = if (snapshot.trollEnabled) {
+            snapshot.trollPercentageSizeDp.coerceIn(5, 40).toFloat()
+        } else {
+            11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f)
+        }
         val statusScale = 0.8f + (snapshot.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
         statusRow.scaleY = statusScale
         val density = context.resources.displayMetrics.density
@@ -443,6 +474,41 @@ class StatusBarOverlayManager(
 
         statusRow.visibility = if (snapshot.statusBarEnabled || snapshot.trollEnabled) View.VISIBLE else View.GONE
         applyNotch(snapshot.notchTemplateId, snapshot.statusBarEnabled)
+    }
+
+    private fun resolveTrollArtSelection(snapshot: OverlaySnapshot): Pair<String?, String?> {
+        if (!snapshot.trollEnabled) {
+            currentTrollBatteryArtUrl = null
+            currentTrollEmojiArtUrl = null
+            return null to null
+        }
+        val selectedBattery = snapshot.trollBatteryArtUrl?.takeIf { it.isNotBlank() }
+        val selectedEmoji = snapshot.trollEmojiArtUrl?.takeIf { it.isNotBlank() }
+        if (!snapshot.trollRandomizedMode) {
+            currentTrollBatteryArtUrl = selectedBattery
+            currentTrollEmojiArtUrl = selectedEmoji
+            return currentTrollBatteryArtUrl to currentTrollEmojiArtUrl
+        }
+        val batteryPool = snapshot.trollBatteryOptionsUrls.filter { it.isNotBlank() }
+        val emojiPool = snapshot.trollEmojiOptionsUrls.filter { it.isNotBlank() }
+        if (batteryPool.isEmpty() && emojiPool.isEmpty()) {
+            currentTrollBatteryArtUrl = selectedBattery
+            currentTrollEmojiArtUrl = selectedEmoji
+            return currentTrollBatteryArtUrl to currentTrollEmojiArtUrl
+        }
+        val now = System.currentTimeMillis()
+        val needsRefresh = currentTrollBatteryArtUrl == null && currentTrollEmojiArtUrl == null || now - lastTrollShuffleAt > 600L
+        if (needsRefresh) {
+            currentTrollBatteryArtUrl = batteryPool.randomOrNull() ?: selectedBattery
+            currentTrollEmojiArtUrl = emojiPool.randomOrNull() ?: selectedEmoji
+            lastTrollShuffleAt = now
+        }
+        return currentTrollBatteryArtUrl to currentTrollEmojiArtUrl
+    }
+
+    private fun <T> List<T>.randomOrNull(): T? {
+        if (isEmpty()) return null
+        return this[Random.nextInt(size)]
     }
 
     private fun applyStatusRowBackground(baseColor: Int, showStroke: Boolean) {

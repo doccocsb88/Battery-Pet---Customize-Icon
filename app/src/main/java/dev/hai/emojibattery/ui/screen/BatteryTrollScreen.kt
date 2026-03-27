@@ -845,13 +845,13 @@ private fun TemplateGrid(
                             verticalArrangement = Arrangement.SpaceBetween,
                         ) {
                             TrollMediaPreview(template, Modifier.weight(1f))
-                            Text(
-                                text = template.title,
-                                style = MaterialTheme.typography.labelSmall,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                maxLines = 2,
-                            )
+//                            Text(
+//                                text = template.title,
+//                                style = MaterialTheme.typography.labelSmall,
+//                                textAlign = TextAlign.Center,
+//                                color = MaterialTheme.colorScheme.onSurface,
+//                                maxLines = 2,
+//                            )
                         }
                     }
                 }
