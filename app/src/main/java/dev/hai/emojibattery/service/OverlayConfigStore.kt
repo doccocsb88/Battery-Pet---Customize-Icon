@@ -5,6 +5,7 @@ import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.BatteryIconConfig
 import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.SampleCatalog
+import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.model.stickerPresetForId
 
 data class OverlaySnapshot(
@@ -32,6 +33,9 @@ data class OverlaySnapshot(
     val stickerOffsetY: Float,
     val trollEnabled: Boolean,
     val trollMessage: String,
+    val trollBatteryArtUrl: String?,
+    val trollEmojiArtUrl: String?,
+    val trollShowEmoji: Boolean,
     val realTimeEnabled: Boolean,
     val realTimeGlyph: String,
     val realTimeTitle: String,
@@ -81,6 +85,9 @@ object OverlayConfigStore {
     private const val KEY_STICKER_OFFSET_Y = "sticker_offset_y"
     private const val KEY_TROLL_ENABLED = "troll_enabled"
     private const val KEY_TROLL_MESSAGE = "troll_message"
+    private const val KEY_TROLL_BATTERY_ART_URL = "troll_battery_art_url"
+    private const val KEY_TROLL_EMOJI_ART_URL = "troll_emoji_art_url"
+    private const val KEY_TROLL_SHOW_EMOJI = "troll_show_emoji"
     private const val KEY_REALTIME_ENABLED = "realtime_enabled"
     private const val KEY_REALTIME_GLYPH = "realtime_glyph"
     private const val KEY_REALTIME_TITLE = "realtime_title"
@@ -184,15 +191,29 @@ object OverlayConfigStore {
     }
 
     fun saveBatteryTroll(context: Context, uiState: AppUiState) {
+        val selectedTemplate = uiState.batteryTrollTemplateForId(uiState.selectedBatteryTrollTemplateId)
+        val batteryUrl = uiState.trollSelectedBatteryUrl
+            ?: selectedTemplate?.batteryOptionsUrls?.firstOrNull()
+            ?: selectedTemplate?.batteryThumbnailUrl
+            ?: selectedTemplate?.thumbnailUrl
+        val emojiUrl = uiState.trollSelectedEmojiUrl
+            ?: selectedTemplate?.emojiOptionsUrls?.firstOrNull()
+            ?: selectedTemplate?.emojiThumbnailUrl
+            ?: selectedTemplate?.thumbnailUrl
         prefs(context).edit()
             .putBoolean(KEY_TROLL_ENABLED, true)
             .putString(KEY_TROLL_MESSAGE, uiState.trollMessage)
+            .putString(KEY_TROLL_BATTERY_ART_URL, batteryUrl.orEmpty())
+            .putString(KEY_TROLL_EMOJI_ART_URL, emojiUrl.orEmpty())
+            .putBoolean(KEY_TROLL_SHOW_EMOJI, uiState.trollShowEmoji)
             .apply()
     }
 
     fun clearBatteryTroll(context: Context) {
         prefs(context).edit()
             .putBoolean(KEY_TROLL_ENABLED, false)
+            .remove(KEY_TROLL_BATTERY_ART_URL)
+            .remove(KEY_TROLL_EMOJI_ART_URL)
             .apply()
     }
 
@@ -260,6 +281,9 @@ object OverlayConfigStore {
             stickerOffsetY = prefs.getFloat(KEY_STICKER_OFFSET_Y, 0.5f).coerceIn(0f, 1f),
             trollEnabled = prefs.getBoolean(KEY_TROLL_ENABLED, false),
             trollMessage = prefs.getString(KEY_TROLL_MESSAGE, "999").orEmpty(),
+            trollBatteryArtUrl = prefs.getString(KEY_TROLL_BATTERY_ART_URL, null)?.takeIf { it.isNotBlank() },
+            trollEmojiArtUrl = prefs.getString(KEY_TROLL_EMOJI_ART_URL, null)?.takeIf { it.isNotBlank() },
+            trollShowEmoji = prefs.getBoolean(KEY_TROLL_SHOW_EMOJI, true),
             realTimeEnabled = prefs.getBoolean(KEY_REALTIME_ENABLED, false),
             realTimeGlyph = prefs.getString(KEY_REALTIME_GLYPH, "⚡").orEmpty(),
             realTimeTitle = prefs.getString(KEY_REALTIME_TITLE, "Real Time").orEmpty(),

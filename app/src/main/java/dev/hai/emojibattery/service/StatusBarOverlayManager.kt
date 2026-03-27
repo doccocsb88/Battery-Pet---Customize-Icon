@@ -58,6 +58,9 @@ class StatusBarOverlayManager(
     private val emojiTextView = TextView(context)
     private val batteryView = TextView(context)
     private val batteryArtView = ImageView(context)
+    private val trollArtContainer = FrameLayout(context)
+    private val trollBatteryArtView = ImageView(context)
+    private val trollEmojiArtView = ImageView(context)
     private val stickerEmojiView = TextView(context)
     private val stickerImageView = ImageView(context)
     private val trollView = TextView(context)
@@ -132,11 +135,36 @@ class StatusBarOverlayManager(
         emojiArtView.layoutParams = LinearLayout.LayoutParams(emojiArtSize, emojiArtSize)
         val artSize = (18 * context.resources.displayMetrics.density).toInt().coerceAtLeast(14)
         batteryArtView.layoutParams = LinearLayout.LayoutParams(artSize, artSize)
+        trollArtContainer.layoutParams = LinearLayout.LayoutParams(artSize, artSize).apply {
+            marginStart = 12
+        }
+        trollBatteryArtView.scaleType = ImageView.ScaleType.FIT_CENTER
+        trollBatteryArtView.adjustViewBounds = true
+        trollEmojiArtView.scaleType = ImageView.ScaleType.FIT_CENTER
+        trollEmojiArtView.adjustViewBounds = true
+        trollArtContainer.addView(
+            trollBatteryArtView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER,
+            ),
+        )
+        trollArtContainer.addView(
+            trollEmojiArtView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER,
+            ),
+        )
+        trollArtContainer.visibility = View.GONE
         rightCluster.addView(wifiView)
         rightCluster.addView(signalView)
         rightCluster.addView(emojiArtView)
         rightCluster.addView(emojiTextView)
         rightCluster.addView(batteryArtView)
+        rightCluster.addView(trollArtContainer)
         rightCluster.addView(batteryView)
         statusRow.addView(rightCluster)
 
@@ -278,6 +306,11 @@ class StatusBarOverlayManager(
         val batteryDrawable = snapshot.batteryArtDrawableRes?.takeIf { it != 0 }
         val emojiUrl = snapshot.emojiArtUrl?.takeIf { it.isNotBlank() }
         val emojiDrawable = snapshot.emojiArtDrawableRes?.takeIf { it != 0 }
+        val effectiveEmojiUrl = if (snapshot.trollEnabled) {
+            snapshot.trollEmojiArtUrl?.takeIf { it.isNotBlank() && snapshot.trollShowEmoji }
+        } else {
+            emojiUrl
+        }
         val emojiScale = snapshot.emojiScale.coerceIn(0f, 1f)
         val emojiSizePx = ((10f + emojiScale * 20f) * context.resources.displayMetrics.density).roundToInt().coerceAtLeast((12f * context.resources.displayMetrics.density).roundToInt())
         (emojiArtView.layoutParams as LinearLayout.LayoutParams).also { params ->
@@ -286,41 +319,69 @@ class StatusBarOverlayManager(
             emojiArtView.layoutParams = params
         }
         emojiTextView.textSize = (10f + emojiScale * 14f)
-        when {
-            emojiUrl != null -> {
-                emojiArtView.visibility = View.VISIBLE
-                emojiTextView.visibility = View.GONE
-                emojiArtView.load(emojiUrl) {
+        if (snapshot.trollEnabled) {
+            val trollBatteryUrl = snapshot.trollBatteryArtUrl?.takeIf { it.isNotBlank() }
+            emojiArtView.visibility = View.GONE
+            emojiTextView.visibility = View.GONE
+            batteryArtView.visibility = View.GONE
+            if (trollBatteryUrl != null) {
+                trollArtContainer.visibility = View.VISIBLE
+                trollBatteryArtView.load(trollBatteryUrl) {
                     crossfade(true)
                 }
+                if (effectiveEmojiUrl != null) {
+                    trollEmojiArtView.visibility = View.VISIBLE
+                    trollEmojiArtView.load(effectiveEmojiUrl) {
+                        crossfade(true)
+                    }
+                } else {
+                    trollEmojiArtView.visibility = View.GONE
+                    trollEmojiArtView.setImageDrawable(null)
+                }
+                batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
+            } else {
+                trollArtContainer.visibility = View.GONE
+                trollBatteryArtView.setImageDrawable(null)
+                trollEmojiArtView.setImageDrawable(null)
+                batteryView.text = snapshot.trollMessage.trim()
             }
-            emojiDrawable != null -> {
-                emojiArtView.visibility = View.VISIBLE
-                emojiTextView.visibility = View.GONE
-                emojiArtView.setImageResource(emojiDrawable)
-            }
-            else -> {
-                emojiArtView.visibility = View.GONE
-                emojiTextView.visibility = View.VISIBLE
-                emojiTextView.text = emojiLabel
-            }
-        }
-        if (snapshot.trollEnabled) {
-            batteryArtView.visibility = View.GONE
-            batteryView.text = snapshot.trollMessage.trim()
-        } else if (batteryUrl != null) {
-            batteryArtView.visibility = View.VISIBLE
-            batteryArtView.load(batteryUrl) {
-                crossfade(true)
-            }
-            batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
-        } else if (batteryDrawable != null) {
-            batteryArtView.visibility = View.VISIBLE
-            batteryArtView.setImageResource(batteryDrawable)
-            batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
         } else {
-            batteryArtView.visibility = View.GONE
-            batteryView.text = "$batteryLabel$percentageText$chargeSuffix".trim()
+            trollArtContainer.visibility = View.GONE
+            trollBatteryArtView.setImageDrawable(null)
+            trollEmojiArtView.setImageDrawable(null)
+            when {
+                effectiveEmojiUrl != null -> {
+                    emojiArtView.visibility = View.VISIBLE
+                    emojiTextView.visibility = View.GONE
+                    emojiArtView.load(effectiveEmojiUrl) {
+                        crossfade(true)
+                    }
+                }
+                emojiDrawable != null -> {
+                    emojiArtView.visibility = View.VISIBLE
+                    emojiTextView.visibility = View.GONE
+                    emojiArtView.setImageResource(emojiDrawable)
+                }
+                else -> {
+                    emojiArtView.visibility = View.GONE
+                    emojiTextView.visibility = View.VISIBLE
+                    emojiTextView.text = emojiLabel
+                }
+            }
+            if (batteryUrl != null) {
+                batteryArtView.visibility = View.VISIBLE
+                batteryArtView.load(batteryUrl) {
+                    crossfade(true)
+                }
+                batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
+            } else if (batteryDrawable != null) {
+                batteryArtView.visibility = View.VISIBLE
+                batteryArtView.setImageResource(batteryDrawable)
+                batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
+            } else {
+                batteryArtView.visibility = View.GONE
+                batteryView.text = "$batteryLabel$percentageText$chargeSuffix".trim()
+            }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
         batteryView.textSize = (11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f))

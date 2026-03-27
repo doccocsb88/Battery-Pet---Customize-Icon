@@ -7,8 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -74,7 +73,6 @@ private enum class TrollMediaMode {
     Battery,
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun BatteryTrollScreen(
     uiState: AppUiState,
@@ -88,6 +86,8 @@ internal fun BatteryTrollScreen(
     onSetEmojiSize: (Int) -> Unit,
     onSetRandomizedMode: (Boolean) -> Unit,
     onSetShowEmoji: (Boolean) -> Unit,
+    onSelectEmojiOption: (String) -> Unit,
+    onSelectBatteryOption: (String) -> Unit,
     onToggleAutoDrop: (Boolean) -> Unit,
     onOpenTutorial: () -> Unit,
     onRefreshBatteryTrollCatalog: () -> Unit,
@@ -117,8 +117,21 @@ internal fun BatteryTrollScreen(
     val batteryChoices = selected.batteryOptionsUrls.ifEmpty {
         listOfNotNull(selected.batteryThumbnailUrl ?: selected.thumbnailUrl)
     }
-    var selectedEmojiIndex by remember(selected.id, emojiChoices) { mutableStateOf(0) }
-    var selectedBatteryIndex by remember(selected.id, batteryChoices) { mutableStateOf(0) }
+    val selectedEmojiIndex = (uiState.trollSelectedEmojiUrl?.let { emojiChoices.indexOf(it) } ?: -1).let { idx ->
+        if (idx >= 0) idx else 0
+    }
+    val selectedBatteryIndex = (uiState.trollSelectedBatteryUrl?.let { batteryChoices.indexOf(it) } ?: -1).let { idx ->
+        if (idx >= 0) idx else 0
+    }
+
+    LaunchedEffect(selected.id, emojiChoices, batteryChoices) {
+        if (emojiChoices.isNotEmpty() && uiState.trollSelectedEmojiUrl !in emojiChoices) {
+            onSelectEmojiOption(emojiChoices.first())
+        }
+        if (batteryChoices.isNotEmpty() && uiState.trollSelectedBatteryUrl !in batteryChoices) {
+            onSelectBatteryOption(batteryChoices.first())
+        }
+    }
 
     var showEditDialog by remember { mutableStateOf(false) }
     var editText by remember(uiState.trollMessage) { mutableStateOf(uiState.trollMessage) }
@@ -146,8 +159,6 @@ internal fun BatteryTrollScreen(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                Spacer(Modifier.weight(1f))
-                Text(text = selected.accentGlyph, style = MaterialTheme.typography.headlineMedium)
             }
         },
         bottomBar = {
@@ -273,7 +284,10 @@ internal fun BatteryTrollScreen(
                                     )
                                 }
                             }
-                            BatteryCellPreview(template = selected)
+                            BatteryCellPreview(
+                                batteryImageUrl = batteryChoices.getOrNull(selectedBatteryIndex),
+                                emojiImageUrl = if (uiState.trollShowEmoji) emojiChoices.getOrNull(selectedEmojiIndex) else null,
+                            )
                         }
                     }
                 }
@@ -396,7 +410,7 @@ internal fun BatteryTrollScreen(
                                         imageUrl = imageUrl,
                                         selected = index == selectedEmojiIndex,
                                         enabled = uiState.trollShowEmoji,
-                                        onClick = { selectedEmojiIndex = index },
+                                        onClick = { onSelectEmojiOption(imageUrl) },
                                         modifier = Modifier.weight(1f),
                                     )
                                 } else {
@@ -421,7 +435,7 @@ internal fun BatteryTrollScreen(
                                         imageUrl = imageUrl,
                                         selected = index == selectedBatteryIndex,
                                         enabled = uiState.trollShowEmoji,
-                                        onClick = { selectedBatteryIndex = index },
+                                        onClick = { onSelectBatteryOption(imageUrl) },
                                         modifier = Modifier.weight(1f),
                                     )
                                 } else {
@@ -556,40 +570,51 @@ internal fun BatteryTrollScreen(
 }
 
 @Composable
-private fun BatteryCellPreview(template: BatteryTrollTemplate) {
-    Row(
+private fun BatteryCellPreview(
+    batteryImageUrl: String?,
+    emojiImageUrl: String?,
+) {
+    Box(
         modifier = Modifier
-            .width(130.dp)
-            .height(64.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .width(170.dp)
+            .height(170.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-                .clip(RoundedCornerShape(14.dp))
-                .background(Color(0xFFFFA72D))
-                .border(2.dp, Color(0xFFFFA72D), RoundedCornerShape(14.dp)),
+                .width(170.dp)
+                .height(170.dp)
+                .background(Color.LightGray),
             contentAlignment = Alignment.Center,
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 8.dp, vertical = 6.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color.White),
-                contentAlignment = Alignment.Center,
-            ) {
-                TrollMediaPreview(template, Modifier.size(34.dp))
+            if (!batteryImageUrl.isNullOrBlank()) {
+                Box() {
+                AsyncImage(
+                    model = batteryImageUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .width(170.dp)
+                        .height(170.dp),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+
+            }
+            if (!emojiImageUrl.isNullOrBlank()) {
+                Box() {
+                    AsyncImage(
+                        model = emojiImageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .width(170.dp)
+                            .height(170.dp),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
             }
         }
-        Box(
-            modifier = Modifier
-                .width(8.dp)
-                .height(20.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(Color(0xFFFFA72D)),
-        )
     }
 }
 

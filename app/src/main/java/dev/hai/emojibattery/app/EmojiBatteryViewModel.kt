@@ -684,12 +684,34 @@ class EmojiBatteryViewModel(
 
     fun selectBatteryTrollTemplate(templateId: String) {
         val template = _uiState.value.batteryTrollTemplateForId(templateId) ?: return
+        val defaultEmoji = template.emojiOptionsUrls.firstOrNull()
+            ?: template.emojiThumbnailUrl
+            ?: template.thumbnailUrl
+        val defaultBattery = template.batteryOptionsUrls.firstOrNull()
+            ?: template.batteryThumbnailUrl
+            ?: template.thumbnailUrl
+        val resolvedMessage = template.prankMessage
+            .takeIf {
+                it.isNotBlank() &&
+                    !it.matches(Regex("(?i)^battery\\d+\$"))
+            }
+            ?: "999%"
         _uiState.update {
             it.copy(
                 selectedBatteryTrollTemplateId = templateId,
-                trollMessage = template.prankMessage,
+                trollMessage = resolvedMessage,
+                trollSelectedEmojiUrl = defaultEmoji,
+                trollSelectedBatteryUrl = defaultBattery,
             )
         }
+    }
+
+    fun selectBatteryTrollEmoji(url: String) {
+        _uiState.update { it.copy(trollSelectedEmojiUrl = url) }
+    }
+
+    fun selectBatteryTrollBattery(url: String) {
+        _uiState.update { it.copy(trollSelectedBatteryUrl = url) }
     }
 
     fun setBatteryTrollEnabled(enabled: Boolean) {

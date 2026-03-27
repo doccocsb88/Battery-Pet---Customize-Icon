@@ -273,6 +273,8 @@ data class AppUiState(
     val trollRandomizedMode: Boolean = false,
     val trollShowEmoji: Boolean = true,
     val trollAutoDrop: Boolean = true,
+    val trollSelectedEmojiUrl: String? = null,
+    val trollSelectedBatteryUrl: String? = null,
     val trollOverlayEnabled: Boolean = false,
     val tutorialCompleted: Boolean = false,
     val tutorialPage: Int = 0,

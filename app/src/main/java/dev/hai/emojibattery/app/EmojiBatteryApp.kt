@@ -549,6 +549,8 @@ fun EmojiBatteryApp(
                     onSetEmojiSize = viewModel::setTrollEmojiSizeDp,
                     onSetRandomizedMode = viewModel::setTrollRandomizedMode,
                     onSetShowEmoji = viewModel::setTrollShowEmoji,
+                    onSelectEmojiOption = viewModel::selectBatteryTrollEmoji,
+                    onSelectBatteryOption = viewModel::selectBatteryTrollBattery,
                     onToggleAutoDrop = viewModel::setTrollAutoDrop,
                     onOpenTutorial = {
                         viewModel.replayTutorial()
