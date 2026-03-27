@@ -30,6 +30,7 @@ class OverlayAccessibilityService : AccessibilityService() {
     private var batteryRegistered = false
     private var connectivityRegistered = false
     private var timeRegistered = false
+    private var screenRegistered = false
 
     private val refreshReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -57,6 +58,20 @@ class OverlayAccessibilityService : AccessibilityService() {
             refreshOverlay()
         }
     }
+    private val screenReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                Intent.ACTION_SCREEN_ON,
+                Intent.ACTION_SCREEN_OFF,
+                Intent.ACTION_USER_PRESENT,
+                -> {
+                    // Randomized troll mode should rotate when screen power state changes.
+                    overlayManager.requestTrollShuffle()
+                    refreshOverlay()
+                }
+            }
+        }
+    }
     private val phoneStateListener = object : PhoneStateListener() {
         override fun onSignalStrengthsChanged(signalStrength: SignalStrength) {
             signalLevel = signalStrength.level
@@ -74,6 +89,7 @@ class OverlayAccessibilityService : AccessibilityService() {
         registerBatteryReceiver()
         registerConnectivityReceiver()
         registerTimeReceiver()
+        registerScreenReceiver()
         registerSignalListener()
         refreshOverlay()
     }
@@ -91,6 +107,7 @@ class OverlayAccessibilityService : AccessibilityService() {
         safeUnregister(batteryRegistered, batteryReceiver)
         safeUnregister(connectivityRegistered, connectivityReceiver)
         safeUnregister(timeRegistered, timeReceiver)
+        safeUnregister(screenRegistered, screenReceiver)
         getSystemService<TelephonyManager>()?.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
         overlayManager.detach()
         super.onDestroy()
@@ -159,6 +176,21 @@ class OverlayAccessibilityService : AccessibilityService() {
             registerReceiver(timeReceiver, filter)
         }
         timeRegistered = true
+    }
+
+    private fun registerScreenReceiver() {
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addAction(Intent.ACTION_USER_PRESENT)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(screenReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("DEPRECATION")
+            registerReceiver(screenReceiver, filter)
+        }
+        screenRegistered = true
     }
 
     private fun registerSignalListener() {

@@ -746,7 +746,12 @@ class EmojiBatteryViewModel(
     }
 
     fun setTrollRandomizedMode(enabled: Boolean) {
-        _uiState.update { it.copy(trollRandomizedMode = enabled) }
+        _uiState.update {
+            it.copy(
+                trollRandomizedMode = enabled,
+                trollAutoDrop = enabled,
+            )
+        }
     }
 
     fun setTrollShowEmoji(enabled: Boolean) {
@@ -754,7 +759,12 @@ class EmojiBatteryViewModel(
     }
 
     fun setTrollAutoDrop(enabled: Boolean) {
-        _uiState.update { it.copy(trollAutoDrop = enabled) }
+        _uiState.update {
+            it.copy(
+                trollAutoDrop = enabled,
+                trollRandomizedMode = enabled,
+            )
+        }
     }
 
     fun applyBatteryTroll() {

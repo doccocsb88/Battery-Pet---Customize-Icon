@@ -77,7 +77,8 @@ class StatusBarOverlayManager(
     private var layoutParams: WindowManager.LayoutParams? = null
     private var currentAnimationKey: String? = null
     private var currentAnimationIsLottie: Boolean? = null
-    private var lastTrollShuffleAt: Long = 0L
+    private var trollShuffleVersion: Long = 0L
+    private var appliedTrollShuffleVersion: Long = -1L
     private var currentTrollBatteryArtUrl: String? = null
     private var currentTrollEmojiArtUrl: String? = null
 
@@ -476,10 +477,19 @@ class StatusBarOverlayManager(
         applyNotch(snapshot.notchTemplateId, snapshot.statusBarEnabled)
     }
 
+    /**
+     * Mirror original randomized behavior: update to a new funny pair on screen on/off events,
+     * not continuously during every periodic overlay refresh.
+     */
+    fun requestTrollShuffle() {
+        trollShuffleVersion += 1L
+    }
+
     private fun resolveTrollArtSelection(snapshot: OverlaySnapshot): Pair<String?, String?> {
         if (!snapshot.trollEnabled) {
             currentTrollBatteryArtUrl = null
             currentTrollEmojiArtUrl = null
+            appliedTrollShuffleVersion = -1L
             return null to null
         }
         val selectedBattery = snapshot.trollBatteryArtUrl?.takeIf { it.isNotBlank() }
@@ -487,6 +497,7 @@ class StatusBarOverlayManager(
         if (!snapshot.trollRandomizedMode) {
             currentTrollBatteryArtUrl = selectedBattery
             currentTrollEmojiArtUrl = selectedEmoji
+            appliedTrollShuffleVersion = -1L
             return currentTrollBatteryArtUrl to currentTrollEmojiArtUrl
         }
         val batteryPool = snapshot.trollBatteryOptionsUrls.filter { it.isNotBlank() }
@@ -494,14 +505,15 @@ class StatusBarOverlayManager(
         if (batteryPool.isEmpty() && emojiPool.isEmpty()) {
             currentTrollBatteryArtUrl = selectedBattery
             currentTrollEmojiArtUrl = selectedEmoji
+            appliedTrollShuffleVersion = -1L
             return currentTrollBatteryArtUrl to currentTrollEmojiArtUrl
         }
-        val now = System.currentTimeMillis()
-        val needsRefresh = currentTrollBatteryArtUrl == null && currentTrollEmojiArtUrl == null || now - lastTrollShuffleAt > 600L
+        val needsRefresh = currentTrollBatteryArtUrl == null ||
+            (trollShuffleVersion != appliedTrollShuffleVersion)
         if (needsRefresh) {
             currentTrollBatteryArtUrl = batteryPool.randomOrNull() ?: selectedBattery
             currentTrollEmojiArtUrl = emojiPool.randomOrNull() ?: selectedEmoji
-            lastTrollShuffleAt = now
+            appliedTrollShuffleVersion = trollShuffleVersion
         }
         return currentTrollBatteryArtUrl to currentTrollEmojiArtUrl
     }

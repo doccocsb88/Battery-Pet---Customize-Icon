@@ -272,7 +272,8 @@ data class AppUiState(
     val trollEmojiSizeDp: Int = 40,
     val trollRandomizedMode: Boolean = false,
     val trollShowEmoji: Boolean = true,
-    val trollAutoDrop: Boolean = true,
+    // Original app ties "more funny each time screen turned on/off" to randomized mode.
+    val trollAutoDrop: Boolean = false,
     val trollSelectedEmojiUrl: String? = null,
     val trollSelectedBatteryUrl: String? = null,
     val trollOverlayEnabled: Boolean = false,
