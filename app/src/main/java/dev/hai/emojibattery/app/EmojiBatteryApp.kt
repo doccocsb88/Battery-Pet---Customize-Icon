@@ -259,17 +259,18 @@ fun EmojiBatteryApp(
                     onOpenAnimationList = { selectedId ->
                         navController.navigate(AppRoute.AnimationList.create(selectedId))
                     },
-                    onApply = { enabled, sizePercent, templateId ->
+                    onApply = { enabled, sizePercent, offsetX, templateId ->
                         val accessibilityEnabled = AccessibilityBridge.isEnabled(context)
                         Log.d(
                             "AnimationApply",
-                            "apply clicked enabled=$enabled sizePercent=$sizePercent templateId=$templateId accessibility=$accessibilityEnabled",
+                            "apply clicked enabled=$enabled sizePercent=$sizePercent offsetX=$offsetX templateId=$templateId accessibility=$accessibilityEnabled",
                         )
                         viewModel.syncAccessibilityGranted(accessibilityEnabled)
                         OverlayConfigStore.saveAnimationPrefs(
                             context = context,
                             enabled = enabled,
                             sizePercent = sizePercent,
+                            offsetX = offsetX,
                             templateId = templateId,
                         )
                         if (accessibilityEnabled) {

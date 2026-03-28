@@ -443,30 +443,30 @@ internal fun EmojiStickerScreen(
                         }
                     }
                     HorizontalDivider(thickness = 1.dp, color = Color.Black)
-                    Text(
-                        stringResource(R.string.sticker_selected_controls),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    if (selectedSticker != null && selectedPlacement != null) {
-                        Text(
-                            "${selectedSticker.glyph} ${selectedSticker.name}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Text(
-                            stringResource(R.string.sticker_adjustment_inline_hint),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    } else {
+//                    Text(
+//                        stringResource(R.string.sticker_selected_controls),
+//                        style = MaterialTheme.typography.titleSmall,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = MaterialTheme.colorScheme.onSurface,
+//                    )
+//                    if (selectedSticker != null && selectedPlacement != null) {
+//                        Text(
+//                            "${selectedSticker.glyph} ${selectedSticker.name}",
+//                            style = MaterialTheme.typography.bodyLarge,
+//                            color = MaterialTheme.colorScheme.onSurface,
+//                        )
+//                        Text(
+//                            stringResource(R.string.sticker_adjustment_inline_hint),
+//                            style = MaterialTheme.typography.bodySmall,
+//                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                        )
+//                    } else {
                         Text(
                             stringResource(R.string.sticker_select_to_edit_hint),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
-                    }
+//                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),

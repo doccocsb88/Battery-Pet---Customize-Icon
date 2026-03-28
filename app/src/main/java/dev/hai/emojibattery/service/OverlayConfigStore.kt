@@ -61,6 +61,8 @@ data class OverlaySnapshot(
     val showStroke: Boolean,
     val animationEnabled: Boolean,
     val animationSizePercent: Int,
+    /** Horizontal anchor for animation overlay (0f..1f). */
+    val animationOffsetX: Float,
     val animationAssetPath: String?,
     val animationIsLottie: Boolean,
 )
@@ -69,6 +71,8 @@ data class AnimationOverlayPrefs(
     val enabled: Boolean,
     /** 0..100 scale from original seekbar style. */
     val sizePercent: Int,
+    /** Horizontal anchor for animation overlay (0f..1f). */
+    val offsetX: Float,
     val templateId: Int,
 )
 
@@ -120,6 +124,7 @@ object OverlayConfigStore {
     private const val KEY_SHOW_STROKE = "show_stroke"
     private const val KEY_ANIMATION_ENABLED = "animation_enabled"
     private const val KEY_ANIMATION_SIZE_PERCENT = "animation_size_percent"
+    private const val KEY_ANIMATION_OFFSET_X = "animation_offset_x"
     private const val KEY_ANIMATION_TEMPLATE_ID = "animation_template_id"
 
     /**
@@ -271,11 +276,13 @@ object OverlayConfigStore {
         context: Context,
         enabled: Boolean,
         sizePercent: Int,
+        offsetX: Float,
         templateId: Int,
     ) {
         prefs(context).edit()
             .putBoolean(KEY_ANIMATION_ENABLED, enabled)
             .putInt(KEY_ANIMATION_SIZE_PERCENT, sizePercent.coerceIn(0, 100))
+            .putFloat(KEY_ANIMATION_OFFSET_X, offsetX.coerceIn(0f, 1f))
             .putInt(KEY_ANIMATION_TEMPLATE_ID, templateId)
             .apply()
     }
@@ -285,6 +292,7 @@ object OverlayConfigStore {
         return AnimationOverlayPrefs(
             enabled = prefs.getBoolean(KEY_ANIMATION_ENABLED, false),
             sizePercent = prefs.getInt(KEY_ANIMATION_SIZE_PERCENT, 50).coerceIn(0, 100),
+            offsetX = prefs.getFloat(KEY_ANIMATION_OFFSET_X, 0.5f).coerceIn(0f, 1f),
             templateId = prefs.getInt(KEY_ANIMATION_TEMPLATE_ID, 0),
         )
     }
@@ -342,6 +350,7 @@ object OverlayConfigStore {
             showStroke = prefs.getBoolean(KEY_SHOW_STROKE, SampleCatalog.defaultConfig.showStroke),
             animationEnabled = animationEnabled,
             animationSizePercent = animationSizePercent,
+            animationOffsetX = prefs.getFloat(KEY_ANIMATION_OFFSET_X, 0.5f).coerceIn(0f, 1f),
             animationAssetPath = animationTemplate.assetPath,
             animationIsLottie = animationTemplate.isLottie,
         )

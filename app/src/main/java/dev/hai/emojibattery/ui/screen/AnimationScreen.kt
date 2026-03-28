@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,8 +15,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -47,6 +51,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import co.q7labs.co.emoji.R
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -66,13 +71,14 @@ internal fun AnimationScreen(
     selectedFromList: Int?,
     onConsumeListSelection: () -> Unit,
     onOpenAnimationList: (Int) -> Unit,
-    onApply: (enabled: Boolean, sizePercent: Int, templateId: Int) -> Unit,
+    onApply: (enabled: Boolean, sizePercent: Int, offsetX: Float, templateId: Int) -> Unit,
 ) {
     val context = LocalContext.current
     val initialPrefs = remember { OverlayConfigStore.readAnimationPrefs(context) }
     val templates = remember { AnimationTemplateCatalog.templates }
     var enabled by remember { mutableStateOf(initialPrefs.enabled) }
     var sizePercent by remember { mutableIntStateOf(initialPrefs.sizePercent) }
+    var offsetX by remember { mutableStateOf(initialPrefs.offsetX.coerceIn(0f, 1f)) }
     var selectedId by remember { mutableIntStateOf(initialPrefs.templateId) }
     if (selectedFromList != null && selectedFromList >= 0 && selectedFromList != selectedId) {
         selectedId = selectedFromList
@@ -80,6 +86,7 @@ internal fun AnimationScreen(
     }
     val selected = remember(selectedId) { AnimationTemplateCatalog.resolve(selectedId) }
     val previewItems = templates.take(6)
+    val previewCardHeight = lerp(64.dp, 140.dp, (sizePercent.coerceIn(0, 100) / 100f))
 
     Scaffold(
         topBar = {
@@ -105,11 +112,29 @@ internal fun AnimationScreen(
                 Spacer(Modifier.weight(1f))
             }
         },
+        bottomBar = {
+            Surface(
+                tonalElevation = 2.dp,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Button(
+                    onClick = {
+                        onApply(enabled, sizePercent, offsetX, selectedId)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 22.dp, vertical = 12.dp),
+                ) {
+                    Text(text = stringResource(R.string.apply))
+                }
+            }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -120,10 +145,12 @@ internal fun AnimationScreen(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(110.dp),
+                    .height(previewCardHeight),
             ) {
                 AnimationPreview(
                     template = selected,
+                    sizePercent = sizePercent,
+                    offsetX = offsetX,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -170,6 +197,15 @@ internal fun AnimationScreen(
                         value = sizePercent.toFloat(),
                         valueRange = 0f..100f,
                         onValueChange = { sizePercent = it.toInt() },
+                    )
+                    Text(
+                        text = "Position X: ${(offsetX * 100f).toInt()}%",
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                    Slider(
+                        value = offsetX,
+                        valueRange = 0f..1f,
+                        onValueChange = { offsetX = it.coerceIn(0f, 1f) },
                     )
                     Text(
                         text = stringResource(R.string.animation_style),
@@ -223,17 +259,6 @@ internal fun AnimationScreen(
                     }
                 }
             }
-
-            Button(
-                onClick = {
-                    onApply(enabled, sizePercent, selectedId)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 22.dp),
-            ) {
-                Text(text = stringResource(R.string.apply))
-            }
         }
     }
 }
@@ -241,35 +266,48 @@ internal fun AnimationScreen(
 @Composable
 internal fun AnimationPreview(
     template: AnimationTemplate,
+    sizePercent: Int = 50,
+    offsetX: Float = 0.5f,
     modifier: Modifier = Modifier,
 ) {
-    if (template.isLottie) {
-        val composition by rememberLottieComposition(LottieCompositionSpec.Asset(template.assetPath))
-        LottieAnimation(
-            composition = composition,
-            iterations = LottieConstants.IterateForever,
-            modifier = modifier,
-        )
-    } else {
-        val context = LocalContext.current
-        val request = remember(template.assetPath) {
-            ImageRequest.Builder(context)
-                .data("file:///android_asset/${template.assetPath}")
-                .allowHardware(false)
-                .decoderFactory(
-                    if (Build.VERSION.SDK_INT >= 28) {
-                        ImageDecoderDecoder.Factory()
-                    } else {
-                        GifDecoder.Factory()
-                    },
-                )
-                .build()
+    BoxWithConstraints(modifier = modifier) {
+        val clampedSize = sizePercent.coerceIn(0, 100)
+        val clampedOffset = offsetX.coerceIn(0f, 1f)
+        val sizeRatio = (clampedSize / 100f).coerceIn(0.2f, 1f)
+        val artSize = minOf(maxWidth, maxHeight) * sizeRatio
+        val xOffset = (maxWidth - artSize) * clampedOffset
+        val yOffset = (maxHeight - artSize) / 2
+        val animationModifier = Modifier
+            .size(artSize)
+            .offset(x = xOffset, y = yOffset)
+        if (template.isLottie) {
+            val composition by rememberLottieComposition(LottieCompositionSpec.Asset(template.assetPath))
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = animationModifier,
+            )
+        } else {
+            val context = LocalContext.current
+            val request = remember(template.assetPath) {
+                ImageRequest.Builder(context)
+                    .data("file:///android_asset/${template.assetPath}")
+                    .allowHardware(false)
+                    .decoderFactory(
+                        if (Build.VERSION.SDK_INT >= 28) {
+                            ImageDecoderDecoder.Factory()
+                        } else {
+                            GifDecoder.Factory()
+                        },
+                    )
+                    .build()
+            }
+            AsyncImage(
+                model = request,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = animationModifier,
+            )
         }
-        AsyncImage(
-            model = request,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = modifier,
-        )
     }
 }

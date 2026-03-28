@@ -595,14 +595,20 @@ class StatusBarOverlayManager(
         val density = context.resources.displayMetrics.density
         val sizeDp = 14 + (snapshot.animationSizePercent * 26 / 100)
         val sizePx = (sizeDp * density).roundToInt().coerceAtLeast((12 * density).roundToInt())
+        val screenWidth = context.resources.displayMetrics.widthPixels
+        val left = ((screenWidth - sizePx) * snapshot.animationOffsetX.coerceIn(0f, 1f)).roundToInt().coerceAtLeast(0)
         (animationImageView.layoutParams as FrameLayout.LayoutParams).also { params ->
             params.width = sizePx
             params.height = sizePx
+            params.gravity = Gravity.TOP or Gravity.START
+            params.leftMargin = left
             animationImageView.layoutParams = params
         }
         (animationLottieView.layoutParams as FrameLayout.LayoutParams).also { params ->
             params.width = sizePx
             params.height = sizePx
+            params.gravity = Gravity.TOP or Gravity.START
+            params.leftMargin = left
             animationLottieView.layoutParams = params
         }
 
