@@ -69,7 +69,6 @@ internal fun ChargeFeatureScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Spacer(Modifier.weight(1f))
-                Text(text = "🍼", style = MaterialTheme.typography.headlineMedium)
             }
         },
     ) { innerPadding ->

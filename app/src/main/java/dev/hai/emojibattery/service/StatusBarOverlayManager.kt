@@ -284,6 +284,7 @@ class StatusBarOverlayManager(
                 applyStatusRowBackground(
                     baseColor = android.graphics.Color.TRANSPARENT,
                     showStroke = snapshot.showStroke,
+                    rounded = true,
                 )
             }
             templateDrawableRes != null -> {
@@ -292,6 +293,7 @@ class StatusBarOverlayManager(
                 applyStatusRowBackground(
                     baseColor = android.graphics.Color.TRANSPARENT,
                     showStroke = snapshot.showStroke,
+                    rounded = true,
                 )
             }
             else -> {
@@ -302,6 +304,7 @@ class StatusBarOverlayManager(
                 applyStatusRowBackground(
                     baseColor = snapshot.backgroundColor.toInt(),
                     showStroke = snapshot.showStroke,
+                    rounded = false,
                 )
             }
         }
@@ -527,11 +530,11 @@ class StatusBarOverlayManager(
         return this[Random.nextInt(size)]
     }
 
-    private fun applyStatusRowBackground(baseColor: Int, showStroke: Boolean) {
+    private fun applyStatusRowBackground(baseColor: Int, showStroke: Boolean, rounded: Boolean) {
         val density = context.resources.displayMetrics.density
         val drawable = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
-            cornerRadius = 14f * density
+            cornerRadius = if (rounded) 14f * density else 0f
             setColor(baseColor)
             if (showStroke) {
                 setStroke((1f * density).roundToInt().coerceAtLeast(1), ColorUtils.setAlphaComponent(0xFFFFFFFF.toInt(), 0x55))
