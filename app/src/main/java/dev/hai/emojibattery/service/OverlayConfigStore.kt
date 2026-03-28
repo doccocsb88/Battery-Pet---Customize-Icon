@@ -28,6 +28,8 @@ data class OverlaySnapshot(
     val stickerGlyph: String,
     /** When set, overlay draws the Volio thumbnail instead of [stickerGlyph]. */
     val stickerThumbnailUrl: String?,
+    /** Optional Lottie JSON source for sticker overlay (preserved on apply). */
+    val stickerLottieUrl: String?,
     val stickerSize: Float,
     val stickerRotation: Float,
     val stickerOffsetX: Float,
@@ -87,6 +89,7 @@ object OverlayConfigStore {
     private const val KEY_STICKER_ENABLED = "sticker_enabled"
     private const val KEY_STICKER_GLYPH = "sticker_glyph"
     private const val KEY_STICKER_THUMB_URL = "sticker_thumb_url"
+    private const val KEY_STICKER_LOTTIE_URL = "sticker_lottie_url"
     private const val KEY_STICKER_SIZE = "sticker_size"
     private const val KEY_STICKER_ROTATION = "sticker_rotation"
     private const val KEY_STICKER_OFFSET_X = "sticker_offset_x"
@@ -187,6 +190,7 @@ object OverlayConfigStore {
             .putBoolean(KEY_STICKER_ENABLED, true)
             .putString(KEY_STICKER_GLYPH, sticker.glyph)
             .putString(KEY_STICKER_THUMB_URL, sticker.thumbnailUrl?.takeIf { it.isNotBlank() }.orEmpty())
+            .putString(KEY_STICKER_LOTTIE_URL, sticker.lottieUrl?.takeIf { it.isNotBlank() }.orEmpty())
             .putFloat(KEY_STICKER_SIZE, placement?.size?.coerceIn(0.2f, 1f) ?: 0.5f)
             .putFloat(KEY_STICKER_ROTATION, placement?.rotation?.coerceIn(-180f, 180f) ?: 0f)
             .putFloat(KEY_STICKER_OFFSET_X, placement?.offsetX?.coerceIn(0f, 1f) ?: 0.5f)
@@ -198,6 +202,7 @@ object OverlayConfigStore {
         prefs(context).edit()
             .putBoolean(KEY_STICKER_ENABLED, false)
             .remove(KEY_STICKER_THUMB_URL)
+            .remove(KEY_STICKER_LOTTIE_URL)
             .remove(KEY_STICKER_SIZE)
             .remove(KEY_STICKER_ROTATION)
             .remove(KEY_STICKER_OFFSET_X)
@@ -305,6 +310,7 @@ object OverlayConfigStore {
             stickerEnabled = prefs.getBoolean(KEY_STICKER_ENABLED, false),
             stickerGlyph = prefs.getString(KEY_STICKER_GLYPH, "✨").orEmpty(),
             stickerThumbnailUrl = prefs.getString(KEY_STICKER_THUMB_URL, null)?.takeIf { it.isNotBlank() },
+            stickerLottieUrl = prefs.getString(KEY_STICKER_LOTTIE_URL, null)?.takeIf { it.isNotBlank() },
             stickerSize = prefs.getFloat(KEY_STICKER_SIZE, 0.5f).coerceIn(0.2f, 1f),
             stickerRotation = prefs.getFloat(KEY_STICKER_ROTATION, 0f).coerceIn(-180f, 180f),
             stickerOffsetX = prefs.getFloat(KEY_STICKER_OFFSET_X, 0.5f).coerceIn(0f, 1f),

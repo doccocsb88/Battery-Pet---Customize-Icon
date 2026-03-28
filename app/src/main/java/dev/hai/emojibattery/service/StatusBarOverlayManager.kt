@@ -3,6 +3,7 @@ package dev.hai.emojibattery.service
 import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Typeface
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -19,6 +20,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextClock
 import android.widget.TextView
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import coil.load
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
@@ -65,6 +68,7 @@ class StatusBarOverlayManager(
     private val trollEmojiArtView = ImageView(context)
     private val stickerEmojiView = TextView(context)
     private val stickerImageView = ImageView(context)
+    private val stickerLottieView = LottieAnimationView(context)
     private val trollView = TextView(context)
     private val realtimeView = TextView(context)
     private val animationImageView = ImageView(context)
@@ -78,6 +82,7 @@ class StatusBarOverlayManager(
     private var layoutParams: WindowManager.LayoutParams? = null
     private var currentAnimationKey: String? = null
     private var currentAnimationIsLottie: Boolean? = null
+    private var currentStickerLottieUrl: String? = null
     private var trollShuffleVersion: Long = 0L
     private var appliedTrollShuffleVersion: Long = -1L
     private var currentTrollBatteryArtUrl: String? = null
@@ -197,10 +202,13 @@ class StatusBarOverlayManager(
         }
         stickerImageView.scaleType = ImageView.ScaleType.FIT_CENTER
         stickerImageView.adjustViewBounds = true
+        stickerLottieView.scaleType = ImageView.ScaleType.FIT_CENTER
+        stickerLottieView.repeatCount = LottieDrawable.INFINITE
         val stickerMax = (56 * context.resources.displayMetrics.density).toInt()
         stickerImageView.maxWidth = stickerMax
         stickerImageView.maxHeight = stickerMax
         root.addView(stickerImageView, FrameLayout.LayoutParams(stickerLp))
+        root.addView(stickerLottieView, FrameLayout.LayoutParams(stickerLp))
         root.addView(stickerEmojiView, FrameLayout.LayoutParams(stickerLp))
         root.addView(trollView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END).apply {
             topMargin = 64
@@ -236,6 +244,7 @@ class StatusBarOverlayManager(
         )
         animationImageView.visibility = View.GONE
         animationLottieView.visibility = View.GONE
+        stickerLottieView.visibility = View.GONE
 
         listOf(stickerEmojiView, trollView, realtimeView).forEach { view ->
             view.textSize = 18f
@@ -449,22 +458,50 @@ class StatusBarOverlayManager(
             stickerEmojiView.scaleY = stickerScale
             stickerImageView.scaleX = stickerScale
             stickerImageView.scaleY = stickerScale
+            stickerLottieView.scaleX = stickerScale
+            stickerLottieView.scaleY = stickerScale
             stickerEmojiView.rotation = snapshot.stickerRotation
             stickerImageView.rotation = snapshot.stickerRotation
+            stickerLottieView.rotation = snapshot.stickerRotation
             updateStickerPosition(snapshot.stickerOffsetX, snapshot.stickerOffsetY)
+            val lottieUrl = snapshot.stickerLottieUrl?.takeIf { it.isNotBlank() }
             val url = snapshot.stickerThumbnailUrl?.takeIf { it.isNotBlank() }
-            if (url != null) {
+            if (lottieUrl != null) {
+                stickerLottieView.visibility = View.VISIBLE
+                stickerImageView.visibility = View.GONE
+                stickerEmojiView.visibility = View.GONE
+                val lottieChanged = currentStickerLottieUrl != lottieUrl
+                if (lottieChanged) {
+                    if (lottieUrl.startsWith("http://", ignoreCase = true) || lottieUrl.startsWith("https://", ignoreCase = true)) {
+                        stickerLottieView.setAnimationFromUrl(lottieUrl)
+                    } else {
+                        stickerLottieView.setAnimation(lottieUrl)
+                    }
+                    stickerLottieView.playAnimation()
+                    currentStickerLottieUrl = lottieUrl
+                    Log.d(TAG, "Applied sticker lottie=$lottieUrl")
+                } else if (!stickerLottieView.isAnimating) {
+                    stickerLottieView.playAnimation()
+                }
+            } else if (url != null) {
+                stickerLottieView.cancelAnimation()
+                stickerLottieView.visibility = View.GONE
+                currentStickerLottieUrl = null
                 stickerImageView.visibility = View.VISIBLE
                 stickerEmojiView.visibility = View.GONE
-                stickerImageView.load(url) {
-                    crossfade(true)
-                }
+                loadAnimatedImage(stickerImageView, url, crossfade = true, source = "sticker")
             } else {
+                stickerLottieView.cancelAnimation()
+                stickerLottieView.visibility = View.GONE
+                currentStickerLottieUrl = null
                 stickerImageView.visibility = View.GONE
                 stickerEmojiView.visibility = View.VISIBLE
                 stickerEmojiView.text = snapshot.stickerGlyph
             }
         } else {
+            stickerLottieView.cancelAnimation()
+            stickerLottieView.visibility = View.GONE
+            currentStickerLottieUrl = null
             stickerImageView.visibility = View.GONE
             stickerEmojiView.visibility = View.GONE
         }
@@ -590,9 +627,7 @@ class StatusBarOverlayManager(
         animationImageView.visibility = View.VISIBLE
         if (keyChanged) {
             val assetUrl = "file:///android_asset/${snapshot.animationAssetPath}"
-            animationImageView.load(assetUrl) {
-                crossfade(false)
-            }
+            loadAnimatedImage(animationImageView, assetUrl, crossfade = false, source = "animation")
             currentAnimationKey = snapshot.animationAssetPath
             currentAnimationIsLottie = false
             Log.d(TAG, "Applied GIF animation asset=${snapshot.animationAssetPath} size=${snapshot.animationSizePercent}%")
@@ -607,12 +642,40 @@ class StatusBarOverlayManager(
         val travelY = (96f * density).roundToInt()
         val left = ((screenWidth - stickerFrameWidth) * offsetX.coerceIn(0f, 1f)).roundToInt()
         val top = minTop + (travelY * offsetY.coerceIn(0f, 1f)).roundToInt()
-        listOf(stickerImageView, stickerEmojiView).forEach { view ->
+        listOf(stickerImageView, stickerLottieView, stickerEmojiView).forEach { view ->
             val params = view.layoutParams as FrameLayout.LayoutParams
             params.gravity = Gravity.TOP or Gravity.START
             params.leftMargin = left
             params.topMargin = top
             view.layoutParams = params
+        }
+    }
+
+    private fun loadAnimatedImage(
+        imageView: ImageView,
+        model: String,
+        crossfade: Boolean,
+        source: String,
+    ) {
+        imageView.load(model) {
+            allowHardware(false)
+            decoderFactory(
+                if (Build.VERSION.SDK_INT >= 28) {
+                    ImageDecoderDecoder.Factory()
+                } else {
+                    GifDecoder.Factory()
+                },
+            )
+            crossfade(crossfade)
+            listener(
+                onSuccess = { _, result ->
+                    (result.drawable as? Animatable)?.start()
+                    Log.d(TAG, "loadAnimatedImage success source=$source model=$model drawable=${result.drawable::class.java.simpleName}")
+                },
+                onError = { _, result ->
+                    Log.w(TAG, "loadAnimatedImage error source=$source model=$model", result.throwable)
+                },
+            )
         }
     }
 
