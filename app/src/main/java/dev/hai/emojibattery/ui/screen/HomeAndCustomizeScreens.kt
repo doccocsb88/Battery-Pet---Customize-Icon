@@ -175,6 +175,7 @@ private fun HomeScreenScaffold(
                 title = stringResource(R.string.battery_icon_title),
                 onLeftSecondary = onOpenFeedback,
                 onSearch = onOpenSearch,
+                showLeftSecondary = false,
                 showEnableBanner = !uiState.accessibilityGranted,
                 onStart = onOpenAccessibility,
             )
@@ -324,7 +325,7 @@ internal fun CustomizeHubScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            HomeRoundIcon(R.drawable.ic_feeb_back_home, onOpenFeedback)
+                            Spacer(Modifier.width(40.dp))
                         }
                         Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -662,6 +663,7 @@ internal fun OriginalTopShell(
     title: String,
     onLeftSecondary: () -> Unit,
     onSearch: () -> Unit,
+    showLeftSecondary: Boolean = true,
     showEnableBanner: Boolean = false,
     onStart: (() -> Unit)? = null,
 ) {
@@ -682,7 +684,11 @@ internal fun OriginalTopShell(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    HomeRoundIcon(R.drawable.ic_feeb_back_home, onLeftSecondary)
+                    if (showLeftSecondary) {
+                        HomeRoundIcon(R.drawable.ic_feeb_back_home, onLeftSecondary)
+                    } else {
+                        Spacer(Modifier.width(40.dp))
+                    }
                 }
                 Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {

@@ -103,6 +103,7 @@ internal fun GestureScreen(
                 title = stringResource(R.string.battery_icon_title),
                 onLeftSecondary = {},
                 onSearch = {},
+                showLeftSecondary = false,
             )
         },
     ) { innerPadding ->
