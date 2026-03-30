@@ -35,6 +35,7 @@ data class PadBackgroundTemplateItem(
 object PadBackgroundTemplateRepository {
     private const val TAG = "BgTemplatePAD"
     private const val MANIFEST_ASSET_PATH = "background_templates/themes_pack_manifest.json"
+    private val FALLBACK_PACKS = setOf("chinese_spring_landscape", "countryside")
     private val gson = Gson()
     private val categoriesType = object : TypeToken<List<PadBackgroundTemplateCategory>>() {}.type
 
@@ -65,7 +66,7 @@ object PadBackgroundTemplateRepository {
         } ?: false
         if (!ready) {
             Log.w(TAG, "loadItemsForCategory: waitUntilCompleted=false pack=${category.deliveryPackName}")
-            return@withContext emptyList()
+            return@withContext loadFallbackItemsFromBundledAssets(context, category)
         }
 
         val root = StoreOnDemandAssetPack.assetsRootOrNull(
@@ -74,7 +75,7 @@ object PadBackgroundTemplateRepository {
         )
         if (root == null) {
             Log.w(TAG, "loadItemsForCategory: assetsRootOrNull=null pack=${category.deliveryPackName}")
-            return@withContext emptyList()
+            return@withContext loadFallbackItemsFromBundledAssets(context, category)
         }
         Log.d(TAG, "loadItemsForCategory: root=${root.absolutePath}")
 
@@ -96,5 +97,30 @@ object PadBackgroundTemplateRepository {
             "loadItemsForCategory: pack=${category.deliveryPackName} loaded=${resolved.size} missing=$missing",
         )
         resolved
+    }
+
+    private fun loadFallbackItemsFromBundledAssets(
+        context: Context,
+        category: PadBackgroundTemplateCategory,
+    ): List<PadBackgroundTemplateItem> {
+        if (category.deliveryPackName !in FALLBACK_PACKS) return emptyList()
+        val assets = context.assets
+        val fallback = category.items.mapNotNull { item ->
+            val assetPath = item.path.trimStart('/')
+            val exists = runCatching {
+                assets.open(assetPath).use { input -> input.read() >= 0 }
+            }.getOrDefault(false)
+            if (!exists) return@mapNotNull null
+            PadBackgroundTemplateItem(
+                id = item.id,
+                name = item.name?.takeIf { it.isNotBlank() } ?: item.id,
+                assetUrl = "file:///android_asset/$assetPath",
+            )
+        }
+        Log.d(
+            TAG,
+            "loadItemsForCategory: bundled fallback pack=${category.deliveryPackName} loaded=${fallback.size}",
+        )
+        return fallback
     }
 }

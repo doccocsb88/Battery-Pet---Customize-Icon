@@ -279,6 +279,7 @@
     <string name="settings_not_allowed_apps">Not-Allowed Apps</string>
     <string name="settings_protected">Protected</string>
     <string name="settings_tutorial_summary">Permission and gesture guide</string>
+    <string name="settings_store">Store</string>
     <string name="settings_share_app">Share app</string>
     <string name="settings_rate_us">Rate us</string>
     <string name="settings_check_update">Check for update</string>

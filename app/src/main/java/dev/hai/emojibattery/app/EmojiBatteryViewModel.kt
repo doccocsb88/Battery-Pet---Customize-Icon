@@ -57,6 +57,7 @@ class EmojiBatteryViewModel(
         private const val TAG = "HomeFeed"
         private const val PENDING_HOME_STATUSBAR_CATEGORY_ID = "pending_home_statusbar_category_id"
         private const val PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID = "pending_home_statusbar_selected_item_id"
+        private val HOME_BUNDLED_FALLBACK_CATEGORY_TITLES = setOf("korean", "china", "winter")
     }
 
     private val _uiState = MutableStateFlow(
@@ -834,6 +835,18 @@ class EmojiBatteryViewModel(
         _uiState.update { it.copy(infoMessage = "Terms of use action triggered.") }
     }
 
+    fun openStore() {
+        _uiState.update {
+            it.copy(
+                paywallState = PaywallState(
+                    featureKey = "settings:store",
+                    title = "Unlock Premium",
+                    message = "Upgrade to premium to unlock all features.",
+                ),
+            )
+        }
+    }
+
     fun shareApp() {
         _uiState.update { it.copy(infoMessage = "Share app action triggered.") }
     }
@@ -974,17 +987,31 @@ class EmojiBatteryViewModel(
         categoryId: String,
     ): List<HomeBatteryItem> {
         val packName = HomeCategoryPackResolver.packNameFor(categoryId)
+        val allowBundledFallback = _uiState.value.homeTabs
+            .firstOrNull { it.id == categoryId }
+            ?.title
+            ?.trim()
+            ?.lowercase()
+            ?.let { it in HOME_BUNDLED_FALLBACK_CATEGORY_TITLES }
+            ?: false
         val padItems = runCatching { PadVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
             .getOrElse { emptyList() }
             .takeIf { it.isNotEmpty() }
         val merged = padItems
-            ?: runCatching { BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
-                .getOrElse { emptyList() }
-                .takeIf { it.isNotEmpty() }
+            ?: if (allowBundledFallback) {
+                runCatching { BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
+                    .getOrElse { emptyList() }
+                    .takeIf { it.isNotEmpty() }
+            } else {
+                null
+            }
             ?: emptyList()
         when {
             padItems != null -> Log.d(TAG, "offlineStore: items from PAD count=${merged.size} pack=$packName")
-            merged.isNotEmpty() -> Log.d(TAG, "offlineStore: items from bundled assets count=${merged.size}")
+            merged.isNotEmpty() -> Log.d(
+                TAG,
+                "offlineStore: items from bundled assets count=${merged.size} category=$categoryId",
+            )
             else -> Log.w(TAG, "offlineStore: no PAD/bundled items for $categoryId")
         }
         return HomeStoreLocalImageResolver.enrichItems(app, merged, packName = packName)

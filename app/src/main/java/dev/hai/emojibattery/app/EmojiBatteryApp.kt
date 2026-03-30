@@ -444,6 +444,7 @@ fun EmojiBatteryApp(
                         viewModel.replayTutorial()
                         navController.navigate(AppRoute.Tutorial.route)
                     },
+                    onOpenStore = viewModel::openStore,
                     onToggleProtection = viewModel::setProtectFromRecentApps,
                     onOpenPrivacy = {
                         viewModel.openPrivacyPolicy()

@@ -41,6 +41,7 @@ internal fun SettingsScreen(
     onBack: () -> Unit,
     onOpenLanguage: () -> Unit,
     onReplayTutorial: () -> Unit,
+    onOpenStore: () -> Unit,
     onToggleProtection: (Boolean) -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenTerms: () -> Unit,
@@ -76,11 +77,12 @@ internal fun SettingsScreen(
             }
 
             SettingsRow(stringResource(R.string.tutorial), R.drawable.ic_tutorials_new, stringResource(R.string.settings_tutorial_summary), onReplayTutorial)
-            SettingsRow(stringResource(R.string.privacy_policy), R.drawable.ic_privacy_settings, null, onOpenPrivacy)
-            SettingsRow(stringResource(R.string.terms_amp_conditions), R.drawable.ic_privacy_settings, null, onOpenTerms)
+            SettingsRow(stringResource(R.string.settings_store), R.drawable.ic_rate_us_setting, null, onOpenStore)
             SettingsRow(stringResource(R.string.feedback_title), R.drawable.ic_feed_back_setting, null, onOpenFeedback)
             SettingsRow(stringResource(R.string.settings_share_app), R.drawable.ic_share_app_settings, null, onShareApp)
             SettingsRow(stringResource(R.string.settings_rate_us), R.drawable.ic_rate_us_setting, if (uiState.ratingSelection > 0) stringResource(R.string.settings_rating_line, uiState.ratingSelection) else null, onRateApp)
+            SettingsRow(stringResource(R.string.privacy_policy), R.drawable.ic_privacy_settings, null, onOpenPrivacy)
+            SettingsRow(stringResource(R.string.terms_amp_conditions), R.drawable.ic_privacy_settings, null, onOpenTerms)
         }
     }
 }
