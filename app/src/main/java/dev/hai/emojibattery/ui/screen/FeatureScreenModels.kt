@@ -113,3 +113,32 @@ internal val EmotionOptions = listOf(
     EmotionOption("emo_crylaugh", "😅"),
     EmotionOption("emo_scared", "😨"),
 )
+
+internal data class EmotionVariantState(
+    val emotionId: String,
+    val enabled: Boolean,
+)
+
+internal fun parseEmotionVariant(raw: String?): EmotionVariantState {
+    val fallback = EmotionVariantState(
+        emotionId = EmotionOptions.first().id,
+        enabled = true,
+    )
+    if (raw.isNullOrBlank()) return fallback
+    if (";" !in raw && !raw.contains("=")) {
+        val id = EmotionOptions.firstOrNull { it.id == raw }?.id ?: fallback.emotionId
+        return EmotionVariantState(emotionId = id, enabled = true)
+    }
+    val pieces = raw.split(";").mapNotNull {
+        val pair = it.split("=", limit = 2)
+        if (pair.size == 2) pair[0] to pair[1] else null
+    }.toMap()
+    val id = EmotionOptions.firstOrNull { it.id == pieces["emotion"] }?.id
+        ?: EmotionOptions.firstOrNull { it.id == pieces["style"] }?.id
+        ?: fallback.emotionId
+    val enabled = (pieces["enabled"] ?: pieces["show"] ?: "1") == "1"
+    return EmotionVariantState(emotionId = id, enabled = enabled)
+}
+
+internal fun encodeEmotionVariant(state: EmotionVariantState): String =
+    "emotion=${state.emotionId};enabled=${if (state.enabled) "1" else "0"}"

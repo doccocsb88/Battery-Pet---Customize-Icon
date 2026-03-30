@@ -27,7 +27,12 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
+import dev.hai.emojibattery.model.CustomizeEntry
+import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.GestureTrigger
+import dev.hai.emojibattery.ui.screen.EmotionOptions
+import dev.hai.emojibattery.ui.screen.parseDateTimeVariant
+import dev.hai.emojibattery.ui.screen.parseEmotionVariant
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -99,6 +104,7 @@ class StatusBarOverlayManager(
     private val singleTapRunnable = Runnable {
         if (!ignoredDoubleTap) triggerGesture(GestureTrigger.SingleTap)
     }
+    private val defaultFeatureConfig = FeatureConfig(enabled = true, intensity = 0.55f, variant = "")
 
     init {
         root.layoutParams = FrameLayout.LayoutParams(
@@ -331,6 +337,16 @@ class StatusBarOverlayManager(
                 )
             }
         }
+        val featureConfigs = snapshot.featureConfigs
+        val wifiConfig = featureConfigs[CustomizeEntry.Wifi] ?: defaultFeatureConfig
+        val signalConfig = featureConfigs[CustomizeEntry.Signal] ?: defaultFeatureConfig
+        val dataConfig = featureConfigs[CustomizeEntry.Data] ?: defaultFeatureConfig
+        val hotspotConfig = featureConfigs[CustomizeEntry.Hotspot] ?: defaultFeatureConfig
+        val airplaneConfig = featureConfigs[CustomizeEntry.Airplane] ?: defaultFeatureConfig
+        val ringerConfig = featureConfigs[CustomizeEntry.Ringer] ?: defaultFeatureConfig
+        val dateTimeConfig = featureConfigs[CustomizeEntry.DateTime] ?: defaultFeatureConfig
+        val emotionConfig = featureConfigs[CustomizeEntry.Emotion] ?: defaultFeatureConfig
+
         val percentageText = if (snapshot.showPercentage) " ${liveStatus.batteryPercent}%" else ""
         val chargeSuffix = if (liveStatus.charging && snapshot.animateCharge) " ⚡" else ""
         val batteryLabel = snapshot.batteryBody.takeIf { it.isNotBlank() }
@@ -455,7 +471,12 @@ class StatusBarOverlayManager(
                     emojiArtView.visibility = View.GONE
                     emojiArtView.setImageDrawable(null)
                     emojiTextView.visibility = View.VISIBLE
-                    emojiTextView.text = emojiLabel
+                    val emotionState = parseEmotionVariant(emotionConfig.variant)
+                    emojiTextView.text = if (emotionState.enabled) {
+                        EmotionOptions.firstOrNull { it.id == emotionState.emotionId }?.glyph ?: emojiLabel
+                    } else {
+                        emojiLabel
+                    }
                 }
                 else -> {
                     emojiArtView.visibility = View.GONE
@@ -463,10 +484,11 @@ class StatusBarOverlayManager(
                     emojiTextView.visibility = View.GONE
                 }
             }
+            val ringerSuffix = if (ringerConfig.enabled) " ${ringerGlyph(ringerConfig.variant)}" else ""
             batteryView.text = if (hasBatteryArt) {
                 "${percentageText.trim()}$chargeSuffix".trim()
             } else {
-                "$batteryLabel$percentageText$chargeSuffix".trim()
+                "$batteryLabel$percentageText$chargeSuffix$ringerSuffix".trim()
             }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
@@ -482,17 +504,28 @@ class StatusBarOverlayManager(
         val rightPadding = ((8f + snapshot.rightMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
         val topBottomPadding = ((6f + snapshot.statusBarHeight.coerceIn(0f, 1f) * 10f) * density).roundToInt()
         statusRow.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding)
-        clockView.setTextColor("#111111".toColorInt())
-        dateView.setTextColor("#555555".toColorInt())
-        wifiView.text = when {
-            liveStatus.airplaneMode -> "AIR"
-            liveStatus.wifiEnabled -> "WIFI"
-            liveStatus.mobileConnected -> "LTE"
+        val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
+        clockView.textSize = 8f + (dateTimeConfig.intensity.coerceIn(0f, 1f) * 8f)
+        dateView.textSize = (clockView.textSize * 0.78f).coerceAtLeast(6.5f)
+        dateView.visibility = if (dateTimeConfig.enabled && parsedDateTime.showDate) View.VISIBLE else View.GONE
+        clockView.setTextColor(resolveColorFromVariant(parsedDateTime.colorId, "#111111".toColorInt()))
+        dateView.setTextColor(resolveColorFromVariant(parsedDateTime.colorId, "#555555".toColorInt()))
+
+        val wifiLabel = when {
+            liveStatus.airplaneMode -> airplaneLabel(airplaneConfig.variant)
+            liveStatus.wifiEnabled -> if (hotspotConfig.enabled) hotspotLabel(hotspotConfig.variant) else "WIFI"
+            liveStatus.mobileConnected -> dataLabel(dataConfig.variant)
             else -> "OFF"
         }
+        wifiView.visibility = if (wifiConfig.enabled) View.VISIBLE else View.GONE
+        wifiView.text = wifiLabel
+        wifiView.textSize = 8f + (wifiConfig.intensity.coerceIn(0f, 1f) * 12f)
+        wifiView.setTextColor(resolveColorFromVariant(wifiConfig.variant, "#333333".toColorInt()))
+
+        signalView.visibility = if (signalConfig.enabled && !liveStatus.airplaneMode) View.VISIBLE else View.GONE
         signalView.text = if (liveStatus.airplaneMode) "" else signalGlyph(liveStatus.signalLevel)
-        wifiView.setTextColor("#333333".toColorInt())
-        signalView.setTextColor("#333333".toColorInt())
+        signalView.textSize = 8f + (signalConfig.intensity.coerceIn(0f, 1f) * 12f)
+        signalView.setTextColor(resolveColorFromVariant(signalConfig.variant, "#333333".toColorInt()))
 
         if (snapshot.stickerEnabled) {
             val stickerScale = (0.6f + snapshot.stickerSize * 0.8f).coerceIn(0.6f, 1.6f)
@@ -759,6 +792,45 @@ class StatusBarOverlayManager(
         2 -> "▰▰▱▱"
         3 -> "▰▰▰▱"
         else -> "▰▰▰▰"
+    }
+
+    private fun hotspotLabel(variant: String): String = when (variant.lowercase()) {
+        "dot" -> "HS•"
+        "ring" -> "◎HS"
+        else -> "HOT"
+    }
+
+    private fun airplaneLabel(variant: String): String = when (variant.lowercase()) {
+        "solid" -> "🛫"
+        "tiny" -> "AIR"
+        else -> "✈"
+    }
+
+    private fun dataLabel(variant: String): String {
+        val style = variant.substringBefore("::").ifBlank { "LTE" }
+        return style.uppercase()
+    }
+
+    private fun ringerGlyph(variant: String): String = when (variant.lowercase()) {
+        "mute" -> "🔕"
+        "wave" -> "🔔~"
+        else -> "🔔"
+    }
+
+    private fun resolveColorFromVariant(variant: String?, fallback: Int): Int {
+        val raw = variant.orEmpty()
+        if (raw.startsWith("picker#", ignoreCase = true)) {
+            val parsed = raw.removePrefix("picker#").toLongOrNull(16)
+            if (parsed != null) return parsed.toInt()
+        }
+        return when (raw.lowercase()) {
+            "blue" -> 0xFF2952F4.toInt()
+            "green" -> 0xFF2BDF52.toInt()
+            "orange" -> 0xFFF18410.toInt()
+            "black" -> 0xFF11111A.toInt()
+            "yellow" -> 0xFFF1DF1E.toInt()
+            else -> fallback
+        }
     }
 
     private fun setupGestureLayer() {

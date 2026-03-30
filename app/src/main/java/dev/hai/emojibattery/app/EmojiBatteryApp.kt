@@ -633,11 +633,55 @@ fun EmojiBatteryApp(
                         entry = customizeEntry,
                         uiState = uiState,
                         onBack = { navController.popBackStack() },
-                        onToggleEnabled = { value -> viewModel.updateFeatureEnabled(customizeEntry, value) },
-                        onSetIntensity = { value -> viewModel.updateFeatureIntensity(customizeEntry, value) },
-                        onSelectVariant = { variant -> viewModel.updateFeatureVariant(customizeEntry, variant) },
+                        onToggleEnabled = { value ->
+                            viewModel.updateFeatureEnabled(customizeEntry, value)
+                            val snapshot = viewModel.uiState.value
+                            if (value) {
+                                OverlayConfigStore.saveStatusBarConfig(
+                                    context,
+                                    snapshot.editingConfig,
+                                    snapshot.statusBarCatalogItems,
+                                )
+                            } else {
+                                OverlayConfigStore.setStatusBarEnabled(context, false)
+                            }
+                            OverlayConfigStore.saveFeatureConfigs(context, snapshot.featureConfigs)
+                            if (AccessibilityBridge.isEnabled(context)) {
+                                OverlayAccessibilityService.requestRefresh(context)
+                            }
+                        },
+                        onSetIntensity = { value ->
+                            viewModel.updateFeatureIntensity(customizeEntry, value)
+                            val snapshot = viewModel.uiState.value
+                            OverlayConfigStore.saveFeatureConfigs(context, snapshot.featureConfigs)
+                            if (AccessibilityBridge.isEnabled(context)) {
+                                OverlayAccessibilityService.requestRefresh(context)
+                            }
+                        },
+                        onSelectVariant = { variant ->
+                            viewModel.updateFeatureVariant(customizeEntry, variant)
+                            val snapshot = viewModel.uiState.value
+                            OverlayConfigStore.saveFeatureConfigs(context, snapshot.featureConfigs)
+                            if (AccessibilityBridge.isEnabled(context)) {
+                                OverlayAccessibilityService.requestRefresh(context)
+                            }
+                        },
                         onReset = { viewModel.resetFeature(customizeEntry) },
-                        onApply = { viewModel.applyFeature(customizeEntry) },
+                        onApply = {
+                            viewModel.applyFeature(customizeEntry)
+                            val snapshot = viewModel.uiState.value
+                            OverlayConfigStore.saveFeatureConfigs(context, snapshot.featureConfigs)
+                            if (snapshot.featureConfigs[customizeEntry]?.enabled == true) {
+                                OverlayConfigStore.saveStatusBarConfig(
+                                    context,
+                                    snapshot.editingConfig,
+                                    snapshot.statusBarCatalogItems,
+                                )
+                            }
+                            if (AccessibilityBridge.isEnabled(context)) {
+                                OverlayAccessibilityService.requestRefresh(context)
+                            }
+                        },
                     )
                 } else {
                     PlaceholderScreen(

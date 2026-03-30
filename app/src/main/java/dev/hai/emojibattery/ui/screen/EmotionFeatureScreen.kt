@@ -45,7 +45,8 @@ internal fun EmotionFeatureScreen(
 ) {
     val config = uiState.featureConfigs[CustomizeEntry.Emotion]
         ?: FeatureConfig(variant = EmotionOptions.first().id)
-    val selectedId = EmotionOptions.firstOrNull { it.id == config.variant }?.id ?: EmotionOptions.first().id
+    val emotionState = parseEmotionVariant(config.variant)
+    val selectedId = EmotionOptions.firstOrNull { it.id == emotionState.emotionId }?.id ?: EmotionOptions.first().id
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -138,8 +139,11 @@ internal fun EmotionFeatureScreen(
                                 )
                             }
                             Switch(
-                                checked = config.enabled,
-                                onCheckedChange = onToggleEnabled,
+                                checked = emotionState.enabled,
+                                onCheckedChange = { checked ->
+                                    onSelectVariant(encodeEmotionVariant(emotionState.copy(enabled = checked)))
+                                    onApply()
+                                },
                             )
                         }
 
@@ -171,8 +175,12 @@ internal fun EmotionFeatureScreen(
                                         modifier = Modifier
                                             .weight(1f)
                                             .aspectRatio(1f)
-                                            .clickable(enabled = config.enabled) {
-                                                onSelectVariant(item.id)
+                                            .clickable(enabled = config.enabled && emotionState.enabled) {
+                                                onSelectVariant(
+                                                    encodeEmotionVariant(
+                                                        emotionState.copy(emotionId = item.id),
+                                                    ),
+                                                )
                                                 onApply()
                                             },
                                         shape = RoundedCornerShape(14.dp),

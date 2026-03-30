@@ -38,6 +38,7 @@ import dev.hai.emojibattery.locale.localeForSupportedTag
 import dev.hai.emojibattery.locale.normalizeSupportedTag
 import dev.hai.emojibattery.locale.resolveDefaultLocaleTag
 import dev.hai.emojibattery.service.GestureSettingsStore
+import dev.hai.emojibattery.service.OverlayConfigStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,6 +73,7 @@ class EmojiBatteryViewModel(
     init {
         val app = getApplication<Application>()
         val gestureSnapshot = GestureSettingsStore.read(app)
+        val statusBarEnabled = OverlayConfigStore.read(app).statusBarEnabled
         val defaultTag = resolveDefaultLocaleTag(app)
         val englishOnly = !AppLanguageConfig.isLanguagePickerFlowEnabled
         val resolvedLocaleTag = if (englishOnly) {
@@ -91,6 +93,7 @@ class EmojiBatteryViewModel(
                 onboardingCompleted = AppFlowPreferences.isOnboardingDone(app),
                 selectedLocaleTag = resolvedLocaleTag,
                 padCatalogLoading = true,
+                featureConfigs = it.featureConfigs.mapValues { (_, cfg) -> cfg.copy(enabled = statusBarEnabled) },
             )
         }
         viewModelScope.launch {
@@ -618,7 +621,11 @@ class EmojiBatteryViewModel(
     }
 
     fun updateFeatureEnabled(entry: CustomizeEntry, enabled: Boolean) {
-        updateFeature(entry) { copy(enabled = enabled) }
+        _uiState.update { state ->
+            state.copy(
+                featureConfigs = state.featureConfigs.mapValues { (_, cfg) -> cfg.copy(enabled = enabled) },
+            )
+        }
     }
 
     fun updateFeatureIntensity(entry: CustomizeEntry, intensity: Float) {

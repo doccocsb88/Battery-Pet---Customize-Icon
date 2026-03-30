@@ -2,8 +2,11 @@ package dev.hai.emojibattery.service
 
 import android.content.Context
 import org.json.JSONArray
+import org.json.JSONObject
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.BatteryIconConfig
+import dev.hai.emojibattery.model.CustomizeEntry
+import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.batteryTrollTemplateForId
@@ -67,6 +70,7 @@ data class OverlaySnapshot(
     val animationOffsetX: Float,
     val animationAssetPath: String?,
     val animationIsLottie: Boolean,
+    val featureConfigs: Map<CustomizeEntry, FeatureConfig>,
 )
 
 data class AnimationOverlayPrefs(
@@ -130,6 +134,7 @@ object OverlayConfigStore {
     private const val KEY_ANIMATION_SIZE_PERCENT = "animation_size_percent"
     private const val KEY_ANIMATION_OFFSET_X = "animation_offset_x"
     private const val KEY_ANIMATION_TEMPLATE_ID = "animation_template_id"
+    private const val KEY_FEATURE_CONFIGS = "feature_configs"
 
     /**
      * Persists the status-bar editor config for the accessibility overlay (original app: one **BatteryConfig**
@@ -176,6 +181,18 @@ object OverlayConfigStore {
             .putBoolean(KEY_SHOW_PERCENTAGE, config.showPercentage)
             .putBoolean(KEY_ANIMATE_CHARGE, config.animateCharge)
             .putBoolean(KEY_SHOW_STROKE, config.showStroke)
+            .apply()
+    }
+
+    fun setStatusBarEnabled(context: Context, enabled: Boolean) {
+        prefs(context).edit()
+            .putBoolean(KEY_STATUS_ENABLED, enabled)
+            .apply()
+    }
+
+    fun saveFeatureConfigs(context: Context, featureConfigs: Map<CustomizeEntry, FeatureConfig>) {
+        prefs(context).edit()
+            .putString(KEY_FEATURE_CONFIGS, encodeFeatureConfigs(featureConfigs))
             .apply()
     }
 
@@ -359,6 +376,7 @@ object OverlayConfigStore {
             animationOffsetX = prefs.getFloat(KEY_ANIMATION_OFFSET_X, 0.5f).coerceIn(0f, 1f),
             animationAssetPath = animationTemplate.assetPath,
             animationIsLottie = animationTemplate.isLottie,
+            featureConfigs = decodeFeatureConfigs(prefs.getString(KEY_FEATURE_CONFIGS, null)),
         )
     }
 
@@ -381,5 +399,39 @@ object OverlayConfigStore {
                 }
             }
         }.getOrElse { emptyList() }
+    }
+
+    private fun encodeFeatureConfigs(configs: Map<CustomizeEntry, FeatureConfig>): String {
+        val root = JSONObject()
+        configs.forEach { (entry, config) ->
+            val node = JSONObject()
+            node.put("enabled", config.enabled)
+            node.put("intensity", config.intensity)
+            node.put("variant", config.variant)
+            root.put(entry.name, node)
+        }
+        return root.toString()
+    }
+
+    private fun decodeFeatureConfigs(raw: String?): Map<CustomizeEntry, FeatureConfig> {
+        if (raw.isNullOrBlank()) return SampleCatalog.defaultFeatureConfigs
+        return runCatching {
+            val json = JSONObject(raw)
+            val decoded = mutableMapOf<CustomizeEntry, FeatureConfig>()
+            CustomizeEntry.entries.forEach { entry ->
+                val default = SampleCatalog.defaultFeatureConfigs[entry] ?: return@forEach
+                val node = json.optJSONObject(entry.name)
+                if (node == null) {
+                    decoded[entry] = default
+                } else {
+                    decoded[entry] = FeatureConfig(
+                        enabled = node.optBoolean("enabled", default.enabled),
+                        intensity = node.optDouble("intensity", default.intensity.toDouble()).toFloat().coerceIn(0f, 1f),
+                        variant = node.optString("variant", default.variant),
+                    )
+                }
+            }
+            decoded
+        }.getOrElse { SampleCatalog.defaultFeatureConfigs }
     }
 }
