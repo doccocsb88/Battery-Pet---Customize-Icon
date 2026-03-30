@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.hai.emojibattery.app.EmojiBatteryApp
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     private val routeOverride = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         AppLocalePreferences.applyAppLocalesAtStartup(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
