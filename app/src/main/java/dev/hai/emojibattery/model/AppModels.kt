@@ -475,7 +475,10 @@ object SampleCatalog {
     )
 
     val defaultFeatureConfigs = CustomizeEntry.entries.associateWith { entry ->
-        FeatureConfig(variant = featureVariants[entry]?.first().orEmpty())
+        when (entry) {
+            CustomizeEntry.DateTime -> FeatureConfig(variant = "style=style_4;color=blue;show=0")
+            else -> FeatureConfig(variant = featureVariants[entry]?.first().orEmpty())
+        }
     }
 
     val gestureActionOptions = GestureAction.entries

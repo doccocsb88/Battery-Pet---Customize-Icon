@@ -75,7 +75,7 @@ internal data class DateTimeVariantState(
 )
 
 internal fun parseDateTimeVariant(raw: String?): DateTimeVariantState {
-    val fallback = DateTimeVariantState(styleId = "style_4", colorId = "blue", showDate = true)
+    val fallback = DateTimeVariantState(styleId = "style_4", colorId = "blue", showDate = false)
     if (raw.isNullOrBlank()) return fallback
     val pieces = raw.split(";").mapNotNull {
         val p = it.split("=", limit = 2)
@@ -84,7 +84,7 @@ internal fun parseDateTimeVariant(raw: String?): DateTimeVariantState {
     return DateTimeVariantState(
         styleId = pieces["style"] ?: fallback.styleId,
         colorId = pieces["color"] ?: fallback.colorId,
-        showDate = (pieces["show"] ?: "1") == "1",
+        showDate = (pieces["show"] ?: if (fallback.showDate) "1" else "0") == "1",
     )
 }
 

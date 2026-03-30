@@ -843,6 +843,11 @@ private fun StatusBarLivePreviewCard(
     previewBrush: Brush,
 ) {
     val config = uiState.editingConfig
+    val dateTimeConfig = uiState.featureConfigs[CustomizeEntry.DateTime]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
+        ?: FeatureConfig(variant = encodeDateTimeVariant(parseDateTimeVariant(null)))
+    val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
+    val datePreview = previewDateStyle(parsedDateTime.styleId)
     val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
     val emojiVolio = statusBarEmojiItem(uiState, config.emojiPresetId)
     val batteryBody = SampleCatalog.batteryPresets.firstOrNull { it.id == config.batteryPresetId }?.body
@@ -934,12 +939,24 @@ private fun StatusBarLivePreviewCard(
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
                             )
-                            Text(
-                                stringResource(R.string.demo_date),
-                                color = Color(0xFF555555),
-                                fontSize = 10.sp,
-                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
-                            )
+                            if (parsedDateTime.showDate) {
+                                Text(
+                                    datePreview.line1,
+                                    color = Color(0xFF555555),
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                )
+                                datePreview.line2?.let { line2 ->
+                                    Text(
+                                        line2,
+                                        color = Color(0xFF555555),
+                                        fontSize = 10.sp,
+                                        fontWeight = if (datePreview.line2Bold) FontWeight.Bold else FontWeight.Medium,
+                                        fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                    )
+                                }
+                            }
                         }
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -2134,6 +2151,11 @@ internal fun BatteryPreviewCard(
     uiState: AppUiState,
 ) {
     val config = uiState.editingConfig
+    val dateTimeConfig = uiState.featureConfigs[CustomizeEntry.DateTime]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
+        ?: FeatureConfig(variant = encodeDateTimeVariant(parseDateTimeVariant(null)))
+    val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
+    val datePreview = previewDateStyle(parsedDateTime.styleId)
     val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
     val emojiVolio = statusBarEmojiItem(uiState, config.emojiPresetId)
     val batteryBody = SampleCatalog.batteryPresets.firstOrNull { it.id == config.batteryPresetId }?.body ?: "▰▰▰▱"
@@ -2203,11 +2225,22 @@ internal fun BatteryPreviewCard(
                     ) {
                         Column {
                             Text(stringResource(R.string.demo_time), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            Text(
-                                stringResource(R.string.demo_date),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.labelMedium,
-                            )
+                            if (parsedDateTime.showDate) {
+                                Text(
+                                    text = datePreview.line1,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                                datePreview.line2?.let { line2 ->
+                                    Text(
+                                        text = line2,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = if (datePreview.line2Bold) FontWeight.Bold else FontWeight.Medium,
+                                    )
+                                }
+                            }
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text(stringResource(R.string.demo_wifi), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -2268,4 +2301,20 @@ internal fun BatteryPreviewCard(
             }
         }
     }
+}
+
+private data class PreviewDateStyle(
+    val line1: String,
+    val line2: String? = null,
+    val line2Bold: Boolean = false,
+)
+
+private fun previewDateStyle(styleId: String): PreviewDateStyle = when (styleId) {
+    "style_1" -> PreviewDateStyle("Tue, Mar 24")
+    "style_2" -> PreviewDateStyle("Tue, Mar", "24", line2Bold = true)
+    "style_3" -> PreviewDateStyle("Tue", "24", line2Bold = true)
+    "style_4" -> PreviewDateStyle("Mar 24")
+    "style_5" -> PreviewDateStyle("Tuesday")
+    "style_6" -> PreviewDateStyle("Tuesday", "24", line2Bold = true)
+    else -> PreviewDateStyle("Mar 24")
 }
