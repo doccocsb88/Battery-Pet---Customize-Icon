@@ -208,7 +208,10 @@ data class BatteryIconConfig(
     val leftMargin: Float = 0.12f,
     val rightMargin: Float = 0.12f,
     val batteryPercentScale: Float = 0.56f,
+    /** Global icon scale for the battery+emoji cluster (Settings tab). */
     val emojiScale: Float = 0.64f,
+    /** Emoji-only scale for adjustment dialog (local overlay transform). */
+    val emojiAdjustmentScale: Float = 1f,
     /** Normalized emoji X position inside battery icon container (0f..1f). */
     val emojiOffsetX: Float = 0.5f,
     /** Normalized emoji Y position inside battery icon container (0f..1f). */

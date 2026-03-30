@@ -58,7 +58,7 @@ internal fun DateTimeFeatureScreen(
     val pickerColorArgb = parsePickerColorVariant(parsed.colorId)
     val pickerSelected = isPickerColorVariant(parsed.colorId)
     var showPicker by remember { mutableStateOf(false) }
-    val sliderDp = (8f + (16f * config.intensity)).coerceIn(8f, 24f)
+    val sliderDp = (5f + (13f * config.intensity)).coerceIn(5f, 18f)
 
     fun updateVariant(newState: DateTimeVariantState) {
         onSelectVariant(encodeDateTimeVariant(newState))
@@ -193,10 +193,10 @@ internal fun DateTimeFeatureScreen(
                             Slider(
                                 value = sliderDp,
                                 onValueChange = { dpValue ->
-                                    val intensity = ((dpValue - 8f) / 16f).coerceIn(0f, 1f)
+                                    val intensity = ((dpValue - 5f) / 13f).coerceIn(0f, 1f)
                                     onSetIntensity(intensity)
                                 },
-                                valueRange = 8f..24f,
+                                valueRange = 5f..18f,
                                 modifier = Modifier.weight(1f),
                             )
                             Text(

@@ -105,6 +105,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
@@ -256,6 +257,7 @@ internal fun StatusBarCustomScreen(
     onSetRightMargin: (Float) -> Unit,
     onSetBatteryScale: (Float) -> Unit,
     onSetEmojiScale: (Float) -> Unit,
+    onSetEmojiAdjustmentScale: (Float) -> Unit,
     onSetEmojiOffset: (Float, Float) -> Unit,
     onTogglePercentage: (Boolean) -> Unit,
     onToggleAnimate: (Boolean) -> Unit,
@@ -291,17 +293,17 @@ internal fun StatusBarCustomScreen(
     val maxPreviewRows = 6
     val maxVolioPreviewItems = StatusBarVolioGridColumns * maxPreviewRows
     var showEmojiAdjustment by remember { mutableStateOf(false) }
-    val defaultEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceIn(0f, 1f)
+    val defaultEmojiAdjustmentScale = SampleCatalog.defaultConfig.emojiAdjustmentScale.coerceIn(0.35f, 2.2f)
 
     val selectBatteryWithAdjustment: (String) -> Unit = { id ->
         onSelectBattery(id)
-        onSetEmojiScale(defaultEmojiScale)
+        onSetEmojiAdjustmentScale(defaultEmojiAdjustmentScale)
         onSetEmojiOffset(0.5f, 0.5f)
         showEmojiAdjustment = true
     }
     val selectEmojiWithAdjustment: (String) -> Unit = { id ->
         onSelectEmoji(id)
-        onSetEmojiScale(defaultEmojiScale)
+        onSetEmojiAdjustmentScale(defaultEmojiAdjustmentScale)
         onSetEmojiOffset(0.5f, 0.5f)
         showEmojiAdjustment = true
     }
@@ -504,7 +506,7 @@ internal fun StatusBarCustomScreen(
     if (showEmojiAdjustment) {
         StatusBarEmojiAdjustmentDialog(
             uiState = uiState,
-            onSetEmojiScale = onSetEmojiScale,
+            onSetEmojiAdjustmentScale = onSetEmojiAdjustmentScale,
             onSetEmojiOffset = onSetEmojiOffset,
             onDismiss = { showEmojiAdjustment = false },
         )
@@ -566,7 +568,7 @@ private fun StatusBarCustomHeader(
 @Composable
 private fun StatusBarEmojiAdjustmentDialog(
     uiState: AppUiState,
-    onSetEmojiScale: (Float) -> Unit,
+    onSetEmojiAdjustmentScale: (Float) -> Unit,
     onSetEmojiOffset: (Float, Float) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -574,12 +576,11 @@ private fun StatusBarEmojiAdjustmentDialog(
     val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
     val emojiVolio = statusBarEmojiItem(uiState, config.emojiPresetId)
     val emojiGlyph = SampleCatalog.emojiPresets.firstOrNull { it.id == config.emojiPresetId }?.glyph ?: "●"
-    val defaultEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceIn(0f, 1f)
     val density = androidx.compose.ui.platform.LocalDensity.current
     var containerWidthPx by remember { mutableStateOf(1f) }
     var containerHeightPx by remember { mutableStateOf(1f) }
     var emojiScale by remember(config.emojiPresetId, config.batteryPresetId) {
-        mutableStateOf(defaultEmojiScale)
+        mutableStateOf(config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f))
     }
     var emojiOffsetX by remember(config.emojiPresetId, config.batteryPresetId) {
         mutableStateOf(0.5f)
@@ -594,9 +595,9 @@ private fun StatusBarEmojiAdjustmentDialog(
     val emojiArtDrawableRes = emojiVolio?.previewRes?.takeIf { it != 0 }
 
     fun commitScale(next: Float) {
-        val value = next.coerceIn(0f, 1f)
+        val value = next.coerceIn(0.35f, 2.2f)
         emojiScale = value
-        onSetEmojiScale(value)
+        onSetEmojiAdjustmentScale(value)
     }
 
     fun commitOffset(nextX: Float, nextY: Float) {
@@ -641,9 +642,7 @@ private fun StatusBarEmojiAdjustmentDialog(
                 ) {
                     val batterySizePx = (minOf(containerWidthPx, containerHeightPx) * 0.62f).coerceAtLeast(120f)
                     val batterySizeDp = with(density) { batterySizePx.toDp() }
-                    val baselineEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
-                    val emojiScaleFactor = (emojiScale / baselineEmojiScale).coerceIn(0.35f, 2.2f)
-                    val emojiSizePx = (batterySizePx * emojiScaleFactor).coerceAtLeast(20f)
+                    val emojiSizePx = (batterySizePx * emojiScale.coerceIn(0.35f, 2.2f)).coerceAtLeast(20f)
                     val emojiSizeDp = with(density) { emojiSizePx.toDp() }
                     val emojiCenterX = containerWidthPx * emojiOffsetX
                     val emojiCenterY = containerHeightPx * emojiOffsetY
@@ -717,16 +716,14 @@ private fun StatusBarEmojiAdjustmentDialog(
                             }
                         }
 
+                        EmojiDashFrame(
+                            modifier = Modifier.matchParentSize(),
+                        )
                         EmojiResizeHandle(
                             modifier = Modifier.align(Alignment.TopStart),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((-drag.x - drag.y) / resizeScaleFactor))
                             },
-                        )
-                        EmojiEdgeSlash(
-                            modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .offset(y = (-6).dp),
                         )
                         EmojiResizeHandle(
                             modifier = Modifier.align(Alignment.TopEnd),
@@ -734,32 +731,17 @@ private fun StatusBarEmojiAdjustmentDialog(
                                 commitScale(emojiScale + ((drag.x - drag.y) / resizeScaleFactor))
                             },
                         )
-                        EmojiEdgeSlash(
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .offset(x = 6.dp),
-                        )
                         EmojiResizeHandle(
                             modifier = Modifier.align(Alignment.BottomStart),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((-drag.x + drag.y) / resizeScaleFactor))
                             },
                         )
-                        EmojiEdgeSlash(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .offset(y = 6.dp),
-                        )
                         EmojiResizeHandle(
                             modifier = Modifier.align(Alignment.BottomEnd),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((drag.x + drag.y) / resizeScaleFactor))
                             },
-                        )
-                        EmojiEdgeSlash(
-                            modifier = Modifier
-                                .align(Alignment.CenterStart)
-                                .offset(x = (-6).dp),
                         )
                     }
                 }
@@ -786,18 +768,51 @@ private fun StatusBarEmojiAdjustmentDialog(
 }
 
 @Composable
-private fun EmojiEdgeSlash(
+private fun EmojiDashFrame(
     modifier: Modifier = Modifier,
 ) {
+    val handleInset = 10.dp
     Canvas(
-        modifier = modifier.size(14.dp),
+        modifier = modifier,
     ) {
+        val inset = handleInset.toPx()
+        val dash = 8.dp.toPx()
+        val gap = 7.dp.toPx()
+        val stroke = 2.dp.toPx()
+        val dashEffect = PathEffect.dashPathEffect(floatArrayOf(dash, gap), 0f)
+        val color = StrawberryMilk.Secondary
+
         drawLine(
-            color = StrawberryMilk.Secondary,
-            start = Offset(size.width * 0.2f, size.height * 0.8f),
-            end = Offset(size.width * 0.8f, size.height * 0.2f),
-            strokeWidth = 2.dp.toPx(),
+            color = color,
+            start = Offset(inset, inset),
+            end = Offset(size.width - inset, inset),
+            strokeWidth = stroke,
             cap = StrokeCap.Round,
+            pathEffect = dashEffect,
+        )
+        drawLine(
+            color = color,
+            start = Offset(inset, size.height - inset),
+            end = Offset(size.width - inset, size.height - inset),
+            strokeWidth = stroke,
+            cap = StrokeCap.Round,
+            pathEffect = dashEffect,
+        )
+        drawLine(
+            color = color,
+            start = Offset(inset, inset),
+            end = Offset(inset, size.height - inset),
+            strokeWidth = stroke,
+            cap = StrokeCap.Round,
+            pathEffect = dashEffect,
+        )
+        drawLine(
+            color = color,
+            start = Offset(size.width - inset, inset),
+            end = Offset(size.width - inset, size.height - inset),
+            strokeWidth = stroke,
+            cap = StrokeCap.Round,
+            pathEffect = dashEffect,
         )
     }
 }
@@ -844,16 +859,17 @@ private fun StatusBarLivePreviewCard(
     val batteryArtDrawableRes = batteryVolio?.previewRes?.takeIf { it != 0 }
     val emojiArtUrl = emojiVolio?.emojiArtUrl?.takeIf { it.isNotBlank() }
     val emojiArtDrawableRes = emojiVolio?.previewRes?.takeIf { it != 0 }
-    val defaultEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
-    val emojiScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultEmojiScale).coerceIn(0.35f, 2.2f)
+    val defaultCommonScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
+    val commonScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultCommonScale).coerceIn(0.35f, 2.2f)
     val horizontalStart = (8f + config.leftMargin.coerceIn(0f, 1f) * 88f).dp
     val horizontalEnd = (8f + config.rightMargin.coerceIn(0f, 1f) * 88f).dp
     val verticalPad = (4f + config.statusBarHeight.coerceIn(0f, 1f) * 12f).dp
     val previewHeight = (62f + config.statusBarHeight.coerceIn(0f, 1f) * 34f).dp
     val rowBgColor = Color.Transparent
     val batteryFontSize = (11f + (config.batteryPercentScale.coerceIn(0f, 1f) * 11f)).sp
-    val emojiPreviewSize = (18f * emojiScaleFactor).dp
-    val emojiPreviewTextSize = (10f + config.emojiScale.coerceIn(0f, 1f) * 14f).sp
+    val batteryPreviewSize = (18f * commonScaleFactor).dp
+    val emojiPreviewSize = (batteryPreviewSize * config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f))
+    val emojiPreviewTextSize = (10f + config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f) * 10f).sp
     Card(
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.status_bar_editor_scaffold)),
         shape = RoundedCornerShape(16.dp),
@@ -951,7 +967,7 @@ private fun StatusBarLivePreviewCard(
                                 emojiContentDescription = emojiVolio?.title,
                                 emojiFallbackGlyph = emojiGlyph,
                                 emojiFallbackColor = Color(0xFF333333),
-                                batterySize = 18.dp,
+                                batterySize = batteryPreviewSize,
                                 emojiSize = emojiPreviewSize,
                                 emojiTextSize = emojiPreviewTextSize,
                                 emojiOffsetX = config.emojiOffsetX,
@@ -1864,6 +1880,7 @@ internal fun StatusSliderRow(
     title: String,
     value: Float,
     onValueChange: (Float) -> Unit,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
 ) {
     Column(
         modifier = Modifier
@@ -1875,6 +1892,7 @@ internal fun StatusSliderRow(
             Slider(
                 value = value,
                 onValueChange = onValueChange,
+                valueRange = valueRange,
                 modifier = Modifier.weight(1f),
             )
             Text(
@@ -2173,6 +2191,11 @@ internal fun BatteryPreviewCard(
                     val emUrl = emojiVolio?.emojiArtUrl?.takeIf { !it.isNullOrBlank() }
                         ?: emojiVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
                     val emDrawable = emojiVolio?.previewRes?.takeIf { it != 0 }
+                    val defaultCommonScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
+                    val commonScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultCommonScale).coerceIn(0.35f, 2.2f)
+                    val emojiAdjustmentScale = config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f)
+                    val batterySizeSmall = (28.dp * commonScaleFactor)
+                    val batterySizeLarge = (36.dp * commonScaleFactor)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -2198,8 +2221,8 @@ internal fun BatteryPreviewCard(
                                 emojiContentDescription = emojiVolio?.title,
                                 emojiFallbackGlyph = emojiGlyph,
                                 emojiFallbackColor = MaterialTheme.colorScheme.onSurface,
-                                batterySize = 28.dp,
-                                emojiSize = 28.dp,
+                                batterySize = batterySizeSmall,
+                                emojiSize = batterySizeSmall * emojiAdjustmentScale,
                                 emojiTextSize = MaterialTheme.typography.titleMedium.fontSize,
                                 emojiOffsetX = config.emojiOffsetX,
                                 emojiOffsetY = config.emojiOffsetY,
@@ -2234,8 +2257,8 @@ internal fun BatteryPreviewCard(
                             emojiContentDescription = emojiVolio?.title,
                             emojiFallbackGlyph = emojiGlyph,
                             emojiFallbackColor = MaterialTheme.colorScheme.onSurface,
-                            batterySize = 36.dp,
-                            emojiSize = 36.dp,
+                            batterySize = batterySizeLarge,
+                            emojiSize = batterySizeLarge * emojiAdjustmentScale,
                             emojiTextSize = MaterialTheme.typography.headlineMedium.fontSize,
                             emojiOffsetX = config.emojiOffsetX,
                             emojiOffsetY = config.emojiOffsetY,

@@ -59,6 +59,7 @@ data class OverlaySnapshot(
     val rightMargin: Float,
     val batteryPercentScale: Float,
     val emojiScale: Float,
+    val emojiAdjustmentScale: Float,
     val emojiOffsetX: Float,
     val emojiOffsetY: Float,
     val showPercentage: Boolean,
@@ -125,6 +126,7 @@ object OverlayConfigStore {
     private const val KEY_STATUS_RIGHT_MARGIN = "status_right_margin"
     private const val KEY_BATTERY_PERCENT_SCALE = "battery_percent_scale"
     private const val KEY_EMOJI_SCALE = "emoji_scale"
+    private const val KEY_EMOJI_ADJUSTMENT_SCALE = "emoji_adjustment_scale"
     private const val KEY_EMOJI_OFFSET_X = "emoji_offset_x"
     private const val KEY_EMOJI_OFFSET_Y = "emoji_offset_y"
     private const val KEY_SHOW_PERCENTAGE = "show_percentage"
@@ -176,6 +178,7 @@ object OverlayConfigStore {
             .putFloat(KEY_STATUS_RIGHT_MARGIN, config.rightMargin.coerceIn(0f, 1f))
             .putFloat(KEY_BATTERY_PERCENT_SCALE, config.batteryPercentScale.coerceIn(0f, 1f))
             .putFloat(KEY_EMOJI_SCALE, config.emojiScale.coerceIn(0f, 1f))
+            .putFloat(KEY_EMOJI_ADJUSTMENT_SCALE, config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f))
             .putFloat(KEY_EMOJI_OFFSET_X, config.emojiOffsetX.coerceIn(0f, 1f))
             .putFloat(KEY_EMOJI_OFFSET_Y, config.emojiOffsetY.coerceIn(0f, 1f))
             .putBoolean(KEY_SHOW_PERCENTAGE, config.showPercentage)
@@ -366,6 +369,7 @@ object OverlayConfigStore {
             rightMargin = prefs.getFloat(KEY_STATUS_RIGHT_MARGIN, SampleCatalog.defaultConfig.rightMargin).coerceIn(0f, 1f),
             batteryPercentScale = prefs.getFloat(KEY_BATTERY_PERCENT_SCALE, SampleCatalog.defaultConfig.batteryPercentScale).coerceIn(0f, 1f),
             emojiScale = prefs.getFloat(KEY_EMOJI_SCALE, SampleCatalog.defaultConfig.emojiScale).coerceIn(0f, 1f),
+            emojiAdjustmentScale = prefs.getFloat(KEY_EMOJI_ADJUSTMENT_SCALE, SampleCatalog.defaultConfig.emojiAdjustmentScale).coerceIn(0.35f, 2.2f),
             emojiOffsetX = prefs.getFloat(KEY_EMOJI_OFFSET_X, SampleCatalog.defaultConfig.emojiOffsetX).coerceIn(0f, 1f),
             emojiOffsetY = prefs.getFloat(KEY_EMOJI_OFFSET_Y, SampleCatalog.defaultConfig.emojiOffsetY).coerceIn(0f, 1f),
             showPercentage = prefs.getBoolean(KEY_SHOW_PERCENTAGE, SampleCatalog.defaultConfig.showPercentage),

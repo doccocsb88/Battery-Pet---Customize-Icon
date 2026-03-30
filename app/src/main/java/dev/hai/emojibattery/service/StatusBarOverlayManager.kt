@@ -363,16 +363,23 @@ class StatusBarOverlayManager(
         } else {
             emojiUrl
         }
-        val batteryArtSizePx = ((batteryArtContainer.layoutParams as? LinearLayout.LayoutParams)?.width ?: 0).coerceAtLeast(1)
-        val emojiScale = snapshot.emojiScale.coerceIn(0f, 1f)
-        val emojiScaleFactor = (emojiScale / DEFAULT_EMOJI_SCALE).coerceIn(0.35f, 2.2f)
-        val emojiSizePx = (batteryArtSizePx * emojiScaleFactor).roundToInt().coerceAtLeast((10f * context.resources.displayMetrics.density).roundToInt())
+        val baseArtSizePx = ((batteryArtContainer.layoutParams as? LinearLayout.LayoutParams)?.width ?: 0).coerceAtLeast(1)
+        val commonScaleFactor = (snapshot.emojiScale.coerceIn(0f, 1f) / DEFAULT_EMOJI_SCALE).coerceIn(0.35f, 2.2f)
+        val batteryArtSizePx = (baseArtSizePx * commonScaleFactor).roundToInt().coerceAtLeast((12f * context.resources.displayMetrics.density).roundToInt())
+        (batteryArtContainer.layoutParams as? LinearLayout.LayoutParams)?.also { params ->
+            params.width = batteryArtSizePx
+            params.height = batteryArtSizePx
+            batteryArtContainer.layoutParams = params
+        }
+        val emojiSizePx = (batteryArtSizePx * snapshot.emojiAdjustmentScale.coerceIn(0.35f, 2.2f))
+            .roundToInt()
+            .coerceAtLeast((10f * context.resources.displayMetrics.density).roundToInt())
         (emojiArtView.layoutParams as FrameLayout.LayoutParams).also { params ->
             params.width = emojiSizePx
             params.height = emojiSizePx
             emojiArtView.layoutParams = params
         }
-        emojiTextView.textSize = (10f + emojiScale * 14f)
+        emojiTextView.textSize = (10f + snapshot.emojiAdjustmentScale.coerceIn(0.35f, 2.2f) * 10f)
         val emojiTravelRangePx = (batteryArtSizePx * 0.55f)
         val emojiTranslationX = ((snapshot.emojiOffsetX.coerceIn(0f, 1f) - 0.5f) * 2f * emojiTravelRangePx)
         val emojiTranslationY = ((snapshot.emojiOffsetY.coerceIn(0f, 1f) - 0.5f) * 2f * emojiTravelRangePx)
@@ -505,6 +512,7 @@ class StatusBarOverlayManager(
         val topBottomPadding = ((6f + snapshot.statusBarHeight.coerceIn(0f, 1f) * 10f) * density).roundToInt()
         statusRow.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding)
         val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
+        applyDateTimeStyle(parsedDateTime.styleId)
         clockView.textSize = 8f + (dateTimeConfig.intensity.coerceIn(0f, 1f) * 8f)
         dateView.textSize = (clockView.textSize * 0.78f).coerceAtLeast(6.5f)
         dateView.visibility = if (dateTimeConfig.enabled && parsedDateTime.showDate) View.VISIBLE else View.GONE
@@ -792,6 +800,20 @@ class StatusBarOverlayManager(
         2 -> "▰▰▱▱"
         3 -> "▰▰▰▱"
         else -> "▰▰▰▰"
+    }
+
+    private fun applyDateTimeStyle(styleId: String) {
+        val datePattern = when (styleId) {
+            "style_1" -> "EEE, MMM d"
+            "style_2" -> "EEE, MMM\n d"
+            "style_3" -> "EEE\n d"
+            "style_4" -> "MMM d"
+            "style_5" -> "EEEE"
+            "style_6" -> "EEEE\n d"
+            else -> "MMM d"
+        }
+        dateView.format12Hour = datePattern
+        dateView.format24Hour = datePattern
     }
 
     private fun hotspotLabel(variant: String): String = when (variant.lowercase()) {

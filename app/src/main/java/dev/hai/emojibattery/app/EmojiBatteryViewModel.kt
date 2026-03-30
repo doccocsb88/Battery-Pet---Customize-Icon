@@ -378,6 +378,8 @@ class EmojiBatteryViewModel(
 
     fun setEmojiScale(value: Float) = updateConfig { copy(emojiScale = value) }
 
+    fun setEmojiAdjustmentScale(value: Float) = updateConfig { copy(emojiAdjustmentScale = value) }
+
     fun setEmojiOffset(offsetX: Float, offsetY: Float) = updateConfig {
         copy(
             emojiOffsetX = offsetX.coerceIn(0f, 1f),
