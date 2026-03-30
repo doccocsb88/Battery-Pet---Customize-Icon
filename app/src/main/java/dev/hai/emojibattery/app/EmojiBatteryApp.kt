@@ -341,6 +341,7 @@ fun EmojiBatteryApp(
                     onSetRightMargin = viewModel::setStatusBarRightMargin,
                     onSetBatteryScale = viewModel::setBatteryPercentScale,
                     onSetEmojiScale = viewModel::setEmojiScale,
+                    onSetEmojiOffset = viewModel::setEmojiOffset,
                     onTogglePercentage = viewModel::setShowPercentage,
                     onToggleAnimate = viewModel::setAnimateCharge,
                     onToggleStroke = viewModel::setShowStroke,

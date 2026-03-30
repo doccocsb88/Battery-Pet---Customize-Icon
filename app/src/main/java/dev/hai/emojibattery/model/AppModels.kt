@@ -209,6 +209,10 @@ data class BatteryIconConfig(
     val rightMargin: Float = 0.12f,
     val batteryPercentScale: Float = 0.56f,
     val emojiScale: Float = 0.64f,
+    /** Normalized emoji X position inside battery icon container (0f..1f). */
+    val emojiOffsetX: Float = 0.5f,
+    /** Normalized emoji Y position inside battery icon container (0f..1f). */
+    val emojiOffsetY: Float = 0.5f,
     val showPercentage: Boolean = true,
     val animateCharge: Boolean = true,
     val showStroke: Boolean = true,

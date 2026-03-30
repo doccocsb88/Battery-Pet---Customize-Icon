@@ -16,7 +16,7 @@ internal fun VolioEmojiBatteryItemDto.toHomeBatteryItem(categoryId: String): Hom
         previewRes = R.drawable.ic_item_charge,
         thumbnailUrl = thumb,
         batteryArtUrl = batteryArt ?: thumb,
-        emojiArtUrl = emojiArt ?: thumb,
+        emojiArtUrl = emojiArt,
         backgroundPhotoUrl = photo ?: thumb,
         premium = isPro == true,
         animated = thumbnail?.endsWith(".gif", ignoreCase = true) == true,

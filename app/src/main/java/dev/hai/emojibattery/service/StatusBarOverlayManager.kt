@@ -37,6 +37,7 @@ class StatusBarOverlayManager(
 ) {
     companion object {
         private const val TAG = "AnimationOverlay"
+        private const val DEFAULT_EMOJI_SCALE = 0.64f
     }
 
     data class LiveStatus(
@@ -59,6 +60,7 @@ class StatusBarOverlayManager(
     private val dateView = TextClock(context)
     private val wifiView = TextView(context)
     private val signalView = TextView(context)
+    private val batteryArtContainer = FrameLayout(context)
     private val emojiArtView = ImageView(context)
     private val emojiTextView = TextView(context)
     private val batteryView = TextView(context)
@@ -133,19 +135,33 @@ class StatusBarOverlayManager(
         signalView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         emojiTextView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         signalView.setPadding(12, 0, 0, 0)
-        emojiArtView.setPadding(12, 0, 0, 0)
-        emojiTextView.setPadding(12, 0, 0, 0)
         batteryView.setPadding(12, 0, 0, 0)
-        batteryArtView.setPadding(12, 0, 0, 0)
         emojiArtView.scaleType = ImageView.ScaleType.FIT_CENTER
         emojiArtView.adjustViewBounds = true
         batteryArtView.scaleType = ImageView.ScaleType.FIT_CENTER
         batteryArtView.adjustViewBounds = true
         emojiTextView.textSize = 13f
-        val emojiArtSize = (16 * context.resources.displayMetrics.density).toInt().coerceAtLeast(12)
-        emojiArtView.layoutParams = LinearLayout.LayoutParams(emojiArtSize, emojiArtSize)
         val artSize = (18 * context.resources.displayMetrics.density).toInt().coerceAtLeast(14)
-        batteryArtView.layoutParams = LinearLayout.LayoutParams(artSize, artSize)
+        batteryArtContainer.layoutParams = LinearLayout.LayoutParams(artSize, artSize).apply {
+            marginStart = 12
+        }
+        batteryArtContainer.addView(
+            batteryArtView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER,
+            ),
+        )
+        val emojiArtSize = (16 * context.resources.displayMetrics.density).toInt().coerceAtLeast(12)
+        emojiArtView.layoutParams = FrameLayout.LayoutParams(emojiArtSize, emojiArtSize, Gravity.CENTER)
+        batteryArtContainer.addView(emojiArtView)
+        emojiTextView.layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.CENTER,
+        )
+        batteryArtContainer.addView(emojiTextView)
         trollArtContainer.layoutParams = LinearLayout.LayoutParams(artSize, artSize).apply {
             marginStart = 12
         }
@@ -172,9 +188,7 @@ class StatusBarOverlayManager(
         trollArtContainer.visibility = View.GONE
         rightCluster.addView(wifiView)
         rightCluster.addView(signalView)
-        rightCluster.addView(emojiArtView)
-        rightCluster.addView(emojiTextView)
-        rightCluster.addView(batteryArtView)
+        rightCluster.addView(batteryArtContainer)
         rightCluster.addView(trollArtContainer)
         rightCluster.addView(batteryView)
         statusRow.addView(rightCluster)
@@ -333,14 +347,23 @@ class StatusBarOverlayManager(
         } else {
             emojiUrl
         }
+        val batteryArtSizePx = ((batteryArtContainer.layoutParams as? LinearLayout.LayoutParams)?.width ?: 0).coerceAtLeast(1)
         val emojiScale = snapshot.emojiScale.coerceIn(0f, 1f)
-        val emojiSizePx = ((10f + emojiScale * 20f) * context.resources.displayMetrics.density).roundToInt().coerceAtLeast((12f * context.resources.displayMetrics.density).roundToInt())
-        (emojiArtView.layoutParams as LinearLayout.LayoutParams).also { params ->
+        val emojiScaleFactor = (emojiScale / DEFAULT_EMOJI_SCALE).coerceIn(0.35f, 2.2f)
+        val emojiSizePx = (batteryArtSizePx * emojiScaleFactor).roundToInt().coerceAtLeast((10f * context.resources.displayMetrics.density).roundToInt())
+        (emojiArtView.layoutParams as FrameLayout.LayoutParams).also { params ->
             params.width = emojiSizePx
             params.height = emojiSizePx
             emojiArtView.layoutParams = params
         }
         emojiTextView.textSize = (10f + emojiScale * 14f)
+        val emojiTravelRangePx = (batteryArtSizePx * 0.55f)
+        val emojiTranslationX = ((snapshot.emojiOffsetX.coerceIn(0f, 1f) - 0.5f) * 2f * emojiTravelRangePx)
+        val emojiTranslationY = ((snapshot.emojiOffsetY.coerceIn(0f, 1f) - 0.5f) * 2f * emojiTravelRangePx)
+        emojiArtView.translationX = emojiTranslationX
+        emojiArtView.translationY = emojiTranslationY
+        emojiTextView.translationX = emojiTranslationX
+        emojiTextView.translationY = emojiTranslationY
         if (snapshot.trollEnabled) {
             val density = context.resources.displayMetrics.density
             val trollArtSizePx = (snapshot.trollEmojiSizeDp.coerceIn(20, 80) * density).roundToInt().coerceAtLeast((14f * density).roundToInt())
@@ -349,9 +372,11 @@ class StatusBarOverlayManager(
                 params.height = trollArtSizePx
                 trollArtContainer.layoutParams = params
             }
+            batteryArtContainer.visibility = View.GONE
+            batteryArtView.setImageDrawable(null)
             emojiArtView.visibility = View.GONE
+            emojiArtView.setImageDrawable(null)
             emojiTextView.visibility = View.GONE
-            batteryArtView.visibility = View.GONE
             if (effectiveTrollBatteryUrl != null) {
                 trollArtContainer.visibility = View.VISIBLE
                 trollBatteryArtView.load(effectiveTrollBatteryUrl) {
@@ -393,6 +418,26 @@ class StatusBarOverlayManager(
             trollArtContainer.visibility = View.GONE
             trollBatteryArtView.setImageDrawable(null)
             trollEmojiArtView.setImageDrawable(null)
+            val hasBatteryArt = batteryUrl != null || batteryDrawable != null
+            val hasEmojiArt = effectiveEmojiUrl != null || emojiDrawable != null
+            val hasEmojiFallback = !hasEmojiArt && emojiLabel.isNotBlank()
+            batteryArtContainer.visibility = if (hasBatteryArt || hasEmojiArt || hasEmojiFallback) View.VISIBLE else View.GONE
+            when {
+                batteryUrl != null -> {
+                    batteryArtView.visibility = View.VISIBLE
+                    batteryArtView.load(batteryUrl) {
+                        crossfade(true)
+                    }
+                }
+                batteryDrawable != null -> {
+                    batteryArtView.visibility = View.VISIBLE
+                    batteryArtView.setImageResource(batteryDrawable)
+                }
+                else -> {
+                    batteryArtView.visibility = View.GONE
+                    batteryArtView.setImageDrawable(null)
+                }
+            }
             when {
                 effectiveEmojiUrl != null -> {
                     emojiArtView.visibility = View.VISIBLE
@@ -406,25 +451,22 @@ class StatusBarOverlayManager(
                     emojiTextView.visibility = View.GONE
                     emojiArtView.setImageResource(emojiDrawable)
                 }
-                else -> {
+                hasEmojiFallback -> {
                     emojiArtView.visibility = View.GONE
+                    emojiArtView.setImageDrawable(null)
                     emojiTextView.visibility = View.VISIBLE
                     emojiTextView.text = emojiLabel
                 }
-            }
-            if (batteryUrl != null) {
-                batteryArtView.visibility = View.VISIBLE
-                batteryArtView.load(batteryUrl) {
-                    crossfade(true)
+                else -> {
+                    emojiArtView.visibility = View.GONE
+                    emojiArtView.setImageDrawable(null)
+                    emojiTextView.visibility = View.GONE
                 }
-                batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
-            } else if (batteryDrawable != null) {
-                batteryArtView.visibility = View.VISIBLE
-                batteryArtView.setImageResource(batteryDrawable)
-                batteryView.text = "${percentageText.trim()}$chargeSuffix".trim()
+            }
+            batteryView.text = if (hasBatteryArt) {
+                "${percentageText.trim()}$chargeSuffix".trim()
             } else {
-                batteryArtView.visibility = View.GONE
-                batteryView.text = "$batteryLabel$percentageText$chargeSuffix".trim()
+                "$batteryLabel$percentageText$chargeSuffix".trim()
             }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())

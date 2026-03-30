@@ -56,6 +56,8 @@ data class OverlaySnapshot(
     val rightMargin: Float,
     val batteryPercentScale: Float,
     val emojiScale: Float,
+    val emojiOffsetX: Float,
+    val emojiOffsetY: Float,
     val showPercentage: Boolean,
     val animateCharge: Boolean,
     val showStroke: Boolean,
@@ -119,6 +121,8 @@ object OverlayConfigStore {
     private const val KEY_STATUS_RIGHT_MARGIN = "status_right_margin"
     private const val KEY_BATTERY_PERCENT_SCALE = "battery_percent_scale"
     private const val KEY_EMOJI_SCALE = "emoji_scale"
+    private const val KEY_EMOJI_OFFSET_X = "emoji_offset_x"
+    private const val KEY_EMOJI_OFFSET_Y = "emoji_offset_y"
     private const val KEY_SHOW_PERCENTAGE = "show_percentage"
     private const val KEY_ANIMATE_CHARGE = "animate_charge"
     private const val KEY_SHOW_STROKE = "show_stroke"
@@ -147,9 +151,7 @@ object OverlayConfigStore {
             ?: batteryItem?.thumbnailUrl?.takeIf { it.isNotBlank() }
         val batteryArtDrawableRes = batteryItem?.previewRes?.takeIf { it != 0 }
         val emojiItem = volioCatalogItems.firstOrNull { it.id == config.emojiPresetId }
-        val emojiArtUrl = emojiItem?.emojiArtUrl
-            ?.takeIf { it.isNotBlank() }
-            ?: emojiItem?.thumbnailUrl?.takeIf { it.isNotBlank() }
+        val emojiArtUrl = emojiItem?.emojiArtUrl?.takeIf { it.isNotBlank() }
         val emojiArtDrawableRes = emojiItem?.previewRes?.takeIf { it != 0 }
         prefs(context).edit()
             .putBoolean(KEY_STATUS_ENABLED, true)
@@ -169,6 +171,8 @@ object OverlayConfigStore {
             .putFloat(KEY_STATUS_RIGHT_MARGIN, config.rightMargin.coerceIn(0f, 1f))
             .putFloat(KEY_BATTERY_PERCENT_SCALE, config.batteryPercentScale.coerceIn(0f, 1f))
             .putFloat(KEY_EMOJI_SCALE, config.emojiScale.coerceIn(0f, 1f))
+            .putFloat(KEY_EMOJI_OFFSET_X, config.emojiOffsetX.coerceIn(0f, 1f))
+            .putFloat(KEY_EMOJI_OFFSET_Y, config.emojiOffsetY.coerceIn(0f, 1f))
             .putBoolean(KEY_SHOW_PERCENTAGE, config.showPercentage)
             .putBoolean(KEY_ANIMATE_CHARGE, config.animateCharge)
             .putBoolean(KEY_SHOW_STROKE, config.showStroke)
@@ -345,6 +349,8 @@ object OverlayConfigStore {
             rightMargin = prefs.getFloat(KEY_STATUS_RIGHT_MARGIN, SampleCatalog.defaultConfig.rightMargin).coerceIn(0f, 1f),
             batteryPercentScale = prefs.getFloat(KEY_BATTERY_PERCENT_SCALE, SampleCatalog.defaultConfig.batteryPercentScale).coerceIn(0f, 1f),
             emojiScale = prefs.getFloat(KEY_EMOJI_SCALE, SampleCatalog.defaultConfig.emojiScale).coerceIn(0f, 1f),
+            emojiOffsetX = prefs.getFloat(KEY_EMOJI_OFFSET_X, SampleCatalog.defaultConfig.emojiOffsetX).coerceIn(0f, 1f),
+            emojiOffsetY = prefs.getFloat(KEY_EMOJI_OFFSET_Y, SampleCatalog.defaultConfig.emojiOffsetY).coerceIn(0f, 1f),
             showPercentage = prefs.getBoolean(KEY_SHOW_PERCENTAGE, SampleCatalog.defaultConfig.showPercentage),
             animateCharge = prefs.getBoolean(KEY_ANIMATE_CHARGE, SampleCatalog.defaultConfig.animateCharge),
             showStroke = prefs.getBoolean(KEY_SHOW_STROKE, SampleCatalog.defaultConfig.showStroke),

@@ -47,6 +47,9 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     override val weeklyProductId: String = "$APP_ID.weekly"
     override val monthlyProductId: String = "$APP_ID.monthly"
     override val lifetimeProductId: String = "$APP_ID.lifetime"
+    private val monthlyFallbackProductId: String = "$APP_ID.monthlytrial"
+    private val monthlyCandidateProductIds: List<String> = listOf(monthlyProductId, monthlyFallbackProductId)
+    private val subscriptionProductIds: Set<String> = setOf(weeklyProductId) + monthlyCandidateProductIds
 
     private var billingClient: BillingClient? = null
     private val productCache = mutableMapOf<String, ProductDetails>()
@@ -98,11 +101,11 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             .apply {
                 val token = subscriptionOfferToken
                     ?: when (productId) {
-                        weeklyProductId, monthlyProductId ->
+                        in subscriptionProductIds ->
                             details.subscriptionOfferDetails?.firstOrNull()?.offerToken
                         else -> null
                     }
-                if (token != null && (productId == weeklyProductId || productId == monthlyProductId)) {
+                if (token != null && productId in subscriptionProductIds) {
                     setOfferToken(token)
                 }
             }
@@ -130,7 +133,7 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
 
     override fun hasPremiumAccess(ownedProductIds: Set<String>): Boolean {
         return ownedProductIds.any {
-            it == weeklyProductId || it == monthlyProductId || it == lifetimeProductId
+            it in subscriptionProductIds || it == lifetimeProductId
         }
     }
 
@@ -157,12 +160,15 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             }
         }
         queryProductDetails(
-            listOf(weeklyProductId, monthlyProductId),
+            listOf(weeklyProductId) + monthlyCandidateProductIds,
             BillingClient.ProductType.SUBS,
         ) { details ->
             details.forEach { productCache[it.productId] = it }
             val weeklyDetails = details.find { it.productId == weeklyProductId }
-            val monthlyDetails = details.find { it.productId == monthlyProductId }
+            val monthlyDetails = monthlyCandidateProductIds
+                .asSequence()
+                .mapNotNull { productId -> details.find { it.productId == productId } }
+                .firstOrNull()
             _uiState.value = _uiState.value.copy(
                 weeklyPlan = weeklyDetails?.let(::weeklyPlanFrom),
                 monthlyPlan = monthlyDetails?.let(::monthlyPlanFrom),

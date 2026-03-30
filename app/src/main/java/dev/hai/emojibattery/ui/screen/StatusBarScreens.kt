@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -97,6 +99,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -110,14 +113,19 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import androidx.lifecycle.Lifecycle
@@ -235,6 +243,7 @@ internal fun StatusBarCustomScreen(
     onSetRightMargin: (Float) -> Unit,
     onSetBatteryScale: (Float) -> Unit,
     onSetEmojiScale: (Float) -> Unit,
+    onSetEmojiOffset: (Float, Float) -> Unit,
     onTogglePercentage: (Boolean) -> Unit,
     onToggleAnimate: (Boolean) -> Unit,
     onToggleStroke: (Boolean) -> Unit,
@@ -268,6 +277,21 @@ internal fun StatusBarCustomScreen(
 
     val maxPreviewRows = 6
     val maxVolioPreviewItems = StatusBarVolioGridColumns * maxPreviewRows
+    var showEmojiAdjustment by remember { mutableStateOf(false) }
+    val defaultEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceIn(0f, 1f)
+
+    val selectBatteryWithAdjustment: (String) -> Unit = { id ->
+        onSelectBattery(id)
+        onSetEmojiScale(defaultEmojiScale)
+        onSetEmojiOffset(0.5f, 0.5f)
+        showEmojiAdjustment = true
+    }
+    val selectEmojiWithAdjustment: (String) -> Unit = { id ->
+        onSelectEmoji(id)
+        onSetEmojiScale(defaultEmojiScale)
+        onSetEmojiOffset(0.5f, 0.5f)
+        showEmojiAdjustment = true
+    }
     Scaffold(
         containerColor = editorBg,
     ) { innerPadding ->
@@ -319,7 +343,7 @@ internal fun StatusBarCustomScreen(
                                         StatusBarVolioChoiceGrid(
                                             items = previewItems,
                                             selectedId = config.batteryPresetId,
-                                            onSelect = onSelectBattery,
+                                            onSelect = selectBatteryWithAdjustment,
                                             previewImageUrl = { it.batteryArtUrl ?: it.thumbnailUrl },
                                         )
                                         if (uiState.statusBarCatalogItems.size > maxVolioPreviewItems) {
@@ -341,7 +365,7 @@ internal fun StatusBarCustomScreen(
                                             labels = batteryPresets.map { it.name },
                                             selectedLabel = batteryPresets.firstOrNull { it.id == config.batteryPresetId }?.name.orEmpty(),
                                             onClick = { label ->
-                                                batteryPresets.firstOrNull { it.name == label }?.let { onSelectBattery(it.id) }
+                                                batteryPresets.firstOrNull { it.name == label }?.let { selectBatteryWithAdjustment(it.id) }
                                             },
                                             icon = { label ->
                                                 Text(
@@ -369,7 +393,7 @@ internal fun StatusBarCustomScreen(
                                         StatusBarVolioChoiceGrid(
                                             items = previewItems,
                                             selectedId = config.emojiPresetId,
-                                            onSelect = onSelectEmoji,
+                                            onSelect = selectEmojiWithAdjustment,
                                             previewImageUrl = { it.emojiArtUrl ?: it.thumbnailUrl },
                                         )
                                         if (uiState.statusBarCatalogItems.size > maxVolioPreviewItems) {
@@ -391,7 +415,7 @@ internal fun StatusBarCustomScreen(
                                             labels = emojiPresets.map { it.name },
                                             selectedLabel = emojiPresets.firstOrNull { it.id == config.emojiPresetId }?.name.orEmpty(),
                                             onClick = { label ->
-                                                emojiPresets.firstOrNull { it.name == label }?.let { onSelectEmoji(it.id) }
+                                                emojiPresets.firstOrNull { it.name == label }?.let { selectEmojiWithAdjustment(it.id) }
                                             },
                                             icon = { label ->
                                                 Text(
@@ -464,6 +488,14 @@ internal fun StatusBarCustomScreen(
             }
         }
     }
+    if (showEmojiAdjustment) {
+        StatusBarEmojiAdjustmentDialog(
+            uiState = uiState,
+            onSetEmojiScale = onSetEmojiScale,
+            onSetEmojiOffset = onSetEmojiOffset,
+            onDismiss = { showEmojiAdjustment = false },
+        )
+    }
 }
 
 @Composable
@@ -519,6 +551,228 @@ private fun StatusBarCustomHeader(
 }
 
 @Composable
+private fun StatusBarEmojiAdjustmentDialog(
+    uiState: AppUiState,
+    onSetEmojiScale: (Float) -> Unit,
+    onSetEmojiOffset: (Float, Float) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val config = uiState.editingConfig
+    val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
+    val emojiVolio = statusBarEmojiItem(uiState, config.emojiPresetId)
+    val emojiGlyph = SampleCatalog.emojiPresets.firstOrNull { it.id == config.emojiPresetId }?.glyph ?: "●"
+    val defaultEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceIn(0f, 1f)
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    var containerWidthPx by remember { mutableStateOf(1f) }
+    var containerHeightPx by remember { mutableStateOf(1f) }
+    var emojiScale by remember(config.emojiPresetId, config.batteryPresetId) {
+        mutableStateOf(defaultEmojiScale)
+    }
+    var emojiOffsetX by remember(config.emojiPresetId, config.batteryPresetId) {
+        mutableStateOf(0.5f)
+    }
+    var emojiOffsetY by remember(config.emojiPresetId, config.batteryPresetId) {
+        mutableStateOf(0.5f)
+    }
+    val batteryArtUrl = batteryVolio?.batteryArtUrl?.takeIf { it.isNotBlank() }
+        ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
+    val batteryArtDrawableRes = batteryVolio?.previewRes?.takeIf { it != 0 }
+    val emojiArtUrl = emojiVolio?.emojiArtUrl?.takeIf { it.isNotBlank() }
+    val emojiArtDrawableRes = emojiVolio?.previewRes?.takeIf { it != 0 }
+
+    fun commitScale(next: Float) {
+        val value = next.coerceIn(0f, 1f)
+        emojiScale = value
+        onSetEmojiScale(value)
+    }
+
+    fun commitOffset(nextX: Float, nextY: Float) {
+        val clampedX = nextX.coerceIn(0f, 1f)
+        val clampedY = nextY.coerceIn(0f, 1f)
+        emojiOffsetX = clampedX
+        emojiOffsetY = clampedY
+        onSetEmojiOffset(clampedX, clampedY)
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                Text(
+                    text = "Emoji Adjustment",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = "Drag emoji to move. Drag 4 corner handles to resize.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(260.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(config.backgroundColor))
+                        .onSizeChanged {
+                            containerWidthPx = it.width.toFloat().coerceAtLeast(1f)
+                            containerHeightPx = it.height.toFloat().coerceAtLeast(1f)
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    val batterySizePx = (minOf(containerWidthPx, containerHeightPx) * 0.42f).coerceAtLeast(88f)
+                    val batterySizeDp = with(density) { batterySizePx.toDp() }
+                    val baselineEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
+                    val emojiScaleFactor = (emojiScale / baselineEmojiScale).coerceIn(0.35f, 2.2f)
+                    val emojiSizePx = (batterySizePx * emojiScaleFactor).coerceAtLeast(20f)
+                    val emojiSizeDp = with(density) { emojiSizePx.toDp() }
+                    val emojiCenterX = containerWidthPx * emojiOffsetX
+                    val emojiCenterY = containerHeightPx * emojiOffsetY
+                    val emojiLeftPx = (emojiCenterX - (emojiSizePx / 2f)).coerceIn(-emojiSizePx, containerWidthPx)
+                    val emojiTopPx = (emojiCenterY - (emojiSizePx / 2f)).coerceIn(-emojiSizePx, containerHeightPx)
+                    val emojiLeftInt = emojiLeftPx.roundToInt()
+                    val emojiTopInt = emojiTopPx.roundToInt()
+                    val resizeScaleFactor = 280f
+
+                    when {
+                        batteryArtUrl != null -> {
+                            AsyncImage(
+                                model = batteryArtUrl,
+                                contentDescription = batteryVolio?.title,
+                                modifier = Modifier.size(batterySizeDp),
+                                contentScale = ContentScale.Fit,
+                            )
+                        }
+                        batteryArtDrawableRes != null -> {
+                            Image(
+                                painter = painterResource(batteryArtDrawableRes),
+                                contentDescription = batteryVolio?.title,
+                                modifier = Modifier.size(batterySizeDp),
+                                contentScale = ContentScale.Fit,
+                            )
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .offset { IntOffset(emojiLeftInt, emojiTopInt) }
+                            .size(emojiSizeDp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .pointerInput(containerWidthPx, containerHeightPx) {
+                                    detectDragGestures { change, dragAmount ->
+                                        change.consume()
+                                        val nextX = emojiOffsetX + (dragAmount.x / containerWidthPx)
+                                        val nextY = emojiOffsetY + (dragAmount.y / containerHeightPx)
+                                        commitOffset(nextX, nextY)
+                                    }
+                                },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            when {
+                                emojiArtUrl != null -> {
+                                    AsyncImage(
+                                        model = emojiArtUrl,
+                                        contentDescription = emojiVolio?.title,
+                                        modifier = Modifier.matchParentSize(),
+                                        contentScale = ContentScale.Fit,
+                                    )
+                                }
+                                emojiArtDrawableRes != null -> {
+                                    Image(
+                                        painter = painterResource(emojiArtDrawableRes),
+                                        contentDescription = emojiVolio?.title,
+                                        modifier = Modifier.matchParentSize(),
+                                        contentScale = ContentScale.Fit,
+                                    )
+                                }
+                                else -> {
+                                    Text(
+                                        text = emojiGlyph,
+                                        fontSize = with(density) { (emojiSizePx * 0.52f).toSp() },
+                                    )
+                                }
+                            }
+                        }
+
+                        EmojiResizeHandle(
+                            modifier = Modifier.align(Alignment.TopStart),
+                            onDrag = { drag ->
+                                commitScale(emojiScale + ((-drag.x - drag.y) / resizeScaleFactor))
+                            },
+                        )
+                        EmojiResizeHandle(
+                            modifier = Modifier.align(Alignment.TopEnd),
+                            onDrag = { drag ->
+                                commitScale(emojiScale + ((drag.x - drag.y) / resizeScaleFactor))
+                            },
+                        )
+                        EmojiResizeHandle(
+                            modifier = Modifier.align(Alignment.BottomStart),
+                            onDrag = { drag ->
+                                commitScale(emojiScale + ((-drag.x + drag.y) / resizeScaleFactor))
+                            },
+                        )
+                        EmojiResizeHandle(
+                            modifier = Modifier.align(Alignment.BottomEnd),
+                            onDrag = { drag ->
+                                commitScale(emojiScale + ((drag.x + drag.y) / resizeScaleFactor))
+                            },
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(text = stringResource(R.string.common_cancel))
+                    }
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(text = "Done")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmojiResizeHandle(
+    modifier: Modifier = Modifier,
+    onDrag: (androidx.compose.ui.geometry.Offset) -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .size(18.dp)
+            .clip(CircleShape)
+            .background(Color.White)
+            .border(1.dp, StrawberryMilk.Secondary, CircleShape)
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    onDrag(dragAmount)
+                }
+            },
+    )
+}
+
+@Composable
 private fun StatusBarLivePreviewCard(
     uiState: AppUiState,
     previewBrush: Brush,
@@ -539,15 +793,16 @@ private fun StatusBarLivePreviewCard(
         ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
     val batteryArtDrawableRes = batteryVolio?.previewRes?.takeIf { it != 0 }
     val emojiArtUrl = emojiVolio?.emojiArtUrl?.takeIf { it.isNotBlank() }
-        ?: emojiVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
     val emojiArtDrawableRes = emojiVolio?.previewRes?.takeIf { it != 0 }
+    val defaultEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
+    val emojiScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultEmojiScale).coerceIn(0.35f, 2.2f)
     val horizontalStart = (8f + config.leftMargin.coerceIn(0f, 1f) * 88f).dp
     val horizontalEnd = (8f + config.rightMargin.coerceIn(0f, 1f) * 88f).dp
     val verticalPad = (4f + config.statusBarHeight.coerceIn(0f, 1f) * 12f).dp
     val previewHeight = (62f + config.statusBarHeight.coerceIn(0f, 1f) * 34f).dp
     val rowBgColor = Color.Transparent
     val batteryFontSize = (11f + (config.batteryPercentScale.coerceIn(0f, 1f) * 11f)).sp
-    val emojiPreviewSize = (10f + config.emojiScale.coerceIn(0f, 1f) * 20f).dp
+    val emojiPreviewSize = (18f * emojiScaleFactor).dp
     val emojiPreviewTextSize = (10f + config.emojiScale.coerceIn(0f, 1f) * 14f).sp
     Card(
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.status_bar_editor_scaffold)),
@@ -637,46 +892,21 @@ private fun StatusBarLivePreviewCard(
                                 fontSize = 11.sp,
                                 fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
                             )
-                            if (emojiArtUrl != null) {
-                                AsyncImage(
-                                    model = emojiArtUrl,
-                                    contentDescription = emojiVolio?.title,
-                                    modifier = Modifier
-                                        .size(emojiPreviewSize)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    contentScale = ContentScale.Crop,
-                                )
-                            } else if (emojiArtDrawableRes != null) {
-                                Image(
-                                    painter = painterResource(emojiArtDrawableRes),
-                                    contentDescription = emojiVolio?.title,
-                                    modifier = Modifier.size(emojiPreviewSize),
-                                    contentScale = ContentScale.Fit,
-                                )
-                            } else {
-                                Text(
-                                    emojiGlyph,
-                                    color = Color(0xFF333333),
-                                    fontSize = emojiPreviewTextSize,
-                                )
-                            }
-                            if (batteryArtUrl != null) {
-                                AsyncImage(
-                                    model = batteryArtUrl,
-                                    contentDescription = batteryVolio?.title,
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                        .clip(RoundedCornerShape(5.dp)),
-                                    contentScale = ContentScale.Crop,
-                                )
-                            } else if (batteryArtDrawableRes != null) {
-                                Image(
-                                    painter = painterResource(batteryArtDrawableRes),
-                                    contentDescription = batteryVolio?.title,
-                                    modifier = Modifier.size(18.dp),
-                                    contentScale = ContentScale.Fit,
-                                )
-                            }
+                            StatusBarBatteryEmojiCompositePreview(
+                                batteryArtUrl = batteryArtUrl,
+                                batteryArtDrawableRes = batteryArtDrawableRes,
+                                batteryContentDescription = batteryVolio?.title,
+                                emojiArtUrl = emojiArtUrl,
+                                emojiArtDrawableRes = emojiArtDrawableRes,
+                                emojiContentDescription = emojiVolio?.title,
+                                emojiFallbackGlyph = emojiGlyph,
+                                emojiFallbackColor = Color(0xFF333333),
+                                batterySize = 18.dp,
+                                emojiSize = emojiPreviewSize,
+                                emojiTextSize = emojiPreviewTextSize,
+                                emojiOffsetX = config.emojiOffsetX,
+                                emojiOffsetY = config.emojiOffsetY,
+                            )
                             Text(
                                 if (batteryArtUrl != null || batteryArtDrawableRes != null) {
                                     "${percentageText.trim()}$chargeSuffix".trim()
@@ -691,6 +921,91 @@ private fun StatusBarLivePreviewCard(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusBarBatteryEmojiCompositePreview(
+    batteryArtUrl: String?,
+    batteryArtDrawableRes: Int?,
+    batteryContentDescription: String?,
+    emojiArtUrl: String?,
+    emojiArtDrawableRes: Int?,
+    emojiContentDescription: String?,
+    emojiFallbackGlyph: String,
+    emojiFallbackColor: Color,
+    batterySize: Dp,
+    emojiSize: Dp,
+    emojiTextSize: TextUnit,
+    emojiOffsetX: Float = 0.5f,
+    emojiOffsetY: Float = 0.5f,
+) {
+    val hasBatteryArt = batteryArtUrl != null || batteryArtDrawableRes != null
+    val hasEmojiArt = emojiArtUrl != null || emojiArtDrawableRes != null
+    val hasEmojiFallback = !hasEmojiArt && emojiFallbackGlyph.isNotBlank()
+    if (!hasBatteryArt && !hasEmojiArt && !hasEmojiFallback) return
+    val containerSize = if (emojiSize.value > batterySize.value) emojiSize else batterySize
+    val offsetX = emojiOffsetX.coerceIn(0f, 1f)
+    val offsetY = emojiOffsetY.coerceIn(0f, 1f)
+    val emojiTranslationFactor = containerSize * 0.55f
+    val emojiX = (offsetX - 0.5f) * 2f * emojiTranslationFactor.value
+    val emojiY = (offsetY - 0.5f) * 2f * emojiTranslationFactor.value
+    val emojiOffsetModifier = Modifier.offset(emojiX.dp, emojiY.dp)
+    Box(
+        modifier = Modifier.size(containerSize),
+        contentAlignment = Alignment.Center,
+    ) {
+        when {
+            batteryArtUrl != null -> {
+                AsyncImage(
+                    model = batteryArtUrl,
+                    contentDescription = batteryContentDescription,
+                    modifier = Modifier
+                        .size(batterySize)
+                        .clip(RoundedCornerShape(5.dp)),
+                    contentScale = ContentScale.Crop,
+                )
+            }
+            batteryArtDrawableRes != null -> {
+                Image(
+                    painter = painterResource(batteryArtDrawableRes),
+                    contentDescription = batteryContentDescription,
+                    modifier = Modifier.size(batterySize),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+        }
+        when {
+            emojiArtUrl != null -> {
+                AsyncImage(
+                    model = emojiArtUrl,
+                    contentDescription = emojiContentDescription,
+                    modifier = Modifier
+                        .then(emojiOffsetModifier)
+                        .size(emojiSize)
+                        .clip(RoundedCornerShape(5.dp)),
+                    contentScale = ContentScale.Crop,
+                )
+            }
+            emojiArtDrawableRes != null -> {
+                Image(
+                    painter = painterResource(emojiArtDrawableRes),
+                    contentDescription = emojiContentDescription,
+                    modifier = Modifier
+                        .then(emojiOffsetModifier)
+                        .size(emojiSize),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+            hasEmojiFallback -> {
+                Text(
+                    text = emojiFallbackGlyph,
+                    color = emojiFallbackColor,
+                    fontSize = emojiTextSize,
+                    modifier = emojiOffsetModifier,
+                )
             }
         }
     }
@@ -1695,6 +2010,12 @@ internal fun BatteryPreviewCard(
                         .padding(horizontal = 14.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
+                    val batUrl = batteryVolio?.batteryArtUrl?.takeIf { !it.isNullOrBlank() }
+                        ?: batteryVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
+                    val batDrawable = batteryVolio?.previewRes?.takeIf { it != 0 }
+                    val emUrl = emojiVolio?.emojiArtUrl?.takeIf { !it.isNullOrBlank() }
+                        ?: emojiVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
+                    val emDrawable = emojiVolio?.previewRes?.takeIf { it != 0 }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -1711,18 +2032,23 @@ internal fun BatteryPreviewCard(
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text(stringResource(R.string.demo_wifi), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("▰▰▰▱", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            val batUrl = batteryVolio?.batteryArtUrl?.takeIf { !it.isNullOrBlank() }
-                                ?: batteryVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
-                            if (batUrl != null) {
-                                AsyncImage(
-                                    model = batUrl,
-                                    contentDescription = batteryVolio?.title,
-                                    modifier = Modifier.size(28.dp).clip(RoundedCornerShape(8.dp)),
-                                    contentScale = ContentScale.Crop,
-                                )
-                            }
+                            StatusBarBatteryEmojiCompositePreview(
+                                batteryArtUrl = batUrl,
+                                batteryArtDrawableRes = batDrawable,
+                                batteryContentDescription = batteryVolio?.title,
+                                emojiArtUrl = emUrl,
+                                emojiArtDrawableRes = emDrawable,
+                                emojiContentDescription = emojiVolio?.title,
+                                emojiFallbackGlyph = emojiGlyph,
+                                emojiFallbackColor = MaterialTheme.colorScheme.onSurface,
+                                batterySize = 28.dp,
+                                emojiSize = 28.dp,
+                                emojiTextSize = MaterialTheme.typography.titleMedium.fontSize,
+                                emojiOffsetX = config.emojiOffsetX,
+                                emojiOffsetY = config.emojiOffsetY,
+                            )
                             Text(
-                                "${if (batUrl == null) batteryBody else ""} ${if (config.showPercentage) "56%" else ""}".trim(),
+                                "${if (batUrl == null && batDrawable == null) batteryBody else ""} ${if (config.showPercentage) "56%" else ""}".trim(),
                                 color = Color(config.accentColor),
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
                             )
@@ -1742,21 +2068,21 @@ internal fun BatteryPreviewCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        val emUrl = emojiVolio?.emojiArtUrl?.takeIf { !it.isNullOrBlank() }
-                            ?: emojiVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
-                        if (emUrl != null) {
-                            AsyncImage(
-                                model = emUrl,
-                                contentDescription = emojiVolio?.title,
-                                modifier = Modifier.size(36.dp).clip(RoundedCornerShape(10.dp)),
-                                contentScale = ContentScale.Crop,
-                            )
-                        } else {
-                            Text(
-                                emojiGlyph,
-                                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                            )
-                        }
+                        StatusBarBatteryEmojiCompositePreview(
+                            batteryArtUrl = batUrl,
+                            batteryArtDrawableRes = batDrawable,
+                            batteryContentDescription = batteryVolio?.title,
+                            emojiArtUrl = emUrl,
+                            emojiArtDrawableRes = emDrawable,
+                            emojiContentDescription = emojiVolio?.title,
+                            emojiFallbackGlyph = emojiGlyph,
+                            emojiFallbackColor = MaterialTheme.colorScheme.onSurface,
+                            batterySize = 36.dp,
+                            emojiSize = 36.dp,
+                            emojiTextSize = MaterialTheme.typography.headlineMedium.fontSize,
+                            emojiOffsetX = config.emojiOffsetX,
+                            emojiOffsetY = config.emojiOffsetY,
+                        )
                     }
                 }
             }
