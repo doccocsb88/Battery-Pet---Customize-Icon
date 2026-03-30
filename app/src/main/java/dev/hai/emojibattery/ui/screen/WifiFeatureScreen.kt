@@ -26,6 +26,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,8 +53,24 @@ internal fun WifiFeatureScreen(
 ) {
     val config = uiState.featureConfigs[CustomizeEntry.Wifi]
         ?: FeatureConfig(variant = WifiColorOptions[1].id)
-    val selectedColorId = WifiColorOptions.firstOrNull { it.id == config.variant }?.id ?: WifiColorOptions[1].id
+    val selectedColorId = WifiColorOptions.firstOrNull { it.id == config.variant }?.id ?: "picker"
+    val pickerColorArgb = parsePickerColorVariant(config.variant)
+    val pickerSelected = isPickerColorVariant(config.variant)
+    var showPicker by remember { mutableStateOf(false) }
     val sliderDp = (10f + (26f * config.intensity)).coerceIn(10f, 36f)
+
+    if (showPicker) {
+        val initialColor = pickerColorArgb ?: (WifiColorOptions.firstOrNull { it.id == "blue" }?.color?.value?.toLong() ?: 0xFF2952F4)
+        FeatureColorWheelPickerDialog(
+            initialArgb = initialColor,
+            onDismiss = { showPicker = false },
+            onApply = { argb ->
+                onSelectVariant(encodePickerColorVariant(argb))
+                onApply()
+                showPicker = false
+            },
+        )
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -180,16 +200,25 @@ internal fun WifiFeatureScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             WifiColorOptions.forEach { option ->
-                                val selected = option.id == selectedColorId
+                                val selected = if (option.id == "picker") pickerSelected else option.id == selectedColorId
+                                val swatchColor = when {
+                                    option.id != "picker" -> option.color
+                                    pickerColorArgb != null -> Color(pickerColorArgb)
+                                    else -> Color.White
+                                }
                                 Surface(
                                     modifier = Modifier
                                         .size(42.dp)
                                         .clickable(enabled = config.enabled) {
-                                            onSelectVariant(option.id)
-                                            onApply()
+                                            if (option.id == "picker") {
+                                                showPicker = true
+                                            } else {
+                                                onSelectVariant(option.id)
+                                                onApply()
+                                            }
                                         },
                                     shape = CircleShape,
-                                    color = if (option.id == "picker") Color.White else option.color,
+                                    color = swatchColor,
                                     border = BorderStroke(
                                         if (selected) 2.dp else 0.8.dp,
                                         if (selected) Color(0xFF8FB6D4) else Color(0xFFD8DDE2),

@@ -16,6 +16,22 @@ internal val WifiColorOptions = listOf(
     WifiColorOption("yellow", Color(0xFFF1DF1E)),
 )
 
+private const val PickerColorPrefix = "picker#"
+
+internal fun isPickerColorVariant(raw: String): Boolean =
+    raw == "picker" || raw.startsWith(PickerColorPrefix, ignoreCase = true)
+
+internal fun encodePickerColorVariant(argb: Long): String {
+    val normalized = argb and 0xFFFFFFFFL
+    return PickerColorPrefix + normalized.toString(16).padStart(8, '0')
+}
+
+internal fun parsePickerColorVariant(raw: String?): Long? {
+    if (raw == null || !raw.startsWith(PickerColorPrefix, ignoreCase = true)) return null
+    val hex = raw.removePrefix(PickerColorPrefix)
+    return hex.toLongOrNull(16)?.and(0xFFFFFFFFL)
+}
+
 internal data class ChargeOption(
     val id: String,
     val glyph: String,

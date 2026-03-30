@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.widget.ImageView
+import android.graphics.Bitmap
+import android.graphics.Color as AndroidColor
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -12,7 +14,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
@@ -98,6 +102,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import coil.compose.AsyncImage
@@ -124,6 +133,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -617,7 +630,7 @@ private fun StatusBarEmojiAdjustmentDialog(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(260.dp)
+                        .height(300.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color(config.backgroundColor))
                         .onSizeChanged {
@@ -626,7 +639,7 @@ private fun StatusBarEmojiAdjustmentDialog(
                         },
                     contentAlignment = Alignment.Center,
                 ) {
-                    val batterySizePx = (minOf(containerWidthPx, containerHeightPx) * 0.42f).coerceAtLeast(88f)
+                    val batterySizePx = (minOf(containerWidthPx, containerHeightPx) * 0.62f).coerceAtLeast(120f)
                     val batterySizeDp = with(density) { batterySizePx.toDp() }
                     val baselineEmojiScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
                     val emojiScaleFactor = (emojiScale / baselineEmojiScale).coerceIn(0.35f, 2.2f)
@@ -710,11 +723,21 @@ private fun StatusBarEmojiAdjustmentDialog(
                                 commitScale(emojiScale + ((-drag.x - drag.y) / resizeScaleFactor))
                             },
                         )
+                        EmojiEdgeSlash(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .offset(y = (-6).dp),
+                        )
                         EmojiResizeHandle(
                             modifier = Modifier.align(Alignment.TopEnd),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((drag.x - drag.y) / resizeScaleFactor))
                             },
+                        )
+                        EmojiEdgeSlash(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .offset(x = 6.dp),
                         )
                         EmojiResizeHandle(
                             modifier = Modifier.align(Alignment.BottomStart),
@@ -722,11 +745,21 @@ private fun StatusBarEmojiAdjustmentDialog(
                                 commitScale(emojiScale + ((-drag.x + drag.y) / resizeScaleFactor))
                             },
                         )
+                        EmojiEdgeSlash(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(y = 6.dp),
+                        )
                         EmojiResizeHandle(
                             modifier = Modifier.align(Alignment.BottomEnd),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((drag.x + drag.y) / resizeScaleFactor))
                             },
+                        )
+                        EmojiEdgeSlash(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .offset(x = (-6).dp),
                         )
                     }
                 }
@@ -749,6 +782,23 @@ private fun StatusBarEmojiAdjustmentDialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun EmojiEdgeSlash(
+    modifier: Modifier = Modifier,
+) {
+    Canvas(
+        modifier = modifier.size(14.dp),
+    ) {
+        drawLine(
+            color = StrawberryMilk.Secondary,
+            start = Offset(size.width * 0.2f, size.height * 0.8f),
+            end = Offset(size.width * 0.8f, size.height * 0.2f),
+            strokeWidth = 2.dp.toPx(),
+            cap = StrokeCap.Round,
+        )
     }
 }
 
@@ -1139,52 +1189,62 @@ private fun StatusBarThemeBackgroundColorRow(
     onSelect: (Long) -> Unit,
 ) {
     val labelColor = colorResource(R.color.splash_title)
-    var showRgbPicker by remember { mutableStateOf(false) }
-    var pickR by remember { mutableStateOf(0) }
-    var pickG by remember { mutableStateOf(0) }
-    var pickB by remember { mutableStateOf(0) }
-    LaunchedEffect(showRgbPicker, selectedArgb) {
-        if (showRgbPicker) {
-            val c = Color(selectedArgb)
-            pickR = (c.red * 255f).roundToInt().coerceIn(0, 255)
-            pickG = (c.green * 255f).roundToInt().coerceIn(0, 255)
-            pickB = (c.blue * 255f).roundToInt().coerceIn(0, 255)
+    var showColorWheelPicker by remember { mutableStateOf(false) }
+    var pickHue by remember { mutableStateOf(0f) }
+    var pickSaturation by remember { mutableStateOf(0f) }
+    var pickValue by remember { mutableStateOf(1f) }
+    LaunchedEffect(showColorWheelPicker, selectedArgb) {
+        if (showColorWheelPicker) {
+            val hsv = FloatArray(3)
+            AndroidColor.colorToHSV(selectedArgb.toInt(), hsv)
+            pickHue = hsv[0].coerceIn(0f, 360f)
+            pickSaturation = hsv[1].coerceIn(0f, 1f)
+            pickValue = hsv[2].coerceIn(0f, 1f)
         }
     }
 
-    if (showRgbPicker) {
+    if (showColorWheelPicker) {
         val dialogTextColor = colorResource(R.color.splash_title)
+        val pickedColorInt = AndroidColor.HSVToColor(floatArrayOf(pickHue, pickSaturation, pickValue))
+        val pickedColor = Color(pickedColorInt)
         AlertDialog(
-            onDismissRequest = { showRgbPicker = false },
+            onDismissRequest = { showColorWheelPicker = false },
             title = { Text(stringResource(R.string.theme_background_color)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("R: $pickR", style = MaterialTheme.typography.labelMedium)
-                    Slider(
-                        value = pickR.toFloat(),
-                        onValueChange = { pickR = it.roundToInt().coerceIn(0, 255) },
-                        valueRange = 0f..255f,
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(44.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(pickedColor),
                     )
-                    Text("G: $pickG", style = MaterialTheme.typography.labelMedium)
-                    Slider(
-                        value = pickG.toFloat(),
-                        onValueChange = { pickG = it.roundToInt().coerceIn(0, 255) },
-                        valueRange = 0f..255f,
+                    StatusBarColorWheel(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(14.dp)),
+                        hue = pickHue,
+                        saturation = pickSaturation,
+                        onChange = { h, s ->
+                            pickHue = h
+                            pickSaturation = s
+                        },
                     )
-                    Text("B: $pickB", style = MaterialTheme.typography.labelMedium)
+                    Text("Brightness", style = MaterialTheme.typography.labelMedium)
                     Slider(
-                        value = pickB.toFloat(),
-                        onValueChange = { pickB = it.roundToInt().coerceIn(0, 255) },
-                        valueRange = 0f..255f,
+                        value = pickValue,
+                        onValueChange = { pickValue = it.coerceIn(0f, 1f) },
+                        valueRange = 0f..1f,
                     )
                 }
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val argb = (0xFF000000L) or (pickR.toLong() shl 16) or (pickG.toLong() shl 8) or pickB.toLong()
+                        val argb = pickedColorInt.toLong() and 0xFFFFFFFFL
                         onSelect(argb)
-                        showRgbPicker = false
+                        showColorWheelPicker = false
                     },
                 ) {
                     Text(
@@ -1194,7 +1254,7 @@ private fun StatusBarThemeBackgroundColorRow(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showRgbPicker = false }) {
+                TextButton(onClick = { showColorWheelPicker = false }) {
                     Text(
                         text = stringResource(android.R.string.cancel),
                         color = StrawberryMilk.Secondary,
@@ -1245,7 +1305,7 @@ private fun StatusBarThemeBackgroundColorRow(
                         shape = CircleShape,
                     )
                     .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                    .clickable { showRgbPicker = true },
+                    .clickable { showColorWheelPicker = true },
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -1283,6 +1343,103 @@ private fun StatusBarThemeBackgroundColorRow(
             }
         }
     }
+}
+
+@Composable
+private fun StatusBarColorWheel(
+    modifier: Modifier = Modifier,
+    hue: Float,
+    saturation: Float,
+    onChange: (Float, Float) -> Unit,
+) {
+    var wheelSizePx by remember { mutableStateOf(0) }
+    val wheelBitmap: ImageBitmap? = remember(wheelSizePx) {
+        if (wheelSizePx <= 0) {
+            null
+        } else {
+            createStatusBarColorWheelBitmap(wheelSizePx)
+        }
+    }
+
+    fun updateFromOffset(offset: Offset) {
+        if (wheelSizePx <= 0) return
+        val center = wheelSizePx / 2f
+        val dx = offset.x - center
+        val dy = offset.y - center
+        val radius = center.coerceAtLeast(1f)
+        val distance = sqrt((dx * dx) + (dy * dy))
+        val sat = (distance / radius).coerceIn(0f, 1f)
+        val angleDeg = ((Math.toDegrees(atan2(dy, dx).toDouble()) + 360.0) % 360.0).toFloat()
+        onChange(angleDeg, sat)
+    }
+
+    Canvas(
+        modifier = modifier
+            .onSizeChanged {
+                wheelSizePx = minOf(it.width, it.height)
+            }
+            .pointerInput(wheelSizePx) {
+                detectTapGestures { offset ->
+                    updateFromOffset(offset)
+                }
+            }
+            .pointerInput(wheelSizePx) {
+                detectDragGestures { change, _ ->
+                    change.consume()
+                    updateFromOffset(change.position)
+                }
+            },
+    ) {
+        val bitmap = wheelBitmap
+        if (bitmap != null) {
+            drawImage(bitmap)
+        }
+        val radius = size.minDimension / 2f
+        val angleRad = Math.toRadians(hue.toDouble())
+        val markerDistance = saturation.coerceIn(0f, 1f) * radius
+        val markerCenter = Offset(
+            x = center.x + (cos(angleRad) * markerDistance).toFloat(),
+            y = center.y + (sin(angleRad) * markerDistance).toFloat(),
+        )
+        drawCircle(
+            color = Color.White,
+            radius = 9.dp.toPx(),
+            center = markerCenter,
+            style = Stroke(width = 2.5.dp.toPx()),
+        )
+        drawCircle(
+            color = Color.Black.copy(alpha = 0.35f),
+            radius = 11.dp.toPx(),
+            center = markerCenter,
+            style = Stroke(width = 1.5.dp.toPx()),
+        )
+    }
+}
+
+private fun createStatusBarColorWheelBitmap(sizePx: Int): ImageBitmap {
+    val safeSize = sizePx.coerceAtLeast(1)
+    val bitmap = Bitmap.createBitmap(safeSize, safeSize, Bitmap.Config.ARGB_8888)
+    val center = safeSize / 2f
+    val radius = center.coerceAtLeast(1f)
+    val pixels = IntArray(safeSize * safeSize)
+
+    for (y in 0 until safeSize) {
+        for (x in 0 until safeSize) {
+            val dx = x - center
+            val dy = y - center
+            val distance = sqrt((dx * dx) + (dy * dy))
+            val index = y * safeSize + x
+            if (distance <= radius) {
+                val sat = (distance / radius).coerceIn(0f, 1f)
+                val hue = ((Math.toDegrees(atan2(dy, dx).toDouble()) + 360.0) % 360.0).toFloat()
+                pixels[index] = AndroidColor.HSVToColor(floatArrayOf(hue, sat, 1f))
+            } else {
+                pixels[index] = AndroidColor.TRANSPARENT
+            }
+        }
+    }
+    bitmap.setPixels(pixels, 0, safeSize, 0, 0, safeSize, safeSize)
+    return bitmap.asImageBitmap()
 }
 
 /**
