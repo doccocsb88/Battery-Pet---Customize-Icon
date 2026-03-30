@@ -116,7 +116,14 @@ fun EmojiBatteryApp(
             }
         },
     ) { padding ->
-        Box(Modifier.padding(padding).fillMaxSize()) {
+        val navHostContainerModifier = if (route == null || route == AppRoute.Splash.route) {
+            Modifier.fillMaxSize()
+        } else {
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+        }
+        Box(navHostContainerModifier) {
             NavHost(
                 navController = navController,
                 startDestination = initialRoute ?: AppRoute.Splash.route,

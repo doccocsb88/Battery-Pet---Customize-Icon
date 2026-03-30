@@ -362,8 +362,8 @@ object OverlayConfigStore {
             realTimeEnabled = prefs.getBoolean(KEY_REALTIME_ENABLED, false),
             realTimeGlyph = prefs.getString(KEY_REALTIME_GLYPH, "⚡").orEmpty(),
             realTimeTitle = prefs.getString(KEY_REALTIME_TITLE, "Real Time").orEmpty(),
-            // Match original "dynamic notch" preview behavior by default.
-            notchTemplateId = prefs.getInt(KEY_NOTCH_TEMPLATE_ID, 8),
+            // Default to hidden notch until user explicitly selects a template.
+            notchTemplateId = prefs.getInt(KEY_NOTCH_TEMPLATE_ID, -1),
             statusBarHeight = prefs.getFloat(KEY_STATUS_BAR_HEIGHT, SampleCatalog.defaultConfig.statusBarHeight).coerceIn(0f, 1f),
             leftMargin = prefs.getFloat(KEY_STATUS_LEFT_MARGIN, SampleCatalog.defaultConfig.leftMargin).coerceIn(0f, 1f),
             rightMargin = prefs.getFloat(KEY_STATUS_RIGHT_MARGIN, SampleCatalog.defaultConfig.rightMargin).coerceIn(0f, 1f),

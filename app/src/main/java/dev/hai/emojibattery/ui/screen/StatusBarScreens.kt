@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.widget.ImageView
+import android.view.Gravity
 import android.graphics.Bitmap
 import android.graphics.Color as AndroidColor
 
@@ -184,6 +185,7 @@ import dev.hai.emojibattery.data.PadBackgroundTemplateRepository
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
 import dev.hai.emojibattery.service.AccessibilityBridge
+import dev.hai.emojibattery.service.NotchTemplateCatalog
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.ui.navigation.AppRoute
@@ -309,49 +311,47 @@ internal fun StatusBarCustomScreen(
     }
     Scaffold(
         containerColor = editorBg,
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-        ) {
+        topBar = {
             StatusBarCustomHeader(
                 title = stringResource(R.string.status_bar_custom_title),
                 onBack = onBack,
                 onApply = onApply,
                 applyBrush = applyBrush,
             )
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(editorScrollState)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(editorScrollState)
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = onAccessibilityChanged)
+            StatusBarLivePreviewCard(
+                uiState = uiState,
+                previewBrush = previewBrush,
+            )
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White,
+                shadowElevation = 0.dp,
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = onAccessibilityChanged)
-                StatusBarLivePreviewCard(
-                    uiState = uiState,
-                    previewBrush = previewBrush,
-                )
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = Color.White,
-                    shadowElevation = 0.dp,
-                    modifier = Modifier.fillMaxWidth(),
+                Column(
+                    modifier = Modifier.padding(top = 6.dp, bottom = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
+                    OriginalStatusTabStrip(
+                        selected = uiState.activeStatusBarTab,
+                        onSelect = onSelectTab,
+                    )
                     Column(
-                        modifier = Modifier.padding(top = 6.dp, bottom = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        OriginalStatusTabStrip(
-                            selected = uiState.activeStatusBarTab,
-                            onSelect = onSelectTab,
-                        )
-                        Column(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            when (uiState.activeStatusBarTab) {
+                        when (uiState.activeStatusBarTab) {
                                 StatusBarTab.Battery -> {
                                     if (uiState.statusBarCatalogItems.isNotEmpty()) {
                                         val previewItems = uiState.statusBarCatalogItems.take(maxVolioPreviewItems)
@@ -496,7 +496,6 @@ internal fun StatusBarCustomScreen(
                                         }
                                     }
                                 }
-                            }
                         }
                     }
                 }
@@ -842,7 +841,11 @@ private fun StatusBarLivePreviewCard(
     uiState: AppUiState,
     previewBrush: Brush,
 ) {
+    val context = LocalContext.current
     val config = uiState.editingConfig
+    val notchTemplate = remember(context) {
+        NotchTemplateCatalog.resolve(OverlayConfigStore.read(context).notchTemplateId)
+    }
     val dateTimeConfig = uiState.featureConfigs[CustomizeEntry.DateTime]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
         ?: FeatureConfig(variant = encodeDateTimeVariant(parseDateTimeVariant(null)))
@@ -906,6 +909,17 @@ private fun StatusBarLivePreviewCard(
                     )
                 }
                 else -> Box(Modifier.fillMaxSize().background(Color(config.backgroundColor)))
+            }
+            notchTemplate.drawableRes?.let { notchDrawable ->
+                Image(
+                    painter = painterResource(notchDrawable),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(notchPreviewAlignment(notchTemplate.gravity))
+                        .padding(top = 2.dp)
+                        .size(width = 102.dp, height = 14.dp),
+                    contentScale = ContentScale.FillBounds,
+                )
             }
             Row(
                 modifier = Modifier
@@ -1007,6 +1021,11 @@ private fun StatusBarLivePreviewCard(
             }
         }
     }
+}
+
+private fun notchPreviewAlignment(gravity: Int): Alignment {
+    val isTop = (gravity and Gravity.TOP) == Gravity.TOP
+    return if (isTop) Alignment.TopCenter else Alignment.Center
 }
 
 @Composable
