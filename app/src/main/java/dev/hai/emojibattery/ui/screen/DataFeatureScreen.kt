@@ -53,7 +53,7 @@ internal fun DataFeatureScreen(
     onApply: () -> Unit,
 ) {
     val config = uiState.featureConfigs[CustomizeEntry.Data]
-        ?: FeatureConfig(variant = "5G")
+        ?: FeatureConfig(enabled = false, variant = "5G")
     val colorOptions = WifiColorOptions
     val styleOptions = listOf("2G", "3G", "4G", "5G", "6G")
     val selection = parseDataVariant(config.variant, styleOptions, colorOptions.map { it.id })
@@ -112,29 +112,6 @@ internal fun DataFeatureScreen(
         ) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                border = BorderStroke(1.dp, Color(0xFF8FB6D4)),
-                color = Color(0xFFF2F2F2),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = stringResource(R.string.enable_disable_emoji_battery),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Switch(
-                        checked = config.enabled,
-                        onCheckedChange = onToggleEnabled,
-                    )
-                }
-            }
-
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 color = Color.White,
             ) {
@@ -142,6 +119,33 @@ internal fun DataFeatureScreen(
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_bullet2),
+                                contentDescription = null,
+                                modifier = Modifier.size(5.dp, 18.dp),
+                            )
+                            Text(
+                                text = stringResource(R.string.enable_feature, stringResource(R.string.data)),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                        Switch(
+                            checked = config.enabled,
+                            onCheckedChange = onToggleEnabled,
+                        )
+                    }
+
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -165,6 +169,7 @@ internal fun DataFeatureScreen(
                         ) {
                             Slider(
                                 value = sliderDp,
+                                enabled = config.enabled,
                                 onValueChange = { dpValue ->
                                     val intensity = ((dpValue - 10f) / 26f).coerceIn(0.1f, 1f)
                                     onSetIntensity(intensity)
@@ -214,7 +219,7 @@ internal fun DataFeatureScreen(
                                 Surface(
                                     modifier = Modifier
                                         .size(42.dp)
-                                        .clickable {
+                                        .clickable(enabled = config.enabled) {
                                             if (option.id == "picker") {
                                                 showPicker = true
                                             } else {
@@ -272,7 +277,7 @@ internal fun DataFeatureScreen(
                                         modifier = Modifier
                                             .weight(1f)
                                             .aspectRatio(1f)
-                                            .clickable {
+                                            .clickable(enabled = config.enabled) {
                                                 onSelectVariant(encodeDataVariant(style, selectedColorId))
                                                 onApply()
                                             },

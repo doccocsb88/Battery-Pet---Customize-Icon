@@ -644,15 +644,11 @@ fun EmojiBatteryApp(
                         onToggleEnabled = { value ->
                             viewModel.updateFeatureEnabled(customizeEntry, value)
                             val snapshot = viewModel.uiState.value
-                            if (value) {
-                                OverlayConfigStore.saveStatusBarConfig(
-                                    context,
-                                    snapshot.editingConfig,
-                                    snapshot.statusBarCatalogItems,
-                                )
-                            } else {
-                                OverlayConfigStore.setStatusBarEnabled(context, false)
-                            }
+                            OverlayConfigStore.saveStatusBarConfig(
+                                context,
+                                snapshot.editingConfig,
+                                snapshot.statusBarCatalogItems,
+                            )
                             OverlayConfigStore.saveFeatureConfigs(context, snapshot.featureConfigs)
                             if (AccessibilityBridge.isEnabled(context)) {
                                 OverlayAccessibilityService.requestRefresh(context)

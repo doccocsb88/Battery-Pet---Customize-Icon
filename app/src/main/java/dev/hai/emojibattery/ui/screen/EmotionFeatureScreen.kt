@@ -44,7 +44,7 @@ internal fun EmotionFeatureScreen(
     onApply: () -> Unit,
 ) {
     val config = uiState.featureConfigs[CustomizeEntry.Emotion]
-        ?: FeatureConfig(variant = EmotionOptions.first().id)
+        ?: FeatureConfig(enabled = false, variant = EmotionOptions.first().id)
     val emotionState = parseEmotionVariant(config.variant)
     val selectedId = EmotionOptions.firstOrNull { it.id == emotionState.emotionId }?.id ?: EmotionOptions.first().id
 
@@ -82,31 +82,6 @@ internal fun EmotionFeatureScreen(
             contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(18.dp),
-                    border = BorderStroke(1.dp, Color(0xFF8FB6D4)),
-                    color = Color(0xFFF2F2F2),
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.enable_disable_emoji_battery),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Switch(
-                            checked = config.enabled,
-                            onCheckedChange = onToggleEnabled,
-                        )
-                    }
-                }
-            }
-
             item {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),

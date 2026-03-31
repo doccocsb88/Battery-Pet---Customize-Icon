@@ -53,7 +53,7 @@ internal fun DateTimeFeatureScreen(
     onApply: () -> Unit,
 ) {
     val config = uiState.featureConfigs[CustomizeEntry.DateTime]
-        ?: FeatureConfig(variant = encodeDateTimeVariant(parseDateTimeVariant(null)))
+        ?: FeatureConfig(enabled = false, variant = encodeDateTimeVariant(parseDateTimeVariant(null)))
     val parsed = parseDateTimeVariant(config.variant)
     val pickerColorArgb = parsePickerColorVariant(parsed.colorId)
     val pickerSelected = isPickerColorVariant(parsed.colorId)
@@ -110,29 +110,6 @@ internal fun DateTimeFeatureScreen(
                 .padding(horizontal = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                border = BorderStroke(1.dp, Color(0xFF8FB6D4)),
-                color = Color(0xFFF2F2F2),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = stringResource(R.string.enable_disable_emoji_battery),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Switch(
-                        checked = config.enabled,
-                        onCheckedChange = onToggleEnabled,
-                    )
-                }
-            }
-
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -192,6 +169,7 @@ internal fun DateTimeFeatureScreen(
                         ) {
                             Slider(
                                 value = sliderDp,
+                                enabled = parsed.showDate,
                                 onValueChange = { dpValue ->
                                     val intensity = ((dpValue - 5f) / 13f).coerceIn(0f, 1f)
                                     onSetIntensity(intensity)
@@ -240,7 +218,7 @@ internal fun DateTimeFeatureScreen(
                                 Surface(
                                     modifier = Modifier
                                         .size(42.dp)
-                                        .clickable(enabled = config.enabled) {
+                                        .clickable(enabled = parsed.showDate) {
                                             if (option.id == "picker") {
                                                 showPicker = true
                                             } else {
@@ -297,7 +275,7 @@ internal fun DateTimeFeatureScreen(
                                         modifier = Modifier
                                             .weight(1f)
                                             .aspectRatio(1f)
-                                            .clickable(enabled = config.enabled) {
+                                            .clickable(enabled = parsed.showDate) {
                                                 updateVariant(parsed.copy(styleId = style.id))
                                             },
                                         shape = RoundedCornerShape(14.dp),

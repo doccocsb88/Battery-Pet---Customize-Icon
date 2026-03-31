@@ -476,7 +476,22 @@ object SampleCatalog {
 
     val defaultFeatureConfigs = CustomizeEntry.entries.associateWith { entry ->
         when (entry) {
-            CustomizeEntry.DateTime -> FeatureConfig(variant = "style=style_4;color=blue;show=0")
+            CustomizeEntry.Wifi,
+            CustomizeEntry.Data,
+            CustomizeEntry.Signal,
+            CustomizeEntry.Airplane,
+            CustomizeEntry.Hotspot,
+            CustomizeEntry.Ringer,
+            CustomizeEntry.Charge,
+            CustomizeEntry.Emotion,
+            CustomizeEntry.DateTime,
+            -> FeatureConfig(
+                enabled = false,
+                variant = when (entry) {
+                    CustomizeEntry.DateTime -> "style=style_4;color=blue;show=0"
+                    else -> featureVariants[entry]?.first().orEmpty()
+                },
+            )
             else -> FeatureConfig(variant = featureVariants[entry]?.first().orEmpty())
         }
     }

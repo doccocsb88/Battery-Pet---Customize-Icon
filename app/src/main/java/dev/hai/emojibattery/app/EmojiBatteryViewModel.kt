@@ -623,11 +623,7 @@ class EmojiBatteryViewModel(
     }
 
     fun updateFeatureEnabled(entry: CustomizeEntry, enabled: Boolean) {
-        _uiState.update { state ->
-            state.copy(
-                featureConfigs = state.featureConfigs.mapValues { (_, cfg) -> cfg.copy(enabled = enabled) },
-            )
-        }
+        updateFeature(entry) { copy(enabled = enabled) }
     }
 
     fun updateFeatureIntensity(entry: CustomizeEntry, intensity: Float) {

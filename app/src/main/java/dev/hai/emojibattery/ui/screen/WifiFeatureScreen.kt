@@ -52,7 +52,7 @@ internal fun WifiFeatureScreen(
     onApply: () -> Unit,
 ) {
     val config = uiState.featureConfigs[CustomizeEntry.Wifi]
-        ?: FeatureConfig(variant = WifiColorOptions[1].id)
+        ?: FeatureConfig(enabled = false, variant = WifiColorOptions[1].id)
     val selectedColorId = WifiColorOptions.firstOrNull { it.id == config.variant }?.id ?: "picker"
     val pickerColorArgb = parsePickerColorVariant(config.variant)
     val pickerSelected = isPickerColorVariant(config.variant)
@@ -107,29 +107,6 @@ internal fun WifiFeatureScreen(
         ) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                border = BorderStroke(1.dp, Color(0xFF8FB6D4)),
-                color = Color(0xFFF2F2F2),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = stringResource(R.string.enable_disable_emoji_battery),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Switch(
-                        checked = config.enabled,
-                        onCheckedChange = onToggleEnabled,
-                    )
-                }
-            }
-
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 color = Color.White,
             ) {
@@ -137,6 +114,33 @@ internal fun WifiFeatureScreen(
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_bullet2),
+                                contentDescription = null,
+                                modifier = Modifier.size(5.dp, 18.dp),
+                            )
+                            Text(
+                                text = stringResource(R.string.enable_feature, stringResource(R.string.wifi)),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                        Switch(
+                            checked = config.enabled,
+                            onCheckedChange = onToggleEnabled,
+                        )
+                    }
+
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
