@@ -64,6 +64,7 @@ import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.billing.BillingUiState
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.model.PaywallState
+import dev.hai.emojibattery.model.SampleCatalog
 
 // ─── Alpine Design Tokens ────────────────────────────────────────
 private object Alpine {
@@ -161,6 +162,7 @@ fun PaywallScreen(
 
     // Track which plan is selected: 0=monthly, 1=lifetime
     var selectedPlan by remember { mutableStateOf(1) }
+    val showContextCopy = paywall?.featureKey != SampleCatalog.FEATURE_EXTRA_STICKER_SLOT && paywall?.featureKey != "settings:store"
 
     Box(
         modifier = Modifier
@@ -255,12 +257,6 @@ fun PaywallScreen(
                     enabled = !billingState.purchaseInFlight,
                     onClick = { onPurchase(monthly.productId, monthly.offerToken) },
                 )
-            } else if (selectedPlan == 1 && lifetime != null) {
-                AlpineSecondaryCtaButton(
-                    text = "${stringResource(R.string.life_time)} · ${lifetime.displayPrice}",
-                    enabled = !billingState.purchaseInFlight,
-                    onClick = { onPurchase(lifetime.productId, null) },
-                )
             }
 
             if (!loadingPrices && monthly == null && lifetime == null && weekly == null && billingState.errorMessage == null) {
@@ -293,24 +289,26 @@ fun PaywallScreen(
             Spacer(Modifier.height(8.dp))
 
             // ─── Paywall context ───
-            paywall?.let {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        text = it.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Alpine.OnSurface,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        text = it.message,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Alpine.OnSurfaceVariant,
-                    )
+            if (showContextCopy) {
+                paywall?.let {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Text(
+                            text = it.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Alpine.OnSurface,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = it.message,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Alpine.OnSurfaceVariant,
+                        )
+                    }
                 }
             }
 
@@ -406,16 +404,12 @@ private fun AlpineBenefitRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        // Tonal icon container
-        Surface(
-            shape = Alpine.RoundMD,
-            color = Alpine.SurfaceHigh.copy(alpha = 0.7f),
-            modifier = Modifier.size(48.dp),
-        ) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = glyph, fontSize = 22.sp)
-            }
-        }
+        Box(
+            modifier = Modifier
+                .size(10.dp)
+                .clip(CircleShape)
+                .background(Alpine.PrimaryDeep),
+        )
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
@@ -442,20 +436,10 @@ private fun AlpinePlanCard(
         animationSpec = tween(250),
         label = "planBg",
     )
-    val scale by animateFloatAsState(
-        targetValue = if (selected) 1.03f else 1f,
-        animationSpec = tween(200),
-        label = "planScale",
-    )
-
     Box(modifier = modifier) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
                 .clickable(enabled = enabled, onClick = onClick),
             shape = Alpine.RoundXL,
             color = bgColor,
