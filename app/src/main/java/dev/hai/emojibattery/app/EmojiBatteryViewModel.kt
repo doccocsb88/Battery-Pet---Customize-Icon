@@ -73,7 +73,7 @@ class EmojiBatteryViewModel(
     init {
         val app = getApplication<Application>()
         val gestureSnapshot = GestureSettingsStore.read(app)
-        val statusBarEnabled = OverlayConfigStore.read(app).statusBarEnabled
+        val overlaySnapshot = OverlayConfigStore.read(app)
         val defaultTag = resolveDefaultLocaleTag(app)
         val englishOnly = !AppLanguageConfig.isLanguagePickerFlowEnabled
         val resolvedLocaleTag = if (englishOnly) {
@@ -93,7 +93,7 @@ class EmojiBatteryViewModel(
                 onboardingCompleted = AppFlowPreferences.isOnboardingDone(app),
                 selectedLocaleTag = resolvedLocaleTag,
                 padCatalogLoading = true,
-                featureConfigs = it.featureConfigs.mapValues { (_, cfg) -> cfg.copy(enabled = statusBarEnabled) },
+                featureConfigs = overlaySnapshot.featureConfigs,
             )
         }
         viewModelScope.launch {

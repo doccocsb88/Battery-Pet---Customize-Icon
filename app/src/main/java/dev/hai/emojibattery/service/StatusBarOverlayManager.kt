@@ -380,13 +380,18 @@ class StatusBarOverlayManager(
         val dataConfig = featureConfigs[CustomizeEntry.Data] ?: defaultFeatureConfig
         val hotspotConfig = featureConfigs[CustomizeEntry.Hotspot] ?: defaultFeatureConfig
         val airplaneConfig = featureConfigs[CustomizeEntry.Airplane] ?: defaultFeatureConfig
+        val chargeConfig = featureConfigs[CustomizeEntry.Charge] ?: defaultFeatureConfig
         val ringerConfig = featureConfigs[CustomizeEntry.Ringer] ?: defaultFeatureConfig
         val dateTimeConfig = featureConfigs[CustomizeEntry.DateTime] ?: defaultFeatureConfig
         val emotionConfig = featureConfigs[CustomizeEntry.Emotion] ?: defaultFeatureConfig
         val parsedRinger = parseRingerVariant(ringerConfig.variant)
 
         val percentageText = if (snapshot.showPercentage) " ${liveStatus.batteryPercent}%" else ""
-        val chargeSuffix = if (liveStatus.charging && snapshot.animateCharge) " ⚡" else ""
+        val chargeSuffix = if (liveStatus.charging && snapshot.animateCharge && chargeConfig.enabled) {
+            " ${chargeGlyph(chargeConfig.variant)}"
+        } else {
+            ""
+        }
         val batteryLabel = snapshot.batteryBody.takeIf { it.isNotBlank() }
             ?: snapshot.batteryText.takeIf { it.isNotBlank() }
             ?: "▰▰▰▱"
@@ -467,8 +472,8 @@ class StatusBarOverlayManager(
                 } else {
                     ""
                 }
-                val trollChargeSuffix = if (snapshot.trollUseRealBattery && liveStatus.charging && snapshot.animateCharge) {
-                    " ⚡"
+                val trollChargeSuffix = if (snapshot.trollUseRealBattery && liveStatus.charging && snapshot.animateCharge && chargeConfig.enabled) {
+                    " ${chargeGlyph(chargeConfig.variant)}"
                 } else {
                     ""
                 }
@@ -871,6 +876,21 @@ class StatusBarOverlayManager(
         "mute" -> "🔕"
         "wave" -> "🔔~"
         else -> "🔔"
+    }
+
+    private fun chargeGlyph(variant: String): String = when (variant.lowercase()) {
+        "chg_2" -> "↯"
+        "chg_3" -> "⌁"
+        "chg_4" -> "⏻"
+        "chg_5" -> "🔌"
+        "chg_6" -> "⏚"
+        "chg_7" -> "ϟ"
+        "chg_8" -> "⌬"
+        "chg_9" -> "⎓"
+        "chg_10" -> "⟡"
+        "chg_11" -> "⌇"
+        "chg_12" -> "⋇"
+        else -> "⚡"
     }
 
     private fun resolveColorFromVariant(variant: String?, fallback: Int): Int {

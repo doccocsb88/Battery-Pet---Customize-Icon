@@ -849,6 +849,9 @@ private fun StatusBarLivePreviewCard(
     val dateTimeConfig = uiState.featureConfigs[CustomizeEntry.DateTime]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
         ?: FeatureConfig(variant = encodeDateTimeVariant(parseDateTimeVariant(null)))
+    val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
+        ?: FeatureConfig(enabled = false, variant = "chg_1")
     val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
     val datePreview = previewDateStyle(parsedDateTime.styleId)
     val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
@@ -860,7 +863,7 @@ private fun StatusBarLivePreviewCard(
     val batteryText = batteryBody
     val demoPercent = 56
     val percentageText = if (config.showPercentage) " $demoPercent%" else ""
-    val chargeSuffix = if (config.animateCharge) " ⚡" else ""
+    val chargeSuffix = if (chargeConfig.enabled) " ${previewChargeGlyph(chargeConfig.variant)}" else ""
     val rightText = "$batteryText$percentageText$chargeSuffix".trim()
     val batteryArtUrl = batteryVolio?.batteryArtUrl?.takeIf { it.isNotBlank() }
         ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
@@ -1026,6 +1029,21 @@ private fun StatusBarLivePreviewCard(
 private fun notchPreviewAlignment(gravity: Int): Alignment {
     val isTop = (gravity and Gravity.TOP) == Gravity.TOP
     return if (isTop) Alignment.TopCenter else Alignment.Center
+}
+
+private fun previewChargeGlyph(variant: String): String = when (variant.lowercase()) {
+    "chg_2" -> "↯"
+    "chg_3" -> "⌁"
+    "chg_4" -> "⏻"
+    "chg_5" -> "🔌"
+    "chg_6" -> "⏚"
+    "chg_7" -> "ϟ"
+    "chg_8" -> "⌬"
+    "chg_9" -> "⎓"
+    "chg_10" -> "⟡"
+    "chg_11" -> "⌇"
+    "chg_12" -> "⋇"
+    else -> "⚡"
 }
 
 @Composable

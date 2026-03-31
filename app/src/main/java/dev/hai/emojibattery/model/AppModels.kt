@@ -489,6 +489,7 @@ object SampleCatalog {
                 enabled = false,
                 variant = when (entry) {
                     CustomizeEntry.DateTime -> "style=style_4;color=blue;show=0"
+                    CustomizeEntry.Charge -> "chg_1"
                     else -> featureVariants[entry]?.first().orEmpty()
                 },
             )
