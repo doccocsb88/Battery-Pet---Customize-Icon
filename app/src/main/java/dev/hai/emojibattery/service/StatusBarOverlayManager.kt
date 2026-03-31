@@ -62,6 +62,8 @@ class StatusBarOverlayManager(
     private val windowManager = context.getSystemService(WindowManager::class.java)
 
     private val root = FrameLayout(context)
+    private val statusLayer = FrameLayout(context)
+    private val stickerLayer = FrameLayout(context)
     private val statusBackgroundImageView = ImageView(context)
     private val statusRow = LinearLayout(context)
     private val leftCluster = LinearLayout(context)
@@ -117,7 +119,19 @@ class StatusBarOverlayManager(
     init {
         root.layoutParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.MATCH_PARENT,
+        )
+        root.clipChildren = false
+        root.clipToPadding = false
+        statusLayer.clipChildren = false
+        statusLayer.clipToPadding = false
+        root.addView(
+            statusLayer,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP,
+            ),
         )
         statusRow.orientation = LinearLayout.HORIZONTAL
         statusRow.gravity = Gravity.CENTER_VERTICAL
@@ -240,15 +254,23 @@ class StatusBarOverlayManager(
 
         statusBackgroundImageView.scaleType = ImageView.ScaleType.CENTER_CROP
         statusBackgroundImageView.visibility = View.GONE
-        root.addView(
+        statusLayer.addView(
             statusBackgroundImageView,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP,
             ),
         )
-        root.addView(statusRow)
-        root.addView(
+        statusLayer.addView(
+            statusRow,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.TOP,
+            ),
+        )
+        statusLayer.addView(
             gestureLayer,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -256,24 +278,37 @@ class StatusBarOverlayManager(
                 Gravity.TOP,
             ),
         )
-        val stickerLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
-            topMargin = 64
-        }
+        stickerLayer.clipChildren = false
+        stickerLayer.clipToPadding = false
+        root.addView(
+            stickerLayer,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.TOP,
+            ),
+        )
+        val stickerLp = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.TOP or Gravity.START,
+        )
         stickerImageView.scaleType = ImageView.ScaleType.FIT_CENTER
         stickerImageView.adjustViewBounds = true
         stickerLottieView.scaleType = ImageView.ScaleType.FIT_CENTER
         stickerLottieView.repeatCount = LottieDrawable.INFINITE
-        val stickerMax = (56 * context.resources.displayMetrics.density).toInt()
+        val screenWidth = context.resources.displayMetrics.widthPixels
+        val stickerMax = (screenWidth * 0.30f).roundToInt().coerceAtLeast((56 * context.resources.displayMetrics.density).toInt())
         stickerImageView.maxWidth = stickerMax
         stickerImageView.maxHeight = stickerMax
-        root.addView(stickerImageView, FrameLayout.LayoutParams(stickerLp))
-        root.addView(stickerLottieView, FrameLayout.LayoutParams(stickerLp))
-        root.addView(stickerEmojiView, FrameLayout.LayoutParams(stickerLp))
-        root.addView(trollView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END).apply {
+        stickerLayer.addView(stickerImageView, FrameLayout.LayoutParams(stickerLp))
+        stickerLayer.addView(stickerLottieView, FrameLayout.LayoutParams(stickerLp))
+        stickerLayer.addView(stickerEmojiView, FrameLayout.LayoutParams(stickerLp))
+        statusLayer.addView(trollView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END).apply {
             topMargin = 64
             marginEnd = 24
         })
-        root.addView(realtimeView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START).apply {
+        statusLayer.addView(realtimeView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.START).apply {
             topMargin = 64
             marginStart = 24
         })
@@ -322,7 +357,7 @@ class StatusBarOverlayManager(
                 FrameLayout.LayoutParams.MATCH_PARENT,
             ),
         )
-        root.addView(
+        statusLayer.addView(
             notchContainer,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -585,13 +620,20 @@ class StatusBarOverlayManager(
         ringerView.setTextColor(resolveColorFromVariant(parsedRinger.colorId, "#333333".toColorInt()))
 
         if (snapshot.stickerEnabled) {
-            val stickerScale = (0.6f + snapshot.stickerSize * 0.8f).coerceIn(0.6f, 1.6f)
-            stickerEmojiView.scaleX = stickerScale
-            stickerEmojiView.scaleY = stickerScale
-            stickerImageView.scaleX = stickerScale
-            stickerImageView.scaleY = stickerScale
-            stickerLottieView.scaleX = stickerScale
-            stickerLottieView.scaleY = stickerScale
+            val screenWidth = context.resources.displayMetrics.widthPixels
+            val maxStickerSide = (screenWidth * 0.30f).roundToInt().coerceAtLeast(1)
+            // Sticker always lives in a square container; max side is 30% of screen width.
+            val stickerSide = (maxStickerSide * snapshot.stickerSize.coerceIn(0.2f, 1f))
+                .roundToInt()
+                .coerceIn((maxStickerSide * 0.2f).roundToInt().coerceAtLeast(1), maxStickerSide)
+            listOf(stickerEmojiView, stickerImageView, stickerLottieView).forEach { view ->
+                val params = (view.layoutParams as FrameLayout.LayoutParams)
+                params.width = stickerSide
+                params.height = stickerSide
+                view.layoutParams = params
+                view.scaleX = 1f
+                view.scaleY = 1f
+            }
             stickerEmojiView.rotation = snapshot.stickerRotation
             stickerImageView.rotation = snapshot.stickerRotation
             stickerLottieView.rotation = snapshot.stickerRotation
@@ -658,6 +700,9 @@ class StatusBarOverlayManager(
         realtimeView.setBackgroundColor("#E7F0FF".toColorInt())
 
         renderAnimation(snapshot)
+
+        stickerLayer.bringToFront()
+        listOf(stickerImageView, stickerLottieView, stickerEmojiView).forEach { it.bringToFront() }
 
         statusRow.visibility = if (snapshot.statusBarEnabled || snapshot.trollEnabled) View.VISIBLE else View.GONE
         applyNotch(snapshot.notchTemplateId, snapshot.notchColorVariant, snapshot.statusBarEnabled)
@@ -785,17 +830,23 @@ class StatusBarOverlayManager(
     private fun updateStickerPosition(offsetX: Float, offsetY: Float) {
         val density = context.resources.displayMetrics.density
         val screenWidth = context.resources.displayMetrics.widthPixels
-        val stickerFrameWidth = (56f * density).roundToInt()
-        val minTop = (28f * density).roundToInt()
-        val travelY = (96f * density).roundToInt()
-        val left = ((screenWidth - stickerFrameWidth) * offsetX.coerceIn(0f, 1f)).roundToInt()
-        val top = minTop + (travelY * offsetY.coerceIn(0f, 1f)).roundToInt()
+        val stickerSide = (stickerImageView.layoutParams as? FrameLayout.LayoutParams)
+            ?.width
+            ?.takeIf { it > 0 }
+            ?: (56f * density).roundToInt()
+        val statusBandHeight = statusRow.height.takeIf { it > 0 }
+            ?: (40f * density).roundToInt()
+        val maxTop = (statusBandHeight - stickerSide).coerceAtLeast(0)
+        val left = ((screenWidth - stickerSide) * offsetX.coerceIn(0f, 1f)).roundToInt()
+        val top = (maxTop * offsetY.coerceIn(0f, 1f)).roundToInt()
         listOf(stickerImageView, stickerLottieView, stickerEmojiView).forEach { view ->
             val params = view.layoutParams as FrameLayout.LayoutParams
             params.gravity = Gravity.TOP or Gravity.START
-            params.leftMargin = left
-            params.topMargin = top
+            params.leftMargin = 0
+            params.topMargin = 0
             view.layoutParams = params
+            view.translationX = left.toFloat()
+            view.translationY = top.toFloat()
         }
     }
 
@@ -1067,7 +1118,7 @@ class StatusBarOverlayManager(
         val flags = if (gestureEnabled) 0x880328 else 0x880338
         return WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
             overlayType,
             flags,
             PixelFormat.TRANSLUCENT,
