@@ -1,6 +1,7 @@
 package dev.hai.emojibattery.ui.screen
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,10 +22,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,12 +39,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.FeatureConfig
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun ChargeFeatureScreen(
     uiState: AppUiState,
@@ -57,13 +60,20 @@ internal fun ChargeFeatureScreen(
     val config = uiState.featureConfigs[CustomizeEntry.Charge]
         ?: FeatureConfig(enabled = false, variant = ChargeOptions.first().id)
     val currentVariant = parseChargeVariant(config.variant)
-    var selectedPackIndex by rememberSaveable { mutableIntStateOf(0) }
-    val selectedPack = ChargePackCatalog.getOrNull(selectedPackIndex) ?: ChargePackCatalog.first()
+    var selectedPageIndex by rememberSaveable { mutableIntStateOf(0) }
+    val chargePages = ChargePageCatalog
     val context = LocalContext.current
+    val pagerState = rememberPagerState(pageCount = { chargePages.size })
 
-    LaunchedEffect(currentVariant.packId) {
-        selectedPackIndex = ChargePackCatalog.indexOfFirst { it.id == currentVariant.packId }
-            .takeIf { it >= 0 } ?: 0
+    LaunchedEffect(currentVariant, chargePages.size) {
+        selectedPageIndex = chargePageIndexForVariant(chargePages, currentVariant)
+    }
+
+    LaunchedEffect(selectedPageIndex, chargePages.size) {
+        val targetPage = selectedPageIndex.coerceIn(0, (chargePages.size - 1).coerceAtLeast(0))
+        if (pagerState.currentPage != targetPage) {
+            pagerState.scrollToPage(targetPage)
+        }
     }
 
     Scaffold(
@@ -150,72 +160,59 @@ internal fun ChargeFeatureScreen(
                         .padding(horizontal = 14.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    ScrollableTabRow(
-                        selectedTabIndex = selectedPackIndex.coerceAtMost((ChargePackCatalog.size - 1).coerceAtLeast(0)),
-                        edgePadding = 0.dp,
-                        divider = {},
-                    ) {
-                        ChargePackCatalog.forEachIndexed { index, pack ->
-                            Tab(
-                                selected = selectedPackIndex == index,
-                                onClick = { selectedPackIndex = index },
-                                text = {
-                                    Text(
-                                        text = pack.title,
-                                        maxLines = 1,
-                                    )
-                                },
-                            )
-                        }
-                    }
-
                     Text(
-                        text = selectedPack.title,
+                        text = chargePages.getOrNull(pagerState.currentPage)?.title.orEmpty(),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
 
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        contentPadding = PaddingValues(bottom = 8.dp),
-                    ) {
-                        items(selectedPack.items, key = { it.id }) { item ->
-                            val selected = when (selectedPack.id) {
-                                "built_in" -> currentVariant.packId == "built_in" && currentVariant.itemId == item.id
-                                else -> currentVariant.packId == selectedPack.id && currentVariant.itemId == item.id
-                            }
-                            val enabled = config.enabled
-                            val drawableRes = if (selectedPack.id == "built_in") {
-                                0
-                            } else {
-                                context.resources.getIdentifier(
-                                    item.drawableName.orEmpty(),
-                                    "drawable",
-                                    context.packageName,
-                                )
-                            }
-                            Surface(
-                                modifier = Modifier
-                                    .aspectRatio(1f)
-                                    .clickable(enabled = enabled) {
-                                        val nextVariant = if (selectedPack.id == "built_in") {
-                                            item.id
-                                        } else {
-                                            encodeChargeVariant(ChargeVariantState(selectedPack.id, item.id))
-                                        }
-                                        onSelectVariant(nextVariant)
-                                        onApply()
-                                    },
-                                shape = RoundedCornerShape(14.dp),
-                                border = BorderStroke(
-                                    if (selected) 1.dp else 0.5.dp,
-                                    if (selected) Color(0xFF8FB6D4) else Color(0xFFD8DDE2),
-                                ),
-                                color = if (selected) Color(0xFFEAF3FA) else Color(0xFFF8F8F8),
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        beyondViewportPageCount = 1,
+                        pageSpacing = 0.dp,
+                    ) { pageIndex ->
+                        val page = chargePages[pageIndex]
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            contentPadding = PaddingValues(bottom = 8.dp),
+                        ) {
+                            items(page.items, key = { it.id }) { item ->
+                                val selected = currentVariant.packId == page.packId && currentVariant.itemId == item.id
+                                val enabled = config.enabled
+                                val drawableRes = if (page.packId == "built_in") {
+                                    0
+                                } else {
+                                    context.resources.getIdentifier(
+                                        item.drawableName.orEmpty(),
+                                        "drawable",
+                                        context.packageName,
+                                    )
+                                }
+                                Surface(
+                                    modifier = Modifier
+                                        .aspectRatio(1f)
+                                        .clickable(enabled = enabled) {
+                                            val nextVariant = if (page.packId == "built_in") {
+                                                item.id
+                                            } else {
+                                                encodeChargeVariant(ChargeVariantState(page.packId, item.id))
+                                            }
+                                            onSelectVariant(nextVariant)
+                                            onApply()
+                                        },
+                                    shape = RoundedCornerShape(14.dp),
+                                    border = BorderStroke(
+                                        if (selected) 1.dp else 0.5.dp,
+                                        if (selected) Color(0xFF8FB6D4) else Color(0xFFD8DDE2),
+                                    ),
+                                    color = if (selected) Color(0xFFEAF3FA) else Color(0xFFF8F8F8),
                                 ) {
                                     Box(
                                         modifier = Modifier
@@ -223,7 +220,7 @@ internal fun ChargeFeatureScreen(
                                             .padding(8.dp),
                                         contentAlignment = Alignment.Center,
                                     ) {
-                                        if (selectedPack.id == "built_in") {
+                                        if (page.packId == "built_in") {
                                             Text(
                                                 text = item.glyph.orEmpty(),
                                                 style = MaterialTheme.typography.displayMedium,
@@ -247,6 +244,35 @@ internal fun ChargeFeatureScreen(
                                 }
                             }
                         }
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        repeat(chargePages.size) { index ->
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                                    .size(if (pagerState.currentPage == index) 10.dp else 7.dp),
+                            ) {
+                                Surface(
+                                    shape = androidx.compose.foundation.shape.CircleShape,
+                                    color = if (pagerState.currentPage == index) Color(0xFF8FB6D4) else Color(0xFFD8DDE2),
+                                    modifier = Modifier.fillMaxSize(),
+                                ) {}
+                            }
+                        }
+                    }
+
+                    Text(
+                        text = "${pagerState.currentPage + 1}/${chargePages.size}",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 }
             }
         }

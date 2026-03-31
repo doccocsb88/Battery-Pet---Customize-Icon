@@ -86,8 +86,9 @@ private fun buildChargeSheetPack(
                 )
             }
         }
-    }
-    return ChargePackData(id = id, title = title, columns = columns, rows = rows, items = items)
+    }.take(ChargeItemsPerPage)
+    val effectiveRows = ((items.size + columns - 1) / columns).coerceAtLeast(1)
+    return ChargePackData(id = id, title = title, columns = columns, rows = effectiveRows, items = items)
 }
 
 internal val ChargePackCatalog = listOf(
@@ -133,6 +134,42 @@ internal val ChargePackCatalog = listOf(
         rows = 4,
     ),
 )
+
+internal const val ChargeItemsPerPage = 12
+
+internal data class ChargePageData(
+    val packId: String,
+    val title: String,
+    val pageIndexInPack: Int,
+    val pageCountInPack: Int,
+    val items: List<ChargePackItem>,
+)
+
+internal val ChargePageCatalog: List<ChargePageData> = ChargePackCatalog.flatMap { pack ->
+    val pages = pack.items.chunked(ChargeItemsPerPage).ifEmpty { listOf(emptyList()) }
+    pages.mapIndexed { index, items ->
+        ChargePageData(
+            packId = pack.id,
+            title = if (pages.size > 1) "${pack.title} ${index + 1}" else pack.title,
+            pageIndexInPack = index,
+            pageCountInPack = pages.size,
+            items = items,
+        )
+    }
+}
+
+internal fun chargePageIndexForVariant(
+    pages: List<ChargePageData>,
+    state: ChargeVariantState,
+): Int {
+    if (pages.isEmpty()) return 0
+    val exactMatch = pages.indexOfFirst { page ->
+        page.packId == state.packId && page.items.any { it.id == state.itemId }
+    }
+    if (exactMatch >= 0) return exactMatch
+    val packMatch = pages.indexOfFirst { it.packId == state.packId }
+    return if (packMatch >= 0) packMatch else 0
+}
 
 internal data class ChargeVariantState(
     val packId: String,

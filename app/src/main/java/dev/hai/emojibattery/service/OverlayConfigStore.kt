@@ -334,7 +334,7 @@ object OverlayConfigStore {
         val animationSizePercent = prefs.getInt(KEY_ANIMATION_SIZE_PERCENT, 50).coerceIn(0, 100)
         val animationTemplate = AnimationTemplateCatalog.resolve(prefs.getInt(KEY_ANIMATION_TEMPLATE_ID, 0))
         return OverlaySnapshot(
-            statusBarEnabled = prefs.getBoolean(KEY_STATUS_ENABLED, false),
+            statusBarEnabled = prefs.getBoolean(KEY_STATUS_ENABLED, true),
             batteryText = prefs.getString(KEY_BATTERY_TEXT, "").orEmpty(),
             batteryBody = prefs.getString(KEY_BATTERY_BODY, "▰▰▰▱").orEmpty().ifBlank { "▰▰▰▱" },
             emojiGlyph = prefs.getString(KEY_EMOJI_GLYPH, "●").orEmpty().ifBlank { "●" },
