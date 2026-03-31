@@ -35,6 +35,7 @@ import dev.hai.emojibattery.model.GestureTrigger
 import dev.hai.emojibattery.ui.screen.EmotionOptions
 import dev.hai.emojibattery.ui.screen.parseDateTimeVariant
 import dev.hai.emojibattery.ui.screen.parseEmotionVariant
+import dev.hai.emojibattery.ui.screen.parseRingerVariant
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -73,6 +74,7 @@ class StatusBarOverlayManager(
     private val emojiArtView = ImageView(context)
     private val emojiTextView = TextView(context)
     private val batteryView = TextView(context)
+    private val ringerView = TextView(context)
     private val batteryArtView = ImageView(context)
     private val trollArtContainer = FrameLayout(context)
     private val trollBatteryArtView = ImageView(context)
@@ -147,6 +149,8 @@ class StatusBarOverlayManager(
         rightCluster.gravity = Gravity.CENTER_VERTICAL
         batteryView.textSize = 13f
         batteryView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
+        ringerView.textSize = 11f
+        ringerView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         wifiView.textSize = 11f
         signalView.textSize = 11f
         wifiView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
@@ -156,6 +160,7 @@ class StatusBarOverlayManager(
         emojiTextView.gravity = Gravity.CENTER
         signalView.setPadding(12, 0, 0, 0)
         batteryView.setPadding(12, 0, 0, 0)
+        ringerView.setPadding(6, 0, 0, 0)
         emojiArtView.scaleType = ImageView.ScaleType.FIT_CENTER
         emojiArtView.adjustViewBounds = true
         batteryArtView.scaleType = ImageView.ScaleType.FIT_CENTER
@@ -227,6 +232,7 @@ class StatusBarOverlayManager(
         rightCluster.addView(batteryArtContainer)
         rightCluster.addView(trollArtContainer)
         rightCluster.addView(batteryView)
+        rightCluster.addView(ringerView)
         statusRow.addView(rightCluster)
 
         statusBackgroundImageView.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -377,6 +383,7 @@ class StatusBarOverlayManager(
         val ringerConfig = featureConfigs[CustomizeEntry.Ringer] ?: defaultFeatureConfig
         val dateTimeConfig = featureConfigs[CustomizeEntry.DateTime] ?: defaultFeatureConfig
         val emotionConfig = featureConfigs[CustomizeEntry.Emotion] ?: defaultFeatureConfig
+        val parsedRinger = parseRingerVariant(ringerConfig.variant)
 
         val percentageText = if (snapshot.showPercentage) " ${liveStatus.batteryPercent}%" else ""
         val chargeSuffix = if (liveStatus.charging && snapshot.animateCharge) " ⚡" else ""
@@ -483,9 +490,7 @@ class StatusBarOverlayManager(
             trollBatteryArtView.setImageDrawable(null)
             trollEmojiArtView.setImageDrawable(null)
             val hasBatteryArt = batteryUrl != null || batteryDrawable != null
-            val hasEmojiArt = effectiveEmojiUrl != null || emojiDrawable != null
-            val hasEmojiFallback = !hasEmojiArt && emojiLabel.isNotBlank()
-            val showLeftEmoji = forceEmotionGlyph || hasEmojiArt || hasEmojiFallback
+            val showLeftEmoji = forceEmotionGlyph
             leftEmojiContainer.visibility = if (showLeftEmoji) View.VISIBLE else View.GONE
             batteryArtContainer.visibility = if (hasBatteryArt) View.VISIBLE else View.GONE
             when {
@@ -511,35 +516,16 @@ class StatusBarOverlayManager(
                     emojiTextView.visibility = View.VISIBLE
                     emojiTextView.text = emotionGlyph
                 }
-                effectiveEmojiUrl != null -> {
-                    emojiArtView.visibility = View.VISIBLE
-                    emojiTextView.visibility = View.GONE
-                    emojiArtView.load(effectiveEmojiUrl) {
-                        crossfade(true)
-                    }
-                }
-                emojiDrawable != null -> {
-                    emojiArtView.visibility = View.VISIBLE
-                    emojiTextView.visibility = View.GONE
-                    emojiArtView.setImageResource(emojiDrawable)
-                }
-                hasEmojiFallback -> {
-                    emojiArtView.visibility = View.GONE
-                    emojiArtView.setImageDrawable(null)
-                    emojiTextView.visibility = View.VISIBLE
-                    emojiTextView.text = emojiLabel
-                }
                 else -> {
                     emojiArtView.visibility = View.GONE
                     emojiArtView.setImageDrawable(null)
                     emojiTextView.visibility = View.GONE
                 }
             }
-            val ringerSuffix = if (ringerConfig.enabled) " ${ringerGlyph(ringerConfig.variant)}" else ""
             batteryView.text = if (hasBatteryArt) {
                 "${percentageText.trim()}$chargeSuffix".trim()
             } else {
-                "$batteryLabel$percentageText$chargeSuffix$ringerSuffix".trim()
+                "$batteryLabel$percentageText$chargeSuffix".trim()
             }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
@@ -578,6 +564,10 @@ class StatusBarOverlayManager(
         signalView.text = if (liveStatus.airplaneMode) "" else signalGlyph(liveStatus.signalLevel)
         signalView.textSize = 8f + (signalConfig.intensity.coerceIn(0f, 1f) * 12f)
         signalView.setTextColor(resolveColorFromVariant(signalConfig.variant, "#333333".toColorInt()))
+        ringerView.visibility = if (ringerConfig.enabled) View.VISIBLE else View.GONE
+        ringerView.text = ringerGlyph(parsedRinger.styleId)
+        ringerView.textSize = 8f + (ringerConfig.intensity.coerceIn(0f, 1f) * 12f)
+        ringerView.setTextColor(resolveColorFromVariant(parsedRinger.colorId, "#333333".toColorInt()))
 
         if (snapshot.stickerEnabled) {
             val stickerScale = (0.6f + snapshot.stickerSize * 0.8f).coerceIn(0.6f, 1.6f)

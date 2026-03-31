@@ -91,6 +91,37 @@ internal fun parseDateTimeVariant(raw: String?): DateTimeVariantState {
 internal fun encodeDateTimeVariant(state: DateTimeVariantState): String =
     "style=${state.styleId};color=${state.colorId};show=${if (state.showDate) "1" else "0"}"
 
+internal data class RingerVariantState(
+    val styleId: String,
+    val colorId: String,
+)
+
+private val RingerStyles = setOf("bell", "mute", "wave")
+
+internal fun parseRingerVariant(raw: String?): RingerVariantState {
+    val fallback = RingerVariantState(styleId = "bell", colorId = "blue")
+    if (raw.isNullOrBlank()) return fallback
+    if (";" !in raw && !raw.contains("=")) {
+        val normalized = raw.lowercase()
+        return when {
+            normalized in RingerStyles -> fallback.copy(styleId = normalized)
+            normalized in setOf("blue", "green", "orange", "black", "yellow") || isPickerColorVariant(raw) ->
+                fallback.copy(colorId = raw)
+            else -> fallback
+        }
+    }
+    val pieces = raw.split(";").mapNotNull {
+        val pair = it.split("=", limit = 2)
+        if (pair.size == 2) pair[0] to pair[1] else null
+    }.toMap()
+    val style = (pieces["style"] ?: fallback.styleId).lowercase().takeIf { it in RingerStyles } ?: fallback.styleId
+    val color = pieces["color"] ?: fallback.colorId
+    return RingerVariantState(styleId = style, colorId = color)
+}
+
+internal fun encodeRingerVariant(state: RingerVariantState): String =
+    "style=${state.styleId};color=${state.colorId}"
+
 internal data class EmotionOption(
     val id: String,
     val glyph: String,

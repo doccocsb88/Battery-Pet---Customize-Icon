@@ -116,9 +116,11 @@ private fun SizeColorFeatureScreen(
 ) {
     val config = uiState.featureConfigs[entry]
         ?: FeatureConfig(enabled = false, variant = WifiColorOptions[1].id)
-    val selectedColorId = WifiColorOptions.firstOrNull { it.id == config.variant }?.id ?: "picker"
-    val pickerColorArgb = parsePickerColorVariant(config.variant)
-    val pickerSelected = isPickerColorVariant(config.variant)
+    val parsedRinger = if (entry == CustomizeEntry.Ringer) parseRingerVariant(config.variant) else null
+    val colorVariant = parsedRinger?.colorId ?: config.variant
+    val selectedColorId = WifiColorOptions.firstOrNull { it.id == colorVariant }?.id ?: "picker"
+    val pickerColorArgb = parsePickerColorVariant(colorVariant)
+    val pickerSelected = isPickerColorVariant(colorVariant)
     var showPicker by remember { mutableStateOf(false) }
     val sliderDp = (10f + (26f * config.intensity)).coerceIn(10f, 36f)
 
@@ -128,7 +130,17 @@ private fun SizeColorFeatureScreen(
             initialArgb = initialColor,
             onDismiss = { showPicker = false },
             onApply = { argb ->
-                onSelectVariant(encodePickerColorVariant(argb))
+                val variant = if (entry == CustomizeEntry.Ringer) {
+                    encodeRingerVariant(
+                        RingerVariantState(
+                            styleId = parsedRinger?.styleId ?: "bell",
+                            colorId = encodePickerColorVariant(argb),
+                        ),
+                    )
+                } else {
+                    encodePickerColorVariant(argb)
+                }
+                onSelectVariant(variant)
                 onApply()
                 showPicker = false
             },
@@ -276,13 +288,23 @@ private fun SizeColorFeatureScreen(
                                     modifier = Modifier
                                         .size(42.dp)
                                         .clickable(enabled = config.enabled) {
-                                            if (option.id == "picker") {
-                                                showPicker = true
+                                        if (option.id == "picker") {
+                                            showPicker = true
+                                        } else {
+                                            val variant = if (entry == CustomizeEntry.Ringer) {
+                                                encodeRingerVariant(
+                                                    RingerVariantState(
+                                                        styleId = parsedRinger?.styleId ?: "bell",
+                                                        colorId = option.id,
+                                                    ),
+                                                )
                                             } else {
-                                                onSelectVariant(option.id)
-                                                onApply()
+                                                option.id
                                             }
-                                        },
+                                            onSelectVariant(variant)
+                                            onApply()
+                                        }
+                                    },
                                     shape = CircleShape,
                                     color = swatchColor,
                                     border = BorderStroke(
