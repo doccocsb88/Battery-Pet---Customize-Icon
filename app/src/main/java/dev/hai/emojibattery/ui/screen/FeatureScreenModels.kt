@@ -52,6 +52,134 @@ internal val ChargeOptions = listOf(
     ChargeOption("chg_12", "⋇"),
 )
 
+internal data class ChargePackItem(
+    val id: String,
+    val label: String,
+    val glyph: String? = null,
+    val drawableName: String? = null,
+)
+
+internal data class ChargePackData(
+    val id: String,
+    val title: String,
+    val columns: Int,
+    val rows: Int,
+    val items: List<ChargePackItem>,
+)
+
+private fun buildChargeSheetPack(
+    id: String,
+    title: String,
+    sourceStem: String,
+    columns: Int,
+    rows: Int,
+): ChargePackData {
+    val items = buildList {
+        for (row in 1..rows) {
+            for (col in 1..columns) {
+                add(
+                    ChargePackItem(
+                        id = "${sourceStem}_r%02d_c%02d".format(row, col),
+                        label = "${row}:${col}",
+                        drawableName = "${sourceStem}_r%02d_c%02d".format(row, col),
+                    ),
+                )
+            }
+        }
+    }
+    return ChargePackData(id = id, title = title, columns = columns, rows = rows, items = items)
+}
+
+internal val ChargePackCatalog = listOf(
+    ChargePackData(
+        id = "built_in",
+        title = "Built-in",
+        columns = 3,
+        rows = (ChargeOptions.size + 2) / 3,
+        items = ChargeOptions.map { option ->
+            ChargePackItem(
+                id = option.id,
+                label = option.id,
+                glyph = option.glyph,
+            )
+        },
+    ),
+    buildChargeSheetPack(
+        id = "sheet_01",
+        title = "Set 01",
+        sourceStem = "hai_charge_01",
+        columns = 5,
+        rows = 3,
+    ),
+    buildChargeSheetPack(
+        id = "sheet_02",
+        title = "Set 02",
+        sourceStem = "hai_charge_02",
+        columns = 3,
+        rows = 4,
+    ),
+    buildChargeSheetPack(
+        id = "sheet_03",
+        title = "Set 03",
+        sourceStem = "hai_charge_03",
+        columns = 5,
+        rows = 3,
+    ),
+    buildChargeSheetPack(
+        id = "sheet_04",
+        title = "Set 04",
+        sourceStem = "hai_charge_04",
+        columns = 3,
+        rows = 4,
+    ),
+)
+
+internal data class ChargeVariantState(
+    val packId: String,
+    val itemId: String,
+)
+
+internal fun parseChargeVariant(raw: String?): ChargeVariantState {
+    val fallback = ChargeVariantState(packId = "built_in", itemId = ChargeOptions.first().id)
+    if (raw.isNullOrBlank()) return fallback
+    if (raw in ChargeOptions.map { it.id }) {
+        return ChargeVariantState(packId = "built_in", itemId = raw)
+    }
+    if (";" !in raw && ":" !in raw && "=" !in raw) {
+        return fallback
+    }
+    val pieces = raw.split(";").mapNotNull {
+        val pair = it.split("=", limit = 2)
+        if (pair.size == 2) pair[0] to pair[1] else null
+    }.toMap()
+    val legacyPack = raw.substringBefore(":", missingDelimiterValue = "")
+    val legacyItem = raw.substringAfter(":", missingDelimiterValue = "")
+    val packId = pieces["pack"] ?: pieces["sheet"] ?: if (legacyPack.isNotBlank() && legacyItem.isNotBlank()) legacyPack else fallback.packId
+    val itemId = pieces["item"] ?: pieces["drawable"] ?: if (legacyPack.isNotBlank() && legacyItem.isNotBlank()) legacyItem else fallback.itemId
+    return when {
+        packId == "built_in" && itemId in ChargeOptions.map { it.id } -> ChargeVariantState(packId = packId, itemId = itemId)
+        ChargePackCatalog.any { it.id == packId } && itemId.isNotBlank() -> ChargeVariantState(packId = packId, itemId = itemId)
+        else -> fallback
+    }
+}
+
+internal fun encodeChargeVariant(state: ChargeVariantState): String =
+    if (state.packId == "built_in") {
+        state.itemId
+    } else {
+        "pack=${state.packId};item=${state.itemId}"
+    }
+
+internal fun chargeVariantLabel(state: ChargeVariantState): String =
+    if (state.packId == "built_in") {
+        ChargeOptions.firstOrNull { it.id == state.itemId }?.glyph ?: ChargeOptions.first().glyph
+    } else {
+        state.itemId
+    }
+
+internal fun chargeVariantDrawableName(state: ChargeVariantState): String? =
+    if (state.packId == "built_in") null else state.itemId
+
 internal data class DateTimeStyleOption(
     val id: String,
     val line1: String,

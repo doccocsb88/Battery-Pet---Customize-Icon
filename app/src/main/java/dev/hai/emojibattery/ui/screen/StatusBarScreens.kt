@@ -863,8 +863,13 @@ private fun StatusBarLivePreviewCard(
     val batteryText = batteryBody
     val demoPercent = 56
     val percentageText = if (config.showPercentage) " $demoPercent%" else ""
-    val chargeSuffix = if (chargeConfig.enabled) " ${previewChargeGlyph(chargeConfig.variant)}" else ""
-    val rightText = "$batteryText$percentageText$chargeSuffix".trim()
+    val chargeVariant = parseChargeVariant(chargeConfig.variant)
+    val chargeDrawableName = chargeVariantDrawableName(chargeVariant)
+    val chargeDrawableRes = chargeDrawableName?.takeIf { it.isNotBlank() }?.let {
+        context.resources.getIdentifier(it, "drawable", context.packageName)
+    }?.takeIf { it != 0 }
+    val chargeText = if (chargeConfig.enabled) previewChargeGlyph(chargeConfig.variant) else ""
+    val rightText = "$batteryText$percentageText".trim()
     val batteryArtUrl = batteryVolio?.batteryArtUrl?.takeIf { it.isNotBlank() }
         ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
     val batteryArtDrawableRes = batteryVolio?.previewRes?.takeIf { it != 0 }
@@ -992,6 +997,17 @@ private fun StatusBarLivePreviewCard(
                                 fontSize = 11.sp,
                                 fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
                             )
+                            Text(
+                                if (batteryArtUrl != null || batteryArtDrawableRes != null) {
+                                    percentageText.trim()
+                                } else {
+                                    rightText
+                                },
+                                color = Color(config.accentColor),
+                                fontSize = batteryFontSize,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+                            )
                             StatusBarBatteryEmojiCompositePreview(
                                 batteryArtUrl = batteryArtUrl,
                                 batteryArtDrawableRes = batteryArtDrawableRes,
@@ -1007,17 +1023,25 @@ private fun StatusBarLivePreviewCard(
                                 emojiOffsetX = config.emojiOffsetX,
                                 emojiOffsetY = config.emojiOffsetY,
                             )
-                            Text(
-                                if (batteryArtUrl != null || batteryArtDrawableRes != null) {
-                                    "${percentageText.trim()}$chargeSuffix".trim()
-                                } else {
-                                    rightText
-                                },
-                                color = Color(config.accentColor),
-                                fontSize = batteryFontSize,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
-                            )
+                            when {
+                                chargeConfig.enabled && chargeDrawableRes != null -> {
+                                    Image(
+                                        painter = painterResource(chargeDrawableRes),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                        contentScale = ContentScale.Fit,
+                                    )
+                                }
+                                chargeText.isNotBlank() -> {
+                                    Text(
+                                        chargeText,
+                                        color = Color(config.accentColor),
+                                        fontSize = batteryFontSize,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -2187,6 +2211,7 @@ internal fun StatusSwitchRow(
 internal fun BatteryPreviewCard(
     uiState: AppUiState,
 ) {
+    val context = LocalContext.current
     val config = uiState.editingConfig
     val dateTimeConfig = uiState.featureConfigs[CustomizeEntry.DateTime]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
@@ -2250,11 +2275,20 @@ internal fun BatteryPreviewCard(
                     val emUrl = emojiVolio?.emojiArtUrl?.takeIf { !it.isNullOrBlank() }
                         ?: emojiVolio?.thumbnailUrl?.takeIf { !it.isNullOrBlank() }
                     val emDrawable = emojiVolio?.previewRes?.takeIf { it != 0 }
+                    val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
+                        ?: FeatureConfig(enabled = false, variant = "chg_1")
                     val defaultCommonScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
                     val commonScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultCommonScale).coerceIn(0.35f, 2.2f)
                     val emojiAdjustmentScale = config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f)
                     val batterySizeSmall = (28.dp * commonScaleFactor)
                     val batterySizeLarge = (36.dp * commonScaleFactor)
+                    val chargeVariant = parseChargeVariant(chargeConfig.variant)
+                    val chargeDrawableName = chargeVariantDrawableName(chargeVariant)
+                    val chargeDrawableRes = chargeDrawableName?.takeIf { it.isNotBlank() }?.let {
+                        context.resources.getIdentifier(it, "drawable", context.packageName)
+                    }?.takeIf { it != 0 }
+                    val chargeText = if (chargeConfig.enabled) previewChargeGlyph(chargeConfig.variant) else ""
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -2282,6 +2316,15 @@ internal fun BatteryPreviewCard(
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text(stringResource(R.string.demo_wifi), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("▰▰▰▱", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                if (batUrl != null || batDrawable != null) {
+                                    if (config.showPercentage) "56%" else ""
+                                } else {
+                                    "$batteryBody ${if (config.showPercentage) "56%" else ""}".trim()
+                                },
+                                color = Color(config.accentColor),
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+                            )
                             StatusBarBatteryEmojiCompositePreview(
                                 batteryArtUrl = batUrl,
                                 batteryArtDrawableRes = batDrawable,
@@ -2297,11 +2340,23 @@ internal fun BatteryPreviewCard(
                                 emojiOffsetX = config.emojiOffsetX,
                                 emojiOffsetY = config.emojiOffsetY,
                             )
-                            Text(
-                                "${if (batUrl == null && batDrawable == null) batteryBody else ""} ${if (config.showPercentage) "56%" else ""}".trim(),
-                                color = Color(config.accentColor),
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
-                            )
+                            when {
+                                chargeConfig.enabled && chargeDrawableRes != null -> {
+                                    Image(
+                                        painter = painterResource(chargeDrawableRes),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                        contentScale = ContentScale.Fit,
+                                    )
+                                }
+                                chargeText.isNotBlank() -> {
+                                    Text(
+                                        chargeText,
+                                        color = Color(config.accentColor),
+                                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+                                    )
+                                }
+                            }
                         }
                     }
                     Row(

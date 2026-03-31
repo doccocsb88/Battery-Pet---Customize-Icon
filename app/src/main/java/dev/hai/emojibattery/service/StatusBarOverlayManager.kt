@@ -33,6 +33,8 @@ import androidx.core.graphics.toColorInt
 import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.GestureTrigger
+import dev.hai.emojibattery.ui.screen.chargeVariantDrawableName
+import dev.hai.emojibattery.ui.screen.parseChargeVariant
 import dev.hai.emojibattery.ui.screen.EmotionOptions
 import dev.hai.emojibattery.ui.screen.parseDateTimeVariant
 import dev.hai.emojibattery.ui.screen.parseEmotionVariant
@@ -78,6 +80,8 @@ class StatusBarOverlayManager(
     private val emojiArtView = ImageView(context)
     private val emojiTextView = TextView(context)
     private val batteryView = TextView(context)
+    private val chargeView = TextView(context)
+    private val chargeArtView = ImageView(context)
     private val ringerView = TextView(context)
     private val batteryArtView = ImageView(context)
     private val trollArtContainer = FrameLayout(context)
@@ -165,6 +169,12 @@ class StatusBarOverlayManager(
         rightCluster.gravity = Gravity.CENTER_VERTICAL
         batteryView.textSize = 13f
         batteryView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
+        chargeView.textSize = 13f
+        chargeView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
+        chargeView.visibility = View.GONE
+        chargeArtView.scaleType = ImageView.ScaleType.FIT_CENTER
+        chargeArtView.adjustViewBounds = true
+        chargeArtView.visibility = View.GONE
         ringerView.textSize = 11f
         ringerView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         wifiView.textSize = 11f
@@ -176,6 +186,7 @@ class StatusBarOverlayManager(
         emojiTextView.gravity = Gravity.CENTER
         signalView.setPadding(12, 0, 0, 0)
         batteryView.setPadding(12, 0, 0, 0)
+        chargeView.setPadding(4, 0, 0, 0)
         ringerView.setPadding(6, 0, 0, 0)
         emojiArtView.scaleType = ImageView.ScaleType.FIT_CENTER
         emojiArtView.adjustViewBounds = true
@@ -248,7 +259,14 @@ class StatusBarOverlayManager(
         // Draw percentage/text before battery-emoji art cluster.
         rightCluster.addView(batteryView)
         rightCluster.addView(batteryArtContainer)
+        rightCluster.addView(
+            chargeArtView,
+            LinearLayout.LayoutParams(artSize, artSize).apply {
+                marginStart = 4
+            },
+        )
         rightCluster.addView(trollArtContainer)
+        rightCluster.addView(chargeView)
         rightCluster.addView(ringerView)
         statusRow.addView(rightCluster)
 
@@ -419,17 +437,19 @@ class StatusBarOverlayManager(
         val hotspotConfig = featureConfigs[CustomizeEntry.Hotspot] ?: defaultFeatureConfig
         val airplaneConfig = featureConfigs[CustomizeEntry.Airplane] ?: defaultFeatureConfig
         val chargeConfig = featureConfigs[CustomizeEntry.Charge] ?: defaultFeatureConfig
+        val chargeState = parseChargeVariant(chargeConfig.variant)
         val ringerConfig = featureConfigs[CustomizeEntry.Ringer] ?: defaultFeatureConfig
         val dateTimeConfig = featureConfigs[CustomizeEntry.DateTime] ?: defaultFeatureConfig
         val emotionConfig = featureConfigs[CustomizeEntry.Emotion] ?: defaultFeatureConfig
         val parsedRinger = parseRingerVariant(ringerConfig.variant)
 
         val percentageText = if (snapshot.showPercentage) " ${liveStatus.batteryPercent}%" else ""
-        val chargeSuffix = if (liveStatus.charging && snapshot.animateCharge && chargeConfig.enabled) {
-            " ${chargeGlyph(chargeConfig.variant)}"
+        val chargeSuffix = if (chargeConfig.enabled && liveStatus.charging) {
+            chargeGlyph(chargeConfig.variant)
         } else {
             ""
         }
+        val chargeDrawableName = chargeVariantDrawableName(chargeState)
         val batteryLabel = snapshot.batteryBody.takeIf { it.isNotBlank() }
             ?: snapshot.batteryText.takeIf { it.isNotBlank() }
             ?: "▰▰▰▱"
@@ -519,20 +539,24 @@ class StatusBarOverlayManager(
                     liveStatus.batteryPercent.toString()
                 }
                 val trollChargeSuffix = if (snapshot.trollUseRealBattery && liveStatus.charging && snapshot.animateCharge && chargeConfig.enabled) {
-                    " ${chargeGlyph(chargeConfig.variant)}"
+                    chargeGlyph(chargeConfig.variant)
                 } else {
                     ""
                 }
-                batteryView.text = if (snapshot.trollUseRealBattery) {
-                    "$trollRealBatteryText$trollChargeSuffix".trim()
-                } else {
-                    formatTrollPercentageText(snapshot.trollMessage, snapshot.trollShowPercentage)
-                }
+                batteryView.text = if (snapshot.trollUseRealBattery) trollRealBatteryText else formatTrollPercentageText(snapshot.trollMessage, snapshot.trollShowPercentage)
+                chargeView.text = trollChargeSuffix
+                chargeView.visibility = if (trollChargeSuffix.isNotBlank()) View.VISIBLE else View.GONE
+                chargeArtView.visibility = View.GONE
+                chargeArtView.setImageDrawable(null)
             } else {
                 trollArtContainer.visibility = View.GONE
                 trollBatteryArtView.setImageDrawable(null)
                 trollEmojiArtView.setImageDrawable(null)
                 batteryView.text = formatTrollPercentageText(snapshot.trollMessage, snapshot.trollShowPercentage)
+                chargeView.text = ""
+                chargeView.visibility = View.GONE
+                chargeArtView.visibility = View.GONE
+                chargeArtView.setImageDrawable(null)
             }
         } else {
             trollArtContainer.visibility = View.GONE
@@ -572,19 +596,41 @@ class StatusBarOverlayManager(
                 }
             }
             batteryView.text = if (hasBatteryArt) {
-                "${percentageText.trim()}$chargeSuffix".trim()
+                percentageText.trim()
             } else {
-                "$batteryLabel$percentageText$chargeSuffix".trim()
+                "$batteryLabel$percentageText".trim()
+            }
+            if (chargeDrawableName != null && chargeDrawableName.isNotBlank()) {
+                val resId = context.resources.getIdentifier(chargeDrawableName, "drawable", context.packageName)
+                if (resId != 0 && chargeConfig.enabled && liveStatus.charging) {
+                    chargeArtView.visibility = View.VISIBLE
+                    chargeArtView.setImageResource(resId)
+                    chargeView.visibility = View.GONE
+                    chargeView.text = ""
+                } else {
+                    chargeArtView.visibility = View.GONE
+                    chargeArtView.setImageDrawable(null)
+                    chargeView.text = chargeSuffix
+                    chargeView.visibility = if (chargeSuffix.isNotBlank()) View.VISIBLE else View.GONE
+                }
+            } else {
+                chargeArtView.visibility = View.GONE
+                chargeArtView.setImageDrawable(null)
+                chargeView.text = chargeSuffix
+                chargeView.visibility = if (chargeSuffix.isNotBlank()) View.VISIBLE else View.GONE
             }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
+        chargeView.setTextColor(snapshot.accentColor.toInt())
         if (snapshot.trollEnabled) {
             val desiredTextPx = snapshot.trollPercentageSizeDp.coerceIn(5, 40) * scaledDensity
             // Keep percentage text from exceeding the status-bar row height (before row scale transform).
             val maxTextPx = baseStatusRowHeightPx * 0.9f
             batteryView.setTextSize(TypedValue.COMPLEX_UNIT_PX, desiredTextPx.coerceAtMost(maxTextPx))
+            chargeView.setTextSize(TypedValue.COMPLEX_UNIT_PX, desiredTextPx.coerceAtMost(maxTextPx))
         } else {
             batteryView.textSize = 11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f)
+            chargeView.textSize = 11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f)
         }
         statusRow.scaleY = statusScale
         val leftPadding = ((8f + snapshot.leftMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
