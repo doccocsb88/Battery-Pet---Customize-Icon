@@ -54,6 +54,7 @@ data class OverlaySnapshot(
     val realTimeTitle: String,
     /** Original notch selector ID (-1 hide, 1..13 visible variants). */
     val notchTemplateId: Int,
+    val notchColorVariant: String,
     val statusBarHeight: Float,
     val leftMargin: Float,
     val rightMargin: Float,
@@ -121,6 +122,7 @@ object OverlayConfigStore {
     private const val KEY_REALTIME_GLYPH = "realtime_glyph"
     private const val KEY_REALTIME_TITLE = "realtime_title"
     private const val KEY_NOTCH_TEMPLATE_ID = "notch_template_id"
+    private const val KEY_NOTCH_COLOR_VARIANT = "notch_color_variant"
     private const val KEY_STATUS_BAR_HEIGHT = "status_bar_height"
     private const val KEY_STATUS_LEFT_MARGIN = "status_left_margin"
     private const val KEY_STATUS_RIGHT_MARGIN = "status_right_margin"
@@ -296,6 +298,12 @@ object OverlayConfigStore {
             .apply()
     }
 
+    fun saveNotchColorVariant(context: Context, variant: String) {
+        prefs(context).edit()
+            .putString(KEY_NOTCH_COLOR_VARIANT, variant.ifBlank { "black" })
+            .apply()
+    }
+
     fun saveAnimationPrefs(
         context: Context,
         enabled: Boolean,
@@ -364,6 +372,7 @@ object OverlayConfigStore {
             realTimeTitle = prefs.getString(KEY_REALTIME_TITLE, "Real Time").orEmpty(),
             // Default to hidden notch until user explicitly selects a template.
             notchTemplateId = prefs.getInt(KEY_NOTCH_TEMPLATE_ID, -1),
+            notchColorVariant = prefs.getString(KEY_NOTCH_COLOR_VARIANT, "black").orEmpty().ifBlank { "black" },
             statusBarHeight = prefs.getFloat(KEY_STATUS_BAR_HEIGHT, SampleCatalog.defaultConfig.statusBarHeight).coerceIn(0f, 1f),
             leftMargin = prefs.getFloat(KEY_STATUS_LEFT_MARGIN, SampleCatalog.defaultConfig.leftMargin).coerceIn(0f, 1f),
             rightMargin = prefs.getFloat(KEY_STATUS_RIGHT_MARGIN, SampleCatalog.defaultConfig.rightMargin).coerceIn(0f, 1f),

@@ -3,6 +3,7 @@ package dev.hai.emojibattery.service
 import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Typeface
+import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
@@ -25,6 +26,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.load
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 import dev.hai.emojibattery.model.CustomizeEntry
@@ -301,7 +303,8 @@ class StatusBarOverlayManager(
         }
         stickerImageView.setPadding(18, 10, 18, 10)
 
-        notchView.scaleType = ImageView.ScaleType.FIT_XY
+        notchView.scaleType = ImageView.ScaleType.FIT_CENTER
+        notchView.adjustViewBounds = true
         notchContainer.visibility = View.GONE
         notchContainer.addView(
             notchView,
@@ -642,7 +645,7 @@ class StatusBarOverlayManager(
         renderAnimation(snapshot)
 
         statusRow.visibility = if (snapshot.statusBarEnabled || snapshot.trollEnabled) View.VISIBLE else View.GONE
-        applyNotch(snapshot.notchTemplateId, snapshot.statusBarEnabled)
+        applyNotch(snapshot.notchTemplateId, snapshot.notchColorVariant, snapshot.statusBarEnabled)
     }
 
     /**
@@ -989,7 +992,7 @@ class StatusBarOverlayManager(
             .start()
     }
 
-    private fun applyNotch(templateId: Int, statusEnabled: Boolean) {
+    private fun applyNotch(templateId: Int, colorVariant: String, statusEnabled: Boolean) {
         val notch = NotchTemplateCatalog.resolve(templateId)
         val drawable = notch.drawableRes
         if (!statusEnabled || drawable == null) {
@@ -997,13 +1000,23 @@ class StatusBarOverlayManager(
             return
         }
         val notchHeight = (18 * context.resources.displayMetrics.density).toInt().coerceAtLeast(12)
-        val notchWidth = (notchHeight * 960f / 132f).toInt()
+        val notchDrawable = AppCompatResources.getDrawable(context, drawable)
+        val intrinsicWidth = notchDrawable?.intrinsicWidth ?: 0
+        val intrinsicHeight = notchDrawable?.intrinsicHeight ?: 0
+        val aspect = if (intrinsicWidth > 0 && intrinsicHeight > 0) {
+            intrinsicWidth.toFloat() / intrinsicHeight.toFloat()
+        } else {
+            960f / 132f
+        }
+        val notchWidth = (notchHeight * aspect).toInt().coerceAtLeast(notchHeight)
         val params = notchContainer.layoutParams as FrameLayout.LayoutParams
         params.width = notchWidth
         params.height = notchHeight
         params.gravity = notch.gravity
         notchContainer.layoutParams = params
+        notchView.clearColorFilter()
         notchView.setImageResource(drawable)
+        notchView.setColorFilter(resolveColorFromVariant(colorVariant, "#11111A".toColorInt()), PorterDuff.Mode.SRC_IN)
         notchContainer.visibility = View.VISIBLE
     }
 

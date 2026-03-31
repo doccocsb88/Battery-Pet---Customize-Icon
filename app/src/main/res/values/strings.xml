@@ -177,6 +177,7 @@
     <string name="date_color">Date Color</string>
     <string name="date_style">Date Style</string>
     <string name="icon_color_short">Icon Color</string>
+    <string name="notch_color">Notch Color</string>
 
     <!-- Home -->
     <string name="home_promo_stickers_title">Status Bar Stickers</string>
