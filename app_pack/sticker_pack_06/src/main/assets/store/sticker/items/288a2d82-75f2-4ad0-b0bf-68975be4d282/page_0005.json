@@ -1,0 +1,247 @@
+{
+  "data": [
+    {
+      "id": "8d13ccc5-1545-41d4-b7e5-c573848925de",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 80,
+      "name": "animal_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_19.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_19_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "433e3ad2-c874-4091-a165-58b7492d8d99",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 80,
+      "name": "Sticker_Shinnosuke_25",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974686_Sticker_Shinnosuke_25.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974686_Sticker_Shinnosuke_25.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_25.json"
+      }
+    },
+    {
+      "id": "dd09514f-1c97-4788-92a8-3fa4b2107705",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 81,
+      "name": "animal_28",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456781_animal_28.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456781_animal_28.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_28_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "872226f8-46cb-417f-b13d-5c6ee8b2393e",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 81,
+      "name": "animal_27",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_27.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_27.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_27_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "ec437f62-43fd-452a-b88a-9bb06bc279ee",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 82,
+      "name": "animal_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_20.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_20_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "a97c4999-d605-4af1-9e6c-8f36a11de817",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 82,
+      "name": "animal_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_23.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_23_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "771ed136-4e06-49ab-aa21-8e2c285369dc",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 83,
+      "name": "animal_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_30.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_30_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "9b1279f7-ca9e-4394-8a87-1e5ad4a93cb0",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 83,
+      "name": "animal_22",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_22.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_22.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_22_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "f603ce35-1a10-411c-ad74-e17b40b9d713",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 84,
+      "name": "Heart3D_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749123801_Heart3D_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123801_Heart3D_04.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123963_Heart3D_04_BatteryIcon_KhanhTQ_050625.json"
+      }
+    },
+    {
+      "id": "cfb347b7-24be-4f6f-9f84-93072eb71be0",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 84,
+      "name": "animal_24",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_24.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_24.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456903_Animal_24_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "2827fcbe-be6e-4cd4-8615-d7e8dc579a83",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 85,
+      "name": "animal_21",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_21.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_21.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_21_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "b9be3041-59dc-4fff-8242-e07af7af8593",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 85,
+      "name": "animal_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456786_animal_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456786_animal_05.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_05_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "251cb21f-3ee1-479a-b716-aae9d1b829f2",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 86,
+      "name": "animal_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456781_animal_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456781_animal_29.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_29_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "2a677700-5051-438c-a9bf-356173040f31",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 86,
+      "name": "emotion_20",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749455112_emotion_20.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455112_emotion_20.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455253_emotion_20_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "db3f0ba7-fd92-4106-8152-680d9e07d480",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 87,
+      "name": "Heart3D_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749123801_Heart3D_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123801_Heart3D_09.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123963_Heart3D_09_BatteryIcon_KhanhTQ_050625.json"
+      }
+    },
+    {
+      "id": "ac653935-2136-4702-ab0c-21e5bc6a5da4",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 87,
+      "name": "animal_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_06.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_06_BatteryIcon_KhanhTQ_060625.json"
+      }
+    }
+  ],
+  "meta": {
+    "logical_page": 5,
+    "logical_page_count": 9,
+    "chunk_size": 16
+  }
+}

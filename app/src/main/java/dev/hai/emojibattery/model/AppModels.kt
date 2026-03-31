@@ -270,7 +270,7 @@ data class AppUiState(
     val selectedRealTimeTemplateId: String = SampleCatalog.realTimeTemplates.first().id,
     val selectedBatteryTrollTemplateId: String = SampleCatalog.batteryTrollTemplates.first().id,
     val trollMessage: String = SampleCatalog.batteryTrollTemplates.first().prankMessage,
-    val statusBarOverlayEnabled: Boolean = false,
+    val statusBarOverlayEnabled: Boolean = true,
     val trollFeatureEnabled: Boolean = true,
     val trollUseRealBattery: Boolean = false,
     val trollShowPercentage: Boolean = true,
@@ -300,6 +300,9 @@ data class AppUiState(
     /** Remote Volio sticker library (Emoji sticker scope); merged at UI with [SampleCatalog.stickerPresets]. */
     val stickerCatalogRemote: List<StickerPreset> = emptyList(),
     val stickerCatalogLoading: Boolean = false,
+    val stickerCatalogAppending: Boolean = false,
+    val stickerCatalogLoadedPageCount: Int = 0,
+    val stickerCatalogTotalPageCount: Int = 0,
     /** Remote Volio battery-troll templates when [VolioConstants.BATTERY_TROLL_PARENT_ID] is configured. */
     val batteryTrollCatalogRemote: List<BatteryTrollTemplate> = emptyList(),
     val batteryTrollCatalogLoading: Boolean = false,

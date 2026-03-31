@@ -48,3 +48,14 @@ homePackDirs.forEach { dir ->
     include(moduleName)
     project(moduleName).projectDir = dir
 }
+
+val stickerPackDirs = packsRootDir.listFiles()
+    ?.filter { it.isDirectory && it.name.startsWith("sticker_pack_") }
+    .orEmpty()
+    .sortedBy { it.name }
+
+stickerPackDirs.forEach { dir ->
+    val moduleName = ":${dir.name}"
+    include(moduleName)
+    project(moduleName).projectDir = dir
+}

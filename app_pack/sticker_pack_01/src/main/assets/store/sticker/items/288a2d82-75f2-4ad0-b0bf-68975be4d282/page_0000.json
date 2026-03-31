@@ -1,0 +1,233 @@
+{
+  "data": [
+    {
+      "id": "6a5d6464-16e2-4289-abc2-2541594f15e9",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 1,
+      "name": "copy_31",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-12/1749694190_31_4.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694190_31_4.png",
+      "status": true,
+      "view": 30,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694201_31.json"
+      }
+    },
+    {
+      "id": "5d14e782-c59d-4192-bc3b-c7c98b69c19e",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 2,
+      "name": "Xmas 1",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-27/1764233753_Sticker_Christmas_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233753_Sticker_Christmas_05.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233749_Sticker_Christmas_05.json"
+      }
+    },
+    {
+      "id": "baf5f7df-c49b-418a-a80d-a5839ccce30b",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 3,
+      "name": "Sticker_Shinnosuke_1",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974416_Sticker_Shinnosuke_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974416_Sticker_Shinnosuke_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_1.json"
+      }
+    },
+    {
+      "id": "82f2efea-aeda-4686-aa9b-3311f7d9db35",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 4,
+      "name": "Xmas 2",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-27/1764233773_Sticker_Christmas_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233773_Sticker_Christmas_01.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233780_Sticker_Christmas_01.json"
+      }
+    },
+    {
+      "id": "139ae467-5f14-4ff8-ab8d-834ae64d359c",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 5,
+      "name": "Xmas 3",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-27/1764233794_Sticker_Christmas_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233794_Sticker_Christmas_04.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233803_Sticker_Christmas_04.json"
+      }
+    },
+    {
+      "id": "5bc537cd-e0ec-4f67-9999-426900b0de06",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 6,
+      "name": "Xmas 5",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-27/1764233842_Sticker_Christmas_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233842_Sticker_Christmas_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233853_Sticker_Christmas_08.json"
+      }
+    },
+    {
+      "id": "fbe0c65f-9667-49d1-80e7-fd7523d3d6f9",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 7,
+      "name": "Sticker_Shinnosuke_2",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974428_Sticker_Shinnosuke_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974428_Sticker_Shinnosuke_02.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_2.json"
+      }
+    },
+    {
+      "id": "5c09eff1-f863-42d9-8415-7a1df62794a1",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 8,
+      "name": "Xmas 4",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-27/1764233818_Sticker_Christmas_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233818_Sticker_Christmas_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233827_Sticker_Christmas_06.json"
+      }
+    },
+    {
+      "id": "414951cb-b09b-4566-a4af-58323b499c3c",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 9,
+      "name": "Xmas 6",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-27/1764233876_Sticker_Christmas_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233876_Sticker_Christmas_07.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-27/1764233885_Sticker_Christmas_07.json"
+      }
+    },
+    {
+      "id": "0bcb3586-7554-4eea-bf0b-4d27fba424ab",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 10,
+      "name": "copy_22",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-12/1749694092_22_5.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694092_22_5.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694104_22.json"
+      }
+    },
+    {
+      "id": "7493e0df-66c1-45ad-b0c7-22dfb81ce889",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 11,
+      "name": "copy_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-12/1749694124_23_5.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694124_23_5.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694132_23.json"
+      }
+    },
+    {
+      "id": "5b4fdbb0-de12-4437-b72b-6df43a25f2bf",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 12,
+      "name": "Sticker_Shinnosuke_3",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974492_Sticker_Shinnosuke_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974492_Sticker_Shinnosuke_03.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_3.json"
+      }
+    },
+    {
+      "id": "660acf6a-762e-4dd9-b634-beaeaddc35be",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 13,
+      "name": "Sticker_Shinnosuke_6",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974522_Sticker_Shinnosuke_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974522_Sticker_Shinnosuke_06.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_6.json"
+      }
+    },
+    {
+      "id": "64079ea5-48d8-4a43-9e3c-51b5cf2d75e3",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 14,
+      "name": "Sticker_Halloween_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761273985_Sticker_Halloween_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761273985_Sticker_Halloween_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761274013_StickerHalloween_BatteryIcon_HieuNT_241025_Opt9.json"
+      }
+    },
+    {
+      "id": "308f073c-e68d-4a38-ae27-5c6916f0ae3d",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 15,
+      "name": "Halloween 6",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-23/1761216994_a7effc045608c64e22dc93b1d5e06117_upscayl_2x_digital-art-4x1.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761216994_a7effc045608c64e22dc93b1d5e06117_upscayl_2x_digital-art-4x1.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761217090_6.json"
+      }
+    },
+    {
+      "id": "ca51d9d4-4105-4307-a13a-4d0aab127599",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 16,
+      "name": "copy_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-12/1749694150_29_4.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694150_29_4.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694167_29.json"
+      }
+    }
+  ],
+  "meta": {
+    "logical_page": 0,
+    "logical_page_count": 9,
+    "chunk_size": 16
+  }
+}

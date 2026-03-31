@@ -1,0 +1,24 @@
+{
+  "data": [
+    {
+      "id": "62a9b9c1-92c7-48d4-aa01-2deb840ee093",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 131,
+      "name": "emotion_24",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749455112_emotion_24.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455112_emotion_24.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455258_emotion_24_BatteryIcon_KhanhTQ_060625.json"
+      }
+    }
+  ],
+  "meta": {
+    "logical_page": 8,
+    "logical_page_count": 9,
+    "chunk_size": 16
+  }
+}

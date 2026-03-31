@@ -1,0 +1,248 @@
+{
+  "data": [
+    {
+      "id": "c1c00473-786f-46d2-bff5-d8cd08e96742",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 88,
+      "name": "Heart3D_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749123801_Heart3D_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123801_Heart3D_07.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123968_Heart3D_07_BatteryIcon_KhanhTQ_050625.json"
+      }
+    },
+    {
+      "id": "7a8e5c2e-33eb-4538-bc46-ea27e848d10b",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 88,
+      "name": "emotion_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749455112_emotion_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455112_emotion_16.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455253_emotion_16_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "8337595f-9ce3-494c-a226-ca4ffb0447de",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 89,
+      "name": "animal_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_07.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_07_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "6dbd12fa-be26-4fac-9198-3ca1ef30678b",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 89,
+      "name": "Sticker_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625777_Sticker_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625777_Sticker_02.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_2.json"
+      }
+    },
+    {
+      "id": "93d1ea0b-7414-43dd-b884-21e8313c3c8f",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 90,
+      "name": "Heart3D_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749123801_Heart3D_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123801_Heart3D_10.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123963_Heart3D_10_BatteryIcon_KhanhTQ_050625.json"
+      }
+    },
+    {
+      "id": "87d0172c-9081-440a-885b-bc09c113fc5c",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 90,
+      "name": "Sticker_04",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625777_Sticker_04.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625777_Sticker_04.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_4.json"
+      }
+    },
+    {
+      "id": "50d4c816-d098-462b-8ec3-82173e625967",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 91,
+      "name": "Sticker_05",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625777_Sticker_05.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625777_Sticker_05.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_5.json"
+      }
+    },
+    {
+      "id": "708f9d2d-65ec-4d95-af95-d5a6416d2180",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 91,
+      "name": "Sticker_11",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625777_Sticker_11.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625777_Sticker_11.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_11.json"
+      }
+    },
+    {
+      "id": "5f2ce788-bb6c-4257-bd8f-f1bae4a29a20",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 107,
+      "name": "Sticker_06",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625782_Sticker_06.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625782_Sticker_06.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_6.json"
+      }
+    },
+    {
+      "id": "7b73af40-20de-4dee-a7ef-854ee8e587ff",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 108,
+      "name": "emotion_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749455112_emotion_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455112_emotion_18.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749455253_emotion_18_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "2d3e1160-2b3a-445c-be78-932b3b2b1885",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 109,
+      "name": "Sticker_07",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625782_Sticker_07.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625782_Sticker_07.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625832_7.json"
+      }
+    },
+    {
+      "id": "6047f9d2-18e5-468d-95ac-fb0502123675",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 110,
+      "name": "animal_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_01.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_01_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "558d2b23-9096-48bb-b327-dfc080aa3abe",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 111,
+      "name": "Sticker_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625782_Sticker_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625782_Sticker_13.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625831_13.json"
+      }
+    },
+    {
+      "id": "9f94a446-f00b-4d69-a66d-73e981c0b7b3",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 112,
+      "name": "Sticker_Halloween_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761276151_Sticker_Halloween_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276151_Sticker_Halloween_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276358_Sticker_Halloween_19.json"
+      }
+    },
+    {
+      "id": "222edb93-e288-4322-be5a-35509f89a4d5",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 113,
+      "name": "Sticker_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625777_Sticker_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625777_Sticker_12.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_12.json"
+      }
+    },
+    {
+      "id": "c6d0a265-5cb5-4e48-b979-90839b96c313",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 114,
+      "name": "Sticker_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625782_Sticker_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625782_Sticker_14.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_14.json"
+      }
+    }
+  ],
+  "meta": {
+    "logical_page": 6,
+    "logical_page_count": 9,
+    "chunk_size": 16
+  }
+}

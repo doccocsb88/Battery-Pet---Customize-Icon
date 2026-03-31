@@ -1,0 +1,236 @@
+{
+  "data": [
+    {
+      "id": "d3fdd57f-8b45-4612-ba47-1043e3cb0b18",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 33,
+      "name": "Halloween 2",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-23/1761216994_.temp-9-26-11-image_upscayl_3x_digital-art-4x1.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761216994_.temp-9-26-11-image_upscayl_3x_digital-art-4x1.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761217298_2.json"
+      }
+    },
+    {
+      "id": "b0d0f504-b31b-47de-b864-bd6cebf34a30",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 34,
+      "name": "Sticker_Halloween_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761276151_Sticker_Halloween_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276151_Sticker_Halloween_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276316_Sticker_Halloween_16.json"
+      }
+    },
+    {
+      "id": "6df9995f-8f80-4c07-b526-348fa06e4c4e",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 35,
+      "name": "animal_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_08.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_08_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "ad0d7654-433e-41e4-bdcd-d53b631f807c",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 36,
+      "name": "Halloween 8",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-23/1761216994_f917349ff88b47848fa008845e3ebe5c_upscayl_2x_digital-art-4x1.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761216994_f917349ff88b47848fa008845e3ebe5c_upscayl_2x_digital-art-4x1.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761217065_8.json"
+      }
+    },
+    {
+      "id": "9f812df2-dde3-446e-b99c-fb5abccf82a8",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 37,
+      "name": "Sticker_Shinnosuke_27",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974732_Sticker_Shinnosuke_27.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974732_Sticker_Shinnosuke_27.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_27.json"
+      }
+    },
+    {
+      "id": "d650c669-da35-4c5b-8b38-0756853e39cc",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 38,
+      "name": "Sticker_Shinnosuke_16",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974610_Sticker_Shinnosuke_16.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974610_Sticker_Shinnosuke_16.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_16.json"
+      }
+    },
+    {
+      "id": "60c1d2b6-2d61-4f8f-9647-cd36654b6fdb",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 39,
+      "name": "Sticker_Shinnosuke_28",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974732_Sticker_Shinnosuke_28.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974732_Sticker_Shinnosuke_28.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_28.json"
+      }
+    },
+    {
+      "id": "6e3459c0-a236-4a25-ba9f-d3df3acb758c",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 40,
+      "name": "Sticker_Shinnosuke_29",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974732_Sticker_Shinnosuke_29.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974732_Sticker_Shinnosuke_29.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_29.json"
+      }
+    },
+    {
+      "id": "b66c3b19-d973-4efb-8fe2-8db9628b8734",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 41,
+      "name": "Sticker_Shinnosuke_9",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974542_Sticker_Shinnosuke_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974542_Sticker_Shinnosuke_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_9.json"
+      }
+    },
+    {
+      "id": "1251be70-b7f7-4a4e-8e31-a5b212e2daeb",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 42,
+      "name": "Sticker_Halloween_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761276146_Sticker_Halloween_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276146_Sticker_Halloween_14.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276286_Sticker_Halloween_14.json"
+      }
+    },
+    {
+      "id": "0a99edf1-8261-4980-8ed4-8fd789902ab1",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 43,
+      "name": "animal_13",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_13.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_13.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_13_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "d350505b-afb3-4d80-9098-2d1038a4f311",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 44,
+      "name": "Halloween 3",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-23/1761216999_image194.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761216999_image194.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-23/1761217389_3.json"
+      }
+    },
+    {
+      "id": "9d500385-dd60-4963-ae15-d37f95500e56",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 45,
+      "name": "Sticker_Shinnosuke_30",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974732_Sticker_Shinnosuke_30.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974732_Sticker_Shinnosuke_30.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_30.json"
+      }
+    },
+    {
+      "id": "671d6c49-cf36-447a-a878-a9338a5aba28",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 46,
+      "name": "animal_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_10.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456903_Animal_10_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "6a2801a3-7c53-44ac-9a2c-b6b58f7d25e7",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 47,
+      "name": "Sticker_Shinnosuke_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974542_Sticker_Shinnosuke_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974542_Sticker_Shinnosuke_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_10.json"
+      }
+    },
+    {
+      "id": "481396c3-9ebb-40ac-9f85-08b42cb5a47e",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 48,
+      "name": "Sticker_Shinnosuke_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974610_Sticker_Shinnosuke_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974610_Sticker_Shinnosuke_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_17.json"
+      }
+    }
+  ],
+  "meta": {
+    "logical_page": 2,
+    "logical_page_count": 9,
+    "chunk_size": 16
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "data": [
+    {
+      "id": "9d03d3b2-3f0f-4f95-87db-5eec0bdc6244",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 49,
+      "name": "EmojiBattery_08",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-17/1752737892_EmojiBattery_08.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-17/1752737892_EmojiBattery_08.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-07-17/1752737961_EmojiBattery_08.json"
+      }
+    },
+    {
+      "id": "523ba9c6-0889-441d-b1be-bdb3f867b059",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 50,
+      "name": "Sticker_Halloween_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761276146_Sticker_Halloween_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276146_Sticker_Halloween_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276346_Sticker_Halloween_18.json"
+      }
+    },
+    {
+      "id": "bbdace91-7a04-4b7c-b129-e76752b60183",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 51,
+      "name": "copy_44",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-12/1749694234_44_6.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694234_44_6.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-12/1749694244_44.json"
+      }
+    },
+    {
+      "id": "add17cce-9b5e-42b8-b6e6-861e64edc0b1",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 52,
+      "name": "Sticker_Halloween_10",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761273979_Sticker_Halloween_10.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761273979_Sticker_Halloween_10.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761274027_StickerHalloween_BatteryIcon_HieuNT_241025_Opt10.json"
+      }
+    },
+    {
+      "id": "1e6f2783-88be-43dc-961c-423dbd9184be",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 53,
+      "name": "EmojiBattery_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-07-17/1752737892_EmojiBattery_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-07-17/1752737892_EmojiBattery_09.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-07-17/1752737961_EmojiBattery_09.json"
+      }
+    },
+    {
+      "id": "45795af4-fb6b-4e6e-a623-e39d16bdd746",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 54,
+      "name": "Sticker_Shinnosuke_18",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974610_Sticker_Shinnosuke_18.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974610_Sticker_Shinnosuke_18.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_18.json"
+      }
+    },
+    {
+      "id": "df20e714-5963-40b3-91e7-ed3fc3d172d1",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 55,
+      "name": "animal_09",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_09.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_09.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_09_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "d39e2acf-2142-4876-b716-af7c7193241e",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 56,
+      "name": "animal_23",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_23.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_23.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456898_Animal_23_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "ff8e92c8-12f2-403b-84c4-41f3fdf32644",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 57,
+      "name": "Sticker_Shinnosuke_19",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-11-24/1763974610_Sticker_Shinnosuke_19.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974610_Sticker_Shinnosuke_19.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-11-24/1763974383_Sticker_Shinnosuke_19.json"
+      }
+    },
+    {
+      "id": "7b9cd607-380f-4b02-a038-536d20d5dea1",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 58,
+      "name": "Sticker_Halloween_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761276146_Sticker_Halloween_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276146_Sticker_Halloween_12.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276256_Sticker_Halloween_12.json"
+      }
+    },
+    {
+      "id": "bcf45b74-8da0-4fe6-8c1e-3a38e8b78588",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 59,
+      "name": "animal_14",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_14.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_14.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456908_Animal_14_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "f0ed9cc3-3a57-4b81-80e0-0925802ef967",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 60,
+      "name": "Heart3D_02",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749123806_Heart3D_02.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123806_Heart3D_02.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123963_Heart3D_02_BatteryIcon_KhanhTQ_050625.json"
+      }
+    },
+    {
+      "id": "5a001323-45d9-4fac-8daf-60aed53aab02",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 61,
+      "name": "animal_12",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-09/1749456776_animal_12.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456776_animal_12.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-09/1749456908_Animal_12_BatteryIcon_KhanhTQ_060625.json"
+      }
+    },
+    {
+      "id": "ce2aec6a-e364-4c6a-a43d-59f0a80e4b21",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 62,
+      "name": "Sticker_Halloween_17",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-10-24/1761276146_Sticker_Halloween_17.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276146_Sticker_Halloween_17.png",
+      "status": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-10-24/1761276330_Sticker_Halloween_17.json"
+      }
+    },
+    {
+      "id": "c40d2d55-5dd8-4948-992d-33680915bfc2",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 63,
+      "name": "Heart3D_01",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-05/1749123801_Heart3D_01.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123801_Heart3D_01.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-05/1749123963_Heart3D_01_BatteryIcon_KhanhTQ_050625.json"
+      }
+    },
+    {
+      "id": "590a3aaf-37c3-42bb-8fd2-4a09502954b4",
+      "category_id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "priority": 64,
+      "name": "Sticker_03",
+      "thumbnail": "https://cdn-uploader.innovatex.one/thumnails/800/store/2025-06-11/1749625777_Sticker_03.png",
+      "photo": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625777_Sticker_03.png",
+      "status": true,
+      "is_pro": true,
+      "view": 0,
+      "like": 0,
+      "custom_fields": {
+        "content": "https://cdn-uploader.innovatex.one/data/store/2025-06-11/1749625827_3.json"
+      }
+    }
+  ],
+  "meta": {
+    "logical_page": 3,
+    "logical_page_count": 9,
+    "chunk_size": 16
+  }
+}

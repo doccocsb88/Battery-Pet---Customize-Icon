@@ -167,6 +167,7 @@ private val StickerUiPrimary = Color(0xFF8FB6D4)
 private val StickerUiSecondary = Color(0xFF76916B)
 private val StickerUiTertiary = Color(0xFFD9B99B)
 private val StickerUiText = Color(0xFF3C3C3C)
+private val StickerUiPremiumBadge = Color(0xFFF2C76E)
 
 private fun maxStickerSlotsForUi(state: AppUiState): Int = when {
     state.premiumUnlocked -> SampleCatalog.PREMIUM_STICKER_SLOTS
@@ -222,6 +223,9 @@ internal fun EmojiStickerScreen(
         uiState.stickerCatalogRemote
     } else {
         SampleCatalog.stickerPresets
+    }
+    val remoteStickerPages = remember(uiState.stickerCatalogRemote) {
+        uiState.stickerCatalogRemote.chunked(STICKERS_PER_CATALOG_PAGE)
     }
     LaunchedEffect(stickerLibrary) {
         val withThumb = stickerLibrary.count { !it.thumbnailUrl.isNullOrBlank() }
@@ -360,8 +364,12 @@ internal fun EmojiStickerScreen(
                             )
                         }
                     } else {
-                        val stickerPages = remember(stickerLibrary) {
-                            stickerLibrary.chunked(STICKERS_PER_CATALOG_PAGE)
+                        val stickerPages = if (uiState.stickerCatalogRemote.isNotEmpty()) {
+                            remoteStickerPages
+                        } else {
+                            remember(stickerLibrary) {
+                                stickerLibrary.chunked(STICKERS_PER_CATALOG_PAGE)
+                            }
                         }
                         if (stickerPages.isEmpty()) {
                             Text(
@@ -393,13 +401,32 @@ internal fun EmojiStickerScreen(
                                     stringResource(
                                         R.string.sticker_page_indicator,
                                         pagerState.currentPage + 1,
-                                        stickerPages.size,
+                                        if (uiState.stickerCatalogTotalPageCount > 0) uiState.stickerCatalogTotalPageCount else stickerPages.size,
                                     ),
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     style = MaterialTheme.typography.labelMedium,
                                 )
+                                if (uiState.stickerCatalogAppending) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(18.dp),
+                                            strokeWidth = 2.dp,
+                                            color = StickerUiPrimary,
+                                        )
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(
+                                            stringResource(R.string.common_loading_ellipsis),
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            style = MaterialTheme.typography.labelMedium,
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -960,15 +987,28 @@ internal fun StickerCatalogCard(
                 )
             }
             if (showPaywallBadge) {
-                Image(
-                    painter = painterResource(R.drawable.ic_sticker_premium_badge),
-                    contentDescription = stringResource(R.string.cd_premium),
+                Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(6.dp)
-                        .size(22.dp),
-                    contentScale = ContentScale.Fit,
-                )
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 0.dp,
+                                topEnd = 12.dp,
+                                bottomEnd = 0.dp,
+                                bottomStart = 12.dp,
+                            ),
+                        )
+                        .background(StickerUiPremiumBadge)
+                        .padding(horizontal = 6.dp, vertical = 5.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_sticker_premium_badge),
+                        contentDescription = stringResource(R.string.cd_premium),
+                        modifier = Modifier.size(14.dp),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
             }
         }
     }
@@ -986,30 +1026,35 @@ internal fun AddedStickerChip(
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Box(
-            modifier = Modifier
-                .size(56.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(
-                    if (selected) StickerUiPrimary.copy(alpha = 0.22f)
-                    else StickerUiTertiary.copy(alpha = 0.26f),
-                )
-                .border(
-                    width = 1.dp,
-                    color = if (selected) StickerUiPrimary else StickerUiSecondary.copy(alpha = 0.35f),
-                    shape = RoundedCornerShape(12.dp),
-                )
-                .clickable(onClick = onSelect),
-            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(64.dp),
         ) {
-            if (sticker.thumbnailUrl != null) {
-                AsyncImage(
-                    model = sticker.thumbnailUrl,
-                    contentDescription = sticker.name,
-                    modifier = Modifier.size(34.dp),
-                    contentScale = ContentScale.Fit,
-                )
-            } else {
-                Text(sticker.glyph)
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .align(Alignment.BottomStart)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        if (selected) StickerUiPrimary.copy(alpha = 0.22f)
+                        else StickerUiTertiary.copy(alpha = 0.26f),
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = if (selected) StickerUiPrimary else StickerUiSecondary.copy(alpha = 0.35f),
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    .clickable(onClick = onSelect),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (sticker.thumbnailUrl != null) {
+                    AsyncImage(
+                        model = sticker.thumbnailUrl,
+                        contentDescription = sticker.name,
+                        modifier = Modifier.size(34.dp),
+                        contentScale = ContentScale.Fit,
+                    )
+                } else {
+                    Text(sticker.glyph)
+                }
             }
             Surface(
                 onClick = onRemove,
@@ -1017,11 +1062,11 @@ internal fun AddedStickerChip(
                 color = StickerUiText,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 4.dp, y = (-4).dp)
+                    .size(24.dp)
                     .zIndex(1f),
             ) {
                 Box(
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(

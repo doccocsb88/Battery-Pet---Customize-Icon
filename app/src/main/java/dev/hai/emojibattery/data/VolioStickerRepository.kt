@@ -17,71 +17,98 @@ import java.io.File
  */
 object VolioStickerRepository {
     private const val TAG = "StickerCatalog"
+    private const val STICKERS_PER_CATALOG_PAGE = 16
 
     private val gson = Gson()
     private val categoryListType = object : TypeToken<VolioListResponse<VolioCategoryDto>>() {}.type
     private val itemListType = object : TypeToken<VolioListResponse<VolioEmojiBatteryItemDto>>() {}.type
 
+    data class StickerCatalogPageInfo(
+        val root: File,
+        val allCategoryId: String,
+        val pageFiles: List<File>,
+    )
+
+    fun stickerCatalogPageCount(context: Context): Int {
+        val padPages = loadPadLogicalPages(context)
+        if (!padPages.isNullOrEmpty()) return padPages.size
+        return bundledFallback(context)
+            .chunked(STICKERS_PER_CATALOG_PAGE)
+            .let { if (it.isEmpty()) 0 else it.size }
+    }
+
+    fun fetchStickerPresetsPage(context: Context, pageIndex: Int): List<StickerPreset> {
+        val padPages = loadPadLogicalPages(context)
+        if (!padPages.isNullOrEmpty()) {
+            val page = padPages.getOrNull(pageIndex).orEmpty()
+            logMappedSummary("pad_page_$pageIndex", page)
+            return page
+        }
+        val fallbackPages = bundledFallback(context).chunked(STICKERS_PER_CATALOG_PAGE)
+        val fallback = fallbackPages.getOrNull(pageIndex).orEmpty()
+        if (fallback.isEmpty()) return emptyList()
+        logMappedSummary("bundled_fallback_page_0", fallback)
+        return fallback
+    }
+
     fun fetchStickerPresets(context: Context): List<StickerPreset> {
-        val root = StoreOnDemandAssetPack.assetsRootOrNull(context)
-        Log.d(TAG, "fetchStickerPresets: assetsRoot=${root?.absolutePath ?: "null"}")
-        if (root != null) {
-            val categoriesFile = File(root, "store/sticker/categories_all.json")
-            Log.d(
-                TAG,
-                "fetchStickerPresets: categoriesFile=${categoriesFile.absolutePath} exists=${categoriesFile.isFile}",
-            )
-            if (categoriesFile.isFile) {
-                val categoriesJson = categoriesFile.readText(Charsets.UTF_8)
-                val categoriesResponse: VolioListResponse<VolioCategoryDto> = gson.fromJson(categoriesJson, categoryListType)
-                Log.d(
-                    TAG,
-                    "fetchStickerPresets: categoriesCount=${categoriesResponse.data.orEmpty().size}",
-                )
-                val allCategory = categoriesResponse.data.orEmpty()
-                    .filter { it.status != false }
-                    .firstOrNull { it.name?.contains("All", ignoreCase = true) == true }
-                    ?: categoriesResponse.data.orEmpty().firstOrNull { it.status != false }
-                if (allCategory != null) {
-                    Log.d(
-                        TAG,
-                        "fetchStickerPresets: selectedCategory id=${allCategory.id} name=${allCategory.name} status=${allCategory.status}",
-                    )
-                    val dir = File(root, "store/sticker/items/${allCategory.id}")
-                    Log.d(
-                        TAG,
-                        "fetchStickerPresets: itemsDir=${dir.absolutePath} isDirectory=${dir.isDirectory}",
-                    )
-                    if (dir.isDirectory) {
-                        val pages = dir.listFiles()
-                            ?.filter { it.isFile && it.name.startsWith("page_") && it.name.endsWith(".json") }
-                            ?.sortedBy { it.name }
-                            .orEmpty()
-                        Log.d(
-                            TAG,
-                            "fetchStickerPresets: pageFiles count=${pages.size} names=${pages.take(6).joinToString { it.name }}",
-                        )
-                        if (pages.isNotEmpty()) {
-                            val merged = buildList {
-                                pages.forEach { page ->
-                                    val json = page.readText(Charsets.UTF_8)
-                                    val response: VolioListResponse<VolioEmojiBatteryItemDto> = gson.fromJson(json, itemListType)
-                                    Log.d(
-                                        TAG,
-                                        "fetchStickerPresets: page=${page.name} itemCount=${response.data.orEmpty().size}",
-                                    )
-                                    addAll(response.data.orEmpty())
-                                }
-                            }
-                            val mapped = merged.map { it.toStickerPreset(root) }
-                            logMappedSummary("pad", mapped)
-                            return mapped
-                        }
-                    }
-                }
+        val pageCount = stickerCatalogPageCount(context)
+        if (pageCount <= 0) return emptyList()
+        return buildList {
+            repeat(pageCount) { pageIndex ->
+                addAll(fetchStickerPresetsPage(context, pageIndex))
             }
         }
+    }
 
+    private fun resolvePadCatalog(context: Context): StickerCatalogPageInfo? {
+        val root = StoreOnDemandAssetPack.assetsRootOrNull(context)
+        Log.d(TAG, "fetchStickerPresets: assetsRoot=${root?.absolutePath ?: "null"}")
+        if (root == null) return null
+        val categoriesFile = File(root, "store/sticker/categories_all.json")
+        Log.d(
+            TAG,
+            "fetchStickerPresets: categoriesFile=${categoriesFile.absolutePath} exists=${categoriesFile.isFile}",
+        )
+        if (!categoriesFile.isFile) return null
+        val categoriesJson = categoriesFile.readText(Charsets.UTF_8)
+        val categoriesResponse: VolioListResponse<VolioCategoryDto> = gson.fromJson(categoriesJson, categoryListType)
+        Log.d(
+            TAG,
+            "fetchStickerPresets: categoriesCount=${categoriesResponse.data.orEmpty().size}",
+        )
+        val allCategory = categoriesResponse.data.orEmpty()
+            .filter { it.status != false }
+            .firstOrNull { it.name?.contains("All", ignoreCase = true) == true }
+            ?: categoriesResponse.data.orEmpty().firstOrNull { it.status != false }
+            ?: return null
+        Log.d(
+            TAG,
+            "fetchStickerPresets: selectedCategory id=${allCategory.id} name=${allCategory.name} status=${allCategory.status}",
+        )
+        val dir = File(root, "store/sticker/items/${allCategory.id}")
+        Log.d(
+            TAG,
+            "fetchStickerPresets: itemsDir=${dir.absolutePath} isDirectory=${dir.isDirectory}",
+        )
+        if (!dir.isDirectory) return null
+        val pages = dir.listFiles()
+            ?.filter { it.isFile && it.name.startsWith("page_") && it.name.endsWith(".json") }
+            ?.sortedBy { it.name }
+            .orEmpty()
+        Log.d(
+            TAG,
+            "fetchStickerPresets: pageFiles count=${pages.size} names=${pages.take(6).joinToString { it.name }}",
+        )
+        if (pages.isEmpty()) return null
+        return StickerCatalogPageInfo(
+            root = root,
+            allCategoryId = allCategory.id,
+            pageFiles = pages,
+        )
+    }
+
+    private fun bundledFallback(context: Context): List<StickerPreset> {
         val names = try {
             context.assets.list("bundled_volio/downloaded_assets/sticker")?.toSet().orEmpty()
         } catch (_: Exception) {
@@ -89,7 +116,7 @@ object VolioStickerRepository {
         }
         Log.d(TAG, "fetchStickerPresets: bundledAssetNames count=${names.size}")
         if (names.isEmpty()) return emptyList()
-        val mapped = names.asSequence()
+        return names.asSequence()
             .filter { it.contains("_thumbnail__") }
             .map { name ->
                 val itemId = name.substringBefore("_thumbnail__")
@@ -102,8 +129,22 @@ object VolioStickerRepository {
                 )
             }
             .toList()
-        logMappedSummary("bundled_fallback", mapped)
-        return mapped
+    }
+
+    private fun loadPadLogicalPages(context: Context): List<List<StickerPreset>>? {
+        val catalog = resolvePadCatalog(context) ?: return null
+        val merged = buildList {
+            catalog.pageFiles.forEach { pageFile ->
+                val json = pageFile.readText(Charsets.UTF_8)
+                val response: VolioListResponse<VolioEmojiBatteryItemDto> = gson.fromJson(json, itemListType)
+                Log.d(
+                    TAG,
+                    "loadPadLogicalPages: page=${pageFile.name} itemCount=${response.data.orEmpty().size}",
+                )
+                addAll(response.data.orEmpty().map { it.toStickerPreset(catalog.root) })
+            }
+        }
+        return merged.chunked(STICKERS_PER_CATALOG_PAGE)
     }
 
     private fun logMappedSummary(source: String, mapped: List<StickerPreset>) {

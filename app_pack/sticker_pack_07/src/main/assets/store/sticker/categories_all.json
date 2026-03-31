@@ -1,0 +1,14 @@
+{
+  "message": "success",
+  "data": [
+    {
+      "id": "288a2d82-75f2-4ad0-b0bf-68975be4d282",
+      "app_id": "8c1d2ad2-3e5f-4127-b165-9e08266ad8b3",
+      "parent_id": "9f7b1b47-ee3f-4bf1-b857-09f4c73ffbf0",
+      "priority": 1,
+      "name": "All",
+      "status": true
+    }
+  ],
+  "status": 200
+}

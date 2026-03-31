@@ -53,6 +53,7 @@ class EmojiBatteryViewModel(
     private val savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(application) {
     private var homeCategoryLoadJob: Job? = null
+    private var stickerCatalogLoadJob: Job? = null
 
     companion object {
         private const val TAG = "HomeFeed"
@@ -432,20 +433,32 @@ class EmojiBatteryViewModel(
     }
 
     fun refreshStickerCatalog() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(stickerCatalogLoading = true) }
-            val app = getApplication<Application>()
-            val list = withContext(Dispatchers.IO) {
-                runCatching { VolioStickerRepository.fetchStickerPresets(app) }.getOrElse { emptyList() }
+        stickerCatalogLoadJob?.cancel()
+        stickerCatalogLoadJob = viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    stickerCatalogLoading = true,
+                    stickerCatalogAppending = false,
+                    stickerCatalogRemote = emptyList(),
+                    stickerCatalogLoadedPageCount = 0,
+                    stickerCatalogTotalPageCount = 0,
+                )
             }
-            val withThumb = list.count { !it.thumbnailUrl.isNullOrBlank() }
-            val withLottie = list.count { !it.lottieUrl.isNullOrBlank() }
-            val emptyMedia = list.count { it.thumbnailUrl.isNullOrBlank() && it.lottieUrl.isNullOrBlank() }
+            val app = getApplication<Application>()
+            val pageCount = withContext(Dispatchers.IO) {
+                runCatching { VolioStickerRepository.stickerCatalogPageCount(app) }.getOrDefault(0)
+            }
+            val firstPage = withContext(Dispatchers.IO) {
+                runCatching { VolioStickerRepository.fetchStickerPresetsPage(app, 0) }.getOrElse { emptyList() }
+            }
+            val withThumb = firstPage.count { !it.thumbnailUrl.isNullOrBlank() }
+            val withLottie = firstPage.count { !it.lottieUrl.isNullOrBlank() }
+            val emptyMedia = firstPage.count { it.thumbnailUrl.isNullOrBlank() && it.lottieUrl.isNullOrBlank() }
             Log.d(
                 TAG,
-                "refreshStickerCatalog: count=${list.size} withThumb=$withThumb withLottie=$withLottie emptyMedia=$emptyMedia",
+                "refreshStickerCatalog: firstPageCount=${firstPage.size} pageCount=$pageCount withThumb=$withThumb withLottie=$withLottie emptyMedia=$emptyMedia",
             )
-            list.take(5).forEachIndexed { index, sticker ->
+            firstPage.take(5).forEachIndexed { index, sticker ->
                 Log.d(
                     TAG,
                     "refreshStickerCatalog: sample[$index] id=${sticker.id} name=${sticker.name} thumb=${sticker.thumbnailUrl} lottie=${sticker.lottieUrl}",
@@ -453,9 +466,25 @@ class EmojiBatteryViewModel(
             }
             _uiState.update {
                 it.copy(
-                    stickerCatalogRemote = list,
+                    stickerCatalogRemote = firstPage,
                     stickerCatalogLoading = false,
+                    stickerCatalogLoadedPageCount = if (firstPage.isEmpty()) 0 else 1,
+                    stickerCatalogTotalPageCount = pageCount,
                 )
+            }
+            if (pageCount <= 1) return@launch
+            for (pageIndex in 1 until pageCount) {
+                _uiState.update { it.copy(stickerCatalogAppending = true) }
+                val pageItems = withContext(Dispatchers.IO) {
+                    runCatching { VolioStickerRepository.fetchStickerPresetsPage(app, pageIndex) }.getOrElse { emptyList() }
+                }
+                _uiState.update {
+                    it.copy(
+                        stickerCatalogRemote = it.stickerCatalogRemote + pageItems,
+                        stickerCatalogAppending = false,
+                        stickerCatalogLoadedPageCount = pageIndex + 1,
+                    )
+                }
             }
         }
     }
