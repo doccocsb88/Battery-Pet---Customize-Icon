@@ -438,6 +438,19 @@ class EmojiBatteryViewModel(
             val list = withContext(Dispatchers.IO) {
                 runCatching { VolioStickerRepository.fetchStickerPresets(app) }.getOrElse { emptyList() }
             }
+            val withThumb = list.count { !it.thumbnailUrl.isNullOrBlank() }
+            val withLottie = list.count { !it.lottieUrl.isNullOrBlank() }
+            val emptyMedia = list.count { it.thumbnailUrl.isNullOrBlank() && it.lottieUrl.isNullOrBlank() }
+            Log.d(
+                TAG,
+                "refreshStickerCatalog: count=${list.size} withThumb=$withThumb withLottie=$withLottie emptyMedia=$emptyMedia",
+            )
+            list.take(5).forEachIndexed { index, sticker ->
+                Log.d(
+                    TAG,
+                    "refreshStickerCatalog: sample[$index] id=${sticker.id} name=${sticker.name} thumb=${sticker.thumbnailUrl} lottie=${sticker.lottieUrl}",
+                )
+            }
             _uiState.update {
                 it.copy(
                     stickerCatalogRemote = list,

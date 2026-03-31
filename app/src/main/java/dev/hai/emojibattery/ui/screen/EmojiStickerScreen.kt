@@ -4,6 +4,7 @@ package dev.hai.emojibattery.ui.screen
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -161,6 +162,7 @@ import kotlinx.coroutines.delay
 private const val STICKER_CATALOG_COLUMNS = 4
 private const val STICKER_CATALOG_ROWS = 4
 private const val STICKERS_PER_CATALOG_PAGE = STICKER_CATALOG_COLUMNS * STICKER_CATALOG_ROWS
+private const val LOTTIE_TRACE_TAG = "LottieTrace"
 private val StickerUiPrimary = Color(0xFF8FB6D4)
 private val StickerUiSecondary = Color(0xFF76916B)
 private val StickerUiTertiary = Color(0xFFD9B99B)
@@ -209,10 +211,26 @@ internal fun EmojiStickerScreen(
         onRefreshStickerCatalog()
     }
 
+    LaunchedEffect(uiState.stickerCatalogLoading, uiState.stickerCatalogRemote) {
+        Log.d(
+            "StickerCatalogUI",
+            "EmojiStickerScreen: loading=${uiState.stickerCatalogLoading} remoteCount=${uiState.stickerCatalogRemote.size}",
+        )
+    }
+
     val stickerLibrary = if (uiState.stickerCatalogRemote.isNotEmpty()) {
         uiState.stickerCatalogRemote
     } else {
         SampleCatalog.stickerPresets
+    }
+    LaunchedEffect(stickerLibrary) {
+        val withThumb = stickerLibrary.count { !it.thumbnailUrl.isNullOrBlank() }
+        val withLottie = stickerLibrary.count { !it.lottieUrl.isNullOrBlank() }
+        val emptyMedia = stickerLibrary.count { it.thumbnailUrl.isNullOrBlank() && it.lottieUrl.isNullOrBlank() }
+        Log.d(
+            "StickerCatalogUI",
+            "EmojiStickerScreen: activeLibraryCount=${stickerLibrary.size} withThumb=$withThumb withLottie=$withLottie emptyMedia=$emptyMedia",
+        )
     }
     val selectedSticker = uiState.selectedStickerId?.let { uiState.stickerPresetForId(it) }
     val selectedPlacement = uiState.selectedStickerId?.let { id ->
@@ -576,29 +594,46 @@ internal fun StickerMediaPreview(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        when {
-            sticker.lottieUrl != null -> {
-                val composition by rememberLottieComposition(LottieCompositionSpec.Url(sticker.lottieUrl))
+        val lottieUrl = sticker.lottieUrl
+        if (lottieUrl != null) {
+            val composition by rememberLottieComposition(LottieCompositionSpec.Url(lottieUrl))
+            LaunchedEffect(lottieUrl, composition) {
+                Log.d(
+                    LOTTIE_TRACE_TAG,
+                    "StickerMediaPreview: stickerId=${sticker.id} name=${sticker.name} lottieUrl=$lottieUrl compositionReady=${composition != null}",
+                )
+            }
+            if (composition != null) {
                 LottieAnimation(
                     composition = composition,
                     iterations = LottieConstants.IterateForever,
                     modifier = Modifier.fillMaxSize(),
                 )
-            }
-            sticker.thumbnailUrl != null -> {
+            } else if (sticker.thumbnailUrl != null) {
                 AsyncImage(
                     model = sticker.thumbnailUrl,
                     contentDescription = sticker.name,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit,
                 )
-            }
-            else -> {
+            } else {
                 Text(
                     sticker.glyph,
                     style = MaterialTheme.typography.displaySmall,
                 )
             }
+        } else if (sticker.thumbnailUrl != null) {
+            AsyncImage(
+                model = sticker.thumbnailUrl,
+                contentDescription = sticker.name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+            )
+        } else {
+            Text(
+                sticker.glyph,
+                style = MaterialTheme.typography.displaySmall,
+            )
         }
     }
 }

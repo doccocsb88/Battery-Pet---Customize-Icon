@@ -47,6 +47,7 @@ class StatusBarOverlayManager(
     companion object {
         private const val TAG = "AnimationOverlay"
         private const val DEFAULT_EMOJI_SCALE = 0.64f
+        private const val LOTTIE_TRACE_TAG = "LottieTrace"
     }
 
     data class LiveStatus(
@@ -603,6 +604,10 @@ class StatusBarOverlayManager(
                 stickerEmojiView.visibility = View.GONE
                 val lottieChanged = currentStickerLottieUrl != lottieUrl
                 if (lottieChanged) {
+                    Log.d(
+                        LOTTIE_TRACE_TAG,
+                        "overlaySticker: load lottieUrl=$lottieUrl fromUrl=${lottieUrl.startsWith("http://", ignoreCase = true) || lottieUrl.startsWith("https://", ignoreCase = true)}",
+                    )
                     if (lottieUrl.startsWith("http://", ignoreCase = true) || lottieUrl.startsWith("https://", ignoreCase = true)) {
                         stickerLottieView.setAnimationFromUrl(lottieUrl)
                     } else {
@@ -612,6 +617,10 @@ class StatusBarOverlayManager(
                     currentStickerLottieUrl = lottieUrl
                     Log.d(TAG, "Applied sticker lottie=$lottieUrl")
                 } else if (!stickerLottieView.isAnimating) {
+                    Log.d(
+                        LOTTIE_TRACE_TAG,
+                        "overlaySticker: reuse existing lottieUrl=$lottieUrl (resume animation)",
+                    )
                     stickerLottieView.playAnimation()
                 }
             } else if (url != null) {
@@ -620,6 +629,7 @@ class StatusBarOverlayManager(
                 currentStickerLottieUrl = null
                 stickerImageView.visibility = View.VISIBLE
                 stickerEmojiView.visibility = View.GONE
+                Log.d(LOTTIE_TRACE_TAG, "overlaySticker: no lottie, fallback imageUrl=$url")
                 loadAnimatedImage(stickerImageView, url, crossfade = true, source = "sticker")
             } else {
                 stickerLottieView.cancelAnimation()
@@ -627,6 +637,7 @@ class StatusBarOverlayManager(
                 currentStickerLottieUrl = null
                 stickerImageView.visibility = View.GONE
                 stickerEmojiView.visibility = View.VISIBLE
+                Log.d(LOTTIE_TRACE_TAG, "overlaySticker: no lottie/image, fallback glyph=${snapshot.stickerGlyph}")
                 stickerEmojiView.text = snapshot.stickerGlyph
             }
         } else {
