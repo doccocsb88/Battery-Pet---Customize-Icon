@@ -30,6 +30,7 @@ import com.airbnb.lottie.LottieDrawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
+import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.GestureTrigger
@@ -87,7 +88,7 @@ class StatusBarOverlayManager(
     private val batteryView = TextView(context)
     private val chargeView = TextView(context)
     private val chargeArtView = ImageView(context)
-    private val ringerView = TextView(context)
+    private val ringerIconView = ImageView(context)
     private val batteryArtView = ImageView(context)
     private val trollArtContainer = FrameLayout(context)
     private val trollBatteryArtView = ImageView(context)
@@ -180,8 +181,9 @@ class StatusBarOverlayManager(
         chargeArtView.scaleType = ImageView.ScaleType.FIT_CENTER
         chargeArtView.adjustViewBounds = true
         chargeArtView.visibility = View.GONE
-        ringerView.textSize = 11f
-        ringerView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
+        ringerIconView.scaleType = ImageView.ScaleType.FIT_CENTER
+        ringerIconView.adjustViewBounds = true
+        ringerIconView.visibility = View.GONE
         wifiView.textSize = 11f
         signalView.textSize = 11f
         wifiView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
@@ -192,12 +194,18 @@ class StatusBarOverlayManager(
         signalView.setPadding(12, 0, 0, 0)
         batteryView.setPadding(12, 0, 0, 0)
         chargeView.setPadding(4, 0, 0, 0)
-        ringerView.setPadding(6, 0, 0, 0)
         emojiArtView.scaleType = ImageView.ScaleType.FIT_CENTER
         emojiArtView.adjustViewBounds = true
         batteryArtView.scaleType = ImageView.ScaleType.FIT_CENTER
         batteryArtView.adjustViewBounds = true
         emojiTextView.textSize = 13f
+        leftCluster.addView(
+            ringerIconView,
+            LinearLayout.LayoutParams(baseArtSizePx, baseArtSizePx).apply {
+                marginStart = 6
+                marginEnd = 2
+            },
+        )
         leftEmojiContainer.layoutParams = LinearLayout.LayoutParams(baseArtSizePx, baseArtSizePx).apply {
             marginStart = 6
         }
@@ -310,7 +318,6 @@ class StatusBarOverlayManager(
         )
         rightCluster.addView(trollArtContainer)
         rightCluster.addView(chargeView)
-        rightCluster.addView(ringerView)
         statusRow.addView(rightCluster)
 
         statusBackgroundImageView.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -739,10 +746,27 @@ class StatusBarOverlayManager(
         signalView.text = if (liveStatus.airplaneMode) "" else signalGlyph(liveStatus.signalLevel)
         signalView.textSize = 8f + (signalConfig.intensity.coerceIn(0f, 1f) * 12f)
         signalView.setTextColor(resolveColorFromVariant(signalConfig.variant, "#333333".toColorInt()))
-        ringerView.visibility = if (ringerConfig.enabled) View.VISIBLE else View.GONE
-        ringerView.text = ringerGlyph(parsedRinger.styleId)
-        ringerView.textSize = 8f + (ringerConfig.intensity.coerceIn(0f, 1f) * 12f)
-        ringerView.setTextColor(resolveColorFromVariant(parsedRinger.colorId, "#333333".toColorInt()))
+        val ringerVisible = ringerConfig.enabled
+        val ringerSizePx = ((8f + (ringerConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
+            .roundToInt()
+            .coerceAtLeast((12f * density).roundToInt())
+        (ringerIconView.layoutParams as? LinearLayout.LayoutParams)?.also { params ->
+            params.width = ringerSizePx
+            params.height = ringerSizePx
+            ringerIconView.layoutParams = params
+        }
+        ringerIconView.visibility = if (ringerVisible) View.VISIBLE else View.GONE
+        if (ringerVisible) {
+            ringerIconView.setImageDrawable(
+                AppCompatResources.getDrawable(context, ringerIconRes(parsedRinger.styleId))?.mutate(),
+            )
+            ringerIconView.setColorFilter(
+                resolveColorFromVariant(parsedRinger.colorId, "#333333".toColorInt()),
+                PorterDuff.Mode.SRC_IN,
+            )
+        } else {
+            ringerIconView.setImageDrawable(null)
+        }
 
         if (snapshot.stickerEnabled) {
             val screenWidth = context.resources.displayMetrics.widthPixels
@@ -1068,10 +1092,10 @@ class StatusBarOverlayManager(
         return style.uppercase()
     }
 
-    private fun ringerGlyph(variant: String): String = when (variant.lowercase()) {
-        "mute" -> "🔕"
-        "wave" -> "🔔~"
-        else -> "🔔"
+    private fun ringerIconRes(variant: String): Int = when (variant.lowercase()) {
+        "mute" -> android.R.drawable.ic_lock_silent_mode
+        "wave" -> R.drawable.ic_vibrate_feedback_32
+        else -> android.R.drawable.ic_lock_silent_mode_off
     }
 
     private fun chargeGlyph(variant: String): String = when (variant.lowercase()) {
