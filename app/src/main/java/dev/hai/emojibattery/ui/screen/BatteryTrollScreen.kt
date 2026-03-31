@@ -79,6 +79,7 @@ internal fun BatteryTrollScreen(
     onBack: () -> Unit,
     onSelectTemplate: (String) -> Unit,
     onSetMessage: (String) -> Unit,
+    onSetOverlayEnabled: (Boolean) -> Unit,
     onSetFeatureEnabled: (Boolean) -> Unit,
     onSetUseRealBattery: (Boolean) -> Unit,
     onSetShowPercentage: (Boolean) -> Unit,
@@ -122,6 +123,13 @@ internal fun BatteryTrollScreen(
     }
     val selectedBatteryIndex = (uiState.trollSelectedBatteryUrl?.let { batteryChoices.indexOf(it) } ?: -1).let { idx ->
         if (idx >= 0) idx else 0
+    }
+    val isCustomizedMode = !uiState.trollRandomizedMode
+    val randomizedEmojiPreview = remember(uiState.trollRandomizedMode, selected.id, emojiChoices) {
+        if (uiState.trollRandomizedMode) emojiChoices.randomOrNull() else null
+    }
+    val randomizedBatteryPreview = remember(uiState.trollRandomizedMode, selected.id, batteryChoices) {
+        if (uiState.trollRandomizedMode) batteryChoices.randomOrNull() else null
     }
 
     LaunchedEffect(selected.id, emojiChoices, batteryChoices) {
@@ -213,8 +221,8 @@ internal fun BatteryTrollScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         Switch(
-                            checked = uiState.trollFeatureEnabled,
-                            onCheckedChange = onSetFeatureEnabled,
+                            checked = uiState.statusBarOverlayEnabled,
+                            onCheckedChange = onSetOverlayEnabled,
                         )
                     }
                 }
@@ -260,7 +268,11 @@ internal fun BatteryTrollScreen(
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = if (uiState.trollUseRealBattery) "100%" else uiState.trollMessage,
+                                    text = if (uiState.trollUseRealBattery) {
+                                        if (uiState.trollShowPercentage) "100%" else "100"
+                                    } else {
+                                        formatTrollPercentageText(uiState.trollMessage, uiState.trollShowPercentage)
+                                    },
                                     style = MaterialTheme.typography.displaySmall,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.Black,
@@ -285,8 +297,16 @@ internal fun BatteryTrollScreen(
                                 }
                             }
                             BatteryCellPreview(
-                                batteryImageUrl = batteryChoices.getOrNull(selectedBatteryIndex),
-                                emojiImageUrl = if (uiState.trollShowEmoji) emojiChoices.getOrNull(selectedEmojiIndex) else null,
+                                batteryImageUrl = if (isCustomizedMode) {
+                                    batteryChoices.getOrNull(selectedBatteryIndex)
+                                } else {
+                                    randomizedBatteryPreview
+                                },
+                                emojiImageUrl = if (uiState.trollShowEmoji) {
+                                    if (isCustomizedMode) emojiChoices.getOrNull(selectedEmojiIndex) else randomizedEmojiPreview
+                                } else {
+                                    null
+                                },
                             )
                         }
                     }
@@ -318,7 +338,7 @@ internal fun BatteryTrollScreen(
                             title = stringResource(R.string.emoji_size),
                             checked = true,
                             sliderValue = uiState.trollEmojiSizeDp.toFloat(),
-                            sliderRange = 20f..80f,
+                            sliderRange = 1f..50f,
                             valueSuffix = "dp",
                             onCheckedChange = {},
                             onSliderChange = { onSetEmojiSize(it.toInt()) },
@@ -408,8 +428,8 @@ internal fun BatteryTrollScreen(
                                 if (imageUrl != null) {
                                     TrollImageChip(
                                         imageUrl = imageUrl,
-                                        selected = index == selectedEmojiIndex,
-                                        enabled = uiState.trollShowEmoji,
+                                        selected = isCustomizedMode && index == selectedEmojiIndex,
+                                        enabled = uiState.trollShowEmoji && isCustomizedMode,
                                         onClick = { onSelectEmojiOption(imageUrl) },
                                         modifier = Modifier.weight(1f),
                                     )
@@ -433,8 +453,8 @@ internal fun BatteryTrollScreen(
                                 if (imageUrl != null) {
                                     TrollBatteryImageChip(
                                         imageUrl = imageUrl,
-                                        selected = index == selectedBatteryIndex,
-                                        enabled = uiState.trollShowEmoji,
+                                        selected = isCustomizedMode && index == selectedBatteryIndex,
+                                        enabled = isCustomizedMode,
                                         onClick = { onSelectBatteryOption(imageUrl) },
                                         modifier = Modifier.weight(1f),
                                     )
@@ -499,36 +519,21 @@ internal fun BatteryTrollScreen(
             }
 
             item {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    shape = RoundedCornerShape(18.dp),
-                    color = Color.White,
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.battery_troll_auto_drop),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Switch(checked = uiState.trollAutoDrop, onCheckedChange = onToggleAutoDrop)
-                    }
-                }
-            }
-
-            item {
                 TextButton(
                     onClick = onTurnOff,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                 ) {
-                    Text(stringResource(R.string.common_turn_off))
+                    Text(
+                        stringResource(
+                            if (uiState.trollFeatureEnabled) {
+                                R.string.common_turn_off
+                            } else {
+                                R.string.common_turn_on
+                            },
+                        ),
+                    )
                 }
             }
 
@@ -569,53 +574,51 @@ internal fun BatteryTrollScreen(
     }
 }
 
+private fun formatTrollPercentageText(raw: String, showPercent: Boolean): String {
+    val value = raw.trim().ifBlank { "100" }
+    val normalized = if (value.endsWith("%")) value.dropLast(1).trim() else value
+    return if (showPercent) "${normalized}%" else normalized
+}
+
 @Composable
 private fun BatteryCellPreview(
     batteryImageUrl: String?,
     emojiImageUrl: String?,
 ) {
-    Box(
+    Surface(
         modifier = Modifier
             .width(170.dp)
             .height(170.dp),
-        contentAlignment = Alignment.Center,
+        shape = RoundedCornerShape(20.dp),
+        color = Color(0xFFF8FBFF),
+        border = BorderStroke(1.dp, Color(0xFFDCE9F5)),
     ) {
         Box(
             modifier = Modifier
-                .width(170.dp)
-                .height(170.dp)
-                .background(Color.LightGray),
+                .fillMaxSize()
+                .padding(8.dp),
             contentAlignment = Alignment.Center,
         ) {
             if (!batteryImageUrl.isNullOrBlank()) {
-                Box() {
                 AsyncImage(
                     model = batteryImageUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .width(170.dp)
-                        .height(170.dp),
+                        .fillMaxSize(),
                     contentScale = ContentScale.Fit,
                 )
             }
-
-            }
             if (!emojiImageUrl.isNullOrBlank()) {
-                Box() {
-                    AsyncImage(
-                        model = emojiImageUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .width(170.dp)
-                            .height(170.dp),
-                        contentScale = ContentScale.Fit,
-                    )
-                }
+                AsyncImage(
+                    model = emojiImageUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                )
             }
         }
-    }
+    }    
 }
 
 @Composable

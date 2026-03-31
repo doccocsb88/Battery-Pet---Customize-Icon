@@ -270,6 +270,7 @@ data class AppUiState(
     val selectedRealTimeTemplateId: String = SampleCatalog.realTimeTemplates.first().id,
     val selectedBatteryTrollTemplateId: String = SampleCatalog.batteryTrollTemplates.first().id,
     val trollMessage: String = SampleCatalog.batteryTrollTemplates.first().prankMessage,
+    val statusBarOverlayEnabled: Boolean = false,
     val trollFeatureEnabled: Boolean = true,
     val trollUseRealBattery: Boolean = false,
     val trollShowPercentage: Boolean = true,

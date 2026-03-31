@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -229,9 +230,10 @@ class StatusBarOverlayManager(
         trollArtContainer.visibility = View.GONE
         rightCluster.addView(wifiView)
         rightCluster.addView(signalView)
+        // Draw percentage/text before battery-emoji art cluster.
+        rightCluster.addView(batteryView)
         rightCluster.addView(batteryArtContainer)
         rightCluster.addView(trollArtContainer)
-        rightCluster.addView(batteryView)
         rightCluster.addView(ringerView)
         statusRow.addView(rightCluster)
 
@@ -333,7 +335,7 @@ class StatusBarOverlayManager(
 
     fun render(snapshot: OverlaySnapshot, liveStatus: LiveStatus) {
         ensureAttached()
-        if (!snapshot.statusBarEnabled && !snapshot.stickerEnabled && !snapshot.trollEnabled && !snapshot.realTimeEnabled && !snapshot.animationEnabled) {
+        if (!snapshot.statusBarEnabled) {
             root.alpha = 0f
             return
         }
@@ -403,6 +405,10 @@ class StatusBarOverlayManager(
         val batteryDrawable = snapshot.batteryArtDrawableRes?.takeIf { it != 0 }
         val emojiUrl = snapshot.emojiArtUrl?.takeIf { it.isNotBlank() }
         val emojiDrawable = snapshot.emojiArtDrawableRes?.takeIf { it != 0 }
+        val density = context.resources.displayMetrics.density
+        val scaledDensity = context.resources.displayMetrics.scaledDensity
+        val statusScale = 0.8f + (snapshot.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
+        val baseStatusRowHeightPx = ((24f * density)).roundToInt().coerceAtLeast((14f * density).roundToInt())
         val (effectiveTrollBatteryUrl, effectiveTrollEmojiUrl) = resolveTrollArtSelection(snapshot)
         val effectiveEmojiUrl = if (snapshot.trollEnabled) {
             effectiveTrollEmojiUrl?.takeIf { snapshot.trollShowEmoji }
@@ -440,8 +446,12 @@ class StatusBarOverlayManager(
         emojiTextView.translationX = emojiTranslationX
         emojiTextView.translationY = emojiTranslationY
         if (snapshot.trollEnabled) {
-            val density = context.resources.displayMetrics.density
-            val trollArtSizePx = (snapshot.trollEmojiSizeDp.coerceIn(20, 80) * density).roundToInt().coerceAtLeast((14f * density).roundToInt())
+            // Use config-based reference height to avoid feedback loop where each render reads a previously scaled view size.
+            val statusRowRefHeightPx = (baseStatusRowHeightPx * statusScale).roundToInt().coerceAtLeast((14f * density).roundToInt())
+            val trollScale = snapshot.trollEmojiSizeDp.coerceIn(1, 50) / 50f
+            val trollArtSizePx = (statusRowRefHeightPx * trollScale)
+                .roundToInt()
+                .coerceAtLeast((10f * density).roundToInt())
             (trollArtContainer.layoutParams as LinearLayout.LayoutParams).also { params ->
                 params.width = trollArtSizePx
                 params.height = trollArtSizePx
@@ -467,10 +477,10 @@ class StatusBarOverlayManager(
                     trollEmojiArtView.visibility = View.GONE
                     trollEmojiArtView.setImageDrawable(null)
                 }
-                val trollPercentageText = if (snapshot.trollShowPercentage && snapshot.trollUseRealBattery) {
-                    " ${liveStatus.batteryPercent}%"
+                val trollRealBatteryText = if (snapshot.trollShowPercentage) {
+                    "${liveStatus.batteryPercent}%"
                 } else {
-                    ""
+                    liveStatus.batteryPercent.toString()
                 }
                 val trollChargeSuffix = if (snapshot.trollUseRealBattery && liveStatus.charging && snapshot.animateCharge && chargeConfig.enabled) {
                     " ${chargeGlyph(chargeConfig.variant)}"
@@ -478,17 +488,15 @@ class StatusBarOverlayManager(
                     ""
                 }
                 batteryView.text = if (snapshot.trollUseRealBattery) {
-                    "${trollPercentageText.trim()}$trollChargeSuffix".trim()
-                } else if (snapshot.trollShowPercentage) {
-                    snapshot.trollMessage.trim()
+                    "$trollRealBatteryText$trollChargeSuffix".trim()
                 } else {
-                    ""
+                    formatTrollPercentageText(snapshot.trollMessage, snapshot.trollShowPercentage)
                 }
             } else {
                 trollArtContainer.visibility = View.GONE
                 trollBatteryArtView.setImageDrawable(null)
                 trollEmojiArtView.setImageDrawable(null)
-                batteryView.text = if (snapshot.trollShowPercentage) snapshot.trollMessage.trim() else ""
+                batteryView.text = formatTrollPercentageText(snapshot.trollMessage, snapshot.trollShowPercentage)
             }
         } else {
             trollArtContainer.visibility = View.GONE
@@ -534,14 +542,15 @@ class StatusBarOverlayManager(
             }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
-        batteryView.textSize = if (snapshot.trollEnabled) {
-            snapshot.trollPercentageSizeDp.coerceIn(5, 40).toFloat()
+        if (snapshot.trollEnabled) {
+            val desiredTextPx = snapshot.trollPercentageSizeDp.coerceIn(5, 40) * scaledDensity
+            // Keep percentage text from exceeding the status-bar row height (before row scale transform).
+            val maxTextPx = baseStatusRowHeightPx * 0.9f
+            batteryView.setTextSize(TypedValue.COMPLEX_UNIT_PX, desiredTextPx.coerceAtMost(maxTextPx))
         } else {
-            11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f)
+            batteryView.textSize = 11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f)
         }
-        val statusScale = 0.8f + (snapshot.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
         statusRow.scaleY = statusScale
-        val density = context.resources.displayMetrics.density
         val leftPadding = ((8f + snapshot.leftMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
         val rightPadding = ((8f + snapshot.rightMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
         val topBottomPadding = ((6f + snapshot.statusBarHeight.coerceIn(0f, 1f) * 10f) * density).roundToInt()
@@ -907,6 +916,12 @@ class StatusBarOverlayManager(
             "yellow" -> 0xFFF1DF1E.toInt()
             else -> fallback
         }
+    }
+
+    private fun formatTrollPercentageText(raw: String, showPercent: Boolean): String {
+        val value = raw.trim().ifBlank { "100" }
+        val normalized = if (value.endsWith("%")) value.dropLast(1).trim() else value
+        return if (showPercent) "$normalized%" else normalized
     }
 
     private fun setupGestureLayer() {

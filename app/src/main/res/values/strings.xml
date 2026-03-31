@@ -65,6 +65,7 @@
     <string name="common_save">Save</string>
     <string name="common_cancel">Cancel</string>
     <string name="common_turn_off">Turn Off</string>
+    <string name="common_turn_on">Turn On</string>
     <string name="edit">Edit</string>
     <string name="common_loading_ellipsis">Loading…</string>
     <string name="common_customize">Customize</string>

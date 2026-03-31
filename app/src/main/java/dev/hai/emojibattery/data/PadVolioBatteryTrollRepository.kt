@@ -43,6 +43,7 @@ object PadVolioBatteryTrollRepository {
         }
 
         val root = StoreOnDemandAssetPack.assetsRootOrNull(context.applicationContext)
+        Log.d(TAG, "fetchTemplates: assetsRoot=${root?.absolutePath ?: "null"}")
         val categoriesJson = readCategoriesJson(context.assets, root) ?: run {
             Log.d(TAG, "fetchTemplates: no categories in PAD or bundled assets")
             return@withContext emptyList()
@@ -55,6 +56,7 @@ object PadVolioBatteryTrollRepository {
         val categoryId = allCategory?.id ?: firstBundledCategoryId(context.assets)
             ?: return@withContext emptyList()
         val pages = readPageJsons(context.assets, root, categoryId)
+        Log.d(TAG, "fetchTemplates: categoryId=$categoryId pages=${pages.size}")
         if (pages.isEmpty()) {
                 Log.d(TAG, "fetchTemplates: no item pages for category=$categoryId root=${root?.absolutePath}")
                 return@withContext emptyList()
@@ -186,6 +188,10 @@ private fun VolioEmojiBatteryItemDto.toPadBatteryTrollTemplate(
     val resolvedZip = localContentZip
         ?: findSiblingZipForItem(id, localThumb, localPhoto, padRoot)
     val resolvedLottie = localContent?.takeIf { it.endsWith(".json", ignoreCase = true) } ?: lottieUrl
+    Log.d(
+        "PadVolioBatteryTroll",
+        "template=$id resolvePaths thumb=${localThumb ?: "-"} photo=${localPhoto ?: "-"} content=${localContent ?: "-"} contentZip=${localContentZip ?: "-"} siblingZip=${resolvedZip ?: "-"}",
+    )
     val (emojiFrames, batteryFrames) = extractZipFrames(
         zipUri = resolvedZip,
         templateId = id,
@@ -217,9 +223,19 @@ private fun extractZipFrames(
     templateId: String,
     outRoot: File,
 ): Pair<List<String>, List<String>> {
-    if (zipUri.isNullOrBlank() || !zipUri.startsWith("file://")) return emptyList<String>() to emptyList()
+    if (zipUri.isNullOrBlank() || !zipUri.startsWith("file://")) {
+        Log.d("PadVolioBatteryTroll", "extractZipFrames: skip template=$templateId zipUri=${zipUri ?: "null"}")
+        return emptyList<String>() to emptyList()
+    }
     val zipFile = File(Uri.parse(zipUri).path ?: return emptyList<String>() to emptyList())
-    if (!zipFile.isFile) return emptyList<String>() to emptyList()
+    if (!zipFile.isFile) {
+        Log.d("PadVolioBatteryTroll", "extractZipFrames: zip missing template=$templateId path=${zipFile.absolutePath}")
+        return emptyList<String>() to emptyList()
+    }
+    Log.d(
+        "PadVolioBatteryTroll",
+        "extractZipFrames: start template=$templateId zip=${zipFile.absolutePath} size=${zipFile.length()}",
+    )
 
     val templateDir = File(outRoot, templateId)
     if (!templateDir.exists()) templateDir.mkdirs()
@@ -229,6 +245,7 @@ private fun extractZipFrames(
         runCatching {
             ZipInputStream(zipFile.inputStream().buffered()).use { zis ->
                 var entry = zis.nextEntry
+                var extractedCount = 0
                 while (entry != null) {
                     if (!entry.isDirectory) {
                         val name = entry.name.substringAfterLast('/').trim()
@@ -236,11 +253,13 @@ private fun extractZipFrames(
                         if (lower.endsWith(".png") || lower.endsWith(".webp") || lower.endsWith(".jpg") || lower.endsWith(".jpeg")) {
                             val out = File(templateDir, name)
                             FileOutputStream(out).use { fos -> zis.copyTo(fos) }
+                            extractedCount += 1
                         }
                     }
                     zis.closeEntry()
                     entry = zis.nextEntry
                 }
+                Log.d("PadVolioBatteryTroll", "extractZipFrames: extracted template=$templateId count=$extractedCount")
             }
             marker.writeText("ok")
         }.onFailure {
@@ -252,6 +271,10 @@ private fun extractZipFrames(
         ?.filter { it.isFile && !it.name.startsWith(".done_") }
         ?.sortedBy { it.name.lowercase() }
         .orEmpty()
+    Log.d(
+        "PadVolioBatteryTroll",
+        "extractZipFrames: imageFiles template=$templateId count=${images.size} names=${images.take(12).joinToString { it.name }}",
+    )
     val emoji = images.filter {
         val n = it.name.lowercase()
         n.startsWith("emoji") || n.contains("emoji") || n.contains("emotion")
@@ -263,8 +286,18 @@ private fun extractZipFrames(
     }
         .map { Uri.fromFile(it).toString() }
 
-    if (emoji.isNotEmpty() || battery.isNotEmpty()) return emoji.take(5) to battery.take(5)
+    if (emoji.isNotEmpty() || battery.isNotEmpty()) {
+        Log.d(
+            "PadVolioBatteryTroll",
+            "extractZipFrames: classified template=$templateId emoji=${emoji.size} battery=${battery.size}",
+        )
+        return emoji.take(5) to battery.take(5)
+    }
     val fallback = images.map { Uri.fromFile(it).toString() }.take(10)
+    Log.d(
+        "PadVolioBatteryTroll",
+        "extractZipFrames: fallbackSplit template=$templateId fallback=${fallback.size}",
+    )
     return fallback.take(5) to fallback.drop(5).take(5)
 }
 

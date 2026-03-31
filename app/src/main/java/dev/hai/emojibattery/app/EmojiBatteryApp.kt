@@ -553,7 +553,24 @@ fun EmojiBatteryApp(
                     onBack = { navController.popBackStack() },
                     onSelectTemplate = viewModel::selectBatteryTrollTemplate,
                     onSetMessage = viewModel::setTrollMessage,
-                    onSetFeatureEnabled = viewModel::setBatteryTrollEnabled,
+                    onSetOverlayEnabled = { enabled ->
+                        viewModel.setStatusBarOverlayEnabled(enabled)
+                        OverlayConfigStore.setStatusBarEnabled(context, enabled)
+                        if (AccessibilityBridge.isEnabled(context)) {
+                            OverlayAccessibilityService.requestRefresh(context)
+                        }
+                    },
+                    onSetFeatureEnabled = { enabled ->
+                        viewModel.setBatteryTrollEnabled(enabled)
+                        if (!enabled) {
+                            OverlayConfigStore.clearBatteryTroll(context)
+                            OverlayAccessibilityService.requestRefresh(context)
+                        } else if (AccessibilityBridge.isEnabled(context)) {
+                            val snapshot = viewModel.uiState.value
+                            OverlayConfigStore.saveBatteryTroll(context, snapshot)
+                            OverlayAccessibilityService.requestRefresh(context)
+                        }
+                    },
                     onSetUseRealBattery = viewModel::setBatteryTrollUseRealBattery,
                     onSetShowPercentage = viewModel::setTrollShowPercentage,
                     onSetPercentageSize = viewModel::setTrollPercentageSizeDp,
@@ -585,9 +602,20 @@ fun EmojiBatteryApp(
                         }
                     },
                     onTurnOff = {
-                        viewModel.turnOffBatteryTroll()
-                        OverlayConfigStore.clearBatteryTroll(context)
-                        OverlayAccessibilityService.requestRefresh(context)
+                        if (uiState.trollFeatureEnabled) {
+                            viewModel.turnOffBatteryTroll()
+                            OverlayConfigStore.clearBatteryTroll(context)
+                            OverlayAccessibilityService.requestRefresh(context)
+                        } else {
+                            viewModel.setBatteryTrollEnabled(true)
+                            viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                            viewModel.applyBatteryTroll()
+                            if (AccessibilityBridge.isEnabled(context)) {
+                                val snapshot = viewModel.uiState.value
+                                OverlayConfigStore.saveBatteryTroll(context, snapshot)
+                                OverlayAccessibilityService.requestRefresh(context)
+                            }
+                        }
                     },
                 )
             }

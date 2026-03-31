@@ -94,6 +94,7 @@ class EmojiBatteryViewModel(
                 selectedLocaleTag = resolvedLocaleTag,
                 padCatalogLoading = true,
                 featureConfigs = overlaySnapshot.featureConfigs,
+                statusBarOverlayEnabled = overlaySnapshot.statusBarEnabled,
             )
         }
         viewModelScope.launch {
@@ -710,7 +711,23 @@ class EmojiBatteryViewModel(
     }
 
     fun setBatteryTrollEnabled(enabled: Boolean) {
-        _uiState.update { it.copy(trollFeatureEnabled = enabled) }
+        _uiState.update { state ->
+            state.copy(
+                trollFeatureEnabled = enabled,
+                trollOverlayEnabled = if (enabled) state.trollOverlayEnabled else false,
+                infoMessage = if (enabled) "Battery Troll enabled." else "Battery Troll disabled.",
+            )
+        }
+    }
+
+    fun setStatusBarOverlayEnabled(enabled: Boolean) {
+        _uiState.update { state ->
+            state.copy(
+                statusBarOverlayEnabled = enabled,
+                trollOverlayEnabled = if (enabled) state.trollOverlayEnabled else false,
+                infoMessage = if (enabled) "Emoji battery overlay enabled." else "Emoji battery overlay disabled.",
+            )
+        }
     }
 
     fun setBatteryTrollUseRealBattery(useRealBattery: Boolean) {
@@ -742,7 +759,7 @@ class EmojiBatteryViewModel(
     }
 
     fun setTrollEmojiSizeDp(value: Int) {
-        _uiState.update { it.copy(trollEmojiSizeDp = value.coerceIn(20, 80)) }
+        _uiState.update { it.copy(trollEmojiSizeDp = value.coerceIn(1, 50)) }
     }
 
     fun setTrollRandomizedMode(enabled: Boolean) {
@@ -771,6 +788,11 @@ class EmojiBatteryViewModel(
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
                 state.copy(infoMessage = "Enable accessibility bridge before applying a Battery Troll overlay.")
+            } else if (!state.statusBarOverlayEnabled) {
+                state.copy(
+                    trollOverlayEnabled = false,
+                    infoMessage = "Enable emoji battery overlay first.",
+                )
             } else if (!state.trollFeatureEnabled) {
                 state.copy(
                     trollOverlayEnabled = false,
@@ -788,7 +810,13 @@ class EmojiBatteryViewModel(
     }
 
     fun turnOffBatteryTroll() {
-        _uiState.update { it.copy(trollOverlayEnabled = false, infoMessage = "Battery Troll overlay turned off.") }
+        _uiState.update {
+            it.copy(
+                trollFeatureEnabled = false,
+                trollOverlayEnabled = false,
+                infoMessage = "Battery Troll turned off.",
+            )
+        }
     }
 
     fun replayTutorial() {

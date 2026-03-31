@@ -163,7 +163,6 @@ object OverlayConfigStore {
         val emojiArtUrl = emojiItem?.emojiArtUrl?.takeIf { it.isNotBlank() }
         val emojiArtDrawableRes = emojiItem?.previewRes?.takeIf { it != 0 }
         prefs(context).edit()
-            .putBoolean(KEY_STATUS_ENABLED, true)
             .putString(KEY_BATTERY_TEXT, "$batteryBody $emojiGlyph")
             .putString(KEY_BATTERY_BODY, batteryBody)
             .putString(KEY_EMOJI_GLYPH, emojiGlyph)
@@ -269,7 +268,7 @@ object OverlayConfigStore {
             .putBoolean(KEY_TROLL_RANDOMIZED_MODE, uiState.trollRandomizedMode)
             .putBoolean(KEY_TROLL_SHOW_PERCENTAGE, uiState.trollShowPercentage)
             .putInt(KEY_TROLL_PERCENTAGE_SIZE_DP, uiState.trollPercentageSizeDp.coerceIn(5, 40))
-            .putInt(KEY_TROLL_EMOJI_SIZE_DP, uiState.trollEmojiSizeDp.coerceIn(20, 80))
+            .putInt(KEY_TROLL_EMOJI_SIZE_DP, uiState.trollEmojiSizeDp.coerceIn(1, 50))
             .apply()
     }
 
@@ -366,7 +365,7 @@ object OverlayConfigStore {
             trollRandomizedMode = prefs.getBoolean(KEY_TROLL_RANDOMIZED_MODE, false),
             trollShowPercentage = prefs.getBoolean(KEY_TROLL_SHOW_PERCENTAGE, true),
             trollPercentageSizeDp = prefs.getInt(KEY_TROLL_PERCENTAGE_SIZE_DP, 5).coerceIn(5, 40),
-            trollEmojiSizeDp = prefs.getInt(KEY_TROLL_EMOJI_SIZE_DP, 40).coerceIn(20, 80),
+            trollEmojiSizeDp = prefs.getInt(KEY_TROLL_EMOJI_SIZE_DP, 40).coerceIn(1, 50),
             realTimeEnabled = prefs.getBoolean(KEY_REALTIME_ENABLED, false),
             realTimeGlyph = prefs.getString(KEY_REALTIME_GLYPH, "⚡").orEmpty(),
             realTimeTitle = prefs.getString(KEY_REALTIME_TITLE, "Real Time").orEmpty(),
