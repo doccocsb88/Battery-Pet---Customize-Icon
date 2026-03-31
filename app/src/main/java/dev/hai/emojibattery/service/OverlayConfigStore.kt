@@ -14,6 +14,7 @@ import dev.hai.emojibattery.model.stickerPresetForId
 
 data class OverlaySnapshot(
     val statusBarEnabled: Boolean,
+    val batteryEmojiSource: String,
     val batteryText: String,
     val batteryBody: String,
     val emojiGlyph: String,
@@ -85,8 +86,12 @@ data class AnimationOverlayPrefs(
 )
 
 object OverlayConfigStore {
+    const val BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM = "status_bar_custom"
+    const val BATTERY_EMOJI_SOURCE_BATTERY_TROLL = "battery_troll"
+
     private const val PREFS = "overlay_config"
     private const val KEY_STATUS_ENABLED = "status_enabled"
+    private const val KEY_BATTERY_EMOJI_SOURCE = "battery_emoji_source"
     private const val KEY_BATTERY_TEXT = "battery_text"
     private const val KEY_BATTERY_BODY = "battery_body"
     private const val KEY_EMOJI_GLYPH = "emoji_glyph"
@@ -191,6 +196,16 @@ object OverlayConfigStore {
     fun setStatusBarEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit()
             .putBoolean(KEY_STATUS_ENABLED, enabled)
+            .apply()
+    }
+
+    fun setBatteryEmojiSource(context: Context, source: String) {
+        val normalized = when (source) {
+            BATTERY_EMOJI_SOURCE_BATTERY_TROLL -> BATTERY_EMOJI_SOURCE_BATTERY_TROLL
+            else -> BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM
+        }
+        prefs(context).edit()
+            .putString(KEY_BATTERY_EMOJI_SOURCE, normalized)
             .apply()
     }
 
@@ -335,6 +350,10 @@ object OverlayConfigStore {
         val animationTemplate = AnimationTemplateCatalog.resolve(prefs.getInt(KEY_ANIMATION_TEMPLATE_ID, 0))
         return OverlaySnapshot(
             statusBarEnabled = prefs.getBoolean(KEY_STATUS_ENABLED, true),
+            batteryEmojiSource = prefs.getString(
+                KEY_BATTERY_EMOJI_SOURCE,
+                BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM,
+            ).orEmpty().ifBlank { BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM },
             batteryText = prefs.getString(KEY_BATTERY_TEXT, "").orEmpty(),
             batteryBody = prefs.getString(KEY_BATTERY_BODY, "▰▰▰▱").orEmpty().ifBlank { "▰▰▰▱" },
             emojiGlyph = prefs.getString(KEY_EMOJI_GLYPH, "●").orEmpty().ifBlank { "●" },

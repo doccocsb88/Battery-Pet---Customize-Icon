@@ -114,11 +114,8 @@ internal fun EmotionFeatureScreen(
                                 )
                             }
                             Switch(
-                                checked = emotionState.enabled,
-                                onCheckedChange = { checked ->
-                                    onSelectVariant(encodeEmotionVariant(emotionState.copy(enabled = checked)))
-                                    onApply()
-                                },
+                                checked = config.enabled,
+                                onCheckedChange = onToggleEnabled,
                             )
                         }
 
@@ -150,10 +147,13 @@ internal fun EmotionFeatureScreen(
                                         modifier = Modifier
                                             .weight(1f)
                                             .aspectRatio(1f)
-                                            .clickable(enabled = config.enabled && emotionState.enabled) {
+                                            .clickable(enabled = config.enabled) {
                                                 onSelectVariant(
                                                     encodeEmotionVariant(
-                                                        emotionState.copy(emotionId = item.id),
+                                                        emotionState.copy(
+                                                            emotionId = item.id,
+                                                            enabled = true,
+                                                        ),
                                                     ),
                                                 )
                                                 onApply()

@@ -33,6 +33,7 @@ import androidx.core.graphics.toColorInt
 import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.GestureTrigger
+import dev.hai.emojibattery.service.OverlayConfigStore.BATTERY_EMOJI_SOURCE_BATTERY_TROLL
 import dev.hai.emojibattery.ui.screen.chargeVariantDrawableName
 import dev.hai.emojibattery.ui.screen.parseChargeVariant
 import dev.hai.emojibattery.ui.screen.EmotionOptions
@@ -498,17 +499,19 @@ class StatusBarOverlayManager(
         val emojiLabel = snapshot.emojiGlyph.takeIf { it.isNotBlank() } ?: "●"
         val emotionState = parseEmotionVariant(emotionConfig.variant)
         val emotionGlyph = EmotionOptions.firstOrNull { it.id == emotionState.emotionId }?.glyph ?: emojiLabel
-        val forceEmotionGlyph = emotionConfig.enabled && emotionState.enabled
+        val forceEmotionGlyph = emotionConfig.enabled
         val batteryUrl = snapshot.batteryArtUrl?.takeIf { it.isNotBlank() }
         val batteryDrawable = snapshot.batteryArtDrawableRes?.takeIf { it != 0 }
         val emojiUrl = snapshot.emojiArtUrl?.takeIf { it.isNotBlank() }
         val emojiDrawable = snapshot.emojiArtDrawableRes?.takeIf { it != 0 }
+        val useBatteryTrollSource = snapshot.trollEnabled &&
+            snapshot.batteryEmojiSource == BATTERY_EMOJI_SOURCE_BATTERY_TROLL
         val density = context.resources.displayMetrics.density
         val scaledDensity = context.resources.displayMetrics.scaledDensity
         val statusScale = 0.8f + (snapshot.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
         val baseStatusRowHeightPx = ((24f * density)).roundToInt().coerceAtLeast((14f * density).roundToInt())
         val (effectiveTrollBatteryUrl, effectiveTrollEmojiUrl) = resolveTrollArtSelection(snapshot)
-        val effectiveEmojiUrl = if (snapshot.trollEnabled) {
+        val effectiveEmojiUrl = if (useBatteryTrollSource) {
             effectiveTrollEmojiUrl?.takeIf { snapshot.trollShowEmoji }
         } else {
             emojiUrl
@@ -553,7 +556,7 @@ class StatusBarOverlayManager(
         batteryEmojiArtView.translationY = emojiTranslationY
         batteryEmojiTextView.translationX = emojiTranslationX
         batteryEmojiTextView.translationY = emojiTranslationY
-        if (snapshot.trollEnabled) {
+        if (useBatteryTrollSource) {
             // Use config-based reference height to avoid feedback loop where each render reads a previously scaled view size.
             val statusRowRefHeightPx = (baseStatusRowHeightPx * statusScale).roundToInt().coerceAtLeast((14f * density).roundToInt())
             val trollScale = snapshot.trollEmojiSizeDp.coerceIn(1, 50) / 50f
@@ -698,7 +701,7 @@ class StatusBarOverlayManager(
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
         chargeView.setTextColor(snapshot.accentColor.toInt())
-        if (snapshot.trollEnabled) {
+        if (useBatteryTrollSource) {
             val desiredTextPx = snapshot.trollPercentageSizeDp.coerceIn(5, 40) * scaledDensity
             // Keep percentage text from exceeding the status-bar row height (before row scale transform).
             val maxTextPx = baseStatusRowHeightPx * 0.9f
@@ -826,7 +829,7 @@ class StatusBarOverlayManager(
         stickerLayer.bringToFront()
         listOf(stickerImageView, stickerLottieView, stickerEmojiView).forEach { it.bringToFront() }
 
-        statusRow.visibility = if (snapshot.statusBarEnabled || snapshot.trollEnabled) View.VISIBLE else View.GONE
+        statusRow.visibility = if (snapshot.statusBarEnabled || useBatteryTrollSource) View.VISIBLE else View.GONE
         applyNotch(snapshot.notchTemplateId, snapshot.notchColorVariant, snapshot.statusBarEnabled)
     }
 

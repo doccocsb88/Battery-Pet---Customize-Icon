@@ -364,6 +364,10 @@ fun EmojiBatteryApp(
                                 snapshot.editingConfig,
                                 snapshot.statusBarCatalogItems,
                             )
+                            OverlayConfigStore.setBatteryEmojiSource(
+                                context,
+                                OverlayConfigStore.BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM,
+                            )
                             OverlayAccessibilityService.requestRefresh(context)
                         }
                     },
@@ -430,6 +434,10 @@ fun EmojiBatteryApp(
                                 context,
                                 snapshot.editingConfig,
                                 snapshot.statusBarCatalogItems,
+                            )
+                            OverlayConfigStore.setBatteryEmojiSource(
+                                context,
+                                OverlayConfigStore.BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM,
                             )
                             OverlayAccessibilityService.requestRefresh(context)
                         }
@@ -597,7 +605,12 @@ fun EmojiBatteryApp(
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
                         viewModel.applyBatteryTroll()
                         if (AccessibilityBridge.isEnabled(context)) {
-                            OverlayConfigStore.saveBatteryTroll(context, uiState)
+                            val snapshot = viewModel.uiState.value
+                            OverlayConfigStore.saveBatteryTroll(context, snapshot)
+                            OverlayConfigStore.setBatteryEmojiSource(
+                                context,
+                                OverlayConfigStore.BATTERY_EMOJI_SOURCE_BATTERY_TROLL,
+                            )
                             OverlayAccessibilityService.requestRefresh(context)
                         }
                     },
@@ -613,6 +626,10 @@ fun EmojiBatteryApp(
                             if (AccessibilityBridge.isEnabled(context)) {
                                 val snapshot = viewModel.uiState.value
                                 OverlayConfigStore.saveBatteryTroll(context, snapshot)
+                                OverlayConfigStore.setBatteryEmojiSource(
+                                    context,
+                                    OverlayConfigStore.BATTERY_EMOJI_SOURCE_BATTERY_TROLL,
+                                )
                                 OverlayAccessibilityService.requestRefresh(context)
                             }
                         }
