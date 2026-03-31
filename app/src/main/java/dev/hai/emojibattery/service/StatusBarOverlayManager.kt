@@ -727,7 +727,7 @@ class StatusBarOverlayManager(
         applyDateTimeStyle(parsedDateTime.styleId)
         clockView.textSize = 8f + (dateTimeConfig.intensity.coerceIn(0f, 1f) * 8f)
         dateView.textSize = (clockView.textSize * 0.78f).coerceAtLeast(6.5f)
-        dateView.visibility = if (dateTimeConfig.enabled && parsedDateTime.showDate) View.VISIBLE else View.GONE
+        dateView.visibility = if (parsedDateTime.showDate) View.VISIBLE else View.GONE
         clockView.setTextColor(resolveColorFromVariant(parsedDateTime.colorId, "#111111".toColorInt()))
         dateView.setTextColor(resolveColorFromVariant(parsedDateTime.colorId, "#555555".toColorInt()))
 
