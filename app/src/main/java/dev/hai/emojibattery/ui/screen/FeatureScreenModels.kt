@@ -261,7 +261,28 @@ internal data class RingerVariantState(
     val colorId: String,
 )
 
-private val RingerStyles = setOf("bell", "mute", "wave")
+internal data class RingerPackOption(
+    val id: String,
+    val label: String,
+    val muteDrawableName: String,
+    val waveDrawableName: String,
+)
+
+private val RemovedRingerPackIndices = setOf(6, 8, 9, 12, 14)
+
+internal val RingerPackOptions = (1..16)
+    .filterNot { it in RemovedRingerPackIndices }
+    .map { index ->
+    val padded = index.toString().padStart(2, '0')
+    RingerPackOption(
+        id = "ringer_$padded",
+        label = "Ringer $padded",
+        muteDrawableName = "ringer_${padded}_mute",
+        waveDrawableName = "ringer_${padded}_wave",
+    )
+}
+
+private val RingerStyles = setOf("bell", "mute", "wave") + RingerPackOptions.map { it.id }
 
 internal fun parseRingerVariant(raw: String?): RingerVariantState {
     val fallback = RingerVariantState(styleId = "bell", colorId = "blue")
@@ -286,6 +307,16 @@ internal fun parseRingerVariant(raw: String?): RingerVariantState {
 
 internal fun encodeRingerVariant(state: RingerVariantState): String =
     "style=${state.styleId};color=${state.colorId}"
+
+internal fun ringerDrawableName(styleId: String, ringerMode: Int): String? {
+    val normalized = styleId.lowercase()
+    return when {
+        normalized in RingerPackOptions.map { it.id }.toSet() -> {
+            "${normalized}_${if (ringerMode == 1) "wave" else "mute"}"
+        }
+        else -> null
+    }
+}
 
 internal data class EmotionOption(
     val id: String,

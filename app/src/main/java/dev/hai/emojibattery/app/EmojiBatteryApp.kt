@@ -3,12 +3,29 @@ package dev.hai.emojibattery.app
 import dev.hai.emojibattery.ui.screen.*
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -18,8 +35,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -46,6 +69,7 @@ import dev.hai.emojibattery.locale.AppLanguageConfig
 import dev.hai.emojibattery.ui.accessibility.AccessibilityServiceUsageDialog
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import co.q7labs.co.emoji.R
+import kotlinx.coroutines.delay
 
 @Composable
 fun EmojiBatteryApp(
@@ -59,7 +83,6 @@ fun EmojiBatteryApp(
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
     val billingState by purchaseService.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val route = backStackEntry?.destination?.route
     val showBottomBar = route in setOf(
@@ -69,6 +92,7 @@ fun EmojiBatteryApp(
         AppRoute.Settings.route,
     )
     var showAccessibilityConsent by remember { mutableStateOf(false) }
+    var transientSuccessMessage by remember { mutableStateOf<String?>(null) }
 
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
@@ -92,12 +116,19 @@ fun EmojiBatteryApp(
 
     LaunchedEffect(uiState.infoMessage) {
         val message = uiState.infoMessage ?: return@LaunchedEffect
-        snackbarHostState.showSnackbar(message)
+        transientSuccessMessage = message
         viewModel.clearMessage()
     }
 
+    LaunchedEffect(transientSuccessMessage) {
+        val message = transientSuccessMessage ?: return@LaunchedEffect
+        delay(2000)
+        if (transientSuccessMessage == message) {
+            transientSuccessMessage = null
+        }
+    }
+
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             AnimatedVisibility(showBottomBar) {
                 MainBottomBar(
@@ -740,20 +771,29 @@ fun EmojiBatteryApp(
                 }
             }
         }
-            if (showAccessibilityConsent) {
-                AccessibilityServiceUsageDialog(
-                    onDismiss = { showAccessibilityConsent = false },
-                    onConfirmOpenSettings = {
-                        showAccessibilityConsent = false
-                        AccessibilityBridge.openSettings(context)
-                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
-                    },
-                    onMissingConsent = {
-                        val msg = rawContext.getString(R.string.please_read_and_click) + " " + rawContext.getString(R.string.i_agree)
-                        viewModel.postInfoMessage(msg)
-                    },
-                )
-            }
+        Box(Modifier.fillMaxSize()) {
+            SuccessToastOverlay(
+                message = transientSuccessMessage,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = if (showBottomBar) 92.dp else 28.dp)
+                    .windowInsetsPadding(WindowInsets.navigationBars),
+            )
+        }
+        if (showAccessibilityConsent) {
+            AccessibilityServiceUsageDialog(
+                onDismiss = { showAccessibilityConsent = false },
+                onConfirmOpenSettings = {
+                    showAccessibilityConsent = false
+                    AccessibilityBridge.openSettings(context)
+                    viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                },
+                onMissingConsent = {
+                    val msg = rawContext.getString(R.string.please_read_and_click) + " " + rawContext.getString(R.string.i_agree)
+                    viewModel.postInfoMessage(msg)
+                },
+            )
+        }
         }
     }
 
@@ -785,4 +825,48 @@ private fun customizeEntryToStatusBarTab(entry: CustomizeEntry): StatusBarTab? =
     CustomizeEntry.Theme -> StatusBarTab.Theme
     CustomizeEntry.Settings -> StatusBarTab.Settings
     else -> null
+}
+
+@Composable
+private fun SuccessToastOverlay(
+    message: String?,
+    modifier: Modifier = Modifier,
+) {
+    AnimatedVisibility(
+        visible = !message.isNullOrBlank(),
+        enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
+        exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 }),
+        modifier = modifier,
+    ) {
+        Row(
+            modifier = Modifier
+                .shadow(16.dp, RoundedCornerShape(18.dp), ambientColor = Color(0x1F000000), spotColor = Color(0x1F000000))
+                .clip(RoundedCornerShape(18.dp))
+                .background(Color.White)
+                .border(1.dp, Color(0xFFE6EEF5), RoundedCornerShape(18.dp))
+                .heightIn(min = 52.dp)
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Color(0xFFEAF8EF))
+                    .padding(6.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.CheckCircle,
+                    contentDescription = null,
+                    tint = Color(0xFF1F9D62),
+                )
+            }
+            Spacer(Modifier.width(10.dp))
+            Text(
+                text = message.orEmpty(),
+                color = Color(0xFF233547),
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+    }
 }

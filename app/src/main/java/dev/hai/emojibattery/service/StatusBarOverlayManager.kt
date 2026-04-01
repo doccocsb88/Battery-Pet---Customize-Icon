@@ -42,6 +42,7 @@ import dev.hai.emojibattery.ui.screen.EmotionOptions
 import dev.hai.emojibattery.ui.screen.parseDateTimeVariant
 import dev.hai.emojibattery.ui.screen.parseEmotionVariant
 import dev.hai.emojibattery.ui.screen.parseRingerVariant
+import dev.hai.emojibattery.ui.screen.ringerDrawableName
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -794,8 +795,10 @@ class StatusBarOverlayManager(
         }
         ringerIconView.visibility = if (ringerVisible) View.VISIBLE else View.GONE
         if (ringerVisible) {
+            val customName = ringerDrawableName(parsedRinger.styleId, liveStatus.ringerMode)
+            val customRes = customName?.let { context.resources.getIdentifier(it, "drawable", context.packageName) }?.takeIf { it != 0 }
             ringerIconView.setImageDrawable(
-                AppCompatResources.getDrawable(context, ringerIconRes(effectiveRingerStyle))?.mutate(),
+                AppCompatResources.getDrawable(context, customRes ?: ringerIconRes(effectiveRingerStyle))?.mutate(),
             )
             ringerIconView.setColorFilter(
                 resolveColorFromVariant(parsedRinger.colorId, "#333333".toColorInt()),

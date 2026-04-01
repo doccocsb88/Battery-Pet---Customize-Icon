@@ -882,7 +882,7 @@ private fun StatusBarLivePreviewCard(
     val airplaneVisible = airplaneConfig.enabled && previewAirplaneModeOn(context)
     val previewRingerMode = previewRingerMode(context)
     val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
-    val ringerRes = previewRingerIconRes(previewRingerMode, parsedRinger.styleId)
+    val ringerRes = previewRingerIconRes(context, previewRingerMode, parsedRinger.styleId)
     val rightText = "$batteryText$percentageText".trim()
     val batteryArtUrl = batteryVolio?.batteryArtUrl?.takeIf { it.isNotBlank() }
         ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
@@ -1112,13 +1112,25 @@ private fun previewAirplaneModeOn(context: Context): Boolean =
 private fun previewRingerMode(context: Context): Int =
     context.getSystemService(AudioManager::class.java)?.ringerMode ?: AudioManager.RINGER_MODE_NORMAL
 
-private fun previewRingerIconRes(ringerMode: Int, fallbackStyleId: String): Int = when (ringerMode) {
-    AudioManager.RINGER_MODE_SILENT -> android.R.drawable.ic_lock_silent_mode
-    AudioManager.RINGER_MODE_VIBRATE -> R.drawable.ic_vibrate_feedback_32
-    else -> when (fallbackStyleId.lowercase()) {
-        "mute" -> android.R.drawable.ic_lock_silent_mode
-        "wave" -> R.drawable.ic_vibrate_feedback_32
-        else -> android.R.drawable.ic_lock_silent_mode_off
+private fun previewRingerIconRes(context: Context, ringerMode: Int, fallbackStyleId: String): Int {
+    val customName = ringerDrawableName(
+        when (ringerMode) {
+            AudioManager.RINGER_MODE_SILENT -> fallbackStyleId
+            AudioManager.RINGER_MODE_VIBRATE -> fallbackStyleId
+            else -> fallbackStyleId
+        },
+        ringerMode,
+    )
+    val customRes = customName?.let { context.resources.getIdentifier(it, "drawable", context.packageName) }?.takeIf { it != 0 }
+    if (customRes != null) return customRes
+    return when (ringerMode) {
+        AudioManager.RINGER_MODE_SILENT -> android.R.drawable.ic_lock_silent_mode
+        AudioManager.RINGER_MODE_VIBRATE -> R.drawable.ic_vibrate_feedback_32
+        else -> when (fallbackStyleId.lowercase()) {
+            "mute" -> android.R.drawable.ic_lock_silent_mode
+            "wave" -> R.drawable.ic_vibrate_feedback_32
+            else -> android.R.drawable.ic_lock_silent_mode_off
+        }
     }
 }
 
@@ -2366,7 +2378,7 @@ internal fun BatteryPreviewCard(
                     val airplaneVisible = airplaneConfig.enabled && previewAirplaneModeOn(context)
                     val previewRingerMode = previewRingerMode(context)
                     val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
-                    val ringerRes = previewRingerIconRes(previewRingerMode, parsedRinger.styleId)
+                    val ringerRes = previewRingerIconRes(context, previewRingerMode, parsedRinger.styleId)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,

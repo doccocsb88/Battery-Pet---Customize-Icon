@@ -56,6 +56,7 @@ class EmojiBatteryViewModel(
     private var stickerCatalogLoadJob: Job? = null
 
     companion object {
+        private const val APPLY_SUCCESS_MESSAGE = "Applied successfully."
         private const val TAG = "HomeFeed"
         private const val PENDING_HOME_STATUSBAR_CATEGORY_ID = "pending_home_statusbar_category_id"
         private const val PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID = "pending_home_statusbar_selected_item_id"
@@ -418,7 +419,7 @@ class EmojiBatteryViewModel(
                 appliedSuccessfully = true
                 state.copy(
                     appliedConfig = state.editingConfig,
-                    infoMessage = "Configuration applied successfully.",
+                    infoMessage = APPLY_SUCCESS_MESSAGE,
                 )
             }
         }
@@ -428,7 +429,7 @@ class EmojiBatteryViewModel(
     }
 
     fun applyLegacyBatteryConfig() {
-        _uiState.update { it.copy(appliedConfig = it.editingConfig, infoMessage = "Legacy battery icon flow applied.") }
+        _uiState.update { it.copy(appliedConfig = it.editingConfig, infoMessage = APPLY_SUCCESS_MESSAGE) }
         advanceAchievement("apply_status_bar")
     }
 
@@ -602,7 +603,7 @@ class EmojiBatteryViewModel(
                 else -> state.copy(
                     stickerOverlayEnabled = true,
                     showStickerAdjustmentPanel = false,
-                    infoMessage = "Sticker overlay saved.",
+                infoMessage = APPLY_SUCCESS_MESSAGE,
                 )
             }
         }
@@ -691,7 +692,7 @@ class EmojiBatteryViewModel(
         val config = _uiState.value.featureConfigs[entry] ?: return
         _uiState.update {
             it.copy(
-                infoMessage = "${entry.title} applied with ${config.variant.lowercase()} style at ${(config.intensity * 100).toInt()}%.",
+                infoMessage = APPLY_SUCCESS_MESSAGE,
             )
         }
     }
@@ -719,7 +720,7 @@ class EmojiBatteryViewModel(
             if (!state.accessibilityGranted) {
                 state.copy(infoMessage = "Enable accessibility bridge before applying a Real Time template.")
             } else {
-                state.copy(infoMessage = "Real Time template '${selected.title}' prepared and applied.")
+                state.copy(infoMessage = APPLY_SUCCESS_MESSAGE)
             }
         }
         advanceAchievement("template_explorer")
@@ -841,10 +842,9 @@ class EmojiBatteryViewModel(
                     infoMessage = "Battery Troll is disabled.",
                 )
             } else {
-                val appliedMessage = if (state.trollUseRealBattery) "Real battery" else state.trollMessage
                 state.copy(
                     trollOverlayEnabled = true,
-                    infoMessage = "Battery Troll overlay applied with message '$appliedMessage'.",
+                    infoMessage = APPLY_SUCCESS_MESSAGE,
                 )
             }
         }
