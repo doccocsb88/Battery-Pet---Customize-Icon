@@ -296,6 +296,11 @@ data class AppUiState(
     val feedbackNote: String = "",
     val lastFeedbackSubmitted: Boolean = false,
     val ratingSelection: Int = 0,
+    /**
+     * Transient toast shown only when the user taps an explicit "Apply" action that affects
+     * the status bar overlay. Other informational events should not surface as a toast.
+     */
+    val applyMessage: String? = null,
     val infoMessage: String? = null,
     /** Remote Volio sticker library (Emoji sticker scope); merged at UI with [SampleCatalog.stickerPresets]. */
     val stickerCatalogRemote: List<StickerPreset> = emptyList(),

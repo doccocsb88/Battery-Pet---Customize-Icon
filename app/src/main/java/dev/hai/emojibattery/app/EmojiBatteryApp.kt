@@ -114,10 +114,10 @@ fun EmojiBatteryApp(
         viewModel.syncPremiumAccess(hasPremium)
     }
 
-    LaunchedEffect(uiState.infoMessage) {
-        val message = uiState.infoMessage ?: return@LaunchedEffect
+    LaunchedEffect(uiState.applyMessage) {
+        val message = uiState.applyMessage ?: return@LaunchedEffect
         transientSuccessMessage = message
-        viewModel.clearMessage()
+        viewModel.clearApplyMessage()
     }
 
     LaunchedEffect(transientSuccessMessage) {

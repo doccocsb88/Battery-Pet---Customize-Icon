@@ -205,6 +205,10 @@ class EmojiBatteryViewModel(
         }
     }
 
+    fun clearApplyMessage() {
+        _uiState.update { it.copy(applyMessage = null) }
+    }
+
     fun clearMessage() {
         _uiState.update { it.copy(infoMessage = null) }
     }
@@ -469,12 +473,12 @@ class EmojiBatteryViewModel(
         var appliedSuccessfully = false
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
-                state.copy(infoMessage = "Enable accessibility bridge before applying the status-bar icon.")
+                state.copy(applyMessage = "Enable accessibility bridge before applying.")
             } else {
                 appliedSuccessfully = true
                 state.copy(
                     appliedConfig = state.editingConfig,
-                    infoMessage = APPLY_SUCCESS_MESSAGE,
+                    applyMessage = APPLY_SUCCESS_MESSAGE,
                 )
             }
         }
@@ -484,7 +488,7 @@ class EmojiBatteryViewModel(
     }
 
     fun applyLegacyBatteryConfig() {
-        _uiState.update { it.copy(appliedConfig = it.editingConfig, infoMessage = APPLY_SUCCESS_MESSAGE) }
+        _uiState.update { it.copy(appliedConfig = it.editingConfig, applyMessage = APPLY_SUCCESS_MESSAGE) }
         advanceAchievement("apply_status_bar")
     }
 
@@ -653,12 +657,12 @@ class EmojiBatteryViewModel(
     fun saveStickerOverlay() {
         _uiState.update { state ->
             when {
-                state.stickerPlacements.isEmpty() -> state.copy(infoMessage = "Please select at least one sticker.")
-                !state.accessibilityGranted -> state.copy(infoMessage = "Enable accessibility bridge before saving sticker overlay.")
+                state.stickerPlacements.isEmpty() -> state.copy(applyMessage = "Please select a sticker first.")
+                !state.accessibilityGranted -> state.copy(applyMessage = "Enable accessibility bridge before applying.")
                 else -> state.copy(
                     stickerOverlayEnabled = true,
                     showStickerAdjustmentPanel = false,
-                infoMessage = APPLY_SUCCESS_MESSAGE,
+                    applyMessage = APPLY_SUCCESS_MESSAGE,
                 )
             }
         }
@@ -747,7 +751,7 @@ class EmojiBatteryViewModel(
         val config = _uiState.value.featureConfigs[entry] ?: return
         _uiState.update {
             it.copy(
-                infoMessage = APPLY_SUCCESS_MESSAGE,
+                applyMessage = APPLY_SUCCESS_MESSAGE,
             )
         }
     }
@@ -773,9 +777,9 @@ class EmojiBatteryViewModel(
         val selected = SampleCatalog.realTimeTemplates.firstOrNull { it.id == _uiState.value.selectedRealTimeTemplateId } ?: return
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
-                state.copy(infoMessage = "Enable accessibility bridge before applying a Real Time template.")
+                state.copy(applyMessage = "Enable accessibility bridge before applying.")
             } else {
-                state.copy(infoMessage = APPLY_SUCCESS_MESSAGE)
+                state.copy(applyMessage = APPLY_SUCCESS_MESSAGE)
             }
         }
         advanceAchievement("template_explorer")
@@ -885,21 +889,21 @@ class EmojiBatteryViewModel(
     fun applyBatteryTroll() {
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
-                state.copy(infoMessage = "Enable accessibility bridge before applying a Battery Troll overlay.")
+                state.copy(applyMessage = "Enable accessibility bridge before applying.")
             } else if (!state.statusBarOverlayEnabled) {
                 state.copy(
                     trollOverlayEnabled = false,
-                    infoMessage = "Enable emoji battery overlay first.",
+                    applyMessage = "Enable emoji battery overlay first.",
                 )
             } else if (!state.trollFeatureEnabled) {
                 state.copy(
                     trollOverlayEnabled = false,
-                    infoMessage = "Battery Troll is disabled.",
+                    applyMessage = "Battery Troll is disabled.",
                 )
             } else {
                 state.copy(
                     trollOverlayEnabled = true,
-                    infoMessage = APPLY_SUCCESS_MESSAGE,
+                    applyMessage = APPLY_SUCCESS_MESSAGE,
                 )
             }
         }
