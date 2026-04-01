@@ -71,6 +71,7 @@ class StatusBarOverlayManager(
     private val baseArtSizePx = (18 * context.resources.displayMetrics.density).toInt().coerceAtLeast(14)
 
     private val root = FrameLayout(context)
+    private val stickerRoot = FrameLayout(context)
     private val statusLayer = FrameLayout(context)
     private val stickerLayer = FrameLayout(context)
     private val statusBackgroundImageView = ImageView(context)
@@ -112,8 +113,11 @@ class StatusBarOverlayManager(
     private val notchView = ImageView(context)
 
     private var attached = false
+    private var stickerAttached = false
     private var gestureEnabled = false
     private var layoutParams: WindowManager.LayoutParams? = null
+    private var stickerLayoutParams: WindowManager.LayoutParams? = null
+    private var currentWindowHeightPx: Int = WindowManager.LayoutParams.MATCH_PARENT
     private var currentAnimationKey: String? = null
     private var currentAnimationIsLottie: Boolean? = null
     private var currentStickerLottieUrl: String? = null
@@ -140,6 +144,12 @@ class StatusBarOverlayManager(
         )
         root.clipChildren = false
         root.clipToPadding = false
+        stickerRoot.layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT,
+        )
+        stickerRoot.clipChildren = false
+        stickerRoot.clipToPadding = false
         statusLayer.clipChildren = false
         statusLayer.clipToPadding = false
         root.addView(
@@ -393,7 +403,7 @@ class StatusBarOverlayManager(
         )
         stickerLayer.clipChildren = false
         stickerLayer.clipToPadding = false
-        root.addView(
+        stickerRoot.addView(
             stickerLayer,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -483,12 +493,16 @@ class StatusBarOverlayManager(
     }
 
     fun render(snapshot: OverlaySnapshot, liveStatus: LiveStatus) {
+        syncWindowHeight(snapshot)
+        syncStickerWindow(snapshot)
         ensureAttached()
         if (!snapshot.statusBarEnabled) {
             root.alpha = 0f
+            stickerRoot.alpha = 0f
             return
         }
         root.alpha = 1f
+        stickerRoot.alpha = 1f
         val templateDrawableRes = snapshot.backgroundTemplateDrawableRes?.takeIf { it != 0 }
         val templateUrl = snapshot.backgroundTemplatePhotoUrl?.takeIf { it.isNotBlank() }
         // Prefer Volio `photo` URL (raster) over local XML shape drawables.
@@ -1172,10 +1186,17 @@ class StatusBarOverlayManager(
     }
 
     fun detach() {
-        if (!attached) return
-        windowManager.removeView(root)
-        attached = false
-        layoutParams = null
+        if (attached) {
+            windowManager.removeView(root)
+            attached = false
+            layoutParams = null
+        }
+        if (stickerAttached) {
+            windowManager.removeView(stickerRoot)
+            stickerAttached = false
+            stickerLayoutParams = null
+        }
+        currentWindowHeightPx = WindowManager.LayoutParams.MATCH_PARENT
         singleTapHandler.removeCallbacks(singleTapRunnable)
     }
 
@@ -1183,18 +1204,77 @@ class StatusBarOverlayManager(
         if (gestureEnabled == enabled) return
         gestureEnabled = enabled
         if (attached) {
-            val updated = createLayoutParams(gestureEnabled)
+            val updated = createLayoutParams(gestureEnabled, currentWindowHeightPx)
             windowManager.updateViewLayout(root, updated)
             layoutParams = updated
+        }
+        if (stickerAttached) {
+            val updatedSticker = createLayoutParams(false, WindowManager.LayoutParams.MATCH_PARENT)
+            windowManager.updateViewLayout(stickerRoot, updatedSticker)
+            stickerLayoutParams = updatedSticker
         }
     }
 
     private fun ensureAttached() {
         if (attached) return
-        val params = createLayoutParams(gestureEnabled)
+        val params = createLayoutParams(gestureEnabled, currentWindowHeightPx)
         layoutParams = params
         windowManager.addView(root, params)
+        Log.i(
+            TAG,
+            "ensureAttached addView height=${params.height} flags=0x${params.flags.toString(16)} type=${params.type} y=${params.y} gravity=${params.gravity}",
+        )
         attached = true
+    }
+
+    private fun ensureStickerAttached() {
+        if (stickerAttached) return
+        val params = createLayoutParams(false, WindowManager.LayoutParams.MATCH_PARENT)
+        stickerLayoutParams = params
+        windowManager.addView(stickerRoot, params)
+        Log.i(
+            TAG,
+            "ensureStickerAttached addView height=${params.height} flags=0x${params.flags.toString(16)} type=${params.type} y=${params.y} gravity=${params.gravity}",
+        )
+        stickerAttached = true
+    }
+
+    private fun syncWindowHeight(snapshot: OverlaySnapshot) {
+        val desiredHeight = resolveOverlayWindowHeight(snapshot)
+        if (currentWindowHeightPx == desiredHeight) return
+        currentWindowHeightPx = desiredHeight
+        if (!attached) return
+        val updated = createLayoutParams(gestureEnabled, desiredHeight)
+        layoutParams = updated
+        windowManager.updateViewLayout(root, updated)
+        Log.i(TAG, "syncWindowHeight height=${updated.height}")
+    }
+
+    private fun resolveOverlayWindowHeight(snapshot: OverlaySnapshot): Int {
+        return resolveSystemStatusBarHeightPx()
+    }
+
+    private fun syncStickerWindow(snapshot: OverlaySnapshot) {
+        val shouldAttachStickerWindow = snapshot.stickerEnabled
+        if (shouldAttachStickerWindow) {
+            ensureStickerAttached()
+            if (stickerRoot.alpha != root.alpha) {
+                stickerRoot.alpha = root.alpha
+            }
+        } else if (stickerAttached) {
+            windowManager.removeView(stickerRoot)
+            stickerAttached = false
+            stickerLayoutParams = null
+            Log.i(TAG, "syncStickerWindow detach")
+        }
+    }
+
+    private fun resolveSystemStatusBarHeightPx(): Int {
+        val statusBarResId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (statusBarResId != 0) {
+            return context.resources.getDimensionPixelSize(statusBarResId)
+        }
+        return (24f * context.resources.displayMetrics.density).roundToInt()
     }
 
     private fun signalIconRes(level: Int): Int = when (level.coerceIn(0, 4)) {
@@ -1398,7 +1478,7 @@ class StatusBarOverlayManager(
         notchContainer.visibility = View.VISIBLE
     }
 
-    private fun createLayoutParams(gestureEnabled: Boolean): WindowManager.LayoutParams {
+    private fun createLayoutParams(gestureEnabled: Boolean, height: Int): WindowManager.LayoutParams {
         val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         } else {
@@ -1406,15 +1486,22 @@ class StatusBarOverlayManager(
         }
         // Original app toggles FLAG_NOT_TOUCHABLE based on gesture switch:
         // enabled -> 0x880328, disabled -> 0x880338.
-        val flags = if (gestureEnabled) 0x880328 else 0x880338
+        // Keep the original base flags, but explicitly add layout flags so the overlay
+        // is allowed to draw in the real status-bar area on OEM ROMs.
+        val baseFlags = if (gestureEnabled) 0x880328 else 0x880338
+        val flags = baseFlags or
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         return WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
+            height,
             overlayType,
             flags,
             PixelFormat.TRANSLUCENT,
         ).apply {
-            gravity = Gravity.TOP
+            gravity = Gravity.TOP or Gravity.START
+            x = 0
+            y = 0
         }
     }
 }
