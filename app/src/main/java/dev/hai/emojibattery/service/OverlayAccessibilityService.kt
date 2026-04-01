@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -31,6 +32,8 @@ class OverlayAccessibilityService : AccessibilityService() {
     private var connectivityRegistered = false
     private var timeRegistered = false
     private var screenRegistered = false
+    private var ringerRegistered = false
+    private var ringerMode: Int = AudioManager.RINGER_MODE_NORMAL
 
     private val refreshReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -72,6 +75,12 @@ class OverlayAccessibilityService : AccessibilityService() {
             }
         }
     }
+    private val ringerReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            ringerMode = readRingerMode()
+            refreshOverlay()
+        }
+    }
     private val phoneStateListener = object : PhoneStateListener() {
         override fun onSignalStrengthsChanged(signalStrength: SignalStrength) {
             signalLevel = signalStrength.level
@@ -90,7 +99,9 @@ class OverlayAccessibilityService : AccessibilityService() {
         registerConnectivityReceiver()
         registerTimeReceiver()
         registerScreenReceiver()
+        registerRingerReceiver()
         registerSignalListener()
+        ringerMode = readRingerMode()
         refreshOverlay()
     }
 
@@ -108,6 +119,7 @@ class OverlayAccessibilityService : AccessibilityService() {
         safeUnregister(connectivityRegistered, connectivityReceiver)
         safeUnregister(timeRegistered, timeReceiver)
         safeUnregister(screenRegistered, screenReceiver)
+        safeUnregister(ringerRegistered, ringerReceiver)
         getSystemService<TelephonyManager>()?.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
         overlayManager.detach()
         super.onDestroy()
@@ -136,6 +148,7 @@ class OverlayAccessibilityService : AccessibilityService() {
                 mobileConnected = isMobileConnected(),
                 airplaneMode = isAirplaneModeOn(),
                 signalLevel = signalLevel,
+                ringerMode = ringerMode,
             ),
         )
     }
@@ -193,6 +206,19 @@ class OverlayAccessibilityService : AccessibilityService() {
         screenRegistered = true
     }
 
+    private fun registerRingerReceiver() {
+        val filter = IntentFilter().apply {
+            addAction("android.media.RINGER_MODE_CHANGED")
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(ringerReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("DEPRECATION")
+            registerReceiver(ringerReceiver, filter)
+        }
+        ringerRegistered = true
+    }
+
     private fun registerSignalListener() {
         getSystemService<TelephonyManager>()?.listen(phoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS)
     }
@@ -213,6 +239,10 @@ class OverlayAccessibilityService : AccessibilityService() {
 
     private fun isAirplaneModeOn(): Boolean {
         return Settings.Global.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1
+    }
+
+    private fun readRingerMode(): Int {
+        return getSystemService<AudioManager>()?.ringerMode ?: AudioManager.RINGER_MODE_NORMAL
     }
 
     private fun safeUnregister(registered: Boolean, receiver: BroadcastReceiver) {

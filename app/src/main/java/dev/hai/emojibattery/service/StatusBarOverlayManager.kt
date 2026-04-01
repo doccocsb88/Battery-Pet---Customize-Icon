@@ -10,6 +10,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.media.AudioManager
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -61,6 +62,7 @@ class StatusBarOverlayManager(
         val mobileConnected: Boolean = false,
         val airplaneMode: Boolean = false,
         val signalLevel: Int = 0,
+        val ringerMode: Int = AudioManager.RINGER_MODE_NORMAL,
     )
 
     private val windowManager = context.getSystemService(WindowManager::class.java)
@@ -79,6 +81,7 @@ class StatusBarOverlayManager(
     private val dateView = TextClock(context)
     private val wifiView = TextView(context)
     private val signalView = TextView(context)
+    private val airplaneIconView = ImageView(context)
     private val batteryArtContainer = FrameLayout(context)
     private val emojiArtView = ImageView(context)
     private val emojiTextView = TextView(context)
@@ -186,6 +189,9 @@ class StatusBarOverlayManager(
         ringerIconView.visibility = View.GONE
         wifiView.textSize = 11f
         signalView.textSize = 11f
+        airplaneIconView.scaleType = ImageView.ScaleType.FIT_CENTER
+        airplaneIconView.adjustViewBounds = true
+        airplaneIconView.visibility = View.GONE
         wifiView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         signalView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         emojiTextView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
@@ -305,6 +311,12 @@ class StatusBarOverlayManager(
             ),
         )
         trollArtContainer.visibility = View.GONE
+        rightCluster.addView(
+            airplaneIconView,
+            LinearLayout.LayoutParams(baseArtSizePx, baseArtSizePx).apply {
+                marginEnd = 6
+            },
+        )
         rightCluster.addView(wifiView)
         rightCluster.addView(signalView)
         // Draw percentage/text before battery-emoji art cluster.
@@ -732,10 +744,30 @@ class StatusBarOverlayManager(
         dateView.setTextColor(resolveColorFromVariant(parsedDateTime.colorId, "#555555".toColorInt()))
 
         val wifiLabel = when {
-            liveStatus.airplaneMode -> airplaneLabel(airplaneConfig.variant)
             liveStatus.wifiEnabled -> if (hotspotConfig.enabled) hotspotLabel(hotspotConfig.variant) else "WIFI"
             liveStatus.mobileConnected -> dataLabel(dataConfig.variant)
             else -> "OFF"
+        }
+        val airplaneVisible = airplaneConfig.enabled && liveStatus.airplaneMode
+        val airplaneSizePx = ((8f + (airplaneConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
+            .roundToInt()
+            .coerceAtLeast((12f * density).roundToInt())
+        (airplaneIconView.layoutParams as? LinearLayout.LayoutParams)?.also { params ->
+            params.width = airplaneSizePx
+            params.height = airplaneSizePx
+            airplaneIconView.layoutParams = params
+        }
+        airplaneIconView.visibility = if (airplaneVisible) View.VISIBLE else View.GONE
+        if (airplaneVisible) {
+            airplaneIconView.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.galaxy_airplane)?.mutate(),
+            )
+            airplaneIconView.setColorFilter(
+                resolveColorFromVariant(airplaneConfig.variant, "#333333".toColorInt()),
+                PorterDuff.Mode.SRC_IN,
+            )
+        } else {
+            airplaneIconView.setImageDrawable(null)
         }
         wifiView.visibility = if (wifiConfig.enabled) View.VISIBLE else View.GONE
         wifiView.text = wifiLabel
@@ -746,7 +778,12 @@ class StatusBarOverlayManager(
         signalView.text = if (liveStatus.airplaneMode) "" else signalGlyph(liveStatus.signalLevel)
         signalView.textSize = 8f + (signalConfig.intensity.coerceIn(0f, 1f) * 12f)
         signalView.setTextColor(resolveColorFromVariant(signalConfig.variant, "#333333".toColorInt()))
-        val ringerVisible = ringerConfig.enabled
+        val effectiveRingerStyle = when (liveStatus.ringerMode) {
+            AudioManager.RINGER_MODE_SILENT -> "mute"
+            AudioManager.RINGER_MODE_VIBRATE -> "wave"
+            else -> parsedRinger.styleId
+        }
+        val ringerVisible = ringerConfig.enabled && liveStatus.ringerMode != AudioManager.RINGER_MODE_NORMAL
         val ringerSizePx = ((8f + (ringerConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
             .roundToInt()
             .coerceAtLeast((12f * density).roundToInt())
@@ -758,7 +795,7 @@ class StatusBarOverlayManager(
         ringerIconView.visibility = if (ringerVisible) View.VISIBLE else View.GONE
         if (ringerVisible) {
             ringerIconView.setImageDrawable(
-                AppCompatResources.getDrawable(context, ringerIconRes(parsedRinger.styleId))?.mutate(),
+                AppCompatResources.getDrawable(context, ringerIconRes(effectiveRingerStyle))?.mutate(),
             )
             ringerIconView.setColorFilter(
                 resolveColorFromVariant(parsedRinger.colorId, "#333333".toColorInt()),
