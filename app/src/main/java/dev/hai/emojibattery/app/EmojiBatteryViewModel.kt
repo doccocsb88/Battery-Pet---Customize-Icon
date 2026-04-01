@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.data.BundledVolioHomeRepository
 import dev.hai.emojibattery.data.HomeCatalogRepository
 import dev.hai.emojibattery.data.HomeCategoryPackResolver
@@ -63,11 +64,20 @@ class EmojiBatteryViewModel(
         private val HOME_BUNDLED_FALLBACK_CATEGORY_TITLES = setOf("korean", "china", "winter")
     }
 
+    private val initialDefaultStatusBarItems = defaultStatusBarCatalogItems(application)
+    private val initialDefaultStatusBarItemId =
+        initialDefaultStatusBarItems.firstOrNull()?.id ?: SampleCatalog.defaultConfig.batteryPresetId
+    private val initialDefaultConfig = SampleCatalog.defaultConfig.copy(
+        batteryPresetId = initialDefaultStatusBarItemId,
+        emojiPresetId = initialDefaultStatusBarItemId,
+    )
+
     private val _uiState = MutableStateFlow(
         AppUiState(
-            editingConfig = SampleCatalog.defaultConfig,
-            appliedConfig = SampleCatalog.defaultConfig,
+            editingConfig = initialDefaultConfig,
+            appliedConfig = initialDefaultConfig,
             homeTabs = HomeCatalogRepository.categoryTabs(),
+            statusBarCatalogItems = initialDefaultStatusBarItems,
         ),
     )
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
@@ -283,15 +293,34 @@ class EmojiBatteryViewModel(
                 if (isVolioCategoryId(categoryId)) {
                     loadOfflineHomeStoreItems(app, categoryId)
                 } else {
-                    runCatching { HomeCatalogRepository.loadItemsForCategory(categoryId) }
-                        .getOrElse { emptyList() }
+                    // Status Bar editor fallback should use bundled default battery/icon assets,
+                    // not sample text presets from HomeCatalogRepository.
+                    emptyList()
                 }
             }
-            Log.d(TAG, "loadStatusBarCatalog: categoryId=$categoryId count=${items.size}")
+            val resolvedItems = if (items.isNotEmpty()) items else defaultStatusBarCatalogItems(app)
+            Log.d(
+                TAG,
+                "loadStatusBarCatalog: categoryId=$categoryId count=${items.size} " +
+                    "resolvedCount=${resolvedItems.size} source=${if (items.isEmpty()) "default_assets" else "catalog"}",
+            )
             _uiState.update { state ->
-                var updated = state.copy(statusBarCatalogItems = items)
+                var updated = state.copy(statusBarCatalogItems = resolvedItems)
+                val fallbackSelectedId = resolvedItems.firstOrNull()?.id
+                if (fallbackSelectedId != null) {
+                    val hasBatterySelection = resolvedItems.any { it.id == state.editingConfig.batteryPresetId }
+                    val hasEmojiSelection = resolvedItems.any { it.id == state.editingConfig.emojiPresetId }
+                    if (!hasBatterySelection || !hasEmojiSelection) {
+                        updated = updated.copy(
+                            editingConfig = updated.editingConfig.copy(
+                                batteryPresetId = if (hasBatterySelection) updated.editingConfig.batteryPresetId else fallbackSelectedId,
+                                emojiPresetId = if (hasEmojiSelection) updated.editingConfig.emojiPresetId else fallbackSelectedId,
+                            ),
+                        )
+                    }
+                }
                 if (hasPendingHomeSelection) {
-                    val selected = items.firstOrNull { it.id == pendingSelectedId } ?: items.firstOrNull()
+                    val selected = resolvedItems.firstOrNull { it.id == pendingSelectedId } ?: resolvedItems.firstOrNull()
                     if (selected != null) {
                         updated = updated.copy(
                             editingConfig = updated.editingConfig.copy(
@@ -307,6 +336,32 @@ class EmojiBatteryViewModel(
                 savedStateHandle[PENDING_HOME_STATUSBAR_CATEGORY_ID] = null
                 savedStateHandle[PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID] = null
             }
+        }
+    }
+
+    private fun defaultStatusBarCatalogItems(app: Application): List<HomeBatteryItem> {
+        val packageName = app.packageName
+        data class DefaultPair(val id: String, val batteryRes: Int, val emojiRes: Int)
+        val pairs = listOf(
+            DefaultPair("default_hai_trung_quoc_01_r1", R.drawable.default_battery_hai_trung_quoc_01_r1, R.drawable.default_icon_hai_trung_quoc_01_r1),
+            DefaultPair("default_hai_trung_quoc_01_r2", R.drawable.default_battery_hai_trung_quoc_01_r2, R.drawable.default_icon_hai_trung_quoc_01_r2),
+            DefaultPair("default_hai_trung_quoc_01_r3", R.drawable.default_battery_hai_trung_quoc_01_r3, R.drawable.default_icon_hai_trung_quoc_01_r3),
+            DefaultPair("default_hai_trung_quoc_02_r1", R.drawable.default_battery_hai_trung_quoc_02_r1, R.drawable.default_icon_hai_trung_quoc_02_r1),
+            DefaultPair("default_hai_trung_quoc_02_r2", R.drawable.default_battery_hai_trung_quoc_02_r2, R.drawable.default_icon_hai_trung_quoc_02_r2),
+            DefaultPair("default_hai_trung_quoc_02_r3", R.drawable.default_battery_hai_trung_quoc_02_r3, R.drawable.default_icon_hai_trung_quoc_02_r3),
+        )
+        return pairs.mapIndexed { index, pair ->
+            HomeBatteryItem(
+                id = pair.id,
+                categoryId = "default_status_bar",
+                title = "Default ${index + 1}",
+                previewRes = pair.batteryRes,
+                thumbnailUrl = "android.resource://$packageName/drawable/${app.resources.getResourceEntryName(pair.batteryRes)}",
+                batteryArtUrl = "android.resource://$packageName/drawable/${app.resources.getResourceEntryName(pair.batteryRes)}",
+                emojiArtUrl = "android.resource://$packageName/drawable/${app.resources.getResourceEntryName(pair.emojiRes)}",
+                premium = false,
+                animated = false,
+            )
         }
     }
 

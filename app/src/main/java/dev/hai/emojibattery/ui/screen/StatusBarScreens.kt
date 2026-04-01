@@ -874,7 +874,11 @@ private fun StatusBarLivePreviewCard(
     val ringerConfig = uiState.featureConfigs[CustomizeEntry.Ringer]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Ringer]
         ?: FeatureConfig(enabled = false, variant = "style=bell;color=blue")
+    val emotionConfig = uiState.featureConfigs[CustomizeEntry.Emotion]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Emotion]
+        ?: FeatureConfig(enabled = false, variant = "emotion=smile;color=blue")
     val parsedRinger = parseRingerVariant(ringerConfig.variant)
+    val parsedEmotion = parseEmotionVariant(emotionConfig.variant)
     val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
     val datePreview = previewDateStyle(parsedDateTime.styleId)
     val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
@@ -902,6 +906,9 @@ private fun StatusBarLivePreviewCard(
     val previewRingerMode = previewRingerMode(context)
     val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
     val ringerRes = previewRingerIconRes(context, previewRingerMode, parsedRinger.styleId)
+    val emotionVisible = emotionConfig.enabled
+    val emotionGlyph = EmotionOptions.firstOrNull { it.id == parsedEmotion.emotionId }?.glyph ?: emojiGlyph
+    val emotionColor = Color(0xFF333333)
     val rightText = "$batteryText$percentageText".trim()
     val batteryArtUrl = batteryVolio?.batteryArtUrl?.takeIf { it.isNotBlank() }
         ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
@@ -984,39 +991,39 @@ private fun StatusBarLivePreviewCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(1.dp),
-                        ) {
-                            Text(
-                                stringResource(R.string.demo_time),
-                                color = Color.Black,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
-                            )
-                            if (parsedDateTime.showDate) {
-                                Text(
-                                    datePreview.line1,
-                                    color = Color(0xFF555555),
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
-                                )
-                                datePreview.line2?.let { line2 ->
-                                    Text(
-                                        line2,
-                                        color = Color(0xFF555555),
-                                        fontSize = 10.sp,
-                                        fontWeight = if (datePreview.line2Bold) FontWeight.Bold else FontWeight.Medium,
-                                        fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
-                                    )
-                                }
-                            }
-                        }
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(1.dp),
+                            ) {
+                                Text(
+                                    stringResource(R.string.demo_time),
+                                    color = Color.Black,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
+                                )
+                                if (parsedDateTime.showDate) {
+                                    Text(
+                                        datePreview.line1,
+                                        color = Color(0xFF555555),
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                    )
+                                    datePreview.line2?.let { line2 ->
+                                        Text(
+                                            line2,
+                                            color = Color(0xFF555555),
+                                            fontSize = 10.sp,
+                                            fontWeight = if (datePreview.line2Bold) FontWeight.Bold else FontWeight.Medium,
+                                            fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                        )
+                                    }
+                                }
+                            }
                             if (ringerVisible) {
                                 Image(
                                     painter = painterResource(ringerRes),
@@ -1028,6 +1035,19 @@ private fun StatusBarLivePreviewCard(
                                     ),
                                 )
                             }
+                            if (emotionVisible) {
+                                Text(
+                                    text = emotionGlyph,
+                                    color = emotionColor,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             if (airplaneVisible) {
                                 Image(
                                     painter = painterResource(R.drawable.galaxy_airplane),
@@ -1036,17 +1056,6 @@ private fun StatusBarLivePreviewCard(
                                     contentScale = ContentScale.Fit,
                                     colorFilter = ColorFilter.tint(
                                         Color(previewResolveColorFromVariant(airplaneConfig.variant, AndroidColor.parseColor("#333333"))),
-                                    ),
-                                )
-                            }
-                            if (hotspotVisible) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_item_hotspot),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp),
-                                    contentScale = ContentScale.Fit,
-                                    colorFilter = ColorFilter.tint(
-                                        Color(previewResolveColorFromVariant(hotspotConfig.variant, AndroidColor.parseColor("#333333"))),
                                     ),
                                 )
                             }
@@ -2468,7 +2477,11 @@ internal fun BatteryPreviewCard(
                     val ringerConfig = uiState.featureConfigs[CustomizeEntry.Ringer]
                         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Ringer]
                         ?: FeatureConfig(enabled = false, variant = "style=bell;color=blue")
+                    val emotionConfig = uiState.featureConfigs[CustomizeEntry.Emotion]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Emotion]
+                        ?: FeatureConfig(enabled = false, variant = "emotion=smile;color=blue")
                     val parsedRinger = parseRingerVariant(ringerConfig.variant)
+                    val parsedEmotion = parseEmotionVariant(emotionConfig.variant)
                     val defaultCommonScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
                     val commonScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultCommonScale).coerceIn(0.35f, 2.2f)
                     val emojiAdjustmentScale = config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f)
@@ -2490,31 +2503,37 @@ internal fun BatteryPreviewCard(
                     val previewRingerMode = previewRingerMode(context)
                     val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
                     val ringerRes = previewRingerIconRes(context, previewRingerMode, parsedRinger.styleId)
+                    val emotionVisible = emotionConfig.enabled
+                    val emotionGlyph = EmotionOptions.firstOrNull { it.id == parsedEmotion.emotionId }?.glyph ?: emojiGlyph
+                    val emotionColor = Color(0xFF333333)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Column {
-                            Text(stringResource(R.string.demo_time), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            if (parsedDateTime.showDate) {
-                                Text(
-                                    text = datePreview.line1,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Medium,
-                                )
-                                datePreview.line2?.let { line2 ->
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column {
+                                Text(stringResource(R.string.demo_time), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                if (parsedDateTime.showDate) {
                                     Text(
-                                        text = line2,
+                                        text = datePreview.line1,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         style = MaterialTheme.typography.labelMedium,
-                                        fontWeight = if (datePreview.line2Bold) FontWeight.Bold else FontWeight.Medium,
+                                        fontWeight = FontWeight.Medium,
                                     )
+                                    datePreview.line2?.let { line2 ->
+                                        Text(
+                                            text = line2,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            style = MaterialTheme.typography.labelMedium,
+                                            fontWeight = if (datePreview.line2Bold) FontWeight.Bold else FontWeight.Medium,
+                                        )
+                                    }
                                 }
                             }
-                        }
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             if (ringerVisible) {
                                 Image(
                                     painter = painterResource(ringerRes),
@@ -2526,6 +2545,16 @@ internal fun BatteryPreviewCard(
                                     ),
                                 )
                             }
+                            if (emotionVisible) {
+                                Text(
+                                    text = emotionGlyph,
+                                    color = emotionColor,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             if (airplaneVisible) {
                                 Image(
                                     painter = painterResource(R.drawable.galaxy_airplane),
