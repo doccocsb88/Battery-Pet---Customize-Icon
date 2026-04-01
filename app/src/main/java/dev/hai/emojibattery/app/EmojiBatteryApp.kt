@@ -683,6 +683,7 @@ fun EmojiBatteryApp(
                         navController.navigate(AppRoute.Tutorial.route)
                     },
                     onRefreshStickerCatalog = viewModel::refreshStickerCatalog,
+                    onLoadStickerCatalogPage = viewModel::loadStickerCatalogPage,
                     onToggleAccessibility = { checked ->
                         if (!uiState.accessibilityGranted && checked) {
                             showAccessibilityConsent = true

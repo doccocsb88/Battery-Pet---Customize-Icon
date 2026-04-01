@@ -204,6 +204,7 @@ internal fun EmojiStickerScreen(
     onDismissStickerAdjustment: () -> Unit,
     onOpenTutorial: () -> Unit,
     onRefreshStickerCatalog: () -> Unit,
+    onLoadStickerCatalogPage: (Int) -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
     onSave: () -> Unit,
     onTurnOff: () -> Unit,
@@ -223,9 +224,6 @@ internal fun EmojiStickerScreen(
         uiState.stickerCatalogRemote
     } else {
         SampleCatalog.stickerPresets
-    }
-    val remoteStickerPages = remember(uiState.stickerCatalogRemote) {
-        uiState.stickerCatalogRemote.chunked(STICKERS_PER_CATALOG_PAGE)
     }
     LaunchedEffect(stickerLibrary) {
         val withThumb = stickerLibrary.count { !it.thumbnailUrl.isNullOrBlank() }
@@ -348,7 +346,7 @@ internal fun EmojiStickerScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             val loadingComposition by rememberLottieComposition(
-                                LottieCompositionSpec.Asset("cute_loading.json"),
+                                LottieCompositionSpec.Asset("snail_loader.json"),
                             )
                             LottieAnimation(
                                 composition = loadingComposition,
@@ -364,25 +362,32 @@ internal fun EmojiStickerScreen(
                             )
                         }
                     } else {
-                        val stickerPages = if (uiState.stickerCatalogRemote.isNotEmpty()) {
-                            remoteStickerPages
-                        } else {
-                            remember(stickerLibrary) {
-                                stickerLibrary.chunked(STICKERS_PER_CATALOG_PAGE)
-                            }
+                        val totalRemotePages = uiState.stickerCatalogTotalPageCount
+                        val usingRemotePages = totalRemotePages > 0
+                        val fallbackPages = remember(stickerLibrary) {
+                            stickerLibrary.chunked(STICKERS_PER_CATALOG_PAGE)
                         }
-                        if (stickerPages.isEmpty()) {
+                        val pageCount = if (usingRemotePages) totalRemotePages else fallbackPages.size
+                        if (pageCount == 0) {
                             Text(
                                 stringResource(R.string.sticker_no_stickers),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         } else {
-                            val pagerState = rememberPagerState(pageCount = { stickerPages.size })
-                            LaunchedEffect(stickerPages.size) {
-                                if (pagerState.currentPage >= stickerPages.size) {
-                                    pagerState.scrollToPage((stickerPages.size - 1).coerceAtLeast(0))
+                            val pagerState = rememberPagerState(pageCount = { pageCount })
+                            LaunchedEffect(pageCount) {
+                                if (pagerState.currentPage >= pageCount) {
+                                    pagerState.scrollToPage((pageCount - 1).coerceAtLeast(0))
                                 }
+                            }
+                            LaunchedEffect(pagerState, usingRemotePages, pageCount) {
+                                if (!usingRemotePages) return@LaunchedEffect
+                                snapshotFlow { pagerState.currentPage }
+                                    .distinctUntilChanged()
+                                    .collect { pageIndex ->
+                                        onLoadStickerCatalogPage(pageIndex)
+                                    }
                             }
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 HorizontalPager(
@@ -391,42 +396,49 @@ internal fun EmojiStickerScreen(
                                     beyondViewportPageCount = 1,
                                     pageSpacing = 0.dp,
                                 ) { pageIndex ->
-                                    StickerCatalogGridPage(
-                                        stickers = stickerPages[pageIndex],
-                                        uiState = uiState,
-                                        onAddSticker = onAddSticker,
-                                    )
+                                    val stickers = if (usingRemotePages) {
+                                        uiState.stickerCatalogPages[pageIndex]
+                                    } else {
+                                        fallbackPages.getOrNull(pageIndex)
+                                    }
+                                    if (usingRemotePages && stickers == null) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 24.dp),
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                                        ) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.size(22.dp),
+                                                strokeWidth = 2.dp,
+                                                color = StickerUiPrimary,
+                                            )
+                                            Text(
+                                                stringResource(R.string.common_loading_ellipsis),
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                style = MaterialTheme.typography.labelMedium,
+                                            )
+                                        }
+                                    } else {
+                                        StickerCatalogGridPage(
+                                            stickers = stickers.orEmpty(),
+                                            uiState = uiState,
+                                            onAddSticker = onAddSticker,
+                                        )
+                                    }
                                 }
                                 Text(
                                     stringResource(
                                         R.string.sticker_page_indicator,
                                         pagerState.currentPage + 1,
-                                        if (uiState.stickerCatalogTotalPageCount > 0) uiState.stickerCatalogTotalPageCount else stickerPages.size,
+                                        pageCount,
                                     ),
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     style = MaterialTheme.typography.labelMedium,
                                 )
-                                if (uiState.stickerCatalogAppending) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier.size(18.dp),
-                                            strokeWidth = 2.dp,
-                                            color = StickerUiPrimary,
-                                        )
-                                        Spacer(Modifier.width(8.dp))
-                                        Text(
-                                            stringResource(R.string.common_loading_ellipsis),
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            style = MaterialTheme.typography.labelMedium,
-                                        )
-                                    }
-                                }
                             }
                         }
                     }
@@ -488,30 +500,30 @@ internal fun EmojiStickerScreen(
                         }
                     }
                     HorizontalDivider(thickness = 1.dp, color = Color.Black)
-//                    Text(
-//                        stringResource(R.string.sticker_selected_controls),
-//                        style = MaterialTheme.typography.titleSmall,
-//                        fontWeight = FontWeight.SemiBold,
-//                        color = MaterialTheme.colorScheme.onSurface,
-//                    )
-//                    if (selectedSticker != null && selectedPlacement != null) {
-//                        Text(
-//                            "${selectedSticker.glyph} ${selectedSticker.name}",
-//                            style = MaterialTheme.typography.bodyLarge,
-//                            color = MaterialTheme.colorScheme.onSurface,
-//                        )
-//                        Text(
-//                            stringResource(R.string.sticker_adjustment_inline_hint),
-//                            style = MaterialTheme.typography.bodySmall,
-//                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                        )
-//                    } else {
+                    Text(
+                        stringResource(R.string.sticker_selected_controls),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    if (selectedSticker != null && selectedPlacement != null) {
+                        Text(
+                            "${selectedSticker.glyph} ${selectedSticker.name}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            stringResource(R.string.sticker_adjustment_inline_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    } else {
                         Text(
                             stringResource(R.string.sticker_select_to_edit_hint),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
-//                    }
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),

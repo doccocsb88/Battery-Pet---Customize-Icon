@@ -500,6 +500,7 @@ class EmojiBatteryViewModel(
                     stickerCatalogLoading = true,
                     stickerCatalogAppending = false,
                     stickerCatalogRemote = emptyList(),
+                    stickerCatalogPages = emptyMap(),
                     stickerCatalogLoadedPageCount = 0,
                     stickerCatalogTotalPageCount = 0,
                 )
@@ -527,22 +528,39 @@ class EmojiBatteryViewModel(
             _uiState.update {
                 it.copy(
                     stickerCatalogRemote = firstPage,
+                    stickerCatalogPages = if (firstPage.isEmpty()) emptyMap() else mapOf(0 to firstPage),
                     stickerCatalogLoading = false,
                     stickerCatalogLoadedPageCount = if (firstPage.isEmpty()) 0 else 1,
                     stickerCatalogTotalPageCount = pageCount,
                 )
             }
-            if (pageCount <= 1) return@launch
-            for (pageIndex in 1 until pageCount) {
-                _uiState.update { it.copy(stickerCatalogAppending = true) }
-                val pageItems = withContext(Dispatchers.IO) {
-                    runCatching { VolioStickerRepository.fetchStickerPresetsPage(app, pageIndex) }.getOrElse { emptyList() }
-                }
-                _uiState.update {
-                    it.copy(
-                        stickerCatalogRemote = it.stickerCatalogRemote + pageItems,
+        }
+    }
+
+    fun loadStickerCatalogPage(pageIndex: Int) {
+        val state = _uiState.value
+        if (pageIndex < 0) return
+        if (state.stickerCatalogLoading) return
+        if (state.stickerCatalogPages.containsKey(pageIndex)) return
+        if (state.stickerCatalogAppending) return
+        if (state.stickerCatalogTotalPageCount > 0 && pageIndex >= state.stickerCatalogTotalPageCount) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(stickerCatalogAppending = true) }
+            val app = getApplication<Application>()
+            val pageItems = withContext(Dispatchers.IO) {
+                runCatching { VolioStickerRepository.fetchStickerPresetsPage(app, pageIndex) }.getOrElse { emptyList() }
+            }
+            _uiState.update { current ->
+                if (current.stickerCatalogPages.containsKey(pageIndex)) {
+                    current.copy(stickerCatalogAppending = false)
+                } else {
+                    val updatedPages = current.stickerCatalogPages + (pageIndex to pageItems)
+                    val updatedRemote = updatedPages.toSortedMap().values.flatten()
+                    current.copy(
+                        stickerCatalogPages = updatedPages,
+                        stickerCatalogRemote = updatedRemote,
                         stickerCatalogAppending = false,
-                        stickerCatalogLoadedPageCount = pageIndex + 1,
+                        stickerCatalogLoadedPageCount = updatedPages.size,
                     )
                 }
             }

@@ -304,6 +304,7 @@ data class AppUiState(
     val infoMessage: String? = null,
     /** Remote Volio sticker library (Emoji sticker scope); merged at UI with [SampleCatalog.stickerPresets]. */
     val stickerCatalogRemote: List<StickerPreset> = emptyList(),
+    val stickerCatalogPages: Map<Int, List<StickerPreset>> = emptyMap(),
     val stickerCatalogLoading: Boolean = false,
     val stickerCatalogAppending: Boolean = false,
     val stickerCatalogLoadedPageCount: Int = 0,

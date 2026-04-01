@@ -20,6 +20,14 @@ val dynamicStickerAssetPackModules = File(rootDir, "app_pack").listFiles()
     ?.toList()
     .orEmpty()
 
+val dynamicStickerAssetPackNames = File(rootDir, "app_pack").listFiles()
+    ?.asSequence()
+    ?.filter { it.isDirectory && it.name.startsWith("sticker_pack_") }
+    ?.map { it.name }
+    ?.sorted()
+    ?.toList()
+    .orEmpty()
+
 val versionCodeBase = (findProperty("VERSION_CODE_BASE") as String?)?.toIntOrNull() ?: 1000
 val fallbackVersionCode = (findProperty("VERSION_CODE") as String?)?.toIntOrNull() ?: 1
 val computedVersionCode = System.getenv("GITHUB_RUN_NUMBER")
@@ -52,6 +60,15 @@ android {
         targetSdk = 35
         versionCode = computedVersionCode
         versionName = "0.1.0"
+        buildConfigField(
+            "String[]",
+            "STICKER_ASSET_PACKS",
+            dynamicStickerAssetPackNames.joinToString(
+                prefix = "new String[]{",
+                postfix = "}",
+            ) { "\"$it\"" },
+        )
+        buildConfigField("String", "STICKER_MEDIA_ASSET_PACK", "\"store_pack\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -94,6 +111,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
