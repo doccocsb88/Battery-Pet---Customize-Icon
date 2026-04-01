@@ -280,9 +280,11 @@ internal fun EmojiStickerScreen(
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            EmojiBatteryOverlayToggleCard(
+            EmojiBatteryOverlayAccessCard(
+                accessibilityGranted = uiState.accessibilityGranted,
                 enabled = uiState.statusBarOverlayEnabled,
                 onToggle = onSetOverlayEnabled,
+                onRequestAccessibility = { onToggleAccessibility(true) },
                 modifier = Modifier.padding(horizontal = 8.dp),
             )
             StickerPreviewCard(
@@ -308,10 +310,6 @@ internal fun EmojiStickerScreen(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
-            PermissionBanner(
-                enabled = uiState.accessibilityGranted,
-                onToggle = onToggleAccessibility,
-            )
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 color = Color.White,

@@ -202,9 +202,11 @@ internal fun BatteryTrollScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                EmojiBatteryOverlayToggleCard(
+                EmojiBatteryOverlayAccessCard(
+                    accessibilityGranted = uiState.accessibilityGranted,
                     enabled = uiState.statusBarOverlayEnabled,
                     onToggle = onSetOverlayEnabled,
+                    onRequestAccessibility = { onToggleAccessibility(true) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),

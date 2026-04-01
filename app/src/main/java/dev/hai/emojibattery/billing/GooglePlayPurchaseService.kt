@@ -38,6 +38,9 @@ data class BillingUiState(
     val lifetimePlan: BillingPlan? = null,
     /** Mirrors original [DialogIapFull]: weekly subscription may include a free-trial phase. */
     val weeklyHasFreeTrial: Boolean = false,
+    val weeklyTrialDays: Int? = null,
+    val monthlyHasFreeTrial: Boolean = false,
+    val monthlyTrialDays: Int? = null,
     val ownedProductIds: Set<String> = emptySet(),
     val purchaseInFlight: Boolean = false,
     val errorMessage: String? = null,
@@ -173,6 +176,9 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
                 weeklyPlan = weeklyDetails?.let(::weeklyPlanFrom),
                 monthlyPlan = monthlyDetails?.let(::monthlyPlanFrom),
                 weeklyHasFreeTrial = weeklyDetails?.let(::weeklyHasFreeTrialPhases) == true,
+                weeklyTrialDays = weeklyDetails?.let(::weeklyTrialDays),
+                monthlyHasFreeTrial = monthlyDetails?.let(::hasFreeTrialPhases) == true,
+                monthlyTrialDays = monthlyDetails?.let(::trialDays),
             )
             subsLoaded = true
             maybeFinishLoading()
@@ -252,10 +258,33 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         ) { }
     }
 
-    private fun weeklyHasFreeTrialPhases(details: ProductDetails): Boolean {
+    private fun weeklyHasFreeTrialPhases(details: ProductDetails): Boolean = hasFreeTrialPhases(details)
+
+    private fun hasFreeTrialPhases(details: ProductDetails): Boolean {
         val phases = details.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList
             ?: return false
         return phases.size > 1 && phases.first().priceAmountMicros == 0L
+    }
+
+    private fun weeklyTrialDays(details: ProductDetails): Int? = trialDays(details)
+
+    private fun trialDays(details: ProductDetails): Int? {
+        val trialPhase = details.subscriptionOfferDetails
+            ?.firstOrNull()
+            ?.pricingPhases
+            ?.pricingPhaseList
+            ?.firstOrNull { it.priceAmountMicros == 0L }
+            ?: return null
+        return parseBillingPeriodDays(trialPhase.billingPeriod)
+    }
+
+    private fun parseBillingPeriodDays(period: String?): Int? {
+        if (period.isNullOrBlank()) return null
+        val match = Regex("""P(?:(\d+)W)?(?:(\d+)D)?""").matchEntire(period) ?: return null
+        val weeks = match.groupValues.getOrNull(1)?.takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
+        val days = match.groupValues.getOrNull(2)?.takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
+        val total = (weeks * 7) + days
+        return total.takeIf { it > 0 }
     }
 
     private fun weeklyPlanFrom(details: ProductDetails): BillingPlan {

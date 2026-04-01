@@ -108,7 +108,7 @@ fun AccessibilityServiceUsageDialog(
                 BulletWithHighlight(
                     displayLabel = stringResource(R.string.display_label),
                     appName = stringResource(R.string.app_name),
-                    tail = stringResource(R.string.view_on_mobile_screen_and_to_detect_gestures_on_the_status_bar),
+                    tail = stringResource(R.string.view_on_mobile_screen_and_refresh_the_status_bar_overlay),
                     dialogText = dialogText,
                     highlight = highlight,
                 )

@@ -25,7 +25,6 @@ import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -157,6 +156,60 @@ internal fun EmojiBatteryOverlayToggleCard(
                 color = MaterialTheme.colorScheme.onSurface,
             )
             AppSwitch(checked = enabled, onCheckedChange = onToggle)
+        }
+    }
+}
+
+@Composable
+internal fun EmojiBatteryOverlayAccessCard(
+    accessibilityGranted: Boolean,
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    onRequestAccessibility: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (accessibilityGranted) {
+        EmojiBatteryOverlayToggleCard(
+            enabled = enabled,
+            onToggle = onToggle,
+            modifier = modifier,
+        )
+        return
+    }
+
+    val shape = RoundedCornerShape(28.dp)
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = shape,
+        border = BorderStroke(1.dp, Color(0xFFD8DDE2)),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.home_enable_banner),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f),
+            )
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(Color(0xFF8FB6D4)),
+            ) {
+                Text(
+                    text = stringResource(R.string.home_start),
+                    color = Color.White,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier
+                        .clickable(onClick = onRequestAccessibility)
+                        .padding(horizontal = 20.dp, vertical = 14.dp),
+                )
+            }
         }
     }
 }
@@ -336,7 +389,6 @@ internal fun MainBottomBar(
     val items = listOf(
         Triple(AppRoute.Home, MainSection.Home, Icons.Rounded.Home),
         Triple(AppRoute.Customize, MainSection.Customize, Icons.Rounded.AutoAwesome),
-        Triple(AppRoute.Gesture, MainSection.Gesture, Icons.Rounded.TouchApp),
         Triple(AppRoute.Settings, MainSection.Settings, Icons.Rounded.Settings),
     )
     val barShape = RoundedCornerShape(topStart = 48.dp, topEnd = 48.dp)

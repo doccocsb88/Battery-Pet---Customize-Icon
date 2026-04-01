@@ -178,11 +178,12 @@ class StatusBarOverlayManager(
         clockView.textSize = 13f
         clockView.format12Hour = "HH:mm"
         clockView.format24Hour = "HH:mm"
-        clockView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
+        clockView.typeface = Typeface.DEFAULT
         dateView.textSize = 10f
         dateView.format12Hour = "EEE, MMM d"
         dateView.format24Hour = "EEE, MMM d"
         dateView.alpha = 0.75f
+        dateView.typeface = Typeface.DEFAULT
         leftTimeCluster.addView(clockView)
         leftTimeCluster.addView(dateView)
         leftCluster.addView(leftTimeCluster)
@@ -574,7 +575,6 @@ class StatusBarOverlayManager(
             snapshot.batteryEmojiSource == BATTERY_EMOJI_SOURCE_BATTERY_TROLL
         val density = context.resources.displayMetrics.density
         val scaledDensity = context.resources.displayMetrics.scaledDensity
-        val statusScale = 0.8f + (snapshot.statusBarHeight.coerceIn(0f, 1f) * 0.9f)
         val baseStatusRowHeightPx = ((24f * density)).roundToInt().coerceAtLeast((14f * density).roundToInt())
         val (effectiveTrollBatteryUrl, effectiveTrollEmojiUrl) = resolveTrollArtSelection(snapshot)
         val effectiveEmojiUrl = if (useBatteryTrollSource) {
@@ -624,7 +624,10 @@ class StatusBarOverlayManager(
         batteryEmojiTextView.translationY = emojiTranslationY
         if (useBatteryTrollSource) {
             // Use config-based reference height to avoid feedback loop where each render reads a previously scaled view size.
-            val statusRowRefHeightPx = (baseStatusRowHeightPx * statusScale).roundToInt().coerceAtLeast((14f * density).roundToInt())
+            val statusRowRefHeightPx = currentWindowHeightPx
+                .takeIf { it > 0 && it != WindowManager.LayoutParams.MATCH_PARENT }
+                ?.coerceAtLeast((14f * density).roundToInt())
+                ?: baseStatusRowHeightPx
             val trollScale = snapshot.trollEmojiSizeDp.coerceIn(1, 50) / 50f
             val trollArtSizePx = (statusRowRefHeightPx * trollScale)
                 .roundToInt()
@@ -777,11 +780,10 @@ class StatusBarOverlayManager(
             batteryView.textSize = 11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f)
             chargeView.textSize = 11f + (snapshot.batteryPercentScale.coerceIn(0f, 1f) * 11f)
         }
-        statusRow.scaleY = statusScale
-        val leftPadding = ((8f + snapshot.leftMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
-        val rightPadding = ((8f + snapshot.rightMargin.coerceIn(0f, 1f) * 88f) * density).roundToInt()
-        val topBottomPadding = ((6f + snapshot.statusBarHeight.coerceIn(0f, 1f) * 10f) * density).roundToInt()
-        statusRow.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding)
+        statusRow.scaleY = 1f
+        val leftPadding = ((5f + snapshot.leftMargin.coerceIn(0f, 1f) * 80f) * density).roundToInt()
+        val rightPadding = ((5f + snapshot.rightMargin.coerceIn(0f, 1f) * 80f) * density).roundToInt()
+        statusRow.setPadding(leftPadding, 0, rightPadding, 0)
         val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
         applyDateTimeStyle(parsedDateTime.styleId)
         clockView.textSize = 8f + (dateTimeConfig.intensity.coerceIn(0f, 1f) * 8f)
@@ -1012,7 +1014,14 @@ class StatusBarOverlayManager(
         listOf(stickerImageView, stickerLottieView, stickerEmojiView).forEach { it.bringToFront() }
 
         statusRow.visibility = if (snapshot.statusBarEnabled || useBatteryTrollSource) View.VISIBLE else View.GONE
-        applyNotch(snapshot.notchTemplateId, snapshot.notchColorVariant, snapshot.statusBarEnabled)
+        applyNotch(
+            templateId = snapshot.notchTemplateId,
+            colorVariant = snapshot.notchColorVariant,
+            scale = snapshot.notchScale,
+            offsetX = snapshot.notchOffsetX,
+            offsetY = snapshot.notchOffsetY,
+            statusEnabled = snapshot.statusBarEnabled,
+        )
     }
 
     /**
@@ -1450,14 +1459,22 @@ class StatusBarOverlayManager(
             .start()
     }
 
-    private fun applyNotch(templateId: Int, colorVariant: String, statusEnabled: Boolean) {
+    private fun applyNotch(
+        templateId: Int,
+        colorVariant: String,
+        scale: Float,
+        offsetX: Float,
+        offsetY: Float,
+        statusEnabled: Boolean,
+    ) {
         val notch = NotchTemplateCatalog.resolve(templateId)
         val drawable = notch.drawableRes
         if (!statusEnabled || drawable == null) {
             notchContainer.visibility = View.GONE
             return
         }
-        val notchHeight = (18 * context.resources.displayMetrics.density).toInt().coerceAtLeast(12)
+        val notchScale = scale.coerceIn(0.5f, 2.2f)
+        val notchHeight = ((18 * context.resources.displayMetrics.density) * notchScale).toInt().coerceAtLeast(12)
         val notchDrawable = AppCompatResources.getDrawable(context, drawable)
         val intrinsicWidth = notchDrawable?.intrinsicWidth ?: 0
         val intrinsicHeight = notchDrawable?.intrinsicHeight ?: 0
@@ -1467,10 +1484,18 @@ class StatusBarOverlayManager(
             960f / 132f
         }
         val notchWidth = (notchHeight * aspect).toInt().coerceAtLeast(notchHeight)
+        val parentWidth = root.width.takeIf { it > 0 } ?: context.resources.displayMetrics.widthPixels
+        val parentHeight = root.height.takeIf { it > 0 } ?: resolveSystemStatusBarHeightPx()
+        val left = ((parentWidth - notchWidth) * offsetX.coerceIn(0f, 1f)).roundToInt()
+            .coerceIn(0, (parentWidth - notchWidth).coerceAtLeast(0))
+        val top = ((parentHeight - notchHeight) * offsetY.coerceIn(0f, 1f)).roundToInt()
+            .coerceIn(0, (parentHeight - notchHeight).coerceAtLeast(0))
         val params = notchContainer.layoutParams as FrameLayout.LayoutParams
         params.width = notchWidth
         params.height = notchHeight
-        params.gravity = notch.gravity
+        params.gravity = Gravity.TOP or Gravity.START
+        params.leftMargin = left
+        params.topMargin = top
         notchContainer.layoutParams = params
         notchView.clearColorFilter()
         notchView.setImageResource(drawable)

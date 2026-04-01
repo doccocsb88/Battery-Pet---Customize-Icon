@@ -401,7 +401,6 @@ internal fun AchievementScreen(
                                     val route = when (task.id) {
                                         "apply_status_bar" -> AppRoute.StatusBarCustom.route
                                         "save_sticker" -> AppRoute.EmojiSticker.route
-                                        "gesture_mapper" -> AppRoute.Gesture.route
                                         else -> AppRoute.RealTime.route
                                     }
                                     onNavigate(route)

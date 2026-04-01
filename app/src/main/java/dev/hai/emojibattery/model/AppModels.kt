@@ -496,7 +496,14 @@ object SampleCatalog {
             CustomizeEntry.Emotion,
             CustomizeEntry.DateTime,
             -> FeatureConfig(
-                enabled = false,
+                enabled = entry in setOf(
+                    CustomizeEntry.Hotspot,
+                    CustomizeEntry.Wifi,
+                    CustomizeEntry.Signal,
+                    CustomizeEntry.Ringer,
+                    CustomizeEntry.Charge,
+                    CustomizeEntry.Airplane,
+                ),
                 variant = when (entry) {
                     CustomizeEntry.DateTime -> "style=style_4;color=blue;show=0"
                     CustomizeEntry.Charge -> "chg_1"
@@ -548,14 +555,8 @@ object SampleCatalog {
         OnboardingPage(
             id = "question",
             title = "Why Accessibility Is Needed",
-            body = "The overlay sits above the system bar and can trigger your selected shortcuts without collecting personal content.",
+            body = "The overlay sits above the system bar so the app can refresh your custom status bar without collecting personal content.",
             accentGlyph = "❔",
-        ),
-        OnboardingPage(
-            id = "gesture_guide",
-            title = "How To Use Gestures",
-            body = "Bind tap, swipe, and long press actions, then test them from the gesture screen after the service is enabled.",
-            accentGlyph = "👉",
         ),
     )
 
@@ -596,13 +597,6 @@ object SampleCatalog {
             description = "Save the sticker overlay for the first time.",
             target = 1,
             reward = "Unlock one extra sticker slot",
-        ),
-        AchievementTask(
-            id = "gesture_mapper",
-            title = "Gesture Mapper",
-            description = "Assign three different gesture actions.",
-            target = 3,
-            reward = "Unlock gesture-only quick actions",
         ),
         AchievementTask(
             id = "template_explorer",
@@ -662,15 +656,6 @@ object SampleCatalog {
             premium = true,
         ),
         SearchTemplate(
-            id = "gesture",
-            title = "Gesture",
-            summary = "Map status-bar gestures to custom actions.",
-            route = "gesture",
-            category = "tools",
-            glyph = "☝",
-            tags = listOf("gesture", "swipe", "tap", "shortcut"),
-        ),
-        SearchTemplate(
             id = "achievement",
             title = "Achievement",
             summary = "Challenge list, reward claiming, and unlock tracking.",
@@ -716,7 +701,6 @@ object SampleCatalog {
         "battery",
         "emoji",
         "sticker",
-        "gesture",
         "theme",
         "troll",
         "realtime",

@@ -88,7 +88,6 @@ fun EmojiBatteryApp(
     val showBottomBar = route in setOf(
         AppRoute.Home.route,
         AppRoute.Customize.route,
-        AppRoute.Gesture.route,
         AppRoute.Settings.route,
     )
     var showAccessibilityConsent by remember { mutableStateOf(false) }
@@ -285,6 +284,7 @@ fun EmojiBatteryApp(
                         viewModel.selectStatusTab(StatusBarTab.Battery)
                         navController.navigate(AppRoute.StatusBarCustom.route)
                     },
+                    onOpenAccessibility = { showAccessibilityConsent = true },
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
                     onOpenNotch = { navController.navigate(AppRoute.Notch.route) },
                     onOpenAnimation = { navController.navigate(AppRoute.Animation.route) },

@@ -56,6 +56,9 @@ data class OverlaySnapshot(
     /** Original notch selector ID (-1 hide, 1..13 visible variants). */
     val notchTemplateId: Int,
     val notchColorVariant: String,
+    val notchScale: Float,
+    val notchOffsetX: Float,
+    val notchOffsetY: Float,
     val statusBarHeight: Float,
     val leftMargin: Float,
     val rightMargin: Float,
@@ -128,6 +131,9 @@ object OverlayConfigStore {
     private const val KEY_REALTIME_TITLE = "realtime_title"
     private const val KEY_NOTCH_TEMPLATE_ID = "notch_template_id"
     private const val KEY_NOTCH_COLOR_VARIANT = "notch_color_variant"
+    private const val KEY_NOTCH_SCALE = "notch_scale"
+    private const val KEY_NOTCH_OFFSET_X = "notch_offset_x"
+    private const val KEY_NOTCH_OFFSET_Y = "notch_offset_y"
     private const val KEY_STATUS_BAR_HEIGHT = "status_bar_height"
     private const val KEY_STATUS_LEFT_MARGIN = "status_left_margin"
     private const val KEY_STATUS_RIGHT_MARGIN = "status_right_margin"
@@ -318,6 +324,19 @@ object OverlayConfigStore {
             .apply()
     }
 
+    fun saveNotchAdjustment(
+        context: Context,
+        scale: Float,
+        offsetX: Float,
+        offsetY: Float,
+    ) {
+        prefs(context).edit()
+            .putFloat(KEY_NOTCH_SCALE, scale.coerceIn(0.5f, 2.2f))
+            .putFloat(KEY_NOTCH_OFFSET_X, offsetX.coerceIn(0f, 1f))
+            .putFloat(KEY_NOTCH_OFFSET_Y, offsetY.coerceIn(0f, 1f))
+            .apply()
+    }
+
     fun saveAnimationPrefs(
         context: Context,
         enabled: Boolean,
@@ -391,6 +410,9 @@ object OverlayConfigStore {
             // Default to hidden notch until user explicitly selects a template.
             notchTemplateId = prefs.getInt(KEY_NOTCH_TEMPLATE_ID, -1),
             notchColorVariant = prefs.getString(KEY_NOTCH_COLOR_VARIANT, "black").orEmpty().ifBlank { "black" },
+            notchScale = prefs.getFloat(KEY_NOTCH_SCALE, 1f).coerceIn(0.5f, 2.2f),
+            notchOffsetX = prefs.getFloat(KEY_NOTCH_OFFSET_X, 0.5f).coerceIn(0f, 1f),
+            notchOffsetY = prefs.getFloat(KEY_NOTCH_OFFSET_Y, 0.5f).coerceIn(0f, 1f),
             statusBarHeight = prefs.getFloat(KEY_STATUS_BAR_HEIGHT, SampleCatalog.defaultConfig.statusBarHeight).coerceIn(0f, 1f),
             leftMargin = prefs.getFloat(KEY_STATUS_LEFT_MARGIN, SampleCatalog.defaultConfig.leftMargin).coerceIn(0f, 1f),
             rightMargin = prefs.getFloat(KEY_STATUS_RIGHT_MARGIN, SampleCatalog.defaultConfig.rightMargin).coerceIn(0f, 1f),

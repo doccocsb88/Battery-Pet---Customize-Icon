@@ -2,7 +2,6 @@ package dev.hai.emojibattery.paywall
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -23,6 +22,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,16 +34,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -138,30 +138,19 @@ fun PaywallScreen(
         else -> stringResource(R.string.paywall_price_unavailable)
     }
     val weekWord = stringResource(R.string.week11)
-    val weeklyPrimaryLine: String
-    val weeklySecondaryLine: String?
-    when {
-        loadingPrices -> {
-            weeklyPrimaryLine = stringResource(R.string.paywall_price_loading)
-            weeklySecondaryLine = null
-        }
-        weekly != null && billingState.weeklyHasFreeTrial -> {
-            weeklyPrimaryLine = stringResource(R.string.start_3_days_free_trial)
-            weeklySecondaryLine =
-                "${stringResource(R.string.try_free_for_3_days_then)} ${weekly.displayPrice}/$weekWord"
-        }
-        weekly != null -> {
-            weeklyPrimaryLine = "${weekly.displayPrice}/$weekWord"
-            weeklySecondaryLine = null
-        }
-        else -> {
-            weeklyPrimaryLine = stringResource(R.string.paywall_price_unavailable)
-            weeklySecondaryLine = null
-        }
+    val weeklyTrialDays = billingState.weeklyTrialDays
+    val monthlyTrialDays = billingState.monthlyTrialDays
+    val weeklyFootnote = when {
+        weekly == null -> null
+        billingState.weeklyHasFreeTrial && weeklyTrialDays != null -> "Free for $weeklyTrialDays days"
+        else -> "Billed weekly"
     }
-
-    // Track which plan is selected: 0=monthly, 1=lifetime
-    var selectedPlan by remember { mutableStateOf(1) }
+    val billingDisclaimer = when {
+        monthly != null && billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
+            "Free for $monthlyTrialDays days, then auto-renew monthly. Cancel anytime."
+        monthly != null -> stringResource(R.string.auto_renew_monthly_n_cancel_anytime)
+        else -> stringResource(R.string.one_time_payment)
+    }
     val showContextCopy = paywall?.featureKey != SampleCatalog.FEATURE_EXTRA_STICKER_SLOT && paywall?.featureKey != "settings:store"
 
     Box(
@@ -172,6 +161,16 @@ fun PaywallScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFFAF4EF),
+                            Color(0xFFF9F5F1),
+                            Alpine.Surface,
+                        ),
+                        startY = 180f,
+                    ),
+                )
                 .verticalScroll(rememberScrollState()),
         ) {
             // ─── Hero Section with gradient + header image ───
@@ -188,7 +187,25 @@ fun PaywallScreen(
                         .fillMaxSize(),
                     contentScale = ContentScale.Crop,
                 )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(88.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color(0x33FFF8F1),
+                                    Color(0xCCFCF7F2),
+                                    Color(0xFFFCF7F2),
+                                ),
+                            ),
+                        ),
+                )
             }
+
+            Spacer(Modifier.height(18.dp))
 
             // ─── Benefits Section (tonal layer) ───
             Column(
@@ -204,60 +221,53 @@ fun PaywallScreen(
 
             Spacer(Modifier.height(28.dp))
 
-            // ─── Plan Selection Cards ───
-            Row(
+            // ─── Plan List ───
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 AlpinePlanCard(
-                    modifier = Modifier.weight(1f),
-                    label = stringResource(R.string.monthly).uppercase(),
-                    price = monthPriceLabel,
-                    footnote = stringResource(R.string.auto_renew_monthly_n_cancel_anytime),
-                    selected = selectedPlan == 0,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "WEEKLY",
+                    price = weekly?.displayPrice ?: stringResource(R.string.paywall_price_unavailable),
+                    footnote = weeklyFootnote,
                     badge = null,
                     onClick = {
-                        selectedPlan = 0
+                        weekly?.let { onPurchase(it.productId, it.offerToken) }
+                    },
+                    enabled = weekly != null && !billingState.purchaseInFlight,
+                )
+                AlpinePlanCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = stringResource(R.string.monthly).uppercase(),
+                    price = monthPriceLabel,
+                    footnote = when {
+                        monthly != null && billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
+                            "Free for $monthlyTrialDays days"
+                        else -> "Billed monthly"
+                    },
+                    badge = if (monthly != null && billingState.monthlyHasFreeTrial) "Trial" else null,
+                    onClick = {
+                        monthly?.let { onPurchase(it.productId, it.offerToken) }
                     },
                     enabled = monthly != null && !billingState.purchaseInFlight,
                 )
                 AlpinePlanCard(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
                     label = stringResource(R.string.life_time).uppercase(),
                     price = lifetimePriceLabel,
-                    footnote = stringResource(R.string.one_time_payment),
-                    selected = selectedPlan == 1,
+                    footnote = null,
                     badge = stringResource(R.string.popular),
                     onClick = {
-                        selectedPlan = 1
+                        lifetime?.let { onPurchase(it.productId, null) }
                     },
                     enabled = lifetime != null && !billingState.purchaseInFlight,
                 )
             }
 
             Spacer(Modifier.height(20.dp))
-
-            // ─── Primary CTA (River Stone Pill) ───
-            AlpineCtaButton(
-                primaryLine = weeklyPrimaryLine,
-                secondaryLine = weeklySecondaryLine,
-                hasFreeTrial = weekly != null && billingState.weeklyHasFreeTrial,
-                enabled = weekly != null && !billingState.purchaseInFlight && !billingState.loading,
-                onClick = {
-                    weekly?.let { onPurchase(it.productId, it.offerToken) }
-                },
-            )
-
-            // ─── Subscribe Selected Plan ───
-            if (selectedPlan == 0 && monthly != null) {
-                AlpineSecondaryCtaButton(
-                    text = "${stringResource(R.string.monthly)} · ${monthly.displayPrice}",
-                    enabled = !billingState.purchaseInFlight,
-                    onClick = { onPurchase(monthly.productId, monthly.offerToken) },
-                )
-            }
 
             if (!loadingPrices && monthly == null && lifetime == null && weekly == null && billingState.errorMessage == null) {
                 Text(
@@ -267,6 +277,16 @@ fun PaywallScreen(
                     color = Alpine.OnSurfaceVariant,
                 )
             }
+
+            Text(
+                text = billingDisclaimer,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 10.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = Alpine.OnSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
 
             // ─── Error Message ───
             billingState.errorMessage?.let { message ->
@@ -400,7 +420,9 @@ private fun AlpineBenefitRow(
     text: String,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
@@ -425,33 +447,30 @@ private fun AlpinePlanCard(
     modifier: Modifier = Modifier,
     label: String,
     price: String,
-    footnote: String,
-    selected: Boolean,
+    footnote: String?,
     badge: String?,
     onClick: () -> Unit,
     enabled: Boolean,
 ) {
-    val bgColor by animateColorAsState(
-        targetValue = if (selected) Alpine.SurfaceLowest else Alpine.SurfaceLow,
-        animationSpec = tween(250),
-        label = "planBg",
-    )
     Box(modifier = modifier) {
-        Surface(
+        OutlinedCard(
             modifier = Modifier
                 .fillMaxWidth()
+                .heightIn(min = 84.dp)
                 .clickable(enabled = enabled, onClick = onClick),
             shape = Alpine.RoundXL,
-            color = bgColor,
-            shadowElevation = if (selected) 0.dp else 0.dp,
-            tonalElevation = if (selected) 2.dp else 0.dp,
+            colors = CardDefaults.outlinedCardColors(containerColor = Alpine.SurfaceLowest),
+            border = androidx.compose.foundation.BorderStroke(
+                width = 1.25.dp,
+                color = Alpine.Secondary.copy(alpha = 0.42f),
+            ),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = label,
@@ -459,21 +478,23 @@ private fun AlpinePlanCard(
                         letterSpacing = 0.05.sp,
                     ),
                     fontWeight = FontWeight.Bold,
-                    color = if (selected) Alpine.Primary else Alpine.OnSurfaceVariant,
+                    color = Alpine.Primary,
                 )
                 Text(
                     text = price,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold,
-                    color = if (selected) Alpine.PrimaryDeep else Alpine.OnSurface,
+                    color = Alpine.OnSurface,
                 )
-                Text(
-                    text = footnote,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Alpine.OnSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 16.sp,
-                )
+                if (!footnote.isNullOrBlank()) {
+                    Text(
+                        text = footnote,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Alpine.OnSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 14.sp,
+                    )
+                }
             }
         }
 
@@ -552,33 +573,6 @@ private fun AlpineCtaButton(
                 )
             }
         }
-    }
-}
-
-// ─── Secondary CTA (subscribe selected plan) ────────────────────
-@Composable
-private fun AlpineSecondaryCtaButton(
-    text: String,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp)
-            .clip(Alpine.RoundFull)
-            .background(Alpine.SurfaceHigh)
-            .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 24.dp, vertical = 14.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = Alpine.PrimaryDeep,
-            textAlign = TextAlign.Center,
-        )
     }
 }
 

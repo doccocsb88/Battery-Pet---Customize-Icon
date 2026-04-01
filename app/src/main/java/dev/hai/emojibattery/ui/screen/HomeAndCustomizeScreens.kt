@@ -182,8 +182,6 @@ private fun HomeScreenScaffold(
                 onLeftSecondary = onOpenFeedback,
                 onSearch = onOpenSearch,
                 showLeftSecondary = false,
-                showEnableBanner = !uiState.accessibilityGranted,
-                onStart = onOpenAccessibility,
             )
         },
     ) { innerPadding ->
@@ -194,12 +192,12 @@ private fun HomeScreenScaffold(
                 .padding(horizontal = 12.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (uiState.accessibilityGranted) {
-                EmojiBatteryOverlayToggleCard(
-                    enabled = uiState.statusBarOverlayEnabled,
-                    onToggle = onSetOverlayEnabled,
-                )
-            }
+            EmojiBatteryOverlayAccessCard(
+                accessibilityGranted = uiState.accessibilityGranted,
+                enabled = uiState.statusBarOverlayEnabled,
+                onToggle = onSetOverlayEnabled,
+                onRequestAccessibility = onOpenAccessibility,
+            )
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -300,6 +298,7 @@ internal fun CustomizeHubScreen(
     onOpenSticker: () -> Unit,
     onOpenFeature: (CustomizeEntry) -> Unit,
     onOpenStatusBarCustom: () -> Unit,
+    onOpenAccessibility: () -> Unit,
     onOpenSearch: () -> Unit,
     onOpenNotch: () -> Unit,
     onOpenAnimation: () -> Unit,
@@ -360,9 +359,11 @@ internal fun CustomizeHubScreen(
                 .padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            EmojiBatteryOverlayToggleCard(
+            EmojiBatteryOverlayAccessCard(
+                accessibilityGranted = uiState.accessibilityGranted,
                 enabled = uiState.statusBarOverlayEnabled,
                 onToggle = onSetOverlayEnabled,
+                onRequestAccessibility = onOpenAccessibility,
             )
             PromoBannerCard(
                 backgroundRes = R.drawable.img_bg_emoji_sticker,
@@ -639,45 +640,6 @@ internal fun HomeRoundIcon(
 }
 
 @Composable
-internal fun EnableBanner(
-    onStart: () -> Unit,
-) {
-    Surface(
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, Color(0xFFD8DDE2)),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                stringResource(R.string.home_enable_banner),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.ExtraBold,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(22.dp))
-                    .background(Color(0xFF8FB6D4)),
-            ) {
-                TextButton(onClick = onStart) {
-                    Text(
-                        stringResource(R.string.home_start),
-                        color = Color.White,
-                        fontWeight = FontWeight.ExtraBold,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 internal fun OriginalTopShell(
     title: String,
     onLeftSecondary: () -> Unit,
@@ -713,9 +675,6 @@ internal fun OriginalTopShell(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Spacer(Modifier.width(40.dp))
                 }
-            }
-            if (showEnableBanner) {
-                EnableBanner(onStart = onStart ?: onSearch)
             }
         }
     }

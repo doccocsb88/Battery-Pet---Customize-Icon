@@ -120,6 +120,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -333,9 +334,11 @@ internal fun StatusBarCustomScreen(
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            EmojiBatteryOverlayToggleCard(
+            EmojiBatteryOverlayAccessCard(
+                accessibilityGranted = uiState.accessibilityGranted,
                 enabled = uiState.statusBarOverlayEnabled,
                 onToggle = onSetOverlayEnabled,
+                onRequestAccessibility = { onAccessibilityChanged(true) },
             )
             StatusBarLivePreviewCard(
                 uiState = uiState,
@@ -851,8 +854,9 @@ private fun StatusBarLivePreviewCard(
 ) {
     val context = LocalContext.current
     val config = uiState.editingConfig
-    val notchTemplate = remember(context) {
-        NotchTemplateCatalog.resolve(OverlayConfigStore.read(context).notchTemplateId)
+    val overlaySnapshot = OverlayConfigStore.read(context)
+    val notchTemplate = remember(overlaySnapshot.notchTemplateId) {
+        NotchTemplateCatalog.resolve(overlaySnapshot.notchTemplateId)
     }
     val dateTimeConfig = uiState.featureConfigs[CustomizeEntry.DateTime]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
@@ -963,15 +967,45 @@ private fun StatusBarLivePreviewCard(
                 else -> Box(Modifier.fillMaxSize().background(Color(config.backgroundColor)))
             }
             notchTemplate.drawableRes?.let { notchDrawable ->
-                Image(
-                    painter = painterResource(notchDrawable),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(notchPreviewAlignment(notchTemplate.gravity))
-                        .padding(top = 2.dp)
-                        .size(width = 102.dp, height = 14.dp),
-                    contentScale = ContentScale.FillBounds,
-                )
+                val notchDrawableRef = remember(notchDrawable) {
+                    AppCompatResources.getDrawable(context, notchDrawable)
+                }
+                val intrinsicWidth = notchDrawableRef?.intrinsicWidth ?: 0
+                val intrinsicHeight = notchDrawableRef?.intrinsicHeight ?: 0
+                val notchAspect = if (intrinsicWidth > 0 && intrinsicHeight > 0) {
+                    intrinsicWidth.toFloat() / intrinsicHeight.toFloat()
+                } else {
+                    960f / 132f
+                }
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    val notchScale = overlaySnapshot.notchScale.coerceIn(0.5f, 2.2f)
+                    val notchHeight = (18.dp * notchScale).coerceAtLeast(12.dp)
+                    val notchWidth = (notchHeight * notchAspect).coerceAtLeast(notchHeight)
+                    val availableX = (maxWidth - notchWidth).coerceAtLeast(0.dp)
+                    val availableY = (maxHeight - notchHeight).coerceAtLeast(0.dp)
+                    Image(
+                        painter = painterResource(notchDrawable),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .offset(
+                                x = availableX * overlaySnapshot.notchOffsetX.coerceIn(0f, 1f),
+                                y = availableY * overlaySnapshot.notchOffsetY.coerceIn(0f, 1f),
+                            )
+                            .size(width = notchWidth, height = notchHeight),
+                        contentScale = ContentScale.Fit,
+                        colorFilter = ColorFilter.tint(
+                            Color(
+                                previewResolveColorFromVariant(
+                                    overlaySnapshot.notchColorVariant,
+                                    0xFF11111A.toInt(),
+                                ),
+                            ),
+                        ),
+                    )
+                }
             }
             Row(
                 modifier = Modifier
