@@ -59,6 +59,7 @@ class StatusBarOverlayManager(
     data class LiveStatus(
         val batteryPercent: Int = 0,
         val charging: Boolean = false,
+        val hotspotEnabled: Boolean = false,
         val wifiEnabled: Boolean = false,
         val mobileConnected: Boolean = false,
         val airplaneMode: Boolean = false,
@@ -80,8 +81,10 @@ class StatusBarOverlayManager(
     private val rightCluster = LinearLayout(context)
     private val clockView = TextClock(context)
     private val dateView = TextClock(context)
-    private val wifiView = TextView(context)
-    private val signalView = TextView(context)
+    private val hotspotIconView = ImageView(context)
+    private val wifiIconView = ImageView(context)
+    private val dataIconView = ImageView(context)
+    private val signalIconView = ImageView(context)
     private val airplaneIconView = ImageView(context)
     private val batteryArtContainer = FrameLayout(context)
     private val emojiArtView = ImageView(context)
@@ -188,17 +191,24 @@ class StatusBarOverlayManager(
         ringerIconView.scaleType = ImageView.ScaleType.FIT_CENTER
         ringerIconView.adjustViewBounds = true
         ringerIconView.visibility = View.GONE
-        wifiView.textSize = 11f
-        signalView.textSize = 11f
+        hotspotIconView.scaleType = ImageView.ScaleType.FIT_CENTER
+        hotspotIconView.adjustViewBounds = true
+        hotspotIconView.visibility = View.GONE
+        wifiIconView.scaleType = ImageView.ScaleType.FIT_CENTER
+        wifiIconView.adjustViewBounds = true
+        wifiIconView.visibility = View.GONE
+        dataIconView.scaleType = ImageView.ScaleType.FIT_CENTER
+        dataIconView.adjustViewBounds = true
+        dataIconView.visibility = View.GONE
+        signalIconView.scaleType = ImageView.ScaleType.FIT_CENTER
+        signalIconView.adjustViewBounds = true
+        signalIconView.visibility = View.GONE
         airplaneIconView.scaleType = ImageView.ScaleType.FIT_CENTER
         airplaneIconView.adjustViewBounds = true
         airplaneIconView.visibility = View.GONE
-        wifiView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
-        signalView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         emojiTextView.setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
         emojiTextView.includeFontPadding = false
         emojiTextView.gravity = Gravity.CENTER
-        signalView.setPadding(12, 0, 0, 0)
         batteryView.setPadding(12, 0, 0, 0)
         chargeView.setPadding(4, 0, 0, 0)
         emojiArtView.scaleType = ImageView.ScaleType.FIT_CENTER
@@ -318,8 +328,30 @@ class StatusBarOverlayManager(
                 marginEnd = 6
             },
         )
-        rightCluster.addView(wifiView)
-        rightCluster.addView(signalView)
+        rightCluster.addView(
+            hotspotIconView,
+            LinearLayout.LayoutParams(baseArtSizePx, baseArtSizePx).apply {
+                marginEnd = 6
+            },
+        )
+        rightCluster.addView(
+            wifiIconView,
+            LinearLayout.LayoutParams(baseArtSizePx, baseArtSizePx).apply {
+                marginEnd = 6
+            },
+        )
+        rightCluster.addView(
+            dataIconView,
+            LinearLayout.LayoutParams(baseArtSizePx, baseArtSizePx).apply {
+                marginEnd = 6
+            },
+        )
+        rightCluster.addView(
+            signalIconView,
+            LinearLayout.LayoutParams(baseArtSizePx, baseArtSizePx).apply {
+                marginEnd = 6
+            },
+        )
         // Draw percentage/text before battery-emoji art cluster.
         rightCluster.addView(batteryView)
         rightCluster.addView(batteryArtContainer)
@@ -744,11 +776,6 @@ class StatusBarOverlayManager(
         clockView.setTextColor(resolveColorFromVariant(parsedDateTime.colorId, "#111111".toColorInt()))
         dateView.setTextColor(resolveColorFromVariant(parsedDateTime.colorId, "#555555".toColorInt()))
 
-        val wifiLabel = when {
-            liveStatus.wifiEnabled -> if (hotspotConfig.enabled) hotspotLabel(hotspotConfig.variant) else "WIFI"
-            liveStatus.mobileConnected -> dataLabel(dataConfig.variant)
-            else -> "OFF"
-        }
         val airplaneVisible = airplaneConfig.enabled && liveStatus.airplaneMode
         val airplaneSizePx = ((8f + (airplaneConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
             .roundToInt()
@@ -770,15 +797,92 @@ class StatusBarOverlayManager(
         } else {
             airplaneIconView.setImageDrawable(null)
         }
-        wifiView.visibility = if (wifiConfig.enabled) View.VISIBLE else View.GONE
-        wifiView.text = wifiLabel
-        wifiView.textSize = 8f + (wifiConfig.intensity.coerceIn(0f, 1f) * 12f)
-        wifiView.setTextColor(resolveColorFromVariant(wifiConfig.variant, "#333333".toColorInt()))
+        val wifiVisible = wifiConfig.enabled && liveStatus.wifiEnabled
+        val dataVisible = dataConfig.enabled && !liveStatus.wifiEnabled && liveStatus.mobileConnected
+        val signalVisible = signalConfig.enabled && !liveStatus.airplaneMode
+        val hotspotVisible = hotspotConfig.enabled && liveStatus.hotspotEnabled
+        val hotspotSizePx = ((8f + (hotspotConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
+            .roundToInt()
+            .coerceAtLeast((12f * density).roundToInt())
+        val wifiSizePx = ((8f + (wifiConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
+            .roundToInt()
+            .coerceAtLeast((12f * density).roundToInt())
+        val dataSizePx = ((8f + (dataConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
+            .roundToInt()
+            .coerceAtLeast((12f * density).roundToInt())
+        val signalSizePx = ((8f + (signalConfig.intensity.coerceIn(0f, 1f) * 12f)) * density)
+            .roundToInt()
+            .coerceAtLeast((12f * density).roundToInt())
+        (hotspotIconView.layoutParams as? LinearLayout.LayoutParams)?.also { params ->
+            params.width = hotspotSizePx
+            params.height = hotspotSizePx
+            hotspotIconView.layoutParams = params
+        }
+        (wifiIconView.layoutParams as? LinearLayout.LayoutParams)?.also { params ->
+            params.width = wifiSizePx
+            params.height = wifiSizePx
+            wifiIconView.layoutParams = params
+        }
+        (dataIconView.layoutParams as? LinearLayout.LayoutParams)?.also { params ->
+            params.width = dataSizePx
+            params.height = dataSizePx
+            dataIconView.layoutParams = params
+        }
+        (signalIconView.layoutParams as? LinearLayout.LayoutParams)?.also { params ->
+            params.width = signalSizePx
+            params.height = signalSizePx
+            signalIconView.layoutParams = params
+        }
+        hotspotIconView.visibility = if (hotspotVisible) View.VISIBLE else View.GONE
+        if (hotspotVisible) {
+            hotspotIconView.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.ic_item_hotspot)?.mutate(),
+            )
+            hotspotIconView.setColorFilter(
+                resolveColorFromVariant(hotspotConfig.variant, "#333333".toColorInt()),
+                PorterDuff.Mode.SRC_IN,
+            )
+        } else {
+            hotspotIconView.setImageDrawable(null)
+        }
+        wifiIconView.visibility = if (wifiVisible) View.VISIBLE else View.GONE
+        if (wifiVisible) {
+            wifiIconView.setImageDrawable(
+                AppCompatResources.getDrawable(context, R.drawable.galaxy_wifi_4s)?.mutate(),
+            )
+            wifiIconView.setColorFilter(
+                resolveColorFromVariant(wifiConfig.variant, "#333333".toColorInt()),
+                PorterDuff.Mode.SRC_IN,
+            )
+        } else {
+            wifiIconView.setImageDrawable(null)
+        }
 
-        signalView.visibility = if (signalConfig.enabled && !liveStatus.airplaneMode) View.VISIBLE else View.GONE
-        signalView.text = if (liveStatus.airplaneMode) "" else signalGlyph(liveStatus.signalLevel)
-        signalView.textSize = 8f + (signalConfig.intensity.coerceIn(0f, 1f) * 12f)
-        signalView.setTextColor(resolveColorFromVariant(signalConfig.variant, "#333333".toColorInt()))
+        dataIconView.visibility = if (dataVisible) View.VISIBLE else View.GONE
+        if (dataVisible) {
+            dataIconView.setImageDrawable(
+                AppCompatResources.getDrawable(context, dataIconRes(dataConfig.variant))?.mutate(),
+            )
+            dataIconView.setColorFilter(
+                resolveColorFromVariant(dataColorVariant(dataConfig.variant), "#333333".toColorInt()),
+                PorterDuff.Mode.SRC_IN,
+            )
+        } else {
+            dataIconView.setImageDrawable(null)
+        }
+
+        signalIconView.visibility = if (signalVisible) View.VISIBLE else View.GONE
+        if (signalVisible) {
+            signalIconView.setImageDrawable(
+                AppCompatResources.getDrawable(context, signalIconRes(liveStatus.signalLevel))?.mutate(),
+            )
+            signalIconView.setColorFilter(
+                resolveColorFromVariant(signalConfig.variant, "#333333".toColorInt()),
+                PorterDuff.Mode.SRC_IN,
+            )
+        } else {
+            signalIconView.setImageDrawable(null)
+        }
         val effectiveRingerStyle = when (liveStatus.ringerMode) {
             AudioManager.RINGER_MODE_SILENT -> "mute"
             AudioManager.RINGER_MODE_VIBRATE -> "wave"
@@ -1093,12 +1197,12 @@ class StatusBarOverlayManager(
         attached = true
     }
 
-    private fun signalGlyph(level: Int): String = when (level.coerceIn(0, 4)) {
-        0 -> "▱▱▱▱"
-        1 -> "▰▱▱▱"
-        2 -> "▰▰▱▱"
-        3 -> "▰▰▰▱"
-        else -> "▰▰▰▰"
+    private fun signalIconRes(level: Int): Int = when (level.coerceIn(0, 4)) {
+        0 -> R.drawable.galaxy_signal_0
+        1 -> R.drawable.galaxy_signal_1
+        2 -> R.drawable.galaxy_signal_2
+        3 -> R.drawable.galaxy_signal_3
+        else -> R.drawable.galaxy_signal_4
     }
 
     private fun applyDateTimeStyle(styleId: String) {
@@ -1115,21 +1219,19 @@ class StatusBarOverlayManager(
         dateView.format24Hour = datePattern
     }
 
-    private fun hotspotLabel(variant: String): String = when (variant.lowercase()) {
-        "dot" -> "HS•"
-        "ring" -> "◎HS"
-        else -> "HOT"
+    private fun dataIconRes(variant: String): Int = when (dataStyleVariant(variant).lowercase()) {
+        "2g" -> R.drawable.galaxy_data_2g
+        "3g" -> R.drawable.galaxy_data_3g
+        "4g" -> R.drawable.galaxy_data_4g
+        "6g" -> R.drawable.galaxy_data_6g
+        else -> R.drawable.galaxy_data_5g
     }
 
-    private fun airplaneLabel(variant: String): String = when (variant.lowercase()) {
-        "solid" -> "🛫"
-        "tiny" -> "AIR"
-        else -> "✈"
-    }
+    private fun dataStyleVariant(variant: String): String = variant.substringBefore("::").ifBlank { "5G" }
 
-    private fun dataLabel(variant: String): String {
-        val style = variant.substringBefore("::").ifBlank { "LTE" }
-        return style.uppercase()
+    private fun dataColorVariant(variant: String): String {
+        val color = variant.substringAfter("::", missingDelimiterValue = "")
+        return if (color.isBlank()) "blue" else color
     }
 
     private fun ringerIconRes(variant: String): Int = when (variant.lowercase()) {

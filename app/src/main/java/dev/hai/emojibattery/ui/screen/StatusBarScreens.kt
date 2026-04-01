@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.graphics.Bitmap
 import android.graphics.Color as AndroidColor
 import android.media.AudioManager
+import android.net.wifi.WifiManager
 import android.provider.Settings
 
 import androidx.compose.animation.AnimatedVisibility
@@ -855,6 +856,18 @@ private fun StatusBarLivePreviewCard(
     val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
         ?: FeatureConfig(enabled = false, variant = "chg_1")
+    val wifiConfig = uiState.featureConfigs[CustomizeEntry.Wifi]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Wifi]
+        ?: FeatureConfig(enabled = false, variant = "blue")
+    val signalConfig = uiState.featureConfigs[CustomizeEntry.Signal]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Signal]
+        ?: FeatureConfig(enabled = false, variant = "blue")
+    val dataConfig = uiState.featureConfigs[CustomizeEntry.Data]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Data]
+        ?: FeatureConfig(enabled = false, variant = "5G::blue")
+    val hotspotConfig = uiState.featureConfigs[CustomizeEntry.Hotspot]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Hotspot]
+        ?: FeatureConfig(enabled = false, variant = "blue")
     val airplaneConfig = uiState.featureConfigs[CustomizeEntry.Airplane]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Airplane]
         ?: FeatureConfig(enabled = false, variant = "blue")
@@ -880,6 +893,12 @@ private fun StatusBarLivePreviewCard(
     }?.takeIf { it != 0 }
     val chargeText = if (chargeConfig.enabled) previewChargeGlyph(chargeConfig.variant) else ""
     val airplaneVisible = airplaneConfig.enabled && previewAirplaneModeOn(context)
+    val hotspotVisible = hotspotConfig.enabled && previewHotspotOn(context)
+    val wifiVisible = wifiConfig.enabled
+    val dataVisible = !wifiVisible && dataConfig.enabled
+    val signalVisible = signalConfig.enabled && !airplaneVisible
+    val dataStyleId = previewDataStyleVariant(dataConfig.variant)
+    val dataColorId = previewDataColorVariant(dataConfig.variant)
     val previewRingerMode = previewRingerMode(context)
     val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
     val ringerRes = previewRingerIconRes(context, previewRingerMode, parsedRinger.styleId)
@@ -1020,19 +1039,61 @@ private fun StatusBarLivePreviewCard(
                                     ),
                                 )
                             }
-                            Text(
-                                "WIFI",
-                                color = Color(0xFF333333),
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
-                            )
-                            Text(
-                                "▰▰▰▱",
-                                color = Color(0xFF333333),
-                                fontSize = 11.sp,
-                                fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
-                            )
+                            if (hotspotVisible) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_item_hotspot),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(hotspotConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (hotspotVisible) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_item_hotspot),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(hotspotConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (wifiVisible) {
+                                Image(
+                                    painter = painterResource(R.drawable.galaxy_wifi_4s),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(wifiConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (dataVisible) {
+                                Image(
+                                    painter = painterResource(previewDataIconRes(dataStyleId)),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(dataColorId, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (signalVisible) {
+                                Image(
+                                    painter = painterResource(previewSignalIconRes()),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(signalConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
                             Text(
                                 if (batteryArtUrl != null || batteryArtDrawableRes != null) {
                                     percentageText.trim()
@@ -1109,6 +1170,15 @@ private fun previewChargeGlyph(variant: String): String = when (variant.lowercas
 private fun previewAirplaneModeOn(context: Context): Boolean =
     Settings.Global.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1
 
+private fun previewHotspotOn(context: Context): Boolean {
+    val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager ?: return false
+    return runCatching {
+        val method = wifiManager.javaClass.getDeclaredMethod("isWifiApEnabled")
+        method.isAccessible = true
+        (method.invoke(wifiManager) as? Boolean) == true
+    }.getOrDefault(false)
+}
+
 private fun previewRingerMode(context: Context): Int =
     context.getSystemService(AudioManager::class.java)?.ringerMode ?: AudioManager.RINGER_MODE_NORMAL
 
@@ -1147,6 +1217,29 @@ private fun previewResolveColorFromVariant(variant: String?, fallback: Int): Int
         "yellow" -> 0xFFF1DF1E.toInt()
         else -> fallback
     }
+}
+
+private fun previewSignalIconRes(level: Int = 3): Int = when (level.coerceIn(0, 4)) {
+    0 -> R.drawable.galaxy_signal_0
+    1 -> R.drawable.galaxy_signal_1
+    2 -> R.drawable.galaxy_signal_2
+    3 -> R.drawable.galaxy_signal_3
+    else -> R.drawable.galaxy_signal_4
+}
+
+private fun previewDataIconRes(styleId: String): Int = when (styleId.lowercase()) {
+    "2g" -> R.drawable.galaxy_data_2g
+    "3g" -> R.drawable.galaxy_data_3g
+    "4g" -> R.drawable.galaxy_data_4g
+    "6g" -> R.drawable.galaxy_data_6g
+    else -> R.drawable.galaxy_data_5g
+}
+
+private fun previewDataStyleVariant(raw: String): String = raw.substringBefore("::").ifBlank { "5G" }
+
+private fun previewDataColorVariant(raw: String): String {
+    val colorId = raw.substringAfter("::", "")
+    return if (colorId.isBlank()) "blue" else colorId
 }
 
 @Composable
@@ -2357,6 +2450,18 @@ internal fun BatteryPreviewCard(
                     val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
                         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
                         ?: FeatureConfig(enabled = false, variant = "chg_1")
+                    val wifiConfig = uiState.featureConfigs[CustomizeEntry.Wifi]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Wifi]
+                        ?: FeatureConfig(enabled = false, variant = "blue")
+                    val signalConfig = uiState.featureConfigs[CustomizeEntry.Signal]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Signal]
+                        ?: FeatureConfig(enabled = false, variant = "blue")
+                    val dataConfig = uiState.featureConfigs[CustomizeEntry.Data]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Data]
+                        ?: FeatureConfig(enabled = false, variant = "5G::blue")
+                    val hotspotConfig = uiState.featureConfigs[CustomizeEntry.Hotspot]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Hotspot]
+                        ?: FeatureConfig(enabled = false, variant = "blue")
                     val airplaneConfig = uiState.featureConfigs[CustomizeEntry.Airplane]
                         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Airplane]
                         ?: FeatureConfig(enabled = false, variant = "blue")
@@ -2376,6 +2481,12 @@ internal fun BatteryPreviewCard(
                     }?.takeIf { it != 0 }
                     val chargeText = if (chargeConfig.enabled) previewChargeGlyph(chargeConfig.variant) else ""
                     val airplaneVisible = airplaneConfig.enabled && previewAirplaneModeOn(context)
+                    val hotspotVisible = hotspotConfig.enabled && previewHotspotOn(context)
+                    val wifiVisible = wifiConfig.enabled
+                    val dataVisible = !wifiVisible && dataConfig.enabled
+                    val signalVisible = signalConfig.enabled && !airplaneVisible
+                    val dataStyleId = previewDataStyleVariant(dataConfig.variant)
+                    val dataColorId = previewDataColorVariant(dataConfig.variant)
                     val previewRingerMode = previewRingerMode(context)
                     val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
                     val ringerRes = previewRingerIconRes(context, previewRingerMode, parsedRinger.styleId)
@@ -2426,8 +2537,39 @@ internal fun BatteryPreviewCard(
                                     ),
                                 )
                             }
-                            Text(stringResource(R.string.demo_wifi), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("▰▰▰▱", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            if (wifiVisible) {
+                                Image(
+                                    painter = painterResource(R.drawable.galaxy_wifi_4s),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(wifiConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (dataVisible) {
+                                Image(
+                                    painter = painterResource(previewDataIconRes(dataStyleId)),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(dataColorId, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (signalVisible) {
+                                Image(
+                                    painter = painterResource(previewSignalIconRes()),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(signalConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
                             Text(
                                 if (batUrl != null || batDrawable != null) {
                                     if (config.showPercentage) "56%" else ""

@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.BatteryManager
 import android.os.VibrationEffect
@@ -144,6 +145,7 @@ class OverlayAccessibilityService : AccessibilityService() {
             StatusBarOverlayManager.LiveStatus(
                 batteryPercent = batteryPercent,
                 charging = charging,
+                hotspotEnabled = isHotspotEnabled(),
                 wifiEnabled = isWifiEnabled(),
                 mobileConnected = isMobileConnected(),
                 airplaneMode = isAirplaneModeOn(),
@@ -239,6 +241,15 @@ class OverlayAccessibilityService : AccessibilityService() {
 
     private fun isAirplaneModeOn(): Boolean {
         return Settings.Global.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1
+    }
+
+    private fun isHotspotEnabled(): Boolean {
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager ?: return false
+        return runCatching {
+            val method = wifiManager.javaClass.getDeclaredMethod("isWifiApEnabled")
+            method.isAccessible = true
+            (method.invoke(wifiManager) as? Boolean) == true
+        }.getOrDefault(false)
     }
 
     private fun readRingerMode(): Int {
