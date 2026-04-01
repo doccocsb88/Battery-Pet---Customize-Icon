@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.view.Gravity
 import android.graphics.Bitmap
 import android.graphics.Color as AndroidColor
+import android.media.AudioManager
+import android.provider.Settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -103,6 +105,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -852,6 +855,13 @@ private fun StatusBarLivePreviewCard(
     val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
         ?: FeatureConfig(enabled = false, variant = "chg_1")
+    val airplaneConfig = uiState.featureConfigs[CustomizeEntry.Airplane]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Airplane]
+        ?: FeatureConfig(enabled = false, variant = "blue")
+    val ringerConfig = uiState.featureConfigs[CustomizeEntry.Ringer]
+        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Ringer]
+        ?: FeatureConfig(enabled = false, variant = "style=bell;color=blue")
+    val parsedRinger = parseRingerVariant(ringerConfig.variant)
     val parsedDateTime = parseDateTimeVariant(dateTimeConfig.variant)
     val datePreview = previewDateStyle(parsedDateTime.styleId)
     val batteryVolio = statusBarBatteryItem(uiState, config.batteryPresetId)
@@ -869,6 +879,10 @@ private fun StatusBarLivePreviewCard(
         context.resources.getIdentifier(it, "drawable", context.packageName)
     }?.takeIf { it != 0 }
     val chargeText = if (chargeConfig.enabled) previewChargeGlyph(chargeConfig.variant) else ""
+    val airplaneVisible = airplaneConfig.enabled && previewAirplaneModeOn(context)
+    val previewRingerMode = previewRingerMode(context)
+    val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
+    val ringerRes = previewRingerIconRes(previewRingerMode, parsedRinger.styleId)
     val rightText = "$batteryText$percentageText".trim()
     val batteryArtUrl = batteryVolio?.batteryArtUrl?.takeIf { it.isNotBlank() }
         ?: batteryVolio?.thumbnailUrl?.takeIf { it.isNotBlank() }
@@ -984,6 +998,28 @@ private fun StatusBarLivePreviewCard(
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
+                            if (ringerVisible) {
+                                Image(
+                                    painter = painterResource(ringerRes),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(parsedRinger.colorId, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (airplaneVisible) {
+                                Image(
+                                    painter = painterResource(R.drawable.galaxy_airplane),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(airplaneConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
                             Text(
                                 "WIFI",
                                 color = Color(0xFF333333),
@@ -1068,6 +1104,37 @@ private fun previewChargeGlyph(variant: String): String = when (variant.lowercas
     "chg_11" -> "⌇"
     "chg_12" -> "⋇"
     else -> "⚡"
+}
+
+private fun previewAirplaneModeOn(context: Context): Boolean =
+    Settings.Global.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1
+
+private fun previewRingerMode(context: Context): Int =
+    context.getSystemService(AudioManager::class.java)?.ringerMode ?: AudioManager.RINGER_MODE_NORMAL
+
+private fun previewRingerIconRes(ringerMode: Int, fallbackStyleId: String): Int = when (ringerMode) {
+    AudioManager.RINGER_MODE_SILENT -> android.R.drawable.ic_lock_silent_mode
+    AudioManager.RINGER_MODE_VIBRATE -> R.drawable.ic_vibrate_feedback_32
+    else -> when (fallbackStyleId.lowercase()) {
+        "mute" -> android.R.drawable.ic_lock_silent_mode
+        "wave" -> R.drawable.ic_vibrate_feedback_32
+        else -> android.R.drawable.ic_lock_silent_mode_off
+    }
+}
+
+private fun previewResolveColorFromVariant(variant: String?, fallback: Int): Int {
+    val raw = variant.orEmpty()
+    if (raw.startsWith("picker#", ignoreCase = true)) {
+        return raw.removePrefix("picker#").toLongOrNull(16)?.toInt() ?: fallback
+    }
+    return when (raw.lowercase()) {
+        "blue" -> 0xFF2952F4.toInt()
+        "green" -> 0xFF2BDF52.toInt()
+        "orange" -> 0xFFF18410.toInt()
+        "black" -> 0xFF11111A.toInt()
+        "yellow" -> 0xFFF1DF1E.toInt()
+        else -> fallback
+    }
 }
 
 @Composable
@@ -2278,6 +2345,13 @@ internal fun BatteryPreviewCard(
                     val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
                         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
                         ?: FeatureConfig(enabled = false, variant = "chg_1")
+                    val airplaneConfig = uiState.featureConfigs[CustomizeEntry.Airplane]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Airplane]
+                        ?: FeatureConfig(enabled = false, variant = "blue")
+                    val ringerConfig = uiState.featureConfigs[CustomizeEntry.Ringer]
+                        ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Ringer]
+                        ?: FeatureConfig(enabled = false, variant = "style=bell;color=blue")
+                    val parsedRinger = parseRingerVariant(ringerConfig.variant)
                     val defaultCommonScale = SampleCatalog.defaultConfig.emojiScale.coerceAtLeast(0.01f)
                     val commonScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultCommonScale).coerceIn(0.35f, 2.2f)
                     val emojiAdjustmentScale = config.emojiAdjustmentScale.coerceIn(0.35f, 2.2f)
@@ -2289,6 +2363,10 @@ internal fun BatteryPreviewCard(
                         context.resources.getIdentifier(it, "drawable", context.packageName)
                     }?.takeIf { it != 0 }
                     val chargeText = if (chargeConfig.enabled) previewChargeGlyph(chargeConfig.variant) else ""
+                    val airplaneVisible = airplaneConfig.enabled && previewAirplaneModeOn(context)
+                    val previewRingerMode = previewRingerMode(context)
+                    val ringerVisible = ringerConfig.enabled && previewRingerMode != AudioManager.RINGER_MODE_NORMAL
+                    val ringerRes = previewRingerIconRes(previewRingerMode, parsedRinger.styleId)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -2314,6 +2392,28 @@ internal fun BatteryPreviewCard(
                             }
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                            if (ringerVisible) {
+                                Image(
+                                    painter = painterResource(ringerRes),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(parsedRinger.colorId, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
+                            if (airplaneVisible) {
+                                Image(
+                                    painter = painterResource(R.drawable.galaxy_airplane),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(
+                                        Color(previewResolveColorFromVariant(airplaneConfig.variant, AndroidColor.parseColor("#333333"))),
+                                    ),
+                                )
+                            }
                             Text(stringResource(R.string.demo_wifi), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("▰▰▰▱", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text(
