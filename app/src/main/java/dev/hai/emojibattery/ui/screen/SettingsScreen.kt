@@ -38,7 +38,6 @@ private val AccentIconBlue = Color(0xFF8FB6D4)
 @Composable
 internal fun SettingsScreen(
     uiState: AppUiState,
-    onBack: () -> Unit,
     onOpenLanguage: () -> Unit,
     onReplayTutorial: () -> Unit,
     onOpenStore: () -> Unit,
@@ -59,9 +58,7 @@ internal fun SettingsScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            SettingsTopBar(
-                onBack = onBack,
-            )
+            SettingsTopBar()
         },
     ) { innerPadding ->
         Column(
@@ -136,7 +133,6 @@ internal fun SettingsRow(
 
 @Composable
 internal fun SettingsTopBar(
-    onBack: () -> Unit,
 ) {
     Surface(color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)) {
         Column(
@@ -150,13 +146,7 @@ internal fun SettingsTopBar(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onBack) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_back_40_new),
-                        contentDescription = stringResource(R.string.cd_back),
-                        modifier = Modifier.size(40.dp),
-                    )
-                }
+                Spacer(Modifier.size(40.dp))
                 Text(stringResource(R.string.settings_screen_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.size(40.dp))
             }

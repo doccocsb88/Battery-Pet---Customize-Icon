@@ -39,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -85,7 +87,76 @@ internal fun PermissionBanner(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Switch(checked = enabled, onCheckedChange = onToggle)
+            AppSwitch(checked = enabled, onCheckedChange = onToggle)
+        }
+    }
+}
+
+@Composable
+internal fun AppSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    // Override M3 defaults to remove the pink-ish disabled tint and keep a neutral, on-brand look.
+    val checkedTrack = Color(0xFF8FB6D4) // matches the app's accent blue
+    val uncheckedTrack = Color(0xFFE6EEF5) // soft neutral (not pink)
+    val uncheckedBorder = Color(0xFFD6E0E8)
+    val disabledUncheckedTrack = Color(0xFFF1F5F9)
+    val disabledCheckedTrack = Color(0xFFB8C8D6)
+    val thumb = Color.White
+    val disabledThumb = Color(0xFFF8FAFC)
+
+    Switch(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        enabled = enabled,
+        modifier = modifier,
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = thumb,
+            checkedTrackColor = checkedTrack,
+            checkedBorderColor = checkedTrack,
+            uncheckedThumbColor = thumb,
+            uncheckedTrackColor = uncheckedTrack,
+            uncheckedBorderColor = uncheckedBorder,
+            disabledCheckedThumbColor = disabledThumb,
+            disabledCheckedTrackColor = disabledCheckedTrack,
+            disabledCheckedBorderColor = disabledCheckedTrack,
+            disabledUncheckedThumbColor = disabledThumb,
+            disabledUncheckedTrackColor = disabledUncheckedTrack,
+            disabledUncheckedBorderColor = uncheckedBorder,
+        ),
+    )
+}
+
+@Composable
+internal fun EmojiBatteryOverlayToggleCard(
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    // Keep identical styling to the toggle card used in Battery Troll for consistency across screens.
+    val shape = RoundedCornerShape(20.dp)
+    val strokeColor = Color(0xFF8FB6D4)
+    val background = Color(0xFFF2F2F2)
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = shape,
+        border = BorderStroke(1.dp, strokeColor),
+        color = background,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = stringResource(R.string.enable_disable_emoji_battery),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            AppSwitch(checked = enabled, onCheckedChange = onToggle)
         }
     }
 }
@@ -122,7 +193,7 @@ internal fun SettingToggle(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(label)
-            Switch(checked = value, onCheckedChange = onChange)
+            AppSwitch(checked = value, onCheckedChange = onChange)
         }
     }
 }

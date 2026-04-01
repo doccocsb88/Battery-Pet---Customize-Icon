@@ -139,10 +139,7 @@ internal fun ChargeFeatureScreen(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
-                        Switch(
-                            checked = config.enabled,
-                            onCheckedChange = onToggleEnabled,
-                        )
+                        AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                     }
                 }
             }

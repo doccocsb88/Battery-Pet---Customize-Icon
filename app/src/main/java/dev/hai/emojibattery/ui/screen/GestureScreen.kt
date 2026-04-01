@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -363,18 +362,10 @@ internal fun GestureSwitchRow(
                 Text(description, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
             }
         }
-        Switch(
+        AppSwitch(
             checked = enabled,
             onCheckedChange = onToggle,
             modifier = Modifier.graphicsLayer { alpha = 1f },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = ToggleCheckedBlue,
-                checkedBorderColor = ToggleCheckedBlue,
-                uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = ToggleUncheckedGray,
-                uncheckedBorderColor = ToggleUncheckedGray,
-            ),
         )
     }
 }

@@ -154,10 +154,7 @@ internal fun RingerFeatureScreen(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
-                        Switch(
-                            checked = config.enabled,
-                            onCheckedChange = onToggleEnabled,
-                        )
+                        AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -498,10 +495,7 @@ private fun SizeColorFeatureScreen(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
-                        Switch(
-                            checked = config.enabled,
-                            onCheckedChange = onToggleEnabled,
-                        )
+                        AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

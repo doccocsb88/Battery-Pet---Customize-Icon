@@ -140,7 +140,7 @@ internal fun DateTimeFeatureScreen(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
-                        Switch(
+                        AppSwitch(
                             checked = parsed.showDate,
                             onCheckedChange = { checked -> updateVariant(parsed.copy(showDate = checked)) },
                         )

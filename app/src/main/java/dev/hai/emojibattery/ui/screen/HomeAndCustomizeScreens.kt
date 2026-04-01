@@ -86,6 +86,7 @@ internal fun HomeScreen(
     onOpenSticker: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
     onOpenFeedback: () -> Unit,
+    onSetOverlayEnabled: (Boolean) -> Unit,
 ) {
     if (uiState.padCatalogLoading) {
         Box(
@@ -151,6 +152,7 @@ internal fun HomeScreen(
             onOpenSticker = onOpenSticker,
             onOpenBatteryTroll = onOpenBatteryTroll,
             onOpenFeedback = onOpenFeedback,
+            onSetOverlayEnabled = onSetOverlayEnabled,
         )
     }
 }
@@ -170,6 +172,7 @@ private fun HomeScreenScaffold(
     onOpenSticker: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
     onOpenFeedback: () -> Unit,
+    onSetOverlayEnabled: (Boolean) -> Unit,
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -191,6 +194,12 @@ private fun HomeScreenScaffold(
                 .padding(horizontal = 12.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            if (uiState.accessibilityGranted) {
+                EmojiBatteryOverlayToggleCard(
+                    enabled = uiState.statusBarOverlayEnabled,
+                    onToggle = onSetOverlayEnabled,
+                )
+            }
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -287,6 +296,7 @@ private fun HomeScreenScaffold(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun CustomizeHubScreen(
+    uiState: AppUiState,
     onOpenSticker: () -> Unit,
     onOpenFeature: (CustomizeEntry) -> Unit,
     onOpenStatusBarCustom: () -> Unit,
@@ -295,6 +305,7 @@ internal fun CustomizeHubScreen(
     onOpenAnimation: () -> Unit,
     onOpenFeedback: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
+    onSetOverlayEnabled: (Boolean) -> Unit,
 ) {
     val gridEntries = listOf(
                 CustomizeEntry.Hotspot,
@@ -349,6 +360,10 @@ internal fun CustomizeHubScreen(
                 .padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            EmojiBatteryOverlayToggleCard(
+                enabled = uiState.statusBarOverlayEnabled,
+                onToggle = onSetOverlayEnabled,
+            )
             PromoBannerCard(
                 backgroundRes = R.drawable.img_bg_emoji_sticker,
                 title = stringResource(R.string.home_promo_stickers_title),

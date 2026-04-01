@@ -33,7 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -176,17 +175,9 @@ internal fun AnimationScreen(
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier.weight(1f),
                         )
-                        Switch(
+                        AppSwitch(
                             checked = enabled,
                             onCheckedChange = { enabled = it },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = Color(0xFF8FB6D4),
-                                checkedBorderColor = Color(0xFF8FB6D4),
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color(0xFF94A3B8),
-                                uncheckedBorderColor = Color(0xFF94A3B8),
-                            ),
                         )
                     }
                     Text(

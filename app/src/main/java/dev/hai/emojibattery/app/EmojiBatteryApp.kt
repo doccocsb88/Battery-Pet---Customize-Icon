@@ -93,6 +93,13 @@ fun EmojiBatteryApp(
     )
     var showAccessibilityConsent by remember { mutableStateOf(false) }
     var transientSuccessMessage by remember { mutableStateOf<String?>(null) }
+    val onSetOverlayEnabled: (Boolean) -> Unit = { enabled ->
+        viewModel.setStatusBarOverlayEnabled(enabled)
+        OverlayConfigStore.setStatusBarEnabled(context, enabled)
+        if (AccessibilityBridge.isEnabled(context)) {
+            OverlayAccessibilityService.requestRefresh(context)
+        }
+    }
 
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
@@ -255,10 +262,12 @@ fun EmojiBatteryApp(
                     onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
+                    onSetOverlayEnabled = onSetOverlayEnabled,
                 )
             }
             composable(AppRoute.Customize.route) {
                 CustomizeHubScreen(
+                    uiState = uiState,
                     onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
                     onOpenFeature = { entry ->
                         when (entry) {
@@ -281,6 +290,7 @@ fun EmojiBatteryApp(
                     onOpenAnimation = { navController.navigate(AppRoute.Animation.route) },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
+                    onSetOverlayEnabled = onSetOverlayEnabled,
                 )
             }
             composable(AppRoute.Notch.route) {
@@ -410,6 +420,7 @@ fun EmojiBatteryApp(
                             viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
                         }
                     },
+                    onSetOverlayEnabled = onSetOverlayEnabled,
                 )
             }
             composable(AppRoute.BackgroundTemplateList.route) {
@@ -486,7 +497,6 @@ fun EmojiBatteryApp(
             composable(AppRoute.Settings.route) {
                 SettingsScreen(
                     uiState = uiState,
-                    onBack = { navController.popBackStack() },
                     onOpenLanguage = { navController.navigate(AppRoute.Language.route) },
                     onReplayTutorial = {
                         viewModel.replayTutorial()
@@ -592,13 +602,7 @@ fun EmojiBatteryApp(
                     onBack = { navController.popBackStack() },
                     onSelectTemplate = viewModel::selectBatteryTrollTemplate,
                     onSetMessage = viewModel::setTrollMessage,
-                    onSetOverlayEnabled = { enabled ->
-                        viewModel.setStatusBarOverlayEnabled(enabled)
-                        OverlayConfigStore.setStatusBarEnabled(context, enabled)
-                        if (AccessibilityBridge.isEnabled(context)) {
-                            OverlayAccessibilityService.requestRefresh(context)
-                        }
-                    },
+                    onSetOverlayEnabled = onSetOverlayEnabled,
                     onSetFeatureEnabled = { enabled ->
                         viewModel.setBatteryTrollEnabled(enabled)
                         if (!enabled) {
@@ -684,6 +688,7 @@ fun EmojiBatteryApp(
                     },
                     onRefreshStickerCatalog = viewModel::refreshStickerCatalog,
                     onLoadStickerCatalogPage = viewModel::loadStickerCatalogPage,
+                    onSetOverlayEnabled = onSetOverlayEnabled,
                     onToggleAccessibility = { checked ->
                         if (!uiState.accessibilityGranted && checked) {
                             showAccessibilityConsent = true

@@ -271,6 +271,7 @@ internal fun StatusBarCustomScreen(
     onRestore: () -> Unit,
     onApply: () -> Unit,
     onAccessibilityChanged: (Boolean) -> Unit,
+    onSetOverlayEnabled: (Boolean) -> Unit,
 ) {
     val config = uiState.editingConfig
     val batteryPresets = SampleCatalog.batteryPresets
@@ -332,7 +333,10 @@ internal fun StatusBarCustomScreen(
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            PermissionBanner(enabled = uiState.accessibilityGranted, onToggle = onAccessibilityChanged)
+            EmojiBatteryOverlayToggleCard(
+                enabled = uiState.statusBarOverlayEnabled,
+                onToggle = onSetOverlayEnabled,
+            )
             StatusBarLivePreviewCard(
                 uiState = uiState,
                 previewBrush = previewBrush,

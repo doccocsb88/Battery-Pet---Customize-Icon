@@ -205,6 +205,7 @@ internal fun EmojiStickerScreen(
     onOpenTutorial: () -> Unit,
     onRefreshStickerCatalog: () -> Unit,
     onLoadStickerCatalogPage: (Int) -> Unit,
+    onSetOverlayEnabled: (Boolean) -> Unit,
     onToggleAccessibility: (Boolean) -> Unit,
     onSave: () -> Unit,
     onTurnOff: () -> Unit,
@@ -279,6 +280,11 @@ internal fun EmojiStickerScreen(
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            EmojiBatteryOverlayToggleCard(
+                enabled = uiState.statusBarOverlayEnabled,
+                onToggle = onSetOverlayEnabled,
+                modifier = Modifier.padding(horizontal = 8.dp),
+            )
             StickerPreviewCard(
                 selectedSticker = selectedSticker,
                 selectedPlacement = selectedPlacement,

@@ -202,30 +202,13 @@ internal fun BatteryTrollScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                Surface(
+                EmojiBatteryOverlayToggleCard(
+                    enabled = uiState.statusBarOverlayEnabled,
+                    onToggle = onSetOverlayEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    shape = TrollCardShape,
-                    border = BorderStroke(1.dp, TrollStrokeColor),
-                    color = TrollSoftPink,
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.enable_disable_emoji_battery),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Switch(
-                            checked = uiState.statusBarOverlayEnabled,
-                            onCheckedChange = onSetOverlayEnabled,
-                        )
-                    }
-                }
+                )
             }
 
             item {
@@ -414,10 +397,7 @@ internal fun BatteryTrollScreen(
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
-                            Switch(
-                                checked = uiState.trollShowEmoji,
-                                onCheckedChange = onSetShowEmoji,
-                            )
+                            AppSwitch(checked = uiState.trollShowEmoji, onCheckedChange = onSetShowEmoji)
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -509,13 +489,6 @@ internal fun BatteryTrollScreen(
                         )
                     }
                 }
-            }
-
-            item {
-                PermissionBanner(
-                    enabled = uiState.accessibilityGranted,
-                    onToggle = onToggleAccessibility,
-                )
             }
 
             item {
@@ -675,7 +648,7 @@ private fun TrollSliderRow(
                 fontWeight = FontWeight.SemiBold,
             )
             if (!lockToggle) {
-                Switch(checked = checked, onCheckedChange = onCheckedChange)
+                AppSwitch(checked = checked, onCheckedChange = onCheckedChange)
             }
         }
         Row(
