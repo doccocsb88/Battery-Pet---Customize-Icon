@@ -2280,7 +2280,9 @@ private fun StatusBarVolioChoiceGrid(
                 val selected = item.id == selectedId
                 Surface(
                     onClick = { onSelect(item.id) },
-                    modifier = Modifier.fillMaxWidth(cellFill),
+                    modifier = Modifier
+                        .fillMaxWidth(cellFill)
+                        .aspectRatio(1f),
                     shape = RoundedCornerShape(12.dp),
                     color = if (selected) {
                         StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
@@ -2309,7 +2311,7 @@ private fun StatusBarVolioChoiceGrid(
                                 model = thumb,
                                 contentDescription = item.title,
                                 modifier = Modifier
-                                    .size(44.dp)
+                                    .size(56.dp)
                                     .clip(RoundedCornerShape(10.dp)),
                                 contentScale = ContentScale.Crop,
                             )
@@ -2317,7 +2319,7 @@ private fun StatusBarVolioChoiceGrid(
                             Image(
                                 painter = painterResource(item.previewRes),
                                 contentDescription = item.title,
-                                modifier = Modifier.size(44.dp),
+                                modifier = Modifier.size(56.dp),
                             )
                         }
                         if (selected) {
@@ -2370,6 +2372,7 @@ internal fun StatusBarChoiceGrid(
                     selected = selectedLabel.equals(label, ignoreCase = true),
                     onClick = { onClick(label) },
                     modifier = Modifier.width(118.dp),
+                    forceSquare = false,
                     icon = icon,
                 )
             }
@@ -2387,6 +2390,7 @@ internal fun StatusBarChoiceGrid(
                     selected = selectedLabel.equals(label, ignoreCase = true),
                     onClick = { onClick(label) },
                     modifier = Modifier.fillMaxWidth(cellFill),
+                    forceSquare = true,
                     icon = icon,
                 )
             }
@@ -2400,11 +2404,12 @@ private fun StatusBarChoiceCard(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    forceSquare: Boolean = false,
     icon: @Composable (String) -> Unit,
 ) {
     Surface(
         onClick = onClick,
-        modifier = modifier,
+        modifier = if (forceSquare) modifier.aspectRatio(1f) else modifier,
         shape = RoundedCornerShape(14.dp),
         color = if (selected) {
             StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)

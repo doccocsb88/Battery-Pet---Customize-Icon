@@ -3,6 +3,7 @@ package dev.hai.emojibattery.ui.screen
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -109,7 +110,9 @@ internal fun StatusBarCatalogListScreen(
                         val selected = item.id == selectedId
                         Surface(
                             onClick = { onSelectId(item.id) },
-                            modifier = Modifier.fillMaxWidth(cellFill),
+                            modifier = Modifier
+                                .fillMaxWidth(cellFill)
+                                .aspectRatio(1f),
                             shape = RoundedCornerShape(12.dp),
                             color = if (selected) StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f) else MaterialTheme.colorScheme.surface,
                             border = BorderStroke(
@@ -130,7 +133,7 @@ internal fun StatusBarCatalogListScreen(
                                         model = thumb,
                                         contentDescription = item.title,
                                         modifier = Modifier
-                                            .size(44.dp)
+                                            .size(56.dp)
                                             .clip(RoundedCornerShape(10.dp)),
                                         contentScale = ContentScale.Crop,
                                     )
@@ -138,7 +141,7 @@ internal fun StatusBarCatalogListScreen(
                                     androidx.compose.foundation.Image(
                                         painter = painterResource(item.previewRes),
                                         contentDescription = item.title,
-                                        modifier = Modifier.size(44.dp),
+                                        modifier = Modifier.size(56.dp),
                                     )
                                 }
                                 if (selected) {

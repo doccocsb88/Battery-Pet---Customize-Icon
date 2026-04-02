@@ -86,6 +86,7 @@ internal fun HomeScreen(
     onOpenSticker: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
     onOpenFeedback: () -> Unit,
+    onOpenPremium: () -> Unit,
     onSetOverlayEnabled: (Boolean) -> Unit,
 ) {
     if (uiState.padCatalogLoading) {
@@ -152,6 +153,7 @@ internal fun HomeScreen(
             onOpenSticker = onOpenSticker,
             onOpenBatteryTroll = onOpenBatteryTroll,
             onOpenFeedback = onOpenFeedback,
+            onOpenPremium = onOpenPremium,
             onSetOverlayEnabled = onSetOverlayEnabled,
         )
     }
@@ -172,6 +174,7 @@ private fun HomeScreenScaffold(
     onOpenSticker: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
     onOpenFeedback: () -> Unit,
+    onOpenPremium: () -> Unit,
     onSetOverlayEnabled: (Boolean) -> Unit,
 ) {
     Scaffold(
@@ -182,6 +185,18 @@ private fun HomeScreenScaffold(
                 onLeftSecondary = onOpenFeedback,
                 onSearch = onOpenSearch,
                 showLeftSecondary = false,
+                trailingContent = {
+                    if (!uiState.premiumUnlocked) {
+                        PremiumButton(
+                            modifier = Modifier
+                                .width(104.dp)
+                                .aspectRatio(2.2f),
+                            onClick = onOpenPremium,
+                        )
+                    } else {
+                        Spacer(Modifier.width(40.dp))
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -304,6 +319,7 @@ internal fun CustomizeHubScreen(
     onOpenAnimation: () -> Unit,
     onOpenFeedback: () -> Unit,
     onOpenBatteryTroll: () -> Unit,
+    onOpenPremium: () -> Unit,
     onSetOverlayEnabled: (Boolean) -> Unit,
 ) {
     val gridEntries = listOf(
@@ -342,7 +358,16 @@ internal fun CustomizeHubScreen(
                         }
                         Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Spacer(Modifier.width(40.dp))
+                            if (!uiState.premiumUnlocked) {
+                                PremiumButton(
+                                    modifier = Modifier
+                                        .width(104.dp)
+                                        .aspectRatio(2.2f),
+                                    onClick = onOpenPremium,
+                                )
+                            } else {
+                                Spacer(Modifier.width(40.dp))
+                            }
                         }
                     }
                 }
@@ -647,6 +672,7 @@ internal fun OriginalTopShell(
     showLeftSecondary: Boolean = true,
     showEnableBanner: Boolean = false,
     onStart: (() -> Unit)? = null,
+    trailingContent: @Composable (() -> Unit)? = null,
 ) {
     Surface(
         color = MaterialTheme.colorScheme.surface,
@@ -673,7 +699,11 @@ internal fun OriginalTopShell(
                 }
                 Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(Modifier.width(40.dp))
+                    if (trailingContent != null) {
+                        trailingContent()
+                    } else {
+                        Spacer(Modifier.width(40.dp))
+                    }
                 }
             }
         }

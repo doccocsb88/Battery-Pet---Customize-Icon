@@ -264,6 +264,7 @@ fun EmojiBatteryApp(
                     onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
+                    onOpenPremium = viewModel::openStore,
                     onSetOverlayEnabled = onSetOverlayEnabled,
                 )
             }
@@ -293,6 +294,7 @@ fun EmojiBatteryApp(
                     onOpenAnimation = { navController.navigate(AppRoute.Animation.route) },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
+                    onOpenPremium = viewModel::openStore,
                     onSetOverlayEnabled = onSetOverlayEnabled,
                 )
             }
