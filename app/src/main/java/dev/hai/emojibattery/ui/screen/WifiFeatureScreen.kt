@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -159,7 +158,7 @@ internal fun WifiFeatureScreen(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Slider(
+                            AppBasicSlider(
                                 value = sliderDp,
                                 onValueChange = { dpValue ->
                                     val intensity = ((dpValue - 10f) / 26f).coerceIn(0.1f, 1f)

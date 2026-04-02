@@ -8,14 +8,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -36,6 +40,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -48,6 +53,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -265,8 +271,81 @@ internal fun SliderField(
                 stringResource(R.string.slider_percent_format, (value * 100).toInt()),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Slider(value = value, onValueChange = onChange, valueRange = range)
+            AppBasicSlider(value = value, onValueChange = onChange, valueRange = range)
         }
+    }
+}
+
+@Composable
+internal fun AppBasicSlider(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    steps: Int = 0,
+    onValueChangeFinished: (() -> Unit)? = null,
+    activeColor: Color = Color(0xFF62D3D0),
+    inactiveColor: Color = Color(0xFFCBEFED),
+    thumbColor: Color = activeColor,
+) {
+    val coercedValue = value.coerceIn(valueRange.start, valueRange.endInclusive)
+    val span = (valueRange.endInclusive - valueRange.start).takeIf { it > 0f } ?: 1f
+    val fraction = ((coercedValue - valueRange.start) / span).coerceIn(0f, 1f)
+    val thumbSize = 20.dp
+    val trackHeight = 6.dp
+    val thumbRadius = thumbSize / 2
+    val density = LocalDensity.current
+    BoxWithConstraints(
+        modifier = modifier.height(28.dp),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        val availableWidth = (maxWidth - thumbSize).coerceAtLeast(0.dp)
+        val thumbOffset = availableWidth * fraction
+        val activeWidth = (thumbOffset + thumbRadius).coerceAtMost(maxWidth)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(trackHeight)
+                .clip(RoundedCornerShape(999.dp))
+                .background(inactiveColor.copy(alpha = if (enabled) 1f else 0.55f)),
+        )
+        Box(
+            modifier = Modifier
+                .width(activeWidth)
+                .height(trackHeight)
+                .clip(RoundedCornerShape(999.dp))
+                .background(activeColor.copy(alpha = if (enabled) 1f else 0.65f)),
+        )
+        Box(
+            modifier = Modifier
+                .offset(x = thumbOffset)
+                .size(thumbSize)
+                .shadow(3.dp, CircleShape, clip = false)
+                .clip(CircleShape)
+                .background(thumbColor.copy(alpha = if (enabled) 1f else 0.75f)),
+        )
+        Slider(
+            value = coercedValue,
+            onValueChange = onValueChange,
+            valueRange = valueRange,
+            enabled = enabled,
+            steps = steps,
+            onValueChangeFinished = onValueChangeFinished,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(28.dp),
+            colors = SliderDefaults.colors(
+                thumbColor = Color.Transparent,
+                activeTrackColor = Color.Transparent,
+                inactiveTrackColor = Color.Transparent,
+                disabledThumbColor = Color.Transparent,
+                disabledActiveTrackColor = Color.Transparent,
+                disabledInactiveTrackColor = Color.Transparent,
+                activeTickColor = Color.Transparent,
+                inactiveTickColor = Color.Transparent,
+            ),
+        )
     }
 }
 

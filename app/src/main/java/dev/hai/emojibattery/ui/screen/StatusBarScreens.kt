@@ -80,7 +80,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -1413,15 +1412,11 @@ private fun StatusBarPercentageSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Slider(
+            AppBasicSlider(
                 value = value,
                 onValueChange = onValueChange,
                 valueRange = 0.3f..1f,
                 modifier = Modifier.weight(1f),
-                colors = SliderDefaults.colors(
-                    thumbColor = StrawberryMilk.Secondary,
-                    activeTrackColor = StrawberryMilk.Secondary,
-                ),
             )
             Text(
                 stringResource(
@@ -1551,7 +1546,7 @@ private fun StatusBarThemeBackgroundColorRow(
                         },
                     )
                     Text("Brightness", style = MaterialTheme.typography.labelMedium)
-                    Slider(
+                    AppBasicSlider(
                         value = pickValue,
                         onValueChange = { pickValue = it.coerceIn(0f, 1f) },
                         valueRange = 0f..1f,
@@ -2192,7 +2187,7 @@ internal fun StatusSliderRow(
     ) {
         Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Slider(
+            AppBasicSlider(
                 value = value,
                 onValueChange = onValueChange,
                 valueRange = valueRange,
@@ -2363,46 +2358,80 @@ internal fun StatusBarChoiceGrid(
         3 -> 0.31f
         else -> 0.23f
     }
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        maxItemsInEachRow = maxItemsInEachRow,
-        horizontalArrangement = Arrangement.spacedBy(gap),
-        verticalArrangement = Arrangement.spacedBy(gap),
-    ) {
-        labels.forEach { label ->
-            val selected = selectedLabel.equals(label, ignoreCase = true)
-            Surface(
-                onClick = { onClick(label) },
-                modifier = Modifier.fillMaxWidth(cellFill),
-                shape = RoundedCornerShape(14.dp),
-                color = if (selected) {
-                    StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
-                } else {
-                    MaterialTheme.colorScheme.surface
-                },
-                border = BorderStroke(
-                    1.dp,
-                    if (selected) StrawberryMilk.Secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-                ),
-                shadowElevation = 0.dp,
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    icon(label)
-                    Text(
-                        label,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
-                    )
-                }
+    if (maxItemsInEachRow >= 4) {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(gap),
+            contentPadding = PaddingValues(end = 4.dp),
+        ) {
+            items(labels) { label ->
+                StatusBarChoiceCard(
+                    label = label,
+                    selected = selectedLabel.equals(label, ignoreCase = true),
+                    onClick = { onClick(label) },
+                    modifier = Modifier.width(118.dp),
+                    icon = icon,
+                )
             }
+        }
+    } else {
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            maxItemsInEachRow = maxItemsInEachRow,
+            horizontalArrangement = Arrangement.spacedBy(gap),
+            verticalArrangement = Arrangement.spacedBy(gap),
+        ) {
+            labels.forEach { label ->
+                StatusBarChoiceCard(
+                    label = label,
+                    selected = selectedLabel.equals(label, ignoreCase = true),
+                    onClick = { onClick(label) },
+                    modifier = Modifier.fillMaxWidth(cellFill),
+                    icon = icon,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusBarChoiceCard(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: @Composable (String) -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = RoundedCornerShape(14.dp),
+        color = if (selected) {
+            StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        border = BorderStroke(
+            1.dp,
+            if (selected) StrawberryMilk.Secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+        ),
+        shadowElevation = 0.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            icon(label)
+            Text(
+                label,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelLarge,
+                fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
+            )
         }
     }
 }

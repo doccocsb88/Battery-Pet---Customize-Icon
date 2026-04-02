@@ -30,7 +30,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -184,7 +183,7 @@ internal fun AnimationScreen(
                         text = "${stringResource(R.string.animation_size)}: $sizePercent%",
                         style = MaterialTheme.typography.titleSmall,
                     )
-                    Slider(
+                    AppBasicSlider(
                         value = sizePercent.toFloat(),
                         valueRange = 0f..100f,
                         onValueChange = { sizePercent = it.toInt() },
@@ -193,7 +192,7 @@ internal fun AnimationScreen(
                         text = "Position X: ${(offsetX * 100f).toInt()}%",
                         style = MaterialTheme.typography.titleSmall,
                     )
-                    Slider(
+                    AppBasicSlider(
                         value = offsetX,
                         valueRange = 0f..1f,
                         onValueChange = { offsetX = it.coerceIn(0f, 1f) },

@@ -69,7 +69,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -966,15 +965,13 @@ private fun StickerAdjustmentPanel(
                     color = StickerUiText,
                 )
             }
-            Slider(
+            AppBasicSlider(
                 value = placement.rotation.coerceIn(-180f, 180f),
                 valueRange = -180f..180f,
                 onValueChange = onUpdateRotation,
-                colors = SliderDefaults.colors(
-                    thumbColor = StickerUiSecondary,
-                    activeTrackColor = StickerUiSecondary,
-                    inactiveTrackColor = StickerUiPrimary.copy(alpha = 0.28f),
-                ),
+                activeColor = StickerUiSecondary,
+                thumbColor = StickerUiSecondary,
+                inactiveColor = StickerUiPrimary.copy(alpha = 0.28f),
             )
         }
     }
