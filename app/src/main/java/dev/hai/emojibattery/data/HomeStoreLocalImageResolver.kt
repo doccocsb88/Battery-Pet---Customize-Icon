@@ -9,8 +9,9 @@ import java.io.File
 
 /**
  * Resolves grid thumbnails to flat files under:
- * 1) PAD: `[pack]/store/downloaded_assets/home/` (preferred)
- * 2) APK assets: `bundled_volio/downloaded_assets/home/`
+ * 1) APK assets: `bundled_volio/downloaded_assets/home/` for local-backed categories
+ * 2) PAD: `[pack]/store/downloaded_assets/home/`
+ * 3) APK assets: `bundled_volio/downloaded_assets/home/` for all other categories
  *
  * If no local match, returns the original URL (e.g. https CDN).
  *
@@ -67,8 +68,14 @@ object HomeStoreLocalImageResolver {
         val raw = remoteUrlOrName?.trim()?.takeIf { it.isNotEmpty() } ?: return null
         val hint = hintFromUrlOrName(raw)
         val sanitizedHint = sanitizeLikeCrawler(hint)
+        val hintBase = hint.substringBeforeLast('.', hint)
+        val sanitizedHintBase = sanitizeLikeCrawler(hintBase)
         val prefix = "${categoryId}_${itemId}_"
         val roles = roleHints.map(::sanitizeLikeCrawler)
+        val preferBundledAssets = HomePadCategoryRegistry.usesBundledAssets(categoryId)
+        val hintCandidates = listOf(hint, sanitizedHint, hintBase, sanitizedHintBase)
+            .filter { it.isNotBlank() }
+            .distinct()
 
         val padRoots = buildList {
             val app = context.applicationContext
@@ -80,6 +87,19 @@ object HomeStoreLocalImageResolver {
             }
         }
 
+        fun findBundledAsset(): String? = assetFlatNames(context.assets).firstOrNull { name ->
+            name.startsWith(prefix) &&
+                roles.any { role -> name.contains("${role}__") } &&
+                hintCandidates.any { candidate -> name.contains(candidate) }
+        }
+
+        if (preferBundledAssets) {
+            val fromAssets = findBundledAsset()
+            if (fromAssets != null) {
+                return "file:///android_asset/$ASSET_HOME_FLAT/$fromAssets"
+            }
+        }
+
         for (padRoot in padRoots) {
             val dir = File(padRoot, "store/downloaded_assets/home")
             if (!dir.isDirectory) continue
@@ -88,16 +108,12 @@ object HomeStoreLocalImageResolver {
                 ?.filter { it.isFile && it.name.startsWith(prefix) }
                 ?.filter { file -> roles.any { role -> file.name.contains("${role}__") } }
                 ?.firstOrNull { file ->
-                    file.name.contains(hint) || file.name.contains(sanitizedHint)
+                    hintCandidates.any { candidate -> file.name.contains(candidate) }
                 }
             if (fromPad != null) return Uri.fromFile(fromPad).toString()
         }
 
-        val fromAssets = assetFlatNames(context.assets).firstOrNull { name ->
-            name.startsWith(prefix) &&
-                roles.any { role -> name.contains("${role}__") } &&
-                (name.contains(hint) || name.contains(sanitizedHint))
-        }
+        val fromAssets = findBundledAsset()
         if (fromAssets != null) {
             return "file:///android_asset/$ASSET_HOME_FLAT/$fromAssets"
         }

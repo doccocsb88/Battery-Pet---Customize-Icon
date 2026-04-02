@@ -65,7 +65,6 @@ class EmojiBatteryViewModel(
         private const val TAG = "HomeFeed"
         private const val PENDING_HOME_STATUSBAR_CATEGORY_ID = "pending_home_statusbar_category_id"
         private const val PENDING_HOME_STATUSBAR_SELECTED_ITEM_ID = "pending_home_statusbar_selected_item_id"
-        private val HOME_BUNDLED_FALLBACK_CATEGORY_TITLES = setOf("korean", "china", "winter")
     }
 
     private val initialDefaultStatusBarItems = defaultStatusBarCatalogItems(application)
@@ -1233,26 +1232,30 @@ class EmojiBatteryViewModel(
         categoryId: String,
     ): List<HomeBatteryItem> {
         val packName = HomeCategoryPackResolver.packNameFor(categoryId)
-        val allowBundledFallback = _uiState.value.homeTabs
-            .firstOrNull { it.id == categoryId }
-            ?.title
-            ?.trim()
-            ?.lowercase()
-            ?.let { it in HOME_BUNDLED_FALLBACK_CATEGORY_TITLES }
-            ?: false
-        val padItems = runCatching { PadVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
-            .getOrElse { emptyList() }
-            .takeIf { it.isNotEmpty() }
-        val merged = padItems
-            ?: if (allowBundledFallback) {
-                runCatching { BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
-                    .getOrElse { emptyList() }
-                    .takeIf { it.isNotEmpty() }
-            } else {
-                null
-            }
+        val preferBundledAssets = dev.hai.emojibattery.data.HomePadCategoryRegistry.usesBundledAssets(categoryId)
+        val shouldSkipPad = preferBundledAssets || !dev.hai.emojibattery.data.HomePadCategoryRegistry.hasPadPack(categoryId)
+        val padItems = if (shouldSkipPad) {
+            null
+        } else {
+            runCatching { PadVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
+                .getOrElse { emptyList() }
+                .takeIf { it.isNotEmpty() }
+        }
+        val bundledItems = if (preferBundledAssets || shouldSkipPad) {
+            runCatching { BundledVolioHomeRepository.fetchItemsForCategory(app, categoryId) }
+                .getOrElse { emptyList() }
+                .takeIf { it.isNotEmpty() }
+        } else {
+            null
+        }
+        val merged = bundledItems
+            ?: padItems
             ?: emptyList()
         when {
+            preferBundledAssets && bundledItems != null -> Log.d(
+                TAG,
+                "offlineStore: items from bundled assets count=${merged.size} category=$categoryId localFirst=true",
+            )
             padItems != null -> Log.d(TAG, "offlineStore: items from PAD count=${merged.size} pack=$packName")
             merged.isNotEmpty() -> Log.d(
                 TAG,

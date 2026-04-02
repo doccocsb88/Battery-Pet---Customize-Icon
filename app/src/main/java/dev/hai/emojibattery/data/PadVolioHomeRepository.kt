@@ -25,6 +25,9 @@ object PadVolioHomeRepository {
 
     suspend fun fetchItemsForCategory(context: Context, categoryId: String): List<HomeBatteryItem> =
         withContext(Dispatchers.IO) {
+            if (!HomePadCategoryRegistry.hasPadPack(categoryId)) {
+                return@withContext emptyList()
+            }
             val packName = HomeCategoryPackResolver.packNameFor(categoryId)
             val ready = StoreOnDemandAssetPack.waitUntilCompleted(
                 context = context.applicationContext,
