@@ -430,7 +430,7 @@ class EmojiBatteryViewModel(
     /** Percentage / accent color (see decompiled layout_choose_color_config — status bar editor). */
     fun setAccentColor(color: Long) = updateConfig { copy(accentColor = color) }
 
-    fun setStatusBarHeight(value: Float) = updateConfig { copy(statusBarHeight = value) }
+    fun setStatusBarHeight(value: Float) = updateConfig { copy(statusBarHeight = value.coerceIn(0.5f, 2f)) }
 
     fun setStatusBarLeftMargin(value: Float) = updateConfig { copy(leftMargin = value) }
 

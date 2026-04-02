@@ -204,7 +204,8 @@ data class BatteryIconConfig(
     val batteryPresetId: String,
     val emojiPresetId: String,
     val themePresetId: String,
-    val statusBarHeight: Float = 0.2f,
+    /** Real overlay height factor relative to the system status bar. */
+    val statusBarHeight: Float = 1f,
     val leftMargin: Float = 0.12f,
     val rightMargin: Float = 0.12f,
     val batteryPercentScale: Float = 0.56f,

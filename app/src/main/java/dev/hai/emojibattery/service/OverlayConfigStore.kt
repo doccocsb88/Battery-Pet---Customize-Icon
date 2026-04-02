@@ -91,6 +91,8 @@ data class AnimationOverlayPrefs(
 object OverlayConfigStore {
     const val BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM = "status_bar_custom"
     const val BATTERY_EMOJI_SOURCE_BATTERY_TROLL = "battery_troll"
+    private const val MIN_STATUS_BAR_HEIGHT_FACTOR = 0.5f
+    private const val MAX_STATUS_BAR_HEIGHT_FACTOR = 2f
 
     private const val PREFS = "overlay_config"
     private const val KEY_STATUS_ENABLED = "status_enabled"
@@ -185,7 +187,7 @@ object OverlayConfigStore {
             .putLong(KEY_BACKGROUND, config.backgroundColor)
             .putString(KEY_BACKGROUND_TEMPLATE_PHOTO, config.backgroundTemplatePhotoUrl.orEmpty())
             .putInt(KEY_BACKGROUND_TEMPLATE_DRAWABLE, config.backgroundTemplateDrawableRes ?: 0)
-            .putFloat(KEY_STATUS_BAR_HEIGHT, config.statusBarHeight.coerceIn(0f, 1f))
+            .putFloat(KEY_STATUS_BAR_HEIGHT, config.statusBarHeight.coerceIn(MIN_STATUS_BAR_HEIGHT_FACTOR, MAX_STATUS_BAR_HEIGHT_FACTOR))
             .putFloat(KEY_STATUS_LEFT_MARGIN, config.leftMargin.coerceIn(0f, 1f))
             .putFloat(KEY_STATUS_RIGHT_MARGIN, config.rightMargin.coerceIn(0f, 1f))
             .putFloat(KEY_BATTERY_PERCENT_SCALE, config.batteryPercentScale.coerceIn(0f, 1f))
@@ -413,7 +415,9 @@ object OverlayConfigStore {
             notchScale = prefs.getFloat(KEY_NOTCH_SCALE, 1f).coerceIn(0.5f, 2.2f),
             notchOffsetX = prefs.getFloat(KEY_NOTCH_OFFSET_X, 0.5f).coerceIn(0f, 1f),
             notchOffsetY = prefs.getFloat(KEY_NOTCH_OFFSET_Y, 0.5f).coerceIn(0f, 1f),
-            statusBarHeight = prefs.getFloat(KEY_STATUS_BAR_HEIGHT, SampleCatalog.defaultConfig.statusBarHeight).coerceIn(0f, 1f),
+            statusBarHeight = readStatusBarHeightFactor(
+                prefs.getFloat(KEY_STATUS_BAR_HEIGHT, SampleCatalog.defaultConfig.statusBarHeight),
+            ),
             leftMargin = prefs.getFloat(KEY_STATUS_LEFT_MARGIN, SampleCatalog.defaultConfig.leftMargin).coerceIn(0f, 1f),
             rightMargin = prefs.getFloat(KEY_STATUS_RIGHT_MARGIN, SampleCatalog.defaultConfig.rightMargin).coerceIn(0f, 1f),
             batteryPercentScale = prefs.getFloat(KEY_BATTERY_PERCENT_SCALE, SampleCatalog.defaultConfig.batteryPercentScale).coerceIn(0f, 1f),
@@ -434,6 +438,16 @@ object OverlayConfigStore {
     }
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+
+    private fun readStatusBarHeightFactor(raw: Float): Float {
+        val legacyProgress = raw.takeIf { it in 0f..1f }
+        return if (legacyProgress != null) {
+            (MIN_STATUS_BAR_HEIGHT_FACTOR + (legacyProgress * (MAX_STATUS_BAR_HEIGHT_FACTOR - MIN_STATUS_BAR_HEIGHT_FACTOR)))
+                .coerceIn(MIN_STATUS_BAR_HEIGHT_FACTOR, MAX_STATUS_BAR_HEIGHT_FACTOR)
+        } else {
+            raw.coerceIn(MIN_STATUS_BAR_HEIGHT_FACTOR, MAX_STATUS_BAR_HEIGHT_FACTOR)
+        }
+    }
 
     private fun encodeStringList(values: List<String>): String {
         val array = JSONArray()

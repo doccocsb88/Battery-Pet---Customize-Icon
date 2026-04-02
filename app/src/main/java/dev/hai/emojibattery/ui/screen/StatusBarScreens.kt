@@ -487,7 +487,12 @@ internal fun StatusBarCustomScreen(
                                 }
                                 StatusBarTab.Settings -> {
                                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                        StatusSliderRow(stringResource(R.string.status_bar_height), config.statusBarHeight, onSetStatusBarHeight)
+                                        StatusSliderRow(
+                                            stringResource(R.string.status_bar_height),
+                                            config.statusBarHeight,
+                                            onSetStatusBarHeight,
+                                            valueRange = 0.5f..2f,
+                                        )
                                         StatusSliderRow(stringResource(R.string.status_bar_left_margin), config.leftMargin, onSetLeftMargin)
                                         StatusSliderRow(stringResource(R.string.status_bar_right_margin), config.rightMargin, onSetRightMargin)
                                         StatusColorRow(stringResource(R.string.status_bar_icon_color), Color(config.accentColor))
@@ -927,8 +932,9 @@ private fun StatusBarLivePreviewCard(
     val commonScaleFactor = (config.emojiScale.coerceIn(0f, 1f) / defaultCommonScale).coerceIn(0.35f, 2.2f)
     val horizontalStart = (8f + config.leftMargin.coerceIn(0f, 1f) * 88f).dp
     val horizontalEnd = (8f + config.rightMargin.coerceIn(0f, 1f) * 88f).dp
-    val verticalPad = (4f + config.statusBarHeight.coerceIn(0f, 1f) * 12f).dp
-    val previewHeight = (62f + config.statusBarHeight.coerceIn(0f, 1f) * 34f).dp
+    val statusBarHeightProgress = ((config.statusBarHeight.coerceIn(0.5f, 2f) - 0.5f) / 1.5f).coerceIn(0f, 1f)
+    val verticalPad = (4f + statusBarHeightProgress * 12f).dp
+    val previewHeight = (62f + statusBarHeightProgress * 34f).dp
     val rowBgColor = Color.Transparent
     val batteryFontSize = (11f + (config.batteryPercentScale.coerceIn(0f, 1f) * 11f)).sp
     val batteryPreviewSize = (18f * commonScaleFactor).dp

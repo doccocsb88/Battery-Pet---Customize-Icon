@@ -54,6 +54,8 @@ class StatusBarOverlayManager(
         private const val TAG = "AnimationOverlay"
         private const val DEFAULT_EMOJI_SCALE = 0.64f
         private const val LOTTIE_TRACE_TAG = "LottieTrace"
+        private const val MIN_STATUS_BAR_HEIGHT_FACTOR = 0.5f
+        private const val MAX_STATUS_BAR_HEIGHT_FACTOR = 2f
     }
 
     data class LiveStatus(
@@ -575,6 +577,28 @@ class StatusBarOverlayManager(
             snapshot.batteryEmojiSource == BATTERY_EMOJI_SOURCE_BATTERY_TROLL
         val density = context.resources.displayMetrics.density
         val scaledDensity = context.resources.displayMetrics.scaledDensity
+        val effectiveWindowHeightPx = currentWindowHeightPx
+            .takeIf { it > 0 && it != WindowManager.LayoutParams.MATCH_PARENT }
+            ?: resolveOverlayWindowHeight(snapshot)
+        val statusLayerHeightPx = effectiveWindowHeightPx.coerceAtLeast(resolveSystemStatusBarHeightPx())
+        (statusRow.layoutParams as? FrameLayout.LayoutParams)?.also { params ->
+            if (params.height != statusLayerHeightPx) {
+                params.height = statusLayerHeightPx
+                statusRow.layoutParams = params
+            }
+        }
+        (statusBackgroundImageView.layoutParams as? FrameLayout.LayoutParams)?.also { params ->
+            if (params.height != statusLayerHeightPx) {
+                params.height = statusLayerHeightPx
+                statusBackgroundImageView.layoutParams = params
+            }
+        }
+        (gestureLayer.layoutParams as? FrameLayout.LayoutParams)?.also { params ->
+            if (params.height != statusLayerHeightPx) {
+                params.height = statusLayerHeightPx
+                gestureLayer.layoutParams = params
+            }
+        }
         val baseStatusRowHeightPx = ((24f * density)).roundToInt().coerceAtLeast((14f * density).roundToInt())
         val (effectiveTrollBatteryUrl, effectiveTrollEmojiUrl) = resolveTrollArtSelection(snapshot)
         val effectiveEmojiUrl = if (useBatteryTrollSource) {
@@ -624,10 +648,7 @@ class StatusBarOverlayManager(
         batteryEmojiTextView.translationY = emojiTranslationY
         if (useBatteryTrollSource) {
             // Use config-based reference height to avoid feedback loop where each render reads a previously scaled view size.
-            val statusRowRefHeightPx = currentWindowHeightPx
-                .takeIf { it > 0 && it != WindowManager.LayoutParams.MATCH_PARENT }
-                ?.coerceAtLeast((14f * density).roundToInt())
-                ?: baseStatusRowHeightPx
+            val statusRowRefHeightPx = effectiveWindowHeightPx.coerceAtLeast((14f * density).roundToInt())
             val trollScale = snapshot.trollEmojiSizeDp.coerceIn(1, 50) / 50f
             val trollArtSizePx = (statusRowRefHeightPx * trollScale)
                 .roundToInt()
@@ -1260,7 +1281,10 @@ class StatusBarOverlayManager(
     }
 
     private fun resolveOverlayWindowHeight(snapshot: OverlaySnapshot): Int {
-        return resolveSystemStatusBarHeightPx()
+        val systemStatusBarHeightPx = resolveSystemStatusBarHeightPx()
+        val heightFactor = snapshot.statusBarHeight.coerceIn(MIN_STATUS_BAR_HEIGHT_FACTOR, MAX_STATUS_BAR_HEIGHT_FACTOR)
+        val minHeightPx = (systemStatusBarHeightPx * MIN_STATUS_BAR_HEIGHT_FACTOR).roundToInt().coerceAtLeast(1)
+        return (systemStatusBarHeightPx * heightFactor).roundToInt().coerceAtLeast(minHeightPx)
     }
 
     private fun syncStickerWindow(snapshot: OverlaySnapshot) {
