@@ -138,38 +138,32 @@ fun PaywallScreen(
         lifetime != null -> lifetime.displayPrice
         else -> stringResource(R.string.paywall_price_unavailable)
     }
-    val weekWord = stringResource(R.string.week11)
     val weeklyTrialDays = billingState.weeklyTrialDays
     val monthlyTrialDays = billingState.monthlyTrialDays
+    val weeklyLabel = if (billingState.weeklyHasFreeTrial) "Weekly Trial" else "Weekly"
+    val monthlyLabel = if (billingState.monthlyHasFreeTrial) "Monthly Trial" else "Monthly"
+    val lifetimeLabel = "Lifetime"
     val weeklyFootnote = when {
         weekly == null -> null
         billingState.weeklyHasFreeTrial && weeklyTrialDays != null -> "Free for $weeklyTrialDays days"
-        else -> "Billed weekly"
+        else -> "Auto-renew every week"
     }
     val weeklyDescription = when {
         weekly == null -> null
         billingState.weeklyHasFreeTrial && weeklyTrialDays != null ->
-            "Free for $weeklyTrialDays days, then auto-renew weekly. Cancel anytime."
-        weekly.description.isNotBlank() -> weekly.description
-        else -> weekly.billingLabel
+            "Free for $weeklyTrialDays days, then auto-renew weekly."
+        else -> "Auto-renew every week"
     }
     val monthlyDescription = when {
         monthly == null -> null
         billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
-            "Free for $monthlyTrialDays days, then auto-renew monthly. Cancel anytime."
+            "Free for $monthlyTrialDays days, then auto-renew monthly."
         monthly.description.isNotBlank() -> monthly.description
-        else -> monthly.billingLabel
+        else -> "Auto-renew every month"
     }
     val lifetimeDescription = when {
         lifetime == null -> null
-        lifetime.description.isNotBlank() -> lifetime.description
-        else -> lifetime.billingLabel
-    }
-    val billingDisclaimer = when {
-        monthly != null && billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
-            "Free for $monthlyTrialDays days, then auto-renew monthly. Cancel anytime."
-        monthly != null -> stringResource(R.string.auto_renew_monthly_n_cancel_anytime)
-        else -> stringResource(R.string.one_time_payment)
+        else -> "One-time billing"
     }
     val showContextCopy = paywall?.featureKey != SampleCatalog.FEATURE_EXTRA_STICKER_SLOT && paywall?.featureKey != "settings:store"
 
@@ -250,7 +244,7 @@ fun PaywallScreen(
             ) {
                 AlpinePlanCard(
                     modifier = Modifier.fillMaxWidth(),
-                    label = weekly?.title ?: "WEEKLY",
+                    label = weeklyLabel,
                     description = weeklyDescription,
                     price = weekly?.displayPrice ?: stringResource(R.string.paywall_price_unavailable),
                     footnote = weeklyFootnote,
@@ -262,13 +256,13 @@ fun PaywallScreen(
                 )
                 AlpinePlanCard(
                     modifier = Modifier.fillMaxWidth(),
-                    label = monthly?.title ?: stringResource(R.string.monthly).uppercase(),
+                    label = monthlyLabel,
                     description = monthlyDescription,
                     price = monthPriceLabel,
                     footnote = when {
                         monthly != null && billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
                             "Free for $monthlyTrialDays days"
-                        else -> "Billed monthly"
+                        else -> "Auto-renew every month"
                     },
                     badge = if (monthly != null && billingState.monthlyHasFreeTrial) "Trial" else null,
                     onClick = {
@@ -278,7 +272,7 @@ fun PaywallScreen(
                 )
                 AlpinePlanCard(
                     modifier = Modifier.fillMaxWidth(),
-                    label = lifetime?.title ?: stringResource(R.string.life_time).uppercase(),
+                    label = lifetimeLabel,
                     description = lifetimeDescription,
                     price = lifetimePriceLabel,
                     footnote = null,
@@ -300,16 +294,6 @@ fun PaywallScreen(
                     color = Alpine.OnSurfaceVariant,
                 )
             }
-
-            Text(
-                text = billingDisclaimer,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 10.dp),
-                style = MaterialTheme.typography.bodySmall,
-                color = Alpine.OnSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
 
             Spacer(Modifier.height(8.dp))
 

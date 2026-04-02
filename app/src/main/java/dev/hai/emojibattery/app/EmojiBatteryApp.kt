@@ -2,6 +2,9 @@ package dev.hai.emojibattery.app
 
 import dev.hai.emojibattery.ui.screen.*
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -498,10 +501,6 @@ fun EmojiBatteryApp(
                 SettingsScreen(
                     uiState = uiState,
                     onOpenLanguage = { navController.navigate(AppRoute.Language.route) },
-                    onReplayTutorial = {
-                        viewModel.replayTutorial()
-                        navController.navigate(AppRoute.Tutorial.route)
-                    },
                     onOpenStore = viewModel::openStore,
                     onToggleProtection = viewModel::setProtectFromRecentApps,
                     onOpenPrivacy = {
@@ -512,9 +511,34 @@ fun EmojiBatteryApp(
                         viewModel.openTermsOfUse()
                         navController.navigate(AppRoute.Legal.create("terms"))
                     },
-                    onShareApp = viewModel::shareApp,
+                    onShareApp = {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, AppStoreConfig.playStoreWebUrl)
+                        }
+                        val chooser = Intent.createChooser(shareIntent, null)
+                        rawContext.findActivity()?.startActivity(chooser)
+                            ?: rawContext.startActivity(chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
-                    onRateApp = viewModel::rateApp,
+                    onRateApp = {
+                        val activity = rawContext.findActivity()
+                        val openMarket = Intent(Intent.ACTION_VIEW, Uri.parse(AppStoreConfig.playStoreMarketUrl))
+                        val openWeb = Intent(Intent.ACTION_VIEW, Uri.parse(AppStoreConfig.playStoreWebUrl))
+                        try {
+                            if (activity != null) {
+                                activity.startActivity(openMarket)
+                            } else {
+                                rawContext.startActivity(openMarket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                            }
+                        } catch (_: ActivityNotFoundException) {
+                            if (activity != null) {
+                                activity.startActivity(openWeb)
+                            } else {
+                                rawContext.startActivity(openWeb.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                            }
+                        }
+                    },
                     onSelectRating = viewModel::setRatingSelection,
                     onCheckUpdate = viewModel::checkForUpdates,
                     onToggleAccessibility = {

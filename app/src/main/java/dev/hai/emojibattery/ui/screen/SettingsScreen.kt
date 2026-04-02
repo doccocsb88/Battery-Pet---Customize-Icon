@@ -39,7 +39,6 @@ private val AccentIconBlue = Color(0xFF8FB6D4)
 internal fun SettingsScreen(
     uiState: AppUiState,
     onOpenLanguage: () -> Unit,
-    onReplayTutorial: () -> Unit,
     onOpenStore: () -> Unit,
     onToggleProtection: (Boolean) -> Unit,
     onOpenPrivacy: () -> Unit,
@@ -73,7 +72,6 @@ internal fun SettingsScreen(
                 SettingsRow(stringResource(R.string.language), R.drawable.ic_language_settings, languageSubtitle, onOpenLanguage)
             }
 
-            SettingsRow(stringResource(R.string.tutorial), R.drawable.ic_tutorials_new, stringResource(R.string.settings_tutorial_summary), onReplayTutorial)
             SettingsRow(stringResource(R.string.settings_store), R.drawable.ic_rate_us_setting, null, onOpenStore)
             SettingsRow(stringResource(R.string.feedback_title), R.drawable.ic_feed_back_setting, null, onOpenFeedback)
             SettingsRow(stringResource(R.string.settings_share_app), R.drawable.ic_share_app_settings, null, onShareApp)

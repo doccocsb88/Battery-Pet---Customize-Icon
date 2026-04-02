@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import dev.hai.emojibattery.app.AppStoreConfig
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -334,7 +335,7 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     }
 
     companion object {
-        const val APP_ID = "co.q7labs.co.emoji"
+        const val APP_ID = AppStoreConfig.APP_ID
         val shared: GooglePlayPurchaseService = GooglePlayPurchaseService()
     }
 }
