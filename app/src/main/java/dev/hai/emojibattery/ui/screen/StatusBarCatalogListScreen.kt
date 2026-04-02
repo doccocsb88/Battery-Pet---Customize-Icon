@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -88,15 +86,15 @@ internal fun StatusBarCatalogListScreen(
             }
         },
     ) { padding ->
-        BoxWithConstraints(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
-            val columns = 4
+            val columns = 3
             val gap = 12.dp
-            val cellWidth = (maxWidth - gap * (columns - 1)) / columns
+            val cellFill = 0.31f
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(gap),
@@ -111,7 +109,7 @@ internal fun StatusBarCatalogListScreen(
                         val selected = item.id == selectedId
                         Surface(
                             onClick = { onSelectId(item.id) },
-                            modifier = Modifier.width(cellWidth),
+                            modifier = Modifier.fillMaxWidth(cellFill),
                             shape = RoundedCornerShape(12.dp),
                             color = if (selected) StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f) else MaterialTheme.colorScheme.surface,
                             border = BorderStroke(

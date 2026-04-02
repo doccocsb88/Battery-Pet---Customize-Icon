@@ -387,7 +387,7 @@ internal fun StatusBarCustomScreen(
                                         }
                                     } else {
                                         StatusBarChoiceGrid(
-                                            maxItemsInEachRow = 4,
+                                            maxItemsInEachRow = 3,
                                             labels = batteryPresets.map { it.name },
                                             selectedLabel = batteryPresets.firstOrNull { it.id == config.batteryPresetId }?.name.orEmpty(),
                                             onClick = { label ->
@@ -437,7 +437,7 @@ internal fun StatusBarCustomScreen(
                                         }
                                     } else {
                                         StatusBarChoiceGrid(
-                                            maxItemsInEachRow = 4,
+                                            maxItemsInEachRow = 3,
                                             labels = emojiPresets.map { it.name },
                                             selectedLabel = emojiPresets.firstOrNull { it.id == config.emojiPresetId }?.name.orEmpty(),
                                             onClick = { label ->
@@ -2248,14 +2248,13 @@ internal fun StatusChevronRow(title: String) {
     }
 }
 
-private const val StatusBarVolioGridColumns = 4
+private const val StatusBarVolioGridColumns = 3
 
 /**
  * Grid of Volio [HomeBatteryItem] rows — same combined list the original app binds to Battery + Emoji tabs
- * ([EmojiBatteryModel] list from [hungvv.OS.d]). Four columns, icon-only.
+ * ([EmojiBatteryModel] list from [hungvv.OS.d]). Three columns, icon-only.
  *
- * Cell width is derived from the row width minus [horizontalSpacing] gaps so **four** tiles always fit
- * (using [Modifier.fillMaxWidth] fraction alone breaks on ~360dp screens: only three items per row).
+ * Cell width is derived from the row width minus [horizontalSpacing] gaps so **three** tiles always fit.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -2268,78 +2267,79 @@ private fun StatusBarVolioChoiceGrid(
     val horizontalSpacing = 12.dp
     val columns = StatusBarVolioGridColumns
 
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-        val cellWidth = (maxWidth - horizontalSpacing * (columns - 1)) / columns
-        Column(
+    val cellFill = when (columns) {
+        3 -> 0.31f
+        else -> 0.23f
+    }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            maxItemsInEachRow = columns,
+            horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
+            verticalArrangement = Arrangement.spacedBy(horizontalSpacing),
         ) {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                maxItemsInEachRow = columns,
-                horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
-                verticalArrangement = Arrangement.spacedBy(horizontalSpacing),
-            ) {
-                items.forEach { item ->
-                    val selected = item.id == selectedId
-                    Surface(
-                        onClick = { onSelect(item.id) },
-                        modifier = Modifier.width(cellWidth),
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (selected) {
-                            StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
+            items.forEach { item ->
+                val selected = item.id == selectedId
+                Surface(
+                    onClick = { onSelect(item.id) },
+                    modifier = Modifier.fillMaxWidth(cellFill),
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (selected) {
+                        StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+                    border = BorderStroke(
+                        1.dp,
+                        if (selected) {
+                            StrawberryMilk.Secondary
                         } else {
-                            MaterialTheme.colorScheme.surface
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
                         },
-                        border = BorderStroke(
-                            1.dp,
-                            if (selected) {
-                                StrawberryMilk.Secondary
-                            } else {
-                                MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
-                            },
-                        ),
-                        shadowElevation = 0.dp,
+                    ),
+                    shadowElevation = 0.dp,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            val thumb = previewImageUrl(item)?.takeIf { it.isNotBlank() }
-                            if (thumb != null) {
-                                AsyncImage(
-                                    model = thumb,
-                                    contentDescription = item.title,
-                                    modifier = Modifier
-                                        .size(44.dp)
-                                        .clip(RoundedCornerShape(10.dp)),
-                                    contentScale = ContentScale.Crop,
+                        val thumb = previewImageUrl(item)?.takeIf { it.isNotBlank() }
+                        if (thumb != null) {
+                            AsyncImage(
+                                model = thumb,
+                                contentDescription = item.title,
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clip(RoundedCornerShape(10.dp)),
+                                contentScale = ContentScale.Crop,
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(item.previewRes),
+                                contentDescription = item.title,
+                                modifier = Modifier.size(44.dp),
+                            )
+                        }
+                        if (selected) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .size(18.dp)
+                                    .clip(CircleShape)
+                                    .background(StrawberryMilk.Secondary),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(12.dp),
+                                    tint = Color.White,
                                 )
-                            } else {
-                                Image(
-                                    painter = painterResource(item.previewRes),
-                                    contentDescription = item.title,
-                                    modifier = Modifier.size(44.dp),
-                                )
-                            }
-                            if (selected) {
-                                Box(
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                        .size(18.dp)
-                                        .clip(CircleShape)
-                                        .background(StrawberryMilk.Secondary),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Check,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(12.dp),
-                                        tint = Color.White,
-                                    )
-                                }
                             }
                         }
                     }
@@ -2359,47 +2359,48 @@ internal fun StatusBarChoiceGrid(
     maxItemsInEachRow: Int = 4,
 ) {
     val gap = 12.dp
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-        val cellWidth = (maxWidth - gap * (maxItemsInEachRow - 1)) / maxItemsInEachRow
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            maxItemsInEachRow = maxItemsInEachRow,
-            horizontalArrangement = Arrangement.spacedBy(gap),
-            verticalArrangement = Arrangement.spacedBy(gap),
-        ) {
-            labels.forEach { label ->
-                val selected = selectedLabel.equals(label, ignoreCase = true)
-                Surface(
-                    onClick = { onClick(label) },
-                    modifier = Modifier.width(cellWidth),
-                    shape = RoundedCornerShape(14.dp),
-                    color = if (selected) {
-                        StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    },
-                    border = BorderStroke(
-                        1.dp,
-                        if (selected) StrawberryMilk.Secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-                    ),
-                    shadowElevation = 0.dp,
+    val cellFill = when (maxItemsInEachRow) {
+        3 -> 0.31f
+        else -> 0.23f
+    }
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        maxItemsInEachRow = maxItemsInEachRow,
+        horizontalArrangement = Arrangement.spacedBy(gap),
+        verticalArrangement = Arrangement.spacedBy(gap),
+    ) {
+        labels.forEach { label ->
+            val selected = selectedLabel.equals(label, ignoreCase = true)
+            Surface(
+                onClick = { onClick(label) },
+                modifier = Modifier.fillMaxWidth(cellFill),
+                shape = RoundedCornerShape(14.dp),
+                color = if (selected) {
+                    StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
+                } else {
+                    MaterialTheme.colorScheme.surface
+                },
+                border = BorderStroke(
+                    1.dp,
+                    if (selected) StrawberryMilk.Secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+                ),
+                shadowElevation = 0.dp,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        icon(label)
-                        Text(
-                            label,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.labelLarge,
-                            fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
-                        )
-                    }
+                    icon(label)
+                    Text(
+                        label,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
+                    )
                 }
             }
         }
