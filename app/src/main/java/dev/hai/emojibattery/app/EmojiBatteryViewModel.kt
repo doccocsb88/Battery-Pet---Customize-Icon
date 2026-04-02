@@ -534,7 +534,21 @@ class EmojiBatteryViewModel(
 
     fun refreshStickerCatalog() {
         stickerCatalogLoadJob?.cancel()
-        stickerCatalogLoadJob = viewModelScope.launch {
+        stickerCatalogLoadJob = refreshStickerCatalogInternal(resetExisting = true)
+    }
+
+    fun ensureStickerCatalogLoaded() {
+        val state = _uiState.value
+        if (state.stickerCatalogLoading || state.stickerCatalogAppending) return
+        if (state.stickerCatalogRemote.isNotEmpty()) return
+        if (state.stickerCatalogPages.isNotEmpty()) return
+        if (state.stickerCatalogLoadedPageCount > 0) return
+        stickerCatalogLoadJob?.cancel()
+        stickerCatalogLoadJob = refreshStickerCatalogInternal(resetExisting = false)
+    }
+
+    private fun refreshStickerCatalogInternal(resetExisting: Boolean): Job = viewModelScope.launch {
+        if (resetExisting) {
             _uiState.update {
                 it.copy(
                     stickerCatalogLoading = true,
@@ -545,35 +559,42 @@ class EmojiBatteryViewModel(
                     stickerCatalogTotalPageCount = 0,
                 )
             }
-            val app = getApplication<Application>()
-            val pageCount = withContext(Dispatchers.IO) {
-                runCatching { VolioStickerRepository.stickerCatalogPageCount(app) }.getOrDefault(0)
-            }
-            val firstPage = withContext(Dispatchers.IO) {
-                runCatching { VolioStickerRepository.fetchStickerPresetsPage(app, 0) }.getOrElse { emptyList() }
-            }
-            val withThumb = firstPage.count { !it.thumbnailUrl.isNullOrBlank() }
-            val withLottie = firstPage.count { !it.lottieUrl.isNullOrBlank() }
-            val emptyMedia = firstPage.count { it.thumbnailUrl.isNullOrBlank() && it.lottieUrl.isNullOrBlank() }
-            Log.d(
-                TAG,
-                "refreshStickerCatalog: firstPageCount=${firstPage.size} pageCount=$pageCount withThumb=$withThumb withLottie=$withLottie emptyMedia=$emptyMedia",
-            )
-            firstPage.take(5).forEachIndexed { index, sticker ->
-                Log.d(
-                    TAG,
-                    "refreshStickerCatalog: sample[$index] id=${sticker.id} name=${sticker.name} thumb=${sticker.thumbnailUrl} lottie=${sticker.lottieUrl}",
-                )
-            }
+        } else {
             _uiState.update {
                 it.copy(
-                    stickerCatalogRemote = firstPage,
-                    stickerCatalogPages = if (firstPage.isEmpty()) emptyMap() else mapOf(0 to firstPage),
-                    stickerCatalogLoading = false,
-                    stickerCatalogLoadedPageCount = if (firstPage.isEmpty()) 0 else 1,
-                    stickerCatalogTotalPageCount = pageCount,
+                    stickerCatalogLoading = true,
+                    stickerCatalogAppending = false,
                 )
             }
+        }
+        val app = getApplication<Application>()
+        val pageCount = withContext(Dispatchers.IO) {
+            runCatching { VolioStickerRepository.stickerCatalogPageCount(app) }.getOrDefault(0)
+        }
+        val firstPage = withContext(Dispatchers.IO) {
+            runCatching { VolioStickerRepository.fetchStickerPresetsPage(app, 0) }.getOrElse { emptyList() }
+        }
+        val withThumb = firstPage.count { !it.thumbnailUrl.isNullOrBlank() }
+        val withLottie = firstPage.count { !it.lottieUrl.isNullOrBlank() }
+        val emptyMedia = firstPage.count { it.thumbnailUrl.isNullOrBlank() && it.lottieUrl.isNullOrBlank() }
+        Log.d(
+            TAG,
+            "refreshStickerCatalog: firstPageCount=${firstPage.size} pageCount=$pageCount withThumb=$withThumb withLottie=$withLottie emptyMedia=$emptyMedia",
+        )
+        firstPage.take(5).forEachIndexed { index, sticker ->
+            Log.d(
+                TAG,
+                "refreshStickerCatalog: sample[$index] id=${sticker.id} name=${sticker.name} thumb=${sticker.thumbnailUrl} lottie=${sticker.lottieUrl}",
+            )
+        }
+        _uiState.update {
+            it.copy(
+                stickerCatalogRemote = firstPage,
+                stickerCatalogPages = if (firstPage.isEmpty()) emptyMap() else mapOf(0 to firstPage),
+                stickerCatalogLoading = false,
+                stickerCatalogLoadedPageCount = if (firstPage.isEmpty()) 0 else 1,
+                stickerCatalogTotalPageCount = pageCount,
+            )
         }
     }
 

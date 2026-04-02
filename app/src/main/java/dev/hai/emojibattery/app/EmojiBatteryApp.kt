@@ -682,11 +682,7 @@ fun EmojiBatteryApp(
                     onUpdateStickerRotation = viewModel::updateSelectedStickerRotation,
                     onSetStickerPosition = viewModel::updateSelectedStickerPosition,
                     onDismissStickerAdjustment = viewModel::dismissStickerAdjustmentPanel,
-                    onOpenTutorial = {
-                        viewModel.replayTutorial()
-                        navController.navigate(AppRoute.Tutorial.route)
-                    },
-                    onRefreshStickerCatalog = viewModel::refreshStickerCatalog,
+                    onRefreshStickerCatalog = viewModel::ensureStickerCatalogLoaded,
                     onLoadStickerCatalogPage = viewModel::loadStickerCatalogPage,
                     onSetOverlayEnabled = onSetOverlayEnabled,
                     onToggleAccessibility = { checked ->

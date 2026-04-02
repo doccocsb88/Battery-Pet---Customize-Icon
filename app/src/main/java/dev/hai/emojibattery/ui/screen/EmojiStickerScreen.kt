@@ -210,7 +210,6 @@ internal fun EmojiStickerScreen(
     onUpdateStickerRotation: (Float) -> Unit,
     onSetStickerPosition: (Float, Float) -> Unit,
     onDismissStickerAdjustment: () -> Unit,
-    onOpenTutorial: () -> Unit,
     onRefreshStickerCatalog: () -> Unit,
     onLoadStickerCatalogPage: (Int) -> Unit,
     onSetOverlayEnabled: (Boolean) -> Unit,
@@ -330,7 +329,7 @@ internal fun EmojiStickerScreen(
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
@@ -339,18 +338,6 @@ internal fun EmojiStickerScreen(
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
                         )
-                        Surface(
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier.clickable(onClick = onOpenTutorial),
-                        ) {
-                            Text(
-                                stringResource(R.string.tutorial),
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                style = MaterialTheme.typography.titleSmall,
-                            )
-                        }
                     }
                     if (uiState.stickerCatalogLoading && uiState.stickerCatalogRemote.isEmpty()) {
                         Column(
