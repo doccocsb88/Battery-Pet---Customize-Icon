@@ -8,10 +8,12 @@ import android.util.Log
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
@@ -48,10 +50,6 @@ import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -84,8 +82,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
@@ -94,7 +94,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -107,15 +112,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -200,7 +208,7 @@ internal fun EmojiStickerScreen(
     onRemoveSticker: (String) -> Unit,
     onUpdateStickerSize: (Float) -> Unit,
     onUpdateStickerRotation: (Float) -> Unit,
-    onNudgeStickerPosition: (Float, Float) -> Unit,
+    onSetStickerPosition: (Float, Float) -> Unit,
     onDismissStickerAdjustment: () -> Unit,
     onOpenTutorial: () -> Unit,
     onRefreshStickerCatalog: () -> Unit,
@@ -590,7 +598,7 @@ internal fun EmojiStickerScreen(
                 onDismiss = onDismissStickerAdjustment,
                 onUpdateSize = onUpdateStickerSize,
                 onUpdateRotation = onUpdateStickerRotation,
-                onNudgePosition = onNudgeStickerPosition,
+                onSetPosition = onSetStickerPosition,
             )
         }
     }
@@ -767,7 +775,7 @@ private fun StickerAdjustmentOverlay(
     onDismiss: () -> Unit,
     onUpdateSize: (Float) -> Unit,
     onUpdateRotation: (Float) -> Unit,
-    onNudgePosition: (Float, Float) -> Unit,
+    onSetPosition: (Float, Float) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -787,7 +795,7 @@ private fun StickerAdjustmentOverlay(
             onDismiss = onDismiss,
             onUpdateSize = onUpdateSize,
             onUpdateRotation = onUpdateRotation,
-            onNudgePosition = onNudgePosition,
+            onSetPosition = onSetPosition,
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(horizontal = 16.dp),
@@ -802,9 +810,21 @@ private fun StickerAdjustmentPanel(
     onDismiss: () -> Unit,
     onUpdateSize: (Float) -> Unit,
     onUpdateRotation: (Float) -> Unit,
-    onNudgePosition: (Float, Float) -> Unit,
+    onSetPosition: (Float, Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val density = LocalDensity.current
+    var containerWidthPx by remember(sticker.id) { mutableStateOf(1f) }
+    var containerHeightPx by remember(sticker.id) { mutableStateOf(1f) }
+    var localSize by remember(sticker.id) { mutableStateOf(placement.size.coerceIn(0.2f, 1f)) }
+    var localOffsetX by remember(sticker.id) { mutableStateOf(placement.offsetX.coerceIn(0f, 1f)) }
+    var localOffsetY by remember(sticker.id) { mutableStateOf(placement.offsetY.coerceIn(0f, 1f)) }
+
+    LaunchedEffect(sticker.id, placement.size, placement.offsetX, placement.offsetY) {
+        localSize = placement.size.coerceIn(0.2f, 1f)
+        localOffsetX = placement.offsetX.coerceIn(0f, 1f)
+        localOffsetY = placement.offsetY.coerceIn(0f, 1f)
+    }
     Surface(
         shape = RoundedCornerShape(18.dp),
         color = Color.White,
@@ -849,122 +869,168 @@ private fun StickerAdjustmentPanel(
                     }
                 }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            Text(
+                text = "Drag sticker to move. Drag 4 corner handles to resize.",
+                style = MaterialTheme.typography.bodySmall,
+                color = StickerUiText.copy(alpha = 0.75f),
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(210.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(StickerUiPrimary.copy(alpha = 0.12f))
+                    .onSizeChanged {
+                        containerWidthPx = it.width.toFloat().coerceAtLeast(1f)
+                        containerHeightPx = it.height.toFloat().coerceAtLeast(1f)
+                    },
             ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(width = 4.dp, height = 12.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(StickerUiPrimary),
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            stringResource(R.string.sticker_size_slider),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = StickerUiText,
-                        )
-                    }
-                    Slider(
-                        value = placement.size.coerceIn(0.2f, 1f),
-                        valueRange = 0.2f..1f,
-                        onValueChange = onUpdateSize,
-                        colors = SliderDefaults.colors(
-                            thumbColor = StickerUiSecondary,
-                            activeTrackColor = StickerUiSecondary,
-                            inactiveTrackColor = StickerUiPrimary.copy(alpha = 0.28f),
+                val normalizedSize = localSize.coerceIn(0.2f, 1f)
+                val baseStickerPx = with(density) { (36.dp + (normalizedSize * 56f).dp).toPx() }
+                val framePaddingPx = with(density) { 14.dp.toPx() }
+                val frameWidthPx = baseStickerPx + (framePaddingPx * 2f)
+                val frameHeightPx = baseStickerPx + (framePaddingPx * 2f)
+                val availableWidthPx = (containerWidthPx - frameWidthPx).coerceAtLeast(0f)
+                val availableHeightPx = (containerHeightPx - frameHeightPx).coerceAtLeast(0f)
+                val leftPx = (availableWidthPx * localOffsetX.coerceIn(0f, 1f)).coerceIn(0f, availableWidthPx)
+                val topPx = (availableHeightPx * localOffsetY.coerceIn(0f, 1f)).coerceIn(0f, availableHeightPx)
+                val resizeScaleFactor = 260f
+
+                Box(
+                    modifier = Modifier
+                        .offset { IntOffset(leftPx.roundToInt(), topPx.roundToInt()) }
+                        .size(
+                            width = with(density) { frameWidthPx.toDp() },
+                            height = with(density) { frameHeightPx.toDp() },
                         ),
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(width = 4.dp, height = 12.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(StickerUiPrimary),
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            stringResource(R.string.sticker_rotate_slider),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = StickerUiText,
-                        )
-                    }
-                    Slider(
-                        value = placement.rotation.coerceIn(-180f, 180f),
-                        valueRange = -180f..180f,
-                        onValueChange = onUpdateRotation,
-                        colors = SliderDefaults.colors(
-                            thumbColor = StickerUiSecondary,
-                            activeTrackColor = StickerUiSecondary,
-                            inactiveTrackColor = StickerUiPrimary.copy(alpha = 0.28f),
-                        ),
-                    )
-                }
-                Column(
-                    modifier = Modifier.width(104.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    Surface(
-                        onClick = { onNudgePosition(0f, -0.06f) },
-                        shape = CircleShape,
-                        color = StickerUiPrimary.copy(alpha = 0.18f),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .pointerInput(containerWidthPx, containerHeightPx, frameWidthPx, frameHeightPx) {
+                                detectDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    val nextX = if (availableWidthPx > 0f) {
+                                        localOffsetX + (dragAmount.x / availableWidthPx)
+                                    } else {
+                                        localOffsetX
+                                    }
+                                    val nextY = if (availableHeightPx > 0f) {
+                                        localOffsetY + (dragAmount.y / availableHeightPx)
+                                    } else {
+                                        localOffsetY
+                                    }
+                                    localOffsetX = nextX.coerceIn(0f, 1f)
+                                    localOffsetY = nextY.coerceIn(0f, 1f)
+                                    onSetPosition(localOffsetX, localOffsetY)
+                                }
+                            },
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Icon(
-                            Icons.Rounded.KeyboardArrowUp,
-                            contentDescription = null,
-                            modifier = Modifier.padding(8.dp),
-                            tint = StickerUiText,
+                        StickerMediaPreview(
+                            sticker = sticker,
+                            modifier = Modifier
+                                .size(with(density) { baseStickerPx.toDp() })
+                                .graphicsLayer(rotationZ = placement.rotation),
                         )
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Surface(
-                            onClick = { onNudgePosition(-0.06f, 0f) },
-                            shape = CircleShape,
-                            color = StickerUiPrimary.copy(alpha = 0.18f),
-                        ) {
-                            Icon(
-                                Icons.Rounded.KeyboardArrowLeft,
-                                contentDescription = null,
-                                modifier = Modifier.padding(8.dp),
-                                tint = StickerUiText,
-                            )
-                        }
-                        Surface(
-                            onClick = { onNudgePosition(0.06f, 0f) },
-                            shape = CircleShape,
-                            color = StickerUiPrimary.copy(alpha = 0.18f),
-                        ) {
-                            Icon(
-                                Icons.Rounded.KeyboardArrowRight,
-                                contentDescription = null,
-                                modifier = Modifier.padding(8.dp),
-                                tint = StickerUiText,
-                            )
-                        }
-                    }
-                    Surface(
-                        onClick = { onNudgePosition(0f, 0.06f) },
-                        shape = CircleShape,
-                        color = StickerUiPrimary.copy(alpha = 0.18f),
-                    ) {
-                        Icon(
-                            Icons.Rounded.KeyboardArrowDown,
-                            contentDescription = null,
-                            modifier = Modifier.padding(8.dp),
-                            tint = StickerUiText,
-                        )
-                    }
+                    StickerDashFrame(modifier = Modifier.fillMaxSize())
+                    StickerResizeHandle(
+                        modifier = Modifier.align(Alignment.TopStart),
+                        onDrag = { drag ->
+                            localSize = (localSize + ((-drag.x - drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
+                            onUpdateSize(localSize)
+                        },
+                    )
+                    StickerResizeHandle(
+                        modifier = Modifier.align(Alignment.TopEnd),
+                        onDrag = { drag ->
+                            localSize = (localSize + ((drag.x - drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
+                            onUpdateSize(localSize)
+                        },
+                    )
+                    StickerResizeHandle(
+                        modifier = Modifier.align(Alignment.BottomStart),
+                        onDrag = { drag ->
+                            localSize = (localSize + ((-drag.x + drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
+                            onUpdateSize(localSize)
+                        },
+                    )
+                    StickerResizeHandle(
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        onDrag = { drag ->
+                            localSize = (localSize + ((drag.x + drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
+                            onUpdateSize(localSize)
+                        },
+                    )
                 }
             }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 4.dp, height = 12.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(StickerUiPrimary),
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    stringResource(R.string.sticker_rotate_slider),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = StickerUiText,
+                )
+            }
+            Slider(
+                value = placement.rotation.coerceIn(-180f, 180f),
+                valueRange = -180f..180f,
+                onValueChange = onUpdateRotation,
+                colors = SliderDefaults.colors(
+                    thumbColor = StickerUiSecondary,
+                    activeTrackColor = StickerUiSecondary,
+                    inactiveTrackColor = StickerUiPrimary.copy(alpha = 0.28f),
+                ),
+            )
         }
     }
+}
+
+@Composable
+private fun StickerDashFrame(
+    modifier: Modifier = Modifier,
+) {
+    val handleInset = 10.dp
+    Canvas(modifier = modifier) {
+        val inset = handleInset.toPx()
+        val dash = 8.dp.toPx()
+        val gap = 7.dp.toPx()
+        val stroke = 2.dp.toPx()
+        val dashEffect = PathEffect.dashPathEffect(floatArrayOf(dash, gap), 0f)
+        val color = StickerUiPrimary
+
+        drawLine(color, Offset(inset, inset), Offset(size.width - inset, inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
+        drawLine(color, Offset(inset, size.height - inset), Offset(size.width - inset, size.height - inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
+        drawLine(color, Offset(inset, inset), Offset(inset, size.height - inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
+        drawLine(color, Offset(size.width - inset, inset), Offset(size.width - inset, size.height - inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
+    }
+}
+
+@Composable
+private fun StickerResizeHandle(
+    modifier: Modifier = Modifier,
+    onDrag: (Offset) -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .size(18.dp)
+            .clip(CircleShape)
+            .background(Color.White)
+            .border(1.dp, StickerUiPrimary, CircleShape)
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    onDrag(dragAmount)
+                }
+            },
+    )
 }
 
 @Composable

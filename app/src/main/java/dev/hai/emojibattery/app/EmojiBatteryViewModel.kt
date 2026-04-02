@@ -659,6 +659,15 @@ class EmojiBatteryViewModel(
         updateSelectedSticker { copy(rotation = value.coerceIn(-180f, 180f)) }
     }
 
+    fun updateSelectedStickerPosition(offsetX: Float, offsetY: Float) {
+        updateSelectedSticker {
+            copy(
+                offsetX = offsetX.coerceIn(0f, 1f),
+                offsetY = offsetY.coerceIn(0f, 1f),
+            )
+        }
+    }
+
     fun nudgeSelectedSticker(deltaX: Float, deltaY: Float) {
         updateSelectedSticker {
             copy(

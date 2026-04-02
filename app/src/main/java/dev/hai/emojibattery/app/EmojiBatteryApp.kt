@@ -680,7 +680,7 @@ fun EmojiBatteryApp(
                     onRemoveSticker = viewModel::removeSticker,
                     onUpdateStickerSize = viewModel::updateSelectedStickerSize,
                     onUpdateStickerRotation = viewModel::updateSelectedStickerRotation,
-                    onNudgeStickerPosition = viewModel::nudgeSelectedSticker,
+                    onSetStickerPosition = viewModel::updateSelectedStickerPosition,
                     onDismissStickerAdjustment = viewModel::dismissStickerAdjustmentPanel,
                     onOpenTutorial = {
                         viewModel.replayTutorial()
