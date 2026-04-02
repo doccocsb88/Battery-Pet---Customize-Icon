@@ -234,6 +234,28 @@ data class BatteryIconConfig(
     val backgroundTemplateDrawableRes: Int? = null,
 )
 
+enum class LimitedFeature(val storageKey: String, val freeLimit: Int) {
+    ApplySticker("apply_sticker", 1),
+    ApplyBattery("apply_battery", 3),
+}
+
+data class UserEntitlementState(
+    val isPremium: Boolean = false,
+    val usageCounts: Map<LimitedFeature, Int> = LimitedFeature.entries.associateWith { 0 },
+) {
+    fun usageCount(feature: LimitedFeature): Int = usageCounts[feature] ?: 0
+
+    fun limitFor(feature: LimitedFeature): Int = if (isPremium) Int.MAX_VALUE else feature.freeLimit
+
+    fun canUse(feature: LimitedFeature): Boolean = isPremium || usageCount(feature) < feature.freeLimit
+
+    fun remaining(feature: LimitedFeature): Int = if (isPremium) {
+        Int.MAX_VALUE
+    } else {
+        (feature.freeLimit - usageCount(feature)).coerceAtLeast(0)
+    }
+}
+
 data class AppUiState(
     val splashDone: Boolean = false,
     val languageChosen: Boolean = false,
@@ -289,6 +311,7 @@ data class AppUiState(
     val tutorialCompleted: Boolean = false,
     val tutorialPage: Int = 0,
     val protectFromRecentApps: Boolean = false,
+    val userEntitlement: UserEntitlementState = UserEntitlementState(),
     val premiumUnlocked: Boolean = false,
     val unlockedFeatureKeys: Set<String> = emptySet(),
     val paywallState: PaywallState? = null,

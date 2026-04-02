@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -145,6 +146,25 @@ fun PaywallScreen(
         billingState.weeklyHasFreeTrial && weeklyTrialDays != null -> "Free for $weeklyTrialDays days"
         else -> "Billed weekly"
     }
+    val weeklyDescription = when {
+        weekly == null -> null
+        billingState.weeklyHasFreeTrial && weeklyTrialDays != null ->
+            "Free for $weeklyTrialDays days, then auto-renew weekly. Cancel anytime."
+        weekly.description.isNotBlank() -> weekly.description
+        else -> weekly.billingLabel
+    }
+    val monthlyDescription = when {
+        monthly == null -> null
+        billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
+            "Free for $monthlyTrialDays days, then auto-renew monthly. Cancel anytime."
+        monthly.description.isNotBlank() -> monthly.description
+        else -> monthly.billingLabel
+    }
+    val lifetimeDescription = when {
+        lifetime == null -> null
+        lifetime.description.isNotBlank() -> lifetime.description
+        else -> lifetime.billingLabel
+    }
     val billingDisclaimer = when {
         monthly != null && billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
             "Free for $monthlyTrialDays days, then auto-renew monthly. Cancel anytime."
@@ -230,7 +250,8 @@ fun PaywallScreen(
             ) {
                 AlpinePlanCard(
                     modifier = Modifier.fillMaxWidth(),
-                    label = "WEEKLY",
+                    label = weekly?.title ?: "WEEKLY",
+                    description = weeklyDescription,
                     price = weekly?.displayPrice ?: stringResource(R.string.paywall_price_unavailable),
                     footnote = weeklyFootnote,
                     badge = null,
@@ -241,7 +262,8 @@ fun PaywallScreen(
                 )
                 AlpinePlanCard(
                     modifier = Modifier.fillMaxWidth(),
-                    label = stringResource(R.string.monthly).uppercase(),
+                    label = monthly?.title ?: stringResource(R.string.monthly).uppercase(),
+                    description = monthlyDescription,
                     price = monthPriceLabel,
                     footnote = when {
                         monthly != null && billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
@@ -256,7 +278,8 @@ fun PaywallScreen(
                 )
                 AlpinePlanCard(
                     modifier = Modifier.fillMaxWidth(),
-                    label = stringResource(R.string.life_time).uppercase(),
+                    label = lifetime?.title ?: stringResource(R.string.life_time).uppercase(),
+                    description = lifetimeDescription,
                     price = lifetimePriceLabel,
                     footnote = null,
                     badge = stringResource(R.string.popular),
@@ -287,24 +310,6 @@ fun PaywallScreen(
                 color = Alpine.OnSurfaceVariant,
                 textAlign = TextAlign.Center,
             )
-
-            // ─── Error Message ───
-            billingState.errorMessage?.let { message ->
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 12.dp),
-                    shape = Alpine.RoundLG,
-                    color = Alpine.Secondary.copy(alpha = 0.35f),
-                ) {
-                    Text(
-                        text = message,
-                        modifier = Modifier.padding(16.dp),
-                        color = Alpine.OnSurface,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            }
 
             Spacer(Modifier.height(8.dp))
 
@@ -410,6 +415,37 @@ fun PaywallScreen(
                 modifier = Modifier.size(20.dp),
             )
         }
+
+        billingState.errorMessage?.let { message ->
+            AlertDialog(
+                onDismissRequest = purchaseService::clearError,
+                containerColor = Alpine.Surface,
+                shape = Alpine.RoundLG,
+                title = {
+                    Text(
+                        text = "Purchase error",
+                        color = Alpine.OnSurface,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+                text = {
+                    Text(
+                        text = message,
+                        color = Alpine.OnSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = purchaseService::clearError) {
+                        Text(
+                            text = "OK",
+                            color = Alpine.Primary,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                },
+            )
+        }
     }
 }
 
@@ -446,6 +482,7 @@ private fun AlpineBenefitRow(
 private fun AlpinePlanCard(
     modifier: Modifier = Modifier,
     label: String,
+    description: String?,
     price: String,
     footnote: String?,
     badge: String?,
@@ -465,36 +502,40 @@ private fun AlpinePlanCard(
                 color = Alpine.Secondary.copy(alpha = 0.42f),
             ),
         ) {
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                    .padding(horizontal = 18.dp, vertical = 14.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        letterSpacing = 0.05.sp,
-                    ),
-                    fontWeight = FontWeight.Bold,
-                    color = Alpine.Primary,
-                )
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Alpine.Primary,
+                    )
+                    val supportingCopy = description?.takeIf { it.isNotBlank() } ?: footnote
+                    if (!supportingCopy.isNullOrBlank()) {
+                        Text(
+                            text = supportingCopy,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Alpine.OnSurfaceVariant,
+                            lineHeight = 16.sp,
+                        )
+                    }
+                }
                 Text(
                     text = price,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold,
                     color = Alpine.OnSurface,
+                    textAlign = TextAlign.End,
                 )
-                if (!footnote.isNullOrBlank()) {
-                    Text(
-                        text = footnote,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Alpine.OnSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        lineHeight = 14.sp,
-                    )
-                }
             }
         }
 

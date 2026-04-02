@@ -24,10 +24,12 @@ import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.GestureAction
 import dev.hai.emojibattery.model.GestureTrigger
+import dev.hai.emojibattery.model.LimitedFeature
 import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.PaywallState
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.StickerPlacement
+import dev.hai.emojibattery.model.UserEntitlementState
 import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.model.stickerPresetForId
 import dev.hai.emojibattery.model.StatusBarTab
@@ -40,6 +42,7 @@ import dev.hai.emojibattery.locale.normalizeSupportedTag
 import dev.hai.emojibattery.locale.resolveDefaultLocaleTag
 import dev.hai.emojibattery.service.GestureSettingsStore
 import dev.hai.emojibattery.service.OverlayConfigStore
+import dev.hai.emojibattery.service.UserEntitlementManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,6 +58,7 @@ class EmojiBatteryViewModel(
 ) : AndroidViewModel(application) {
     private var homeCategoryLoadJob: Job? = null
     private var stickerCatalogLoadJob: Job? = null
+    private val userEntitlementManager = UserEntitlementManager(application.applicationContext)
 
     companion object {
         private const val APPLY_SUCCESS_MESSAGE = "Applied successfully."
@@ -86,6 +90,7 @@ class EmojiBatteryViewModel(
         val app = getApplication<Application>()
         val gestureSnapshot = GestureSettingsStore.read(app)
         val overlaySnapshot = OverlayConfigStore.read(app)
+        val userEntitlement = userEntitlementManager.readState()
         val defaultTag = resolveDefaultLocaleTag(app)
         val englishOnly = !AppLanguageConfig.isLanguagePickerFlowEnabled
         val resolvedLocaleTag = if (englishOnly) {
@@ -107,6 +112,8 @@ class EmojiBatteryViewModel(
                 padCatalogLoading = true,
                 featureConfigs = overlaySnapshot.featureConfigs,
                 statusBarOverlayEnabled = overlaySnapshot.statusBarEnabled,
+                userEntitlement = userEntitlement,
+                premiumUnlocked = userEntitlement.isPremium,
             )
         }
         viewModelScope.launch {
@@ -471,14 +478,25 @@ class EmojiBatteryViewModel(
      */
     fun applyConfig() {
         var appliedSuccessfully = false
+        var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
                 state.copy(applyMessage = "Enable accessibility bridge before applying.")
+            } else if (!canApplyBattery(state)) {
+                state.copy(
+                    paywallState = PaywallState(
+                        featureKey = "limit:apply_battery",
+                        title = "Free Battery Apply Limit Reached",
+                        message = "Free users can apply battery ${LimitedFeature.ApplyBattery.freeLimit} times. Upgrade to keep applying without limits.",
+                    ),
+                )
             } else {
                 appliedSuccessfully = true
+                updatedEntitlement = recordBatteryApply(state.userEntitlement)
                 state.copy(
                     appliedConfig = state.editingConfig,
                     applyMessage = APPLY_SUCCESS_MESSAGE,
+                    userEntitlement = updatedEntitlement ?: state.userEntitlement,
                 )
             }
         }
@@ -488,8 +506,30 @@ class EmojiBatteryViewModel(
     }
 
     fun applyLegacyBatteryConfig() {
-        _uiState.update { it.copy(appliedConfig = it.editingConfig, applyMessage = APPLY_SUCCESS_MESSAGE) }
-        advanceAchievement("apply_status_bar")
+        var appliedSuccessfully = false
+        var updatedEntitlement: UserEntitlementState? = null
+        _uiState.update { state ->
+            if (!canApplyBattery(state)) {
+                state.copy(
+                    paywallState = PaywallState(
+                        featureKey = "limit:apply_battery",
+                        title = "Free Battery Apply Limit Reached",
+                        message = "Free users can apply battery ${LimitedFeature.ApplyBattery.freeLimit} times. Upgrade to keep applying without limits.",
+                    ),
+                )
+            } else {
+                appliedSuccessfully = true
+                updatedEntitlement = recordBatteryApply(state.userEntitlement)
+                state.copy(
+                    appliedConfig = state.editingConfig,
+                    applyMessage = APPLY_SUCCESS_MESSAGE,
+                    userEntitlement = updatedEntitlement ?: state.userEntitlement,
+                )
+            }
+        }
+        if (appliedSuccessfully) {
+            advanceAchievement("apply_status_bar")
+        }
     }
 
     fun refreshStickerCatalog() {
@@ -682,18 +722,29 @@ class EmojiBatteryViewModel(
     }
 
     fun saveStickerOverlay() {
+        var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
             when {
                 state.stickerPlacements.isEmpty() -> state.copy(applyMessage = "Please select a sticker first.")
                 !state.accessibilityGranted -> state.copy(applyMessage = "Enable accessibility bridge before applying.")
+                !canApplySticker(state) -> state.copy(
+                    paywallState = PaywallState(
+                        featureKey = "limit:apply_sticker",
+                        title = "Free Sticker Apply Limit Reached",
+                        message = "Free users can apply sticker ${LimitedFeature.ApplySticker.freeLimit} time. Upgrade to keep using sticker overlay.",
+                    ),
+                )
                 else -> state.copy(
                     stickerOverlayEnabled = true,
                     showStickerAdjustmentPanel = false,
                     applyMessage = APPLY_SUCCESS_MESSAGE,
+                    userEntitlement = recordStickerApply(state.userEntitlement).also { updatedEntitlement = it },
                 )
             }
         }
-        advanceAchievement("save_sticker")
+        if (updatedEntitlement != null) {
+            advanceAchievement("save_sticker")
+        }
     }
 
     fun turnOffStickerOverlay() {
@@ -1069,13 +1120,19 @@ class EmojiBatteryViewModel(
     }
 
     fun syncPremiumAccess(hasPremium: Boolean) {
+        val updatedEntitlement = userEntitlementManager.syncPremium(hasPremium)
         _uiState.update {
             it.copy(
                 premiumUnlocked = hasPremium,
+                userEntitlement = updatedEntitlement,
                 paywallState = if (hasPremium) null else it.paywallState,
             )
         }
     }
+
+    fun canApplySticker(): Boolean = canApplySticker(_uiState.value)
+
+    fun canApplyBattery(): Boolean = canApplyBattery(_uiState.value)
 
     fun claimAchievement(taskId: String) {
         _uiState.update { state ->
@@ -1198,4 +1255,16 @@ class EmojiBatteryViewModel(
         state.unlockedFeatureKeys.contains(SampleCatalog.FEATURE_EXTRA_STICKER_SLOT) -> SampleCatalog.REWARD_EXTRA_STICKER_SLOTS
         else -> SampleCatalog.FREE_STICKER_SLOTS
     }
+
+    private fun canApplySticker(state: AppUiState): Boolean =
+        userEntitlementManager.canApplySticker(state.userEntitlement)
+
+    private fun canApplyBattery(state: AppUiState): Boolean =
+        userEntitlementManager.canApplyBattery(state.userEntitlement)
+
+    private fun recordStickerApply(state: UserEntitlementState): UserEntitlementState =
+        userEntitlementManager.recordApplySticker(state)
+
+    private fun recordBatteryApply(state: UserEntitlementState): UserEntitlementState =
+        userEntitlementManager.recordApplyBattery(state)
 }

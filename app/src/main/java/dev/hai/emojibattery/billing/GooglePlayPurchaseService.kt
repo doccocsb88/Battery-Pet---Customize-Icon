@@ -140,6 +140,10 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         }
     }
 
+    override fun clearError() {
+        _uiState.value = _uiState.value.copy(errorMessage = null)
+    }
+
     override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
         if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             purchases.forEach(::acknowledgeIfNeeded)

@@ -15,4 +15,5 @@ interface PurchaseService {
     fun restorePurchases()
     fun openManageSubscriptions(context: Context)
     fun hasPremiumAccess(ownedProductIds: Set<String>): Boolean
+    fun clearError()
 }
