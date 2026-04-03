@@ -95,6 +95,7 @@ fun EmojiBatteryApp(
     )
     var showAccessibilityConsent by remember { mutableStateOf(false) }
     var transientSuccessMessage by remember { mutableStateOf<String?>(null) }
+    var successToastResetToken by remember { mutableStateOf(0L) }
     val onSetOverlayEnabled: (Boolean) -> Unit = { enabled ->
         viewModel.setStatusBarOverlayEnabled(enabled)
         OverlayConfigStore.setStatusBarEnabled(context, enabled)
@@ -126,10 +127,11 @@ fun EmojiBatteryApp(
     LaunchedEffect(uiState.applyMessage) {
         val message = uiState.applyMessage ?: return@LaunchedEffect
         transientSuccessMessage = message
+        successToastResetToken += 1L
         viewModel.clearApplyMessage()
     }
 
-    LaunchedEffect(transientSuccessMessage) {
+    LaunchedEffect(successToastResetToken) {
         val message = transientSuccessMessage ?: return@LaunchedEffect
         delay(2000)
         if (transientSuccessMessage == message) {

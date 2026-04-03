@@ -505,22 +505,22 @@ internal fun EmojiStickerScreen(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                     if (selectedSticker != null && selectedPlacement != null) {
-                        Text(
-                            "${selectedSticker.glyph} ${selectedSticker.name}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Text(
-                            stringResource(R.string.sticker_adjustment_inline_hint),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+//                        Text(
+//                            "${selectedSticker.glyph} ${selectedSticker.name}",
+//                            style = MaterialTheme.typography.bodyLarge,
+//                            color = MaterialTheme.colorScheme.onSurface,
+//                        )
+//                        Text(
+//                            stringResource(R.string.sticker_adjustment_inline_hint),
+//                            style = MaterialTheme.typography.bodySmall,
+//                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                        )
                     } else {
-                        Text(
-                            stringResource(R.string.sticker_select_to_edit_hint),
-                            color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
+//                        Text(
+//                            stringResource(R.string.sticker_select_to_edit_hint),
+//                            color = MaterialTheme.colorScheme.onSurface,
+//                            style = MaterialTheme.typography.bodyMedium,
+//                        )
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),

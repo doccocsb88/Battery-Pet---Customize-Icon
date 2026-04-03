@@ -137,22 +137,10 @@ internal fun RingerFeatureScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.enable_feature, title),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(
+                            text = stringResource(R.string.enable_feature, title),
+                            modifier = Modifier.weight(1f),
+                        )
                         AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                     }
 
@@ -316,22 +304,7 @@ internal fun RingerFeatureScreen(
 
 @Composable
 private fun SectionTitle(text: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_bullet2),
-            contentDescription = null,
-            modifier = Modifier.size(5.dp, 18.dp),
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
+    OceanFeatureSectionTitle(text = text)
 }
 
 @Composable
@@ -466,42 +439,15 @@ private fun SizeColorFeatureScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.enable_feature, title),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(
+                            text = stringResource(R.string.enable_feature, title),
+                            modifier = Modifier.weight(1f),
+                        )
                         AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = sizeLabel,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = sizeLabel)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -525,22 +471,7 @@ private fun SizeColorFeatureScreen(
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.icon_color_short),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.icon_color_short))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(14.dp),

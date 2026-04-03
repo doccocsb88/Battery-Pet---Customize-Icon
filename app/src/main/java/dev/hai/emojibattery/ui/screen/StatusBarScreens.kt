@@ -1383,6 +1383,46 @@ private fun StatusBarBatteryEmojiCompositePreview(
 }
 
 @Composable
+private fun OceanSectionMarker(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .width(5.dp)
+            .height(24.dp)
+            .clip(RoundedCornerShape(999.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        OceanSerenity.Primary.copy(alpha = 0.55f),
+                        OceanSerenity.Secondary.copy(alpha = 0.85f),
+                    ),
+                ),
+            ),
+    )
+}
+
+@Composable
+private fun OceanSectionTitle(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        OceanSectionMarker()
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+@Composable
 private fun StatusBarPercentageSection(
     value: Float,
     onValueChange: (Float) -> Unit,
@@ -1398,11 +1438,7 @@ private fun StatusBarPercentageSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(vertical = 6.dp),
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_headline_section),
-                contentDescription = null,
-                modifier = Modifier.height(12.dp),
-            )
+            OceanSectionMarker()
             Text(
                 stringResource(R.string.percentage),
                 color = labelColor,
@@ -1448,11 +1484,7 @@ private fun StatusBarPercentageColorRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(vertical = 6.dp),
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_headline_section),
-                contentDescription = null,
-                modifier = Modifier.height(12.dp),
-            )
+            OceanSectionMarker()
             Text(
                 stringResource(R.string.color_percentage),
                 color = labelColor,
@@ -1591,11 +1623,7 @@ private fun StatusBarThemeBackgroundColorRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(vertical = 6.dp),
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_headline_section),
-                contentDescription = null,
-                modifier = Modifier.height(12.dp),
-            )
+            OceanSectionMarker()
             Text(
                 stringResource(R.string.theme_background_color),
                 color = labelColor,
@@ -1861,11 +1889,7 @@ private fun StatusBarBackgroundTemplateSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(vertical = 6.dp),
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_headline_section),
-                contentDescription = null,
-                modifier = Modifier.height(12.dp),
-            )
+            OceanSectionMarker()
             Text(
                 stringResource(R.string.background_template),
                 color = labelColor,
@@ -2195,7 +2219,7 @@ internal fun StatusSliderRow(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
-        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
+        OceanSectionTitle(title = title, modifier = Modifier.padding(bottom = 8.dp))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             AppBasicSlider(
                 value = value,
@@ -2224,7 +2248,7 @@ internal fun StatusColorRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
+        OceanSectionTitle(title = title, modifier = Modifier.weight(1f))
         Box(
             modifier = Modifier
                 .size(24.dp)
@@ -2244,7 +2268,7 @@ internal fun StatusChevronRow(title: String) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
+        OceanSectionTitle(title = title, modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(R.drawable.ic_chevron_right),
             contentDescription = null,
@@ -2464,7 +2488,7 @@ internal fun StatusSwitchRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleSmall)
+        OceanSectionTitle(title = title, modifier = Modifier.weight(1f))
         IconButton(onClick = { onToggle(!enabled) }) {
             Image(
                 painter = painterResource(

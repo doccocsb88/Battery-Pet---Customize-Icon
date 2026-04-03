@@ -156,22 +156,7 @@ internal fun NotchScreen(
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_bullet2),
-                            contentDescription = null,
-                            modifier = Modifier.size(5.dp, 18.dp),
-                        )
-                        Text(
-                            text = stringResource(R.string.notch_color),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
+                    OceanFeatureSectionTitle(text = stringResource(R.string.notch_color))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),

@@ -123,22 +123,10 @@ internal fun DateTimeFeatureScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.show_date),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(
+                            text = stringResource(R.string.show_date),
+                            modifier = Modifier.weight(1f),
+                        )
                         AppSwitch(
                             checked = parsed.showDate,
                             onCheckedChange = { checked -> updateVariant(parsed.copy(showDate = checked)) },
@@ -146,22 +134,7 @@ internal fun DateTimeFeatureScreen(
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.date_size),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.date_size))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -186,22 +159,7 @@ internal fun DateTimeFeatureScreen(
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.date_color),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.date_color))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -247,22 +205,7 @@ internal fun DateTimeFeatureScreen(
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.date_style),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.date_style))
                         DateTimeStyles.chunked(3).forEach { row ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),

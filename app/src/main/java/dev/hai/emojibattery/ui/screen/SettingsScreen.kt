@@ -72,7 +72,7 @@ internal fun SettingsScreen(
                 SettingsRow(stringResource(R.string.language), R.drawable.ic_language_settings, languageSubtitle, onOpenLanguage)
             }
 
-            SettingsRow(stringResource(R.string.settings_store), R.drawable.ic_rate_us_setting, null, onOpenStore)
+            SettingsRow(stringResource(R.string.settings_store), R.drawable.ic_store_settings, null, onOpenStore)
             SettingsRow(stringResource(R.string.feedback_title), R.drawable.ic_feed_back_setting, null, onOpenFeedback)
             SettingsRow(stringResource(R.string.settings_share_app), R.drawable.ic_share_app_settings, null, onShareApp)
             SettingsRow(stringResource(R.string.settings_rate_us), R.drawable.ic_rate_us_setting, if (uiState.ratingSelection > 0) stringResource(R.string.settings_rating_line, uiState.ratingSelection) else null, onRateApp)

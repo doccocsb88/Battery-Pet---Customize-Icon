@@ -290,13 +290,13 @@ private fun HomeScreenScaffold(
                     } else {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             items(gridItems.chunked(3)) { rowItems ->
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 ) {
                                     rowItems.forEach { item ->
                                         HomeBatteryGridCard(
@@ -753,20 +753,24 @@ internal fun HomeBatteryGridCard(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    Column(
+    Surface(
+        onClick = onClick,
         modifier = modifier
-            .padding(horizontal = 6.dp, vertical = 6.dp)
-            .clickable(onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .aspectRatio(1f)
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(28.dp),
+                ambientColor = OceanSerenity.ModuleShadow,
+                spotColor = OceanSerenity.ModuleShadow,
+            ),
+        shape = RoundedCornerShape(28.dp),
+        color = OceanSerenity.ModuleCard,
+        shadowElevation = 0.dp,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(24.dp),
-                ),
+                .aspectRatio(1f),
         ) {
             if (!item.thumbnailUrl.isNullOrBlank()) {
                 val request = ImageRequest.Builder(context)
@@ -789,7 +793,7 @@ internal fun HomeBatteryGridCard(
                     contentDescription = item.title,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(12.dp),
+                        .padding(14.dp),
                     contentScale = ContentScale.Fit,
                 )
             } else {
@@ -798,31 +802,38 @@ internal fun HomeBatteryGridCard(
                     contentDescription = item.title,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(12.dp),
+                        .padding(14.dp),
                 )
             }
             if (item.premium) {
-                Image(
-                    painter = painterResource(R.drawable.ic_diamond),
-                    contentDescription = stringResource(R.string.cd_premium),
+                Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(4.dp)
-                        .size(20.dp),
-                )
+                        .padding(8.dp)
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.92f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_diamond),
+                        contentDescription = stringResource(R.string.cd_premium),
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
             }
             if (item.animated) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(4.dp)
+                        .padding(8.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
+                        .background(Color.White.copy(alpha = 0.9f)),
                 ) {
                     Text(
                         stringResource(R.string.label_gif),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = OceanSerenity.ModuleLabel,
                         style = MaterialTheme.typography.labelMedium,
                     )
                 }

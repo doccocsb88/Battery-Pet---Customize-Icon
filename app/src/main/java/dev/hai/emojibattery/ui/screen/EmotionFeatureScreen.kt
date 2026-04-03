@@ -97,41 +97,14 @@ internal fun EmotionFeatureScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_bullet2),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(5.dp, 18.dp),
-                                )
-                                Text(
-                                    text = stringResource(R.string.enable_emotion),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                )
-                            }
+                            OceanFeatureSectionTitle(
+                                text = stringResource(R.string.enable_emotion),
+                                modifier = Modifier.weight(1f),
+                            )
                             AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                         }
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.emotion_list),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.emotion_list))
 
                         EmotionOptions.chunked(3).forEach { row ->
                             Row(

@@ -123,42 +123,15 @@ internal fun DataFeatureScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.enable_feature, stringResource(R.string.data)),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(
+                            text = stringResource(R.string.enable_feature, stringResource(R.string.data)),
+                            modifier = Modifier.weight(1f),
+                        )
                         AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.data_size),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.data_size))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -184,22 +157,7 @@ internal fun DataFeatureScreen(
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.icon_color_short),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.icon_color_short))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -246,22 +204,7 @@ internal fun DataFeatureScreen(
                     }
 
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.data_style),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(text = stringResource(R.string.data_style))
                         styleOptions.chunked(3).forEach { row ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),

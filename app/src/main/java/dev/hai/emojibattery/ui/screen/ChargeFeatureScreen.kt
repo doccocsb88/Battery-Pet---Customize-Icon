@@ -123,22 +123,10 @@ internal fun ChargeFeatureScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_bullet2),
-                                contentDescription = null,
-                                modifier = Modifier.size(5.dp, 18.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.enable_feature, stringResource(R.string.charge)),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
+                        OceanFeatureSectionTitle(
+                            text = stringResource(R.string.enable_feature, stringResource(R.string.charge)),
+                            modifier = Modifier.weight(1f),
+                        )
                         AppSwitch(checked = config.enabled, onCheckedChange = onToggleEnabled)
                     }
                 }
