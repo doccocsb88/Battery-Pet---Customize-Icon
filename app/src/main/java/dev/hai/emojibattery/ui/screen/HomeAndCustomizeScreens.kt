@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -31,9 +33,21 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.DataUsage
+import androidx.compose.material.icons.rounded.Flight
+import androidx.compose.material.icons.rounded.Mood
+import androidx.compose.material.icons.rounded.NotificationsActive
+import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.SignalCellular4Bar
+import androidx.compose.material.icons.rounded.Tune
+import androidx.compose.material.icons.rounded.Wifi
+import androidx.compose.material.icons.rounded.WifiTethering
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -47,8 +61,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -71,7 +87,9 @@ import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.SampleCatalog
+import dev.hai.emojibattery.ui.theme.OceanSerenity
 import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
+import dev.hai.emojibattery.ui.theme.oceanModuleLabelTextStyle
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
@@ -497,7 +515,7 @@ internal fun PromoBannerCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(144.dp),
+                .height(164.dp),
         ) {
             Image(
                 painter = painterResource(backgroundRes),
@@ -522,8 +540,8 @@ internal fun PromoBannerCard(
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 16.dp, top = 18.dp, bottom = 16.dp)
-                    .fillMaxWidth(0.58f),
+                    .padding(start = 18.dp, top = 14.dp, end = 18.dp, bottom = 16.dp)
+                    .fillMaxWidth(0.64f),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -547,19 +565,26 @@ internal fun PromoBannerCard(
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
+                    maxLines = 2,
                 )
-                Box(
+                Surface(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(999.dp))
-                        .background(Color(0xFF8FB6D4))
-                        .border(BorderStroke(3.dp, Color.White), RoundedCornerShape(999.dp))
-                        .padding(horizontal = 18.dp, vertical = 10.dp),
+                        .padding(top = 2.dp)
+                        .heightIn(min = 42.dp),
+                    shape = RoundedCornerShape(999.dp),
+                    color = Color(0xFF4E86BE),
+                    border = BorderStroke(3.dp, Color.White),
+                    contentColor = Color.White,
                 ) {
                     Text(
                         cta,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
                         fontWeight = FontWeight.ExtraBold,
-                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontSize = 14.sp,
+                            lineHeight = 16.sp,
+                        ),
                     )
                 }
             }
@@ -611,36 +636,46 @@ internal fun CustomizeIconGridItem(
 ) {
     Surface(
         onClick = onClick,
-        modifier = modifier,
-        color = Color.Transparent,
+        modifier = modifier
+            .aspectRatio(1f)
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(28.dp),
+                ambientColor = OceanSerenity.ModuleShadow,
+                spotColor = OceanSerenity.ModuleShadow,
+            ),
+        shape = RoundedCornerShape(28.dp),
+        color = OceanSerenity.ModuleCard,
+        shadowElevation = 0.dp,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp, vertical = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.Center,
         ) {
-            Surface(
-                shape = RoundedCornerShape(24.dp),
-                color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 2.dp,
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(OceanSerenity.ModuleIconHalo),
+                contentAlignment = Alignment.Center,
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Image(
-                        painter = painterResource(customizeIconRes(entry)),
-                        contentDescription = customizeLabel(entry),
-                        modifier = Modifier.size(54.dp),
-                    )
-                }
+                Icon(
+                    imageVector = customizeIconVector(entry),
+                    contentDescription = customizeLabel(entry),
+                    modifier = Modifier.size(22.dp),
+                    tint = OceanSerenity.ModuleIconTint,
+                )
             }
+            Spacer(Modifier.height(10.dp))
             Text(
-                customizeLabel(entry),
+                customizeLabel(entry).uppercase(),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.ExtraBold,
-                style = MaterialTheme.typography.titleMedium,
+                color = OceanSerenity.ModuleLabel,
+                style = oceanModuleLabelTextStyle(),
+                maxLines = 2,
             )
         }
     }
@@ -860,4 +895,18 @@ internal fun customizeIconRes(entry: CustomizeEntry): Int = when (entry) {
     CustomizeEntry.Theme -> R.drawable.img_btn_status_bar_new
     CustomizeEntry.Settings -> R.drawable.ic_item_animation
     CustomizeEntry.Signal -> R.drawable.ic_item_signal
+}
+
+internal fun customizeIconVector(entry: CustomizeEntry): ImageVector = when (entry) {
+    CustomizeEntry.Hotspot -> Icons.Rounded.WifiTethering
+    CustomizeEntry.Wifi -> Icons.Rounded.Wifi
+    CustomizeEntry.Signal -> Icons.Rounded.SignalCellular4Bar
+    CustomizeEntry.Data -> Icons.Rounded.DataUsage
+    CustomizeEntry.Ringer -> Icons.Rounded.NotificationsActive
+    CustomizeEntry.Charge -> Icons.Rounded.Bolt
+    CustomizeEntry.Emotion -> Icons.Rounded.Mood
+    CustomizeEntry.Airplane -> Icons.Rounded.Flight
+    CustomizeEntry.DateTime -> Icons.Rounded.Schedule
+    CustomizeEntry.Theme -> Icons.Rounded.Tune
+    CustomizeEntry.Settings -> Icons.Rounded.Tune
 }

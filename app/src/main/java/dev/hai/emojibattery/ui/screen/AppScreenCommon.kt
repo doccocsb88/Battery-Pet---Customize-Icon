@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.MainSection
+import dev.hai.emojibattery.ui.theme.OceanSerenity
 import dev.hai.emojibattery.model.StatusBarTab
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import java.util.Locale
@@ -498,7 +499,7 @@ internal fun MainBottomBar(
         ) {
             items.forEach { (route, section, icon) ->
                 val selected = currentRoute == route.route
-                val itemColor = if (selected) Color(0xFF3C637E) else Color(0xFF94A3B8)
+                val itemColor = if (selected) OceanSerenity.BottomBarActive else OceanSerenity.BottomBarInactive
 
                 Box(
                     modifier = Modifier.weight(1f),
@@ -508,7 +509,7 @@ internal fun MainBottomBar(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(CircleShape)
-                            .background(if (selected) Color(0xFFAFD6F6) else Color.Transparent)
+                            .background(if (selected) OceanSerenity.BottomBarHighlight else Color.Transparent)
                             .clickable { onNavigate(route, section) }
                             .padding(horizontal = 10.dp, vertical = 10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
