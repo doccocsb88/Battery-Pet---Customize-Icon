@@ -64,6 +64,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -193,6 +194,7 @@ import dev.hai.emojibattery.service.NotchTemplateCatalog
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.ui.navigation.AppRoute
+import dev.hai.emojibattery.ui.theme.OceanSerenity
 import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.ui.theme.StrawberryMilk
 import kotlinx.coroutines.delay
@@ -534,6 +536,7 @@ private fun StatusBarCustomHeader(
     onApply: () -> Unit,
     applyBrush: Brush,
 ) {
+    val oceanApplyColor = OceanSerenity.Primary
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -563,14 +566,14 @@ private fun StatusBarCustomHeader(
             modifier = Modifier
                 .height(34.dp)
                 .clip(RoundedCornerShape(999.dp))
-                .background(applyBrush)
+                .background(oceanApplyColor)
                 .clickable(onClick = onApply)
                 .padding(horizontal = 14.dp),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = stringResource(R.string.apply),
-                color = Color.White,
+                color = OceanSerenity.OnPrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
@@ -2116,7 +2119,14 @@ internal fun LegacyBatteryScreen(
             SliderField(stringResource(R.string.slider_emoji_size), config.emojiScale, 0.3f..1f, onSetEmojiScale)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.common_cancel)) }
-                Button(onClick = onApply, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.apply)) }
+                Button(
+                    onClick = onApply,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = OceanSerenity.Primary,
+                        contentColor = OceanSerenity.OnPrimary,
+                    ),
+                ) { Text(stringResource(R.string.apply)) }
             }
             Spacer(Modifier.height(20.dp))
         }

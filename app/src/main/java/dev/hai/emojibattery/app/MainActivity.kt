@@ -3,9 +3,12 @@ package dev.hai.emojibattery.app
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.SystemBarStyle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.hai.emojibattery.app.EmojiBatteryApp
 import dev.hai.emojibattery.app.EmojiBatteryViewModel
@@ -19,7 +22,16 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         AppLocalePreferences.applyAppLocalesAtStartup(this)
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                lightScrim = Color.Transparent.toArgb(),
+                darkScrim = Color.Transparent.toArgb(),
+            ),
+            navigationBarStyle = SystemBarStyle.auto(
+                lightScrim = Color.Transparent.toArgb(),
+                darkScrim = Color.Transparent.toArgb(),
+            ),
+        )
         routeOverride.value = intent.getStringExtra("route")
         setContent {
             EmojiBatteryTheme {

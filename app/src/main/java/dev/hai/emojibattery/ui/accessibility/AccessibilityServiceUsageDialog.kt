@@ -1,6 +1,7 @@
 package dev.hai.emojibattery.ui.accessibility
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +11,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,10 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import co.q7labs.co.emoji.R
+import dev.hai.emojibattery.ui.theme.OceanSerenity
 
 /**
  * Port of [com.android.example.baseprojecthd.ui.dialog.DialogRequestAccessibilityService] and
@@ -55,56 +57,62 @@ fun AccessibilityServiceUsageDialog(
 ) {
     var termsAccepted by remember { mutableStateOf(false) }
 
-    val dialogText = colorResource(R.color.accessibility_usage_dialog_text)
-    val linkBlue = colorResource(R.color.accessibility_usage_dialog_link)
-    val highlight = colorResource(R.color.accessibility_usage_dialog_highlight)
-    val gradientStart = colorResource(R.color.accessibility_usage_cta_gradient_start)
-    val gradientEnd = colorResource(R.color.accessibility_usage_cta_gradient_end)
+    val dialogTitle = OceanSerenity.OnSurface
+    val dialogText = OceanSerenity.OnSurfaceVariant
+    val linkBlue = OceanSerenity.Primary
+    val highlight = OceanSerenity.Primary
+    val dialogSurface = OceanSerenity.Surface
+    val dialogOutline = OceanSerenity.Outline.copy(alpha = 0.9f)
+    val nextGradient = Brush.horizontalGradient(
+        listOf(OceanSerenity.Primary, OceanSerenity.Secondary),
+    )
 
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = colorResource(R.color.accessibility_usage_dialog_surface),
+            shape = RoundedCornerShape(28.dp),
+            color = dialogSurface,
+            border = BorderStroke(1.dp, dialogOutline),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 17.dp, vertical = 20.dp)
+                    .padding(horizontal = 20.dp, vertical = 22.dp)
                     .verticalScroll(rememberScrollState()),
             ) {
                 Text(
                     text = stringResource(R.string.accessibility_service_usage),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    color = dialogText,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = MaterialTheme.typography.headlineSmall.fontFamily,
+                    color = dialogTitle,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.ExtraBold,
                 )
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(14.dp))
                 Text(
                     text = stringResource(R.string.please_agree_the_terms_of_service),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = dialogText,
-                    fontSize = 14.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(16.dp))
+                HorizontalDivider(color = dialogOutline.copy(alpha = 0.55f))
+                Spacer(Modifier.height(16.dp))
                 Text(
                     text = stringResource(R.string.this_app_required_the_accessibility_services_permission_for),
                     color = dialogText,
-                    fontSize = 14.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(12.dp))
                 BulletWithHighlight(
                     displayLabel = stringResource(R.string.display_label),
                     appName = stringResource(R.string.app_name),
@@ -116,19 +124,21 @@ fun AccessibilityServiceUsageDialog(
                     text = stringResource(R.string.start_accessibility_actions_action_to_home_back_show_recent_screen),
                     dialogText = dialogText,
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(14.dp))
                 Text(
                     text = stringResource(R.string.the_application_commits_not_to_collect_or_share_any_user_information_about_this_accessibility_right),
                     color = dialogText,
-                    fontSize = 14.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(14.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { termsAccepted = !termsAccepted },
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable { termsAccepted = !termsAccepted }
+                        .padding(vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Image(
@@ -153,35 +163,43 @@ fun AccessibilityServiceUsageDialog(
                         modifier = Modifier.padding(start = 8.dp),
                     )
                 }
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(18.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = stringResource(R.string.close),
+                    Surface(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable(onClick = onDismiss)
-                            .padding(horizontal = 22.dp, vertical = 6.dp),
-                        textAlign = TextAlign.Center,
-                        color = dialogText,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
-                    )
-                    val nextAlpha = if (termsAccepted) 1f else 0.4f
+                            .heightIn(min = 52.dp),
+                        shape = RoundedCornerShape(50.dp),
+                        color = OceanSerenity.PrimaryContainer.copy(alpha = 0.42f),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.close),
+                            modifier = Modifier
+                                .clickable(onClick = onDismiss)
+                                .padding(horizontal = 20.dp, vertical = 14.dp)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            color = dialogTitle,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
+                        )
+                    }
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(56.dp)
-                            .graphicsLayer { alpha = nextAlpha }
+                            .heightIn(min = 52.dp)
                             .clip(RoundedCornerShape(50.dp))
                             .background(
-                                Brush.horizontalGradient(
-                                    listOf(gradientStart, gradientEnd),
+                                if (termsAccepted) nextGradient else Brush.horizontalGradient(
+                                    listOf(
+                                        OceanSerenity.PrimaryContainer,
+                                        OceanSerenity.PrimaryContainer.copy(alpha = 0.92f),
+                                    ),
                                 ),
                             )
                             .clickable {
@@ -195,8 +213,8 @@ fun AccessibilityServiceUsageDialog(
                     ) {
                         Text(
                             text = stringResource(R.string.next),
-                            color = Color.White,
-                            fontSize = 18.sp,
+                            color = if (termsAccepted) OceanSerenity.OnPrimary else OceanSerenity.OnPrimaryContainer.copy(alpha = 0.7f),
+                            fontSize = 17.sp,
                             fontWeight = FontWeight.SemiBold,
                             fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
                             modifier = Modifier.padding(horizontal = 22.dp),
@@ -223,14 +241,14 @@ private fun BulletRow(
         Text(
             text = "•",
             color = dialogText,
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
         )
         Text(
             text = text,
             modifier = Modifier.padding(start = 4.dp),
             color = dialogText,
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             fontWeight = FontWeight.Normal,
             fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
         )
@@ -273,7 +291,7 @@ private fun BulletWithHighlight(
         Text(
             text = annotated,
             modifier = Modifier.padding(start = 4.dp),
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             fontWeight = FontWeight.Normal,
             fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
         )

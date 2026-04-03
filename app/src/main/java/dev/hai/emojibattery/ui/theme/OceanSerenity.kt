@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
  * primary #0077BE, secondary #40E0D0, tertiary #98FFD9, neutral #F5F5DC.
  */
 object OceanSerenity {
-    val Background = Color(0xFFF5F5DC)
+    val Background = Color(0xFFE9F1FF).copy(alpha = 0.5f)
     val Surface = Color(0xFFFFFCF2)
     val SurfaceVariant = Color(0xFFF3F0D9)
     val Outline = Color(0xFFC9D6D8)

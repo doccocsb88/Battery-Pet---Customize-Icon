@@ -280,13 +280,7 @@ internal fun RingerFeatureScreen(
                                                         contentDescription = null,
                                                         modifier = Modifier.size(22.dp),
                                                         contentScale = ContentScale.Fit,
-                                                        colorFilter = ColorFilter.tint(
-                                                            when {
-                                                                parsedRinger.colorId.startsWith("picker#", ignoreCase = true) ->
-                                                                    Color(parsePickerColorVariant(parsedRinger.colorId) ?: 0xFF2952F4)
-                                                                else -> WifiColorOptions.firstOrNull { it.id == parsedRinger.colorId }?.color ?: Color(0xFF2952F4)
-                                                            },
-                                                        ),
+                                                        colorFilter = ColorFilter.tint(Color.Black),
                                                     )
                                                 }
                                                 if (waveRes != 0) {
@@ -295,13 +289,7 @@ internal fun RingerFeatureScreen(
                                                         contentDescription = null,
                                                         modifier = Modifier.size(22.dp),
                                                         contentScale = ContentScale.Fit,
-                                                        colorFilter = ColorFilter.tint(
-                                                            when {
-                                                                parsedRinger.colorId.startsWith("picker#", ignoreCase = true) ->
-                                                                    Color(parsePickerColorVariant(parsedRinger.colorId) ?: 0xFF2952F4)
-                                                                else -> WifiColorOptions.firstOrNull { it.id == parsedRinger.colorId }?.color ?: Color(0xFF2952F4)
-                                                            },
-                                                        ),
+                                                        colorFilter = ColorFilter.tint(Color.Black),
                                                     )
                                                 }
                                             }

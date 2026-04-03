@@ -33,6 +33,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -109,12 +110,11 @@ internal fun AppSwitch(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    // Override M3 defaults to remove the pink-ish disabled tint and keep a neutral, on-brand look.
-    val checkedTrack = Color(0xFF8FB6D4) // matches the app's accent blue
-    val uncheckedTrack = Color(0xFFE6EEF5) // soft neutral (not pink)
-    val uncheckedBorder = Color(0xFFD6E0E8)
+    val checkedTrack = OceanSerenity.BottomBarActive
+    val uncheckedTrack = OceanSerenity.PrimaryContainer
+    val uncheckedBorder = OceanSerenity.Outline
     val disabledUncheckedTrack = Color(0xFFF1F5F9)
-    val disabledCheckedTrack = Color(0xFFB8C8D6)
+    val disabledCheckedTrack = OceanSerenity.BottomBarActive.copy(alpha = 0.35f)
     val thumb = Color.White
     val disabledThumb = Color(0xFFF8FAFC)
 
@@ -146,10 +146,9 @@ internal fun EmojiBatteryOverlayToggleCard(
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Keep identical styling to the toggle card used in Battery Troll for consistency across screens.
     val shape = RoundedCornerShape(20.dp)
-    val strokeColor = Color(0xFF8FB6D4)
-    val background = Color(0xFFF2F2F2)
+    val strokeColor = OceanSerenity.Outline
+    val background = OceanSerenity.SurfaceVariant.copy(alpha = 0.65f)
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = shape,
@@ -192,8 +191,8 @@ internal fun EmojiBatteryOverlayAccessCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = shape,
-        border = BorderStroke(1.dp, Color(0xFFD8DDE2)),
-        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, OceanSerenity.Outline),
+        color = OceanSerenity.Surface,
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
@@ -210,11 +209,11 @@ internal fun EmojiBatteryOverlayAccessCard(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(22.dp))
-                    .background(Color(0xFF8FB6D4)),
+                    .background(OceanSerenity.Primary),
             ) {
                 Text(
                     text = stringResource(R.string.home_start),
-                    color = Color.White,
+                    color = OceanSerenity.OnPrimary,
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier
                         .clickable(onClick = onRequestAccessibility)
@@ -476,6 +475,7 @@ internal fun MainBottomBar(
         Triple(AppRoute.Settings, MainSection.Settings, Icons.Rounded.Settings),
     )
     val barShape = RoundedCornerShape(topStart = 48.dp, topEnd = 48.dp)
+    val barShadow = OceanSerenity.ModuleShadow.copy(alpha = 0.32f)
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -485,15 +485,16 @@ internal fun MainBottomBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(86.dp)
                 .shadow(
-                    elevation = 24.dp,
+                    elevation = 18.dp,
                     shape = barShape,
-                    ambientColor = Color.Black.copy(alpha = 0.06f),
-                    spotColor = Color.Black.copy(alpha = 0.06f),
+                    ambientColor = barShadow,
+                    spotColor = barShadow,
                 )
                 .clip(barShape)
                 .background(Color(0xFFFFFFFF))
-                .padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 10.dp),
+                .padding(horizontal = 18.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -508,10 +509,11 @@ internal fun MainBottomBar(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(60.dp)
                             .clip(CircleShape)
                             .background(if (selected) OceanSerenity.BottomBarHighlight else Color.Transparent)
                             .clickable { onNavigate(route, section) }
-                            .padding(horizontal = 10.dp, vertical = 10.dp),
+                            .padding(horizontal = 10.dp, vertical = 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {

@@ -222,7 +222,8 @@ private fun HomeScreenScaffold(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+                .padding(horizontal = 12.dp)
+                .padding(top = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             EmojiBatteryOverlayAccessCard(
@@ -397,9 +398,9 @@ internal fun CustomizeHubScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 12.dp)
                 .padding(top = 8.dp)
-                .padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 24.dp),
+                .padding(bottom = 4.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             EmojiBatteryOverlayAccessCard(
