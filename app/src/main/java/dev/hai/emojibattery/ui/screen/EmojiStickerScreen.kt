@@ -146,6 +146,7 @@ import dev.hai.emojibattery.model.EmojiPreset
 import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.GestureAction
 import dev.hai.emojibattery.model.GestureTrigger
+import dev.hai.emojibattery.model.LimitedFeature
 import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.SearchTemplate
@@ -306,23 +307,23 @@ internal fun EmojiStickerScreen(
                 selectedPlacement = selectedPlacement,
                 overlayEnabled = uiState.stickerOverlayEnabled,
             )
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = Color.White,
-                shadowElevation = 2.dp,
-            ) {
-                Text(
-                    if (uiState.premiumUnlocked) {
-                        stringResource(R.string.sticker_premium_unlocked_slots, SampleCatalog.PREMIUM_STICKER_SLOTS)
-                    } else if (uiState.unlockedFeatureKeys.contains(SampleCatalog.FEATURE_EXTRA_STICKER_SLOT)) {
-                        stringResource(R.string.sticker_reward_unlocked_slots, SampleCatalog.REWARD_EXTRA_STICKER_SLOTS)
-                    } else {
-                        stringResource(R.string.sticker_free_mode_hint, SampleCatalog.FREE_STICKER_SLOTS)
-                    },
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+            if (!uiState.premiumUnlocked) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.White,
+                    shadowElevation = 2.dp,
+                ) {
+                    Text(
+                        if (uiState.unlockedFeatureKeys.contains(SampleCatalog.FEATURE_EXTRA_STICKER_SLOT)) {
+                            stringResource(R.string.sticker_reward_unlocked_slots, SampleCatalog.REWARD_EXTRA_STICKER_SLOTS)
+                        } else {
+                            stringResource(R.string.sticker_free_mode_hint, LimitedFeature.ApplySticker.freeLimit)
+                        },
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
             }
             Surface(
                 shape = RoundedCornerShape(16.dp),

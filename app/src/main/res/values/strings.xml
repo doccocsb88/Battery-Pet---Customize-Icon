@@ -1,7 +1,7 @@
 <resources>
     <string name="battery_icon_title">Battery Icon</string>
 
-    <string name="app_name">Battery Pet</string>
+    <string name="app_name">Battery Pet - Icon Customize</string>
     <string name="splash_tagline">Customize your status bar battery &amp; emoji</string>
     <!-- Splash / language / onboarding — aligned with decompiled strings.xml -->
     <string name="loading_dot">Loading...</string>
@@ -111,7 +111,7 @@
     <string name="status_bar_sticker_title">Status Bar Sticker</string>
     <string name="sticker_premium_unlocked_slots">Premium unlocked. You can add up to %1$d stickers.</string>
     <string name="sticker_reward_unlocked_slots">Reward unlocked. You can add up to %1$d stickers.</string>
-    <string name="sticker_free_mode_hint">Free mode allows %1$d sticker. Premium stickers trigger paywall.</string>
+    <string name="sticker_free_mode_hint">Free mode allows %1$d stickers. Premium stickers trigger paywall.</string>
     <string name="sticker_add_sticker">Add Sticker</string>
     <string name="sticker_no_stickers">No stickers available.</string>
     <string name="sticker_page_indicator">%1$d / %2$d</string>

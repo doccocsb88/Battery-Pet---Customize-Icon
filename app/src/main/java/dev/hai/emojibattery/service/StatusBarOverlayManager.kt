@@ -550,6 +550,7 @@ class StatusBarOverlayManager(
         val airplaneConfig = featureConfigs[CustomizeEntry.Airplane] ?: defaultFeatureConfig
         val chargeConfig = featureConfigs[CustomizeEntry.Charge] ?: defaultFeatureConfig
         val chargeState = parseChargeVariant(chargeConfig.variant)
+        val chargeTintColor = resolveColorFromVariant(chargeState.colorId, "#333333".toColorInt())
         val ringerConfig = featureConfigs[CustomizeEntry.Ringer] ?: defaultFeatureConfig
         val dateTimeConfig = featureConfigs[CustomizeEntry.DateTime] ?: defaultFeatureConfig
         val emotionConfig = featureConfigs[CustomizeEntry.Emotion] ?: defaultFeatureConfig
@@ -773,7 +774,10 @@ class StatusBarOverlayManager(
                 val resId = context.resources.getIdentifier(chargeDrawableName, "drawable", context.packageName)
                 if (resId != 0 && chargeConfig.enabled && liveStatus.charging) {
                     chargeArtView.visibility = View.VISIBLE
-                    chargeArtView.setImageResource(resId)
+                    chargeArtView.setImageDrawable(
+                        AppCompatResources.getDrawable(context, resId)?.mutate(),
+                    )
+                    chargeArtView.setColorFilter(chargeTintColor, PorterDuff.Mode.SRC_IN)
                     chargeView.visibility = View.GONE
                     chargeView.text = ""
                 } else {
@@ -790,7 +794,7 @@ class StatusBarOverlayManager(
             }
         }
         batteryView.setTextColor(snapshot.accentColor.toInt())
-        chargeView.setTextColor(snapshot.accentColor.toInt())
+        chargeView.setTextColor(chargeTintColor)
         if (useBatteryTrollSource) {
             val desiredTextPx = snapshot.trollPercentageSizeDp.coerceIn(5, 40) * scaledDensity
             // Keep percentage text from exceeding the status-bar row height (before row scale transform).
@@ -1353,7 +1357,7 @@ class StatusBarOverlayManager(
         else -> android.R.drawable.ic_lock_silent_mode_off
     }
 
-    private fun chargeGlyph(variant: String): String = when (variant.lowercase()) {
+    private fun chargeGlyph(variant: String): String = when (parseChargeVariant(variant).itemId.lowercase()) {
         "chg_2" -> "↯"
         "chg_3" -> "⌁"
         "chg_4" -> "⏻"

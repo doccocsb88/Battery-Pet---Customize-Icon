@@ -32,6 +32,20 @@ internal fun parsePickerColorVariant(raw: String?): Long? {
     return hex.toLongOrNull(16)?.and(0xFFFFFFFFL)
 }
 
+internal fun resolveFeatureColorVariant(raw: String?, fallback: Int): Int {
+    if (raw.isNullOrBlank()) return fallback
+    val pickerColor = parsePickerColorVariant(raw)?.toInt()
+    if (pickerColor != null) return pickerColor
+    return when (raw.lowercase()) {
+        "blue" -> 0xFF2952F4.toInt()
+        "green" -> 0xFF2BDF52.toInt()
+        "orange" -> 0xFFF18410.toInt()
+        "black" -> 0xFF11111A.toInt()
+        "yellow" -> 0xFFF1DF1E.toInt()
+        else -> fallback
+    }
+}
+
 internal data class ChargeOption(
     val id: String,
     val glyph: String,
@@ -174,13 +188,18 @@ internal fun chargePageIndexForVariant(
 internal data class ChargeVariantState(
     val packId: String,
     val itemId: String,
+    val colorId: String,
 )
 
 internal fun parseChargeVariant(raw: String?): ChargeVariantState {
-    val fallback = ChargeVariantState(packId = "built_in", itemId = ChargeOptions.first().id)
+    val fallback = ChargeVariantState(
+        packId = "built_in",
+        itemId = ChargeOptions.first().id,
+        colorId = "blue",
+    )
     if (raw.isNullOrBlank()) return fallback
     if (raw in ChargeOptions.map { it.id }) {
-        return ChargeVariantState(packId = "built_in", itemId = raw)
+        return ChargeVariantState(packId = "built_in", itemId = raw, colorId = fallback.colorId)
     }
     if (";" !in raw && ":" !in raw && "=" !in raw) {
         return fallback
@@ -192,20 +211,20 @@ internal fun parseChargeVariant(raw: String?): ChargeVariantState {
     val legacyPack = raw.substringBefore(":", missingDelimiterValue = "")
     val legacyItem = raw.substringAfter(":", missingDelimiterValue = "")
     val packId = pieces["pack"] ?: pieces["sheet"] ?: if (legacyPack.isNotBlank() && legacyItem.isNotBlank()) legacyPack else fallback.packId
-    val itemId = pieces["item"] ?: pieces["drawable"] ?: if (legacyPack.isNotBlank() && legacyItem.isNotBlank()) legacyItem else fallback.itemId
+    val itemId = pieces["item"] ?: pieces["drawable"] ?: pieces["style"]
+        ?: if (legacyPack.isNotBlank() && legacyItem.isNotBlank()) legacyItem else fallback.itemId
+    val colorId = pieces["color"] ?: fallback.colorId
     return when {
-        packId == "built_in" && itemId in ChargeOptions.map { it.id } -> ChargeVariantState(packId = packId, itemId = itemId)
-        ChargePackCatalog.any { it.id == packId } && itemId.isNotBlank() -> ChargeVariantState(packId = packId, itemId = itemId)
+        packId == "built_in" && itemId in ChargeOptions.map { it.id } ->
+            ChargeVariantState(packId = packId, itemId = itemId, colorId = colorId)
+        ChargePackCatalog.any { it.id == packId } && itemId.isNotBlank() ->
+            ChargeVariantState(packId = packId, itemId = itemId, colorId = colorId)
         else -> fallback
     }
 }
 
 internal fun encodeChargeVariant(state: ChargeVariantState): String =
-    if (state.packId == "built_in") {
-        state.itemId
-    } else {
-        "pack=${state.packId};item=${state.itemId}"
-    }
+    "pack=${state.packId};item=${state.itemId};color=${state.colorId}"
 
 internal fun chargeVariantLabel(state: ChargeVariantState): String =
     if (state.packId == "built_in") {

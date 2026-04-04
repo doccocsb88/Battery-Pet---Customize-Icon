@@ -235,7 +235,7 @@ data class BatteryIconConfig(
 )
 
 enum class LimitedFeature(val storageKey: String, val freeLimit: Int) {
-    ApplySticker("apply_sticker", 1),
+    ApplySticker("apply_sticker", 3),
     ApplyBattery("apply_battery", 3),
 }
 
@@ -530,7 +530,7 @@ object SampleCatalog {
                 ),
                 variant = when (entry) {
                     CustomizeEntry.DateTime -> "style=style_4;color=blue;show=0"
-                    CustomizeEntry.Charge -> "chg_1"
+                    CustomizeEntry.Charge -> "pack=built_in;item=chg_1;color=blue"
                     else -> featureVariants[entry]?.first().orEmpty()
                 },
             )

@@ -676,7 +676,7 @@ class EmojiBatteryViewModel(
                     paywallState = PaywallState(
                         featureKey = SampleCatalog.FEATURE_EXTRA_STICKER_SLOT,
                         title = "Unlock More Sticker Slots",
-                        message = "Free mode allows ${SampleCatalog.FREE_STICKER_SLOTS} sticker. Claim rewards or unlock premium to add more.",
+                        message = "Free mode allows ${LimitedFeature.ApplySticker.freeLimit} stickers. Claim rewards or unlock premium to add more.",
                     ),
                 )
             } else if (state.stickerPlacements.any { it.stickerId == stickerId }) {
@@ -757,7 +757,7 @@ class EmojiBatteryViewModel(
                     paywallState = PaywallState(
                         featureKey = "limit:apply_sticker",
                         title = "Free Sticker Apply Limit Reached",
-                        message = "Free users can apply sticker ${LimitedFeature.ApplySticker.freeLimit} time. Upgrade to keep using sticker overlay.",
+                        message = "Free users can apply sticker ${LimitedFeature.ApplySticker.freeLimit} times. Upgrade to keep using sticker overlay.",
                     ),
                 )
                 else -> {

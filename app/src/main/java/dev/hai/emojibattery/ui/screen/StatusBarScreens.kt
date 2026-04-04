@@ -786,7 +786,7 @@ private fun StatusBarLivePreviewCard(
         ?: FeatureConfig(variant = encodeDateTimeVariant(parseDateTimeVariant(null)))
     val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
-        ?: FeatureConfig(enabled = false, variant = "chg_1")
+        ?: FeatureConfig(enabled = false, variant = "pack=built_in;item=chg_1;color=blue")
     val wifiConfig = uiState.featureConfigs[CustomizeEntry.Wifi]
         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Wifi]
         ?: FeatureConfig(enabled = false, variant = "blue")
@@ -822,6 +822,7 @@ private fun StatusBarLivePreviewCard(
     val demoPercent = 56
     val percentageText = if (config.showPercentage) " $demoPercent%" else ""
     val chargeVariant = parseChargeVariant(chargeConfig.variant)
+    val chargeTintColor = Color(previewResolveColorFromVariant(chargeVariant.colorId, AndroidColor.parseColor("#333333")))
     val chargeDrawableName = chargeVariantDrawableName(chargeVariant)
     val chargeDrawableRes = chargeDrawableName?.takeIf { it.isNotBlank() }?.let {
         context.resources.getIdentifier(it, "drawable", context.packageName)
@@ -1098,12 +1099,13 @@ private fun StatusBarLivePreviewCard(
                                         contentDescription = null,
                                         modifier = Modifier.size(18.dp),
                                         contentScale = ContentScale.Fit,
+                                        colorFilter = ColorFilter.tint(chargeTintColor),
                                     )
                                 }
                                 chargeText.isNotBlank() -> {
                                     Text(
                                         chargeText,
-                                        color = Color(config.accentColor),
+                                        color = chargeTintColor,
                                         fontSize = batteryFontSize,
                                         fontWeight = FontWeight.Bold,
                                         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
@@ -1123,7 +1125,7 @@ private fun notchPreviewAlignment(gravity: Int): Alignment {
     return if (isTop) Alignment.TopCenter else Alignment.Center
 }
 
-private fun previewChargeGlyph(variant: String): String = when (variant.lowercase()) {
+private fun previewChargeGlyph(variant: String): String = when (parseChargeVariant(variant).itemId.lowercase()) {
     "chg_2" -> "↯"
     "chg_3" -> "⌁"
     "chg_4" -> "⏻"
@@ -2518,7 +2520,7 @@ internal fun BatteryPreviewCard(
                     val emDrawable = emojiVolio?.previewRes?.takeIf { it != 0 }
                     val chargeConfig = uiState.featureConfigs[CustomizeEntry.Charge]
                         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Charge]
-                        ?: FeatureConfig(enabled = false, variant = "chg_1")
+                        ?: FeatureConfig(enabled = false, variant = "pack=built_in;item=chg_1;color=blue")
                     val wifiConfig = uiState.featureConfigs[CustomizeEntry.Wifi]
                         ?: SampleCatalog.defaultFeatureConfigs[CustomizeEntry.Wifi]
                         ?: FeatureConfig(enabled = false, variant = "blue")
@@ -2548,6 +2550,7 @@ internal fun BatteryPreviewCard(
                     val batterySizeSmall = (28.dp * commonScaleFactor)
                     val batterySizeLarge = (36.dp * commonScaleFactor)
                     val chargeVariant = parseChargeVariant(chargeConfig.variant)
+                    val chargeTintColor = Color(previewResolveColorFromVariant(chargeVariant.colorId, AndroidColor.parseColor("#333333")))
                     val chargeDrawableName = chargeVariantDrawableName(chargeVariant)
                     val chargeDrawableRes = chargeDrawableName?.takeIf { it.isNotBlank() }?.let {
                         context.resources.getIdentifier(it, "drawable", context.packageName)
@@ -2690,12 +2693,13 @@ internal fun BatteryPreviewCard(
                                         contentDescription = null,
                                         modifier = Modifier.size(18.dp),
                                         contentScale = ContentScale.Fit,
+                                        colorFilter = ColorFilter.tint(chargeTintColor),
                                     )
                                 }
                                 chargeText.isNotBlank() -> {
                                     Text(
                                         chargeText,
-                                        color = Color(config.accentColor),
+                                        color = chargeTintColor,
                                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
                                     )
                                 }
