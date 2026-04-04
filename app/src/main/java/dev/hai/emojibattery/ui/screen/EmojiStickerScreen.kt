@@ -875,6 +875,7 @@ private fun StickerAdjustmentPanel(
 
                 Box(
                     modifier = Modifier
+                        .align(Alignment.TopStart)
                         .offset { IntOffset(leftPx.roundToInt(), topPx.roundToInt()) }
                         .size(
                             width = with(density) { frameWidthPx.toDp() },
