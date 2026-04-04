@@ -835,6 +835,12 @@ fun EmojiBatteryApp(
         navController.navigate(AppRoute.Paywall.route)
     }
 
+    LaunchedEffect(uiState.paywallState, route) {
+        if (uiState.paywallState != null) return@LaunchedEffect
+        if (route != AppRoute.Paywall.route) return@LaunchedEffect
+        navController.popBackStack()
+    }
+
     LaunchedEffect(initialRoute) {
         val target = initialRoute ?: return@LaunchedEffect
         if (target != route) {

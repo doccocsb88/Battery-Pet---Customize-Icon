@@ -182,10 +182,16 @@ data class HomeCategoryTab(
     val title: String,
 )
 
+enum class PaywallLaunchMode {
+    DirectStore,
+    Store,
+}
+
 data class PaywallState(
     val featureKey: String,
     val title: String,
     val message: String,
+    val launchMode: PaywallLaunchMode = PaywallLaunchMode.DirectStore,
 )
 
 data class OnboardingPage(

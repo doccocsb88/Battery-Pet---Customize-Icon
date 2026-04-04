@@ -27,6 +27,7 @@ import dev.hai.emojibattery.model.GestureAction
 import dev.hai.emojibattery.model.GestureTrigger
 import dev.hai.emojibattery.model.LimitedFeature
 import dev.hai.emojibattery.model.MainSection
+import dev.hai.emojibattery.model.PaywallLaunchMode
 import dev.hai.emojibattery.model.PaywallState
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.StickerPlacement
@@ -1101,6 +1102,7 @@ class EmojiBatteryViewModel(
                     featureKey = "settings:store",
                     title = "Unlock Premium",
                     message = "Upgrade to premium to unlock all features.",
+                    launchMode = PaywallLaunchMode.Store,
                 ),
             )
         }
@@ -1162,10 +1164,11 @@ class EmojiBatteryViewModel(
     fun syncPremiumAccess(hasPremium: Boolean) {
         val updatedEntitlement = userEntitlementManager.syncPremium(hasPremium)
         _uiState.update {
+            val shouldDismissPaywall = hasPremium && it.paywallState?.launchMode == PaywallLaunchMode.DirectStore
             it.copy(
                 premiumUnlocked = hasPremium,
                 userEntitlement = updatedEntitlement,
-                paywallState = if (hasPremium) null else it.paywallState,
+                paywallState = if (shouldDismissPaywall) null else it.paywallState,
             )
         }
     }

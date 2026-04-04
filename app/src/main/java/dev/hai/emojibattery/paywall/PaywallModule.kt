@@ -64,6 +64,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.billing.BillingUiState
 import dev.hai.emojibattery.billing.PurchaseService
+import dev.hai.emojibattery.model.PaywallLaunchMode
 import dev.hai.emojibattery.model.PaywallState
 import dev.hai.emojibattery.model.SampleCatalog
 
@@ -128,16 +129,7 @@ fun PaywallScreen(
     val weekly = billingState.weeklyPlan
     val lifetime = billingState.lifetimePlan
     val loadingPrices = billingState.loading
-    val monthPriceLabel = when {
-        loadingPrices -> stringResource(R.string.paywall_price_loading)
-        monthly != null -> monthly.displayPrice
-        else -> stringResource(R.string.paywall_price_unavailable)
-    }
-    val lifetimePriceLabel = when {
-        loadingPrices -> stringResource(R.string.paywall_price_loading)
-        lifetime != null -> lifetime.displayPrice
-        else -> stringResource(R.string.paywall_price_unavailable)
-    }
+    val isStoreMode = paywall?.launchMode == PaywallLaunchMode.Store
     val weeklyTrialDays = billingState.weeklyTrialDays
     val monthlyTrialDays = billingState.monthlyTrialDays
     val weeklyLabel = if (billingState.weeklyHasFreeTrial) "Weekly Trial" else "Weekly"
@@ -242,46 +234,62 @@ fun PaywallScreen(
                     .padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                AlpinePlanCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = weeklyLabel,
-                    description = weeklyDescription,
-                    price = weekly?.displayPrice ?: stringResource(R.string.paywall_price_unavailable),
-                    footnote = weeklyFootnote,
-                    badge = null,
-                    onClick = {
-                        weekly?.let { onPurchase(it.productId, it.offerToken) }
-                    },
-                    enabled = weekly != null && !billingState.purchaseInFlight,
-                )
-                AlpinePlanCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = monthlyLabel,
-                    description = monthlyDescription,
-                    price = monthPriceLabel,
-                    footnote = when {
-                        monthly != null && billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
-                            "Free for $monthlyTrialDays days"
-                        else -> "Auto-renew every month"
-                    },
-                    badge = if (monthly != null && billingState.monthlyHasFreeTrial) "Trial" else null,
-                    onClick = {
-                        monthly?.let { onPurchase(it.productId, it.offerToken) }
-                    },
-                    enabled = monthly != null && !billingState.purchaseInFlight,
-                )
-                AlpinePlanCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = lifetimeLabel,
-                    description = lifetimeDescription,
-                    price = lifetimePriceLabel,
-                    footnote = null,
-                    badge = stringResource(R.string.popular),
-                    onClick = {
-                        lifetime?.let { onPurchase(it.productId, null) }
-                    },
-                    enabled = lifetime != null && !billingState.purchaseInFlight,
-                )
+                if (weekly != null) {
+                    val weeklyPurchased = isStoreMode && weekly.productId in billingState.ownedProductIds
+                    AlpinePlanCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = weeklyLabel,
+                        description = weeklyDescription,
+                        price = weekly.displayPrice,
+                        footnote = weeklyFootnote,
+                        badge = if (weeklyPurchased) "Purchased" else null,
+                        onClick = {
+                            onPurchase(weekly.productId, weekly.offerToken)
+                        },
+                        enabled = !billingState.purchaseInFlight && !weeklyPurchased,
+                        purchased = weeklyPurchased,
+                    )
+                }
+                if (monthly != null) {
+                    val monthlyPurchased = isStoreMode && monthly.productId in billingState.ownedProductIds
+                    AlpinePlanCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = monthlyLabel,
+                        description = monthlyDescription,
+                        price = monthly.displayPrice,
+                        footnote = when {
+                            billingState.monthlyHasFreeTrial && monthlyTrialDays != null ->
+                                "Free for $monthlyTrialDays days"
+                            else -> "Auto-renew every month"
+                        },
+                        badge = when {
+                            monthlyPurchased -> "Purchased"
+                            billingState.monthlyHasFreeTrial -> "Trial"
+                            else -> null
+                        },
+                        onClick = {
+                            onPurchase(monthly.productId, monthly.offerToken)
+                        },
+                        enabled = !billingState.purchaseInFlight && !monthlyPurchased,
+                        purchased = monthlyPurchased,
+                    )
+                }
+                if (lifetime != null) {
+                    val lifetimePurchased = isStoreMode && lifetime.productId in billingState.ownedProductIds
+                    AlpinePlanCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = lifetimeLabel,
+                        description = lifetimeDescription,
+                        price = lifetime.displayPrice,
+                        footnote = null,
+                        badge = if (lifetimePurchased) "Purchased" else stringResource(R.string.popular),
+                        onClick = {
+                            onPurchase(lifetime.productId, null)
+                        },
+                        enabled = !billingState.purchaseInFlight && !lifetimePurchased,
+                        purchased = lifetimePurchased,
+                    )
+                }
             }
 
             Spacer(Modifier.height(20.dp))
@@ -472,6 +480,7 @@ private fun AlpinePlanCard(
     badge: String?,
     onClick: () -> Unit,
     enabled: Boolean,
+    purchased: Boolean,
 ) {
     Box(modifier = modifier) {
         OutlinedCard(
@@ -482,8 +491,8 @@ private fun AlpinePlanCard(
             shape = Alpine.RoundXL,
             colors = CardDefaults.outlinedCardColors(containerColor = Alpine.SurfaceLowest),
             border = androidx.compose.foundation.BorderStroke(
-                width = 1.25.dp,
-                color = Alpine.Secondary.copy(alpha = 0.42f),
+                width = if (purchased) 1.6.dp else 1.25.dp,
+                color = if (purchased) Alpine.Primary.copy(alpha = 0.72f) else Alpine.Secondary.copy(alpha = 0.42f),
             ),
         ) {
             Row(
@@ -501,7 +510,7 @@ private fun AlpinePlanCard(
                         text = label,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Alpine.Primary,
+                        color = if (purchased) Alpine.PrimaryDeep else Alpine.Primary,
                     )
                     val supportingCopy = description?.takeIf { it.isNotBlank() } ?: footnote
                     if (!supportingCopy.isNullOrBlank()) {
@@ -514,10 +523,10 @@ private fun AlpinePlanCard(
                     }
                 }
                 Text(
-                    text = price,
+                    text = if (purchased) "Purchased" else price,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Alpine.OnSurface,
+                    color = if (purchased) Alpine.PrimaryDeep else Alpine.OnSurface,
                     textAlign = TextAlign.End,
                 )
             }
