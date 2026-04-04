@@ -139,6 +139,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -237,6 +238,17 @@ private data class StatusBarTemplateUiEntry(
     val assetUrl: String,
     val label: String,
 )
+
+private fun formatBackgroundTemplateTabTitle(raw: String): String =
+    raw.trim()
+        .replace('_', ' ')
+        .split(Regex("\\s+"))
+        .filter { it.isNotBlank() }
+        .joinToString(" ") { token ->
+            token.lowercase(Locale.getDefault()).replaceFirstChar { ch ->
+                if (ch.isLowerCase()) ch.titlecase(Locale.getDefault()) else ch.toString()
+            }
+        }
 
 /** Volio row for editor selection, or null if still using [SampleCatalog] ids. */
 private fun statusBarBatteryItem(uiState: AppUiState, batteryPresetId: String): HomeBatteryItem? =
@@ -1705,12 +1717,14 @@ private fun StatusBarBackgroundTemplateSection(
 ) {
     val labelColor = colorResource(R.color.splash_title)
     val context = LocalContext.current.applicationContext
+    val builtInTabKey = "built_in"
     val maxPreviewRows = 6
     val maxPreviewItems = 3 * maxPreviewRows
     val padCategories = remember { mutableStateListOf<PadBackgroundTemplateCategory>() }
     val loadedItemsByPack = remember { mutableStateMapOf<String, List<PadBackgroundTemplateItem>>() }
-    val attemptedPacks = remember { mutableStateMapOf<String, Boolean>() }
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    val attemptCountsByPack = remember { mutableStateMapOf<String, Int>() }
+    val scope = rememberCoroutineScope()
+    var selectedTabKey by remember { mutableStateOf(builtInTabKey) }
     var loadingPack by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
@@ -1718,34 +1732,51 @@ private fun StatusBarBackgroundTemplateSection(
         padCategories.addAll(PadBackgroundTemplateRepository.loadCategories(context))
     }
 
-    val selectedCategory = padCategories.getOrNull((selectedTabIndex - 1).coerceAtLeast(0))
-        ?.takeIf { selectedTabIndex > 0 }
-
-    LaunchedEffect(selectedCategory?.deliveryPackName) {
-        val category = selectedCategory ?: return@LaunchedEffect
-        val cached = loadedItemsByPack[category.deliveryPackName]
-        if (cached != null && cached.isNotEmpty()) return@LaunchedEffect
-        attemptedPacks[category.deliveryPackName] = true
-        loadingPack = category.deliveryPackName
-        val loaded = PadBackgroundTemplateRepository.loadItemsForCategory(context, category)
-        if (loaded.isNotEmpty()) {
-            loadedItemsByPack[category.deliveryPackName] = loaded
-        } else {
-            loadedItemsByPack.remove(category.deliveryPackName)
+    val selectedCategory = padCategories.firstOrNull { it.deliveryPackName == selectedTabKey }
+    fun requestPadCategoryLoad(category: PadBackgroundTemplateCategory) {
+        val packName = category.deliveryPackName
+        val cached = loadedItemsByPack[packName]
+        if (cached != null && cached.isNotEmpty()) {
+            loadingPack = null
+            return
         }
-        loadingPack = null
+        val attemptCount = attemptCountsByPack[packName] ?: 0
+        if (attemptCount >= 2) {
+            loadingPack = null
+            return
+        }
+        loadingPack = packName
+        scope.launch {
+            attemptCountsByPack[packName] = attemptCount + 1
+            val loaded = PadBackgroundTemplateRepository.loadItemsForCategory(context, category)
+            if (loaded.isNotEmpty()) {
+                loadedItemsByPack[packName] = loaded
+            } else {
+                loadedItemsByPack.remove(packName)
+            }
+            if (loadingPack == packName) {
+                loadingPack = null
+            }
+        }
     }
 
     val selectedAssetUrl = selectedPhotoUrl
         ?: StatusBarThemeTemplateCatalog.entryForPreviewDrawable(selectedDrawableRes)
             ?.let { StatusBarThemeTemplateCatalog.assetUri(it.assetRelativePath) }
 
-    val tabs = buildList {
-        add("Built-in")
-        addAll(padCategories.map { it.title?.takeIf { name -> name.isNotBlank() } ?: it.packName })
+    val tabs = buildList<Pair<String, String>> {
+        add(builtInTabKey to "Default")
+        addAll(
+            padCategories.map { category ->
+                category.deliveryPackName to formatBackgroundTemplateTabTitle(
+                    category.title?.takeIf { name -> name.isNotBlank() } ?: category.packName,
+                )
+            },
+        )
     }
+    val selectedTabIndex = tabs.indexOfFirst { it.first == selectedTabKey }.coerceAtLeast(0)
 
-    val entries: List<StatusBarTemplateUiEntry> = if (selectedTabIndex == 0) {
+    val entries: List<StatusBarTemplateUiEntry> = if (selectedTabKey == builtInTabKey) {
         StatusBarThemeTemplateCatalog.entries.take(maxPreviewItems).map { entry ->
             StatusBarTemplateUiEntry(
                 key = "builtin_${entry.index}",
@@ -1772,16 +1803,12 @@ private fun StatusBarBackgroundTemplateSection(
     }
 
     val selectedDeliveryPack = selectedCategory?.deliveryPackName
-    val isSelectedCategoryLoading = selectedTabIndex > 0 && (
-        loadingPack == selectedDeliveryPack ||
-            (selectedDeliveryPack != null &&
-                attemptedPacks[selectedDeliveryPack] != true &&
-                !loadedItemsByPack.containsKey(selectedDeliveryPack))
-        )
-    val shouldShowEmpty = selectedTabIndex > 0 &&
+    val selectedAttemptCount = selectedDeliveryPack?.let { attemptCountsByPack[it] ?: 0 } ?: 0
+    val isSelectedCategoryLoading = selectedTabKey != builtInTabKey && loadingPack == selectedDeliveryPack
+    val shouldShowEmpty = selectedTabKey != builtInTabKey &&
         !isSelectedCategoryLoading &&
         selectedDeliveryPack != null &&
-        attemptedPacks[selectedDeliveryPack] == true &&
+        selectedAttemptCount >= 2 &&
         entries.isEmpty()
 
     Column(
@@ -1807,10 +1834,26 @@ private fun StatusBarBackgroundTemplateSection(
             edgePadding = 0.dp,
             divider = {},
         ) {
-            tabs.forEachIndexed { index, title ->
+            tabs.forEachIndexed { index, (tabKey, title) ->
                 Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
+                    selected = selectedTabKey == tabKey,
+                    onClick = {
+                        if (tabKey == builtInTabKey) {
+                            loadingPack = null
+                        }
+                        selectedTabKey = tabKey
+                        if (tabKey != builtInTabKey) {
+                            padCategories.firstOrNull { it.deliveryPackName == tabKey }?.let { category ->
+                                requestPadCategoryLoad(category)
+                                scope.launch {
+                                    delay(500)
+                                    if (selectedTabKey == tabKey && loadedItemsByPack[tabKey].isNullOrEmpty()) {
+                                        requestPadCategoryLoad(category)
+                                    }
+                                }
+                            }
+                        }
+                    },
                     text = {
                         Text(
                             text = title,
