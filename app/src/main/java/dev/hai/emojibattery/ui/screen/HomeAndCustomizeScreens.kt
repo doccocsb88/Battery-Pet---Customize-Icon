@@ -89,6 +89,7 @@ import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.ui.theme.OceanSerenity
 import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
+import dev.hai.emojibattery.ui.theme.StrawberryMilk
 import dev.hai.emojibattery.ui.theme.oceanModuleLabelTextStyle
 import kotlinx.coroutines.CoroutineScope
 
@@ -232,36 +233,49 @@ private fun HomeScreenScaffold(
                 onToggle = onSetOverlayEnabled,
                 onRequestAccessibility = onOpenAccessibility,
             )
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = StrawberryMilk.SecondaryContainer.copy(alpha = 0.85f),
+                shadowElevation = 0.dp,
             ) {
-                items(
-                    count = categories.size,
-                    key = { index -> categories[index].id },
-                ) { index ->
-                    val category = categories[index]
-                    val selected = pagerState.settledPage == index
-                    Surface(
-                        shape = RoundedCornerShape(999.dp),
-                        color = if (selected) Color(0xFF8FB6D4) else Color(0xFFF2F2F2),
-                    ) {
-                        Text(
-                            text = if (category.id == "hot") "HOT" else category.title.uppercase(),
-                            color = if (selected) Color(0xFF3C637E) else MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 0.8.sp,
-                            ),
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(
+                        count = categories.size,
+                        key = { index -> categories[index].id },
+                    ) { index ->
+                        val category = categories[index]
+                        val selected = pagerState.settledPage == index
+                        Box(
                             modifier = Modifier
+                                .clip(RoundedCornerShape(999.dp))
+                                .then(
+                                    if (selected) {
+                                        Modifier.background(StrawberryCtaGradientBrush)
+                                    } else {
+                                        Modifier.background(Color.Transparent)
+                                    },
+                                )
                                 .clickable {
                                     coroutineScope.launch {
                                         onSelectCategory(category.id)
                                         pagerState.animateScrollToPage(index)
                                     }
                                 }
-                                .padding(horizontal = 16.dp, vertical = 10.dp),
-                        )
+                                .padding(horizontal = 18.dp, vertical = 10.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = if (category.id == "hot") "Hot" else category.title,
+                                color = if (selected) Color.White else StrawberryMilk.Secondary,
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
+                                fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+                            )
+                        }
                     }
                 }
             }
