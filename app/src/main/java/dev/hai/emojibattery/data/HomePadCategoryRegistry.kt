@@ -1,7 +1,9 @@
 package dev.hai.emojibattery.data
 
 object HomePadCategoryRegistry {
-    private val bundledCategoryIds: Set<String> = setOf(
+    const val HOT_CATEGORY_ID: String = "09197190-2899-4035-802f-766a8bfa3273"
+
+    val bundledCategoryIds: Set<String> = setOf(
         "e2eca2b6-23ae-51bf-9eaf-aaef1a3b5312", // Ocean
         "087e2fe0-b2ae-55c1-9e91-66f7c20d7d7c", // Vietnam
         "7716667c-abd4-58f8-b417-67416fafd9b0", // Korean
@@ -38,4 +40,7 @@ object HomePadCategoryRegistry {
     fun hasPadPack(categoryId: String): Boolean = categoryIds.contains(categoryId)
 
     fun usesBundledAssets(categoryId: String): Boolean = bundledCategoryIds.contains(categoryId)
+
+    fun isHotCategory(categoryId: String): Boolean =
+        categoryId == HOT_CATEGORY_ID || categoryId.equals("hot", ignoreCase = true)
 }

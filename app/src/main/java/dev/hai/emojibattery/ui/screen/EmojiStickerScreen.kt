@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -159,6 +160,7 @@ import dev.hai.emojibattery.billing.GooglePlayPurchaseService
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
+import dev.hai.emojibattery.ui.theme.OceanSerenity
 import dev.hai.emojibattery.ui.theme.StrawberryCtaGradientBrush
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
@@ -276,6 +278,12 @@ internal fun EmojiStickerScreen(
                 )
             }
         },
+        bottomBar = {
+            StickerActionBar(
+                onTurnOff = onTurnOff,
+                onSave = onSave,
+            )
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -283,7 +291,7 @@ internal fun EmojiStickerScreen(
                 .padding(innerPadding)
                 .verticalScroll(stickerScroll)
                 .padding(horizontal = 8.dp)
-                .padding(bottom = 24.dp),
+                .padding(bottom = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             EmojiBatteryOverlayAccessCard(
@@ -522,58 +530,6 @@ internal fun EmojiStickerScreen(
 //                            style = MaterialTheme.typography.bodyMedium,
 //                        )
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Surface(
-                            shape = RoundedCornerShape(50.dp),
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(56.dp)
-                                .clickable(onClick = onTurnOff),
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_turn_off_shimeji),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Text(
-                                    "Turn Off",
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    fontWeight = FontWeight.SemiBold,
-                                    style = MaterialTheme.typography.titleLarge,
-                                )
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(56.dp)
-                                .clip(RoundedCornerShape(50.dp))
-                                .background(
-                                    StrawberryCtaGradientBrush,
-                                )
-                                .clickable(onClick = onSave),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                stringResource(R.string.common_save),
-                                color = Color.White,
-                                fontWeight = FontWeight.SemiBold,
-                                style = MaterialTheme.typography.titleLarge,
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -586,6 +542,71 @@ internal fun EmojiStickerScreen(
                 onUpdateRotation = onUpdateStickerRotation,
                 onSetPosition = onSetStickerPosition,
             )
+        }
+    }
+}
+
+@Composable
+private fun StickerActionBar(
+    onTurnOff: () -> Unit,
+    onSave: () -> Unit,
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.background,
+        shadowElevation = 0.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Surface(
+                shape = RoundedCornerShape(50.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
+                    .clickable(onClick = onTurnOff),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_turn_off_shimeji),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        "Turn Off",
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(StrawberryCtaGradientBrush)
+                    .clickable(onClick = onSave),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    stringResource(R.string.common_save),
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
         }
     }
 }
@@ -812,60 +833,30 @@ private fun StickerAdjustmentPanel(
         localOffsetY = placement.offsetY.coerceIn(0f, 1f)
     }
     Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = Color.White,
-        shadowElevation = 6.dp,
+        shape = RoundedCornerShape(28.dp),
+        color = OceanSerenity.Surface,
+        shadowElevation = 0.dp,
         modifier = modifier
             .fillMaxWidth()
-            .shadow(10.dp, RoundedCornerShape(18.dp)),
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(28.dp),
+                ambientColor = OceanSerenity.ModuleShadow,
+                spotColor = OceanSerenity.ModuleShadow,
+            ),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Spacer(Modifier.width(28.dp))
-                Text(
-                    stringResource(R.string.sticker_adjustment_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = StickerUiText,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                )
-                Surface(
-                    onClick = onDismiss,
-                    shape = CircleShape,
-                    color = StickerUiPrimary,
-                    modifier = Modifier.size(40.dp),
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            stringResource(R.string.multiply_sign),
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-            }
-            Text(
-                text = "Drag sticker to move. Drag 4 corner handles to resize.",
-                style = MaterialTheme.typography.bodySmall,
-                color = StickerUiText.copy(alpha = 0.75f),
+            OceanAdjustmentHeader(
+                title = stringResource(R.string.sticker_adjustment_title),
+                subtitle = "Drag sticker to move. Drag 4 corner handles to resize.",
             )
-            Box(
+            OceanAdjustmentStage(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .height(210.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(StickerUiPrimary.copy(alpha = 0.12f))
                     .onSizeChanged {
                         containerWidthPx = it.width.toFloat().coerceAtLeast(1f)
                         containerHeightPx = it.height.toFloat().coerceAtLeast(1f)
@@ -920,29 +911,29 @@ private fun StickerAdjustmentPanel(
                                 .graphicsLayer(rotationZ = placement.rotation),
                         )
                     }
-                    StickerDashFrame(modifier = Modifier.fillMaxSize())
-                    StickerResizeHandle(
+                    OceanAdjustmentDashFrame(modifier = Modifier.fillMaxSize())
+                    OceanAdjustmentResizeHandle(
                         modifier = Modifier.align(Alignment.TopStart),
                         onDrag = { drag ->
                             localSize = (localSize + ((-drag.x - drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
                             onUpdateSize(localSize)
                         },
                     )
-                    StickerResizeHandle(
+                    OceanAdjustmentResizeHandle(
                         modifier = Modifier.align(Alignment.TopEnd),
                         onDrag = { drag ->
                             localSize = (localSize + ((drag.x - drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
                             onUpdateSize(localSize)
                         },
                     )
-                    StickerResizeHandle(
+                    OceanAdjustmentResizeHandle(
                         modifier = Modifier.align(Alignment.BottomStart),
                         onDrag = { drag ->
                             localSize = (localSize + ((-drag.x + drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
                             onUpdateSize(localSize)
                         },
                     )
-                    StickerResizeHandle(
+                    OceanAdjustmentResizeHandle(
                         modifier = Modifier.align(Alignment.BottomEnd),
                         onDrag = { drag ->
                             localSize = (localSize + ((drag.x + drag.y) / resizeScaleFactor)).coerceIn(0.2f, 1f)
@@ -951,70 +942,17 @@ private fun StickerAdjustmentPanel(
                     )
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(width = 4.dp, height = 12.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(StickerUiPrimary),
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    stringResource(R.string.sticker_rotate_slider),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = StickerUiText,
-                )
-            }
+            OceanSectionAccentLabel(stringResource(R.string.sticker_rotate_slider))
             AppBasicSlider(
                 value = placement.rotation.coerceIn(-180f, 180f),
                 valueRange = -180f..180f,
                 onValueChange = onUpdateRotation,
-                activeColor = StickerUiSecondary,
-                thumbColor = StickerUiSecondary,
-                inactiveColor = StickerUiPrimary.copy(alpha = 0.28f),
+                activeColor = OceanSerenity.Secondary,
+                thumbColor = OceanSerenity.Secondary,
+                inactiveColor = OceanSerenity.PrimaryContainer,
             )
         }
     }
-}
-
-@Composable
-private fun StickerDashFrame(
-    modifier: Modifier = Modifier,
-) {
-    val handleInset = 10.dp
-    Canvas(modifier = modifier) {
-        val inset = handleInset.toPx()
-        val dash = 8.dp.toPx()
-        val gap = 7.dp.toPx()
-        val stroke = 2.dp.toPx()
-        val dashEffect = PathEffect.dashPathEffect(floatArrayOf(dash, gap), 0f)
-        val color = StickerUiPrimary
-
-        drawLine(color, Offset(inset, inset), Offset(size.width - inset, inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
-        drawLine(color, Offset(inset, size.height - inset), Offset(size.width - inset, size.height - inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
-        drawLine(color, Offset(inset, inset), Offset(inset, size.height - inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
-        drawLine(color, Offset(size.width - inset, inset), Offset(size.width - inset, size.height - inset), strokeWidth = stroke, cap = StrokeCap.Round, pathEffect = dashEffect)
-    }
-}
-
-@Composable
-private fun StickerResizeHandle(
-    modifier: Modifier = Modifier,
-    onDrag: (Offset) -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .size(18.dp)
-            .clip(CircleShape)
-            .background(Color.White)
-            .border(1.dp, StickerUiPrimary, CircleShape)
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    onDrag(dragAmount)
-                }
-            },
-    )
 }
 
 @Composable

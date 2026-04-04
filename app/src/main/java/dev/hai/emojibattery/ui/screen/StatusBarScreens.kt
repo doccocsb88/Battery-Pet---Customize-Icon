@@ -626,37 +626,23 @@ private fun StatusBarEmojiAdjustmentDialog(
     }
 
     Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
+        OceanAdjustmentPanelSurface(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
+            OceanAdjustmentHeader(
+                title = "Emoji Adjustment",
+                subtitle = "Drag emoji to move. Drag 4 corner handles to resize.",
+            )
+            OceanAdjustmentStage(
+                modifier = Modifier
+                    .height(300.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color(config.backgroundColor))
+                    .onSizeChanged {
+                        containerWidthPx = it.width.toFloat().coerceAtLeast(1f)
+                        containerHeightPx = it.height.toFloat().coerceAtLeast(1f)
+                    },
             ) {
-                Text(
-                    text = "Emoji Adjustment",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    text = "Drag emoji to move. Drag 4 corner handles to resize.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color(config.backgroundColor))
-                        .onSizeChanged {
-                            containerWidthPx = it.width.toFloat().coerceAtLeast(1f)
-                            containerHeightPx = it.height.toFloat().coerceAtLeast(1f)
-                        },
-                    contentAlignment = Alignment.Center,
-                ) {
                     val batterySizePx = (minOf(containerWidthPx, containerHeightPx) * 0.62f).coerceAtLeast(120f)
                     val batterySizeDp = with(density) { batterySizePx.toDp() }
                     val emojiSizePx = (batterySizePx * emojiScale.coerceIn(0.35f, 2.2f)).coerceAtLeast(20f)
@@ -733,28 +719,28 @@ private fun StatusBarEmojiAdjustmentDialog(
                             }
                         }
 
-                        EmojiDashFrame(
+                        OceanAdjustmentDashFrame(
                             modifier = Modifier.matchParentSize(),
                         )
-                        EmojiResizeHandle(
+                        OceanAdjustmentResizeHandle(
                             modifier = Modifier.align(Alignment.TopStart),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((-drag.x - drag.y) / resizeScaleFactor))
                             },
                         )
-                        EmojiResizeHandle(
+                        OceanAdjustmentResizeHandle(
                             modifier = Modifier.align(Alignment.TopEnd),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((drag.x - drag.y) / resizeScaleFactor))
                             },
                         )
-                        EmojiResizeHandle(
+                        OceanAdjustmentResizeHandle(
                             modifier = Modifier.align(Alignment.BottomStart),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((-drag.x + drag.y) / resizeScaleFactor))
                             },
                         )
-                        EmojiResizeHandle(
+                        OceanAdjustmentResizeHandle(
                             modifier = Modifier.align(Alignment.BottomEnd),
                             onDrag = { drag ->
                                 commitScale(emojiScale + ((drag.x + drag.y) / resizeScaleFactor))
@@ -762,96 +748,14 @@ private fun StatusBarEmojiAdjustmentDialog(
                         )
                     }
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    OutlinedButton(
-                        onClick = onDismiss,
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text(text = stringResource(R.string.common_cancel))
-                    }
-                    Button(
-                        onClick = onDismiss,
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text(text = "Done")
-                    }
-                }
-            }
+            OceanAdjustmentActions(
+                dismissText = stringResource(R.string.common_cancel),
+                confirmText = "Done",
+                onDismiss = onDismiss,
+                onConfirm = onDismiss,
+            )
         }
     }
-}
-
-@Composable
-private fun EmojiDashFrame(
-    modifier: Modifier = Modifier,
-) {
-    val handleInset = 10.dp
-    Canvas(
-        modifier = modifier,
-    ) {
-        val inset = handleInset.toPx()
-        val dash = 8.dp.toPx()
-        val gap = 7.dp.toPx()
-        val stroke = 2.dp.toPx()
-        val dashEffect = PathEffect.dashPathEffect(floatArrayOf(dash, gap), 0f)
-        val color = StrawberryMilk.Secondary
-
-        drawLine(
-            color = color,
-            start = Offset(inset, inset),
-            end = Offset(size.width - inset, inset),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round,
-            pathEffect = dashEffect,
-        )
-        drawLine(
-            color = color,
-            start = Offset(inset, size.height - inset),
-            end = Offset(size.width - inset, size.height - inset),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round,
-            pathEffect = dashEffect,
-        )
-        drawLine(
-            color = color,
-            start = Offset(inset, inset),
-            end = Offset(inset, size.height - inset),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round,
-            pathEffect = dashEffect,
-        )
-        drawLine(
-            color = color,
-            start = Offset(size.width - inset, inset),
-            end = Offset(size.width - inset, size.height - inset),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round,
-            pathEffect = dashEffect,
-        )
-    }
-}
-
-@Composable
-private fun EmojiResizeHandle(
-    modifier: Modifier = Modifier,
-    onDrag: (androidx.compose.ui.geometry.Offset) -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .size(18.dp)
-            .clip(CircleShape)
-            .background(Color.White)
-            .border(1.dp, StrawberryMilk.Secondary, CircleShape)
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    onDrag(dragAmount)
-                }
-            },
-    )
 }
 
 @Composable

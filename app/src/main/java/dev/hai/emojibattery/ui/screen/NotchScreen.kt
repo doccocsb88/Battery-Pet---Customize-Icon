@@ -64,6 +64,7 @@ import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.service.NotchTemplateCatalog
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
+import dev.hai.emojibattery.ui.theme.OceanSerenity
 import kotlin.math.roundToInt
 
 @Composable
@@ -312,51 +313,22 @@ private fun NotchAdjustmentDialog(
     }
 
     Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
+        OceanAdjustmentPanelSurface(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
+            OceanAdjustmentHeader(
+                title = "Notch Adjustment",
+                subtitle = "Drag notch to move. Drag 4 corner handles to resize.",
+            )
+            OceanAdjustmentStage(
+                modifier = Modifier
+                    .height(240.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .onSizeChanged {
+                        containerWidthPx = it.width.toFloat().coerceAtLeast(1f)
+                        containerHeightPx = it.height.toFloat().coerceAtLeast(1f)
+                    },
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = "Notch Adjustment",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    IconButton(
-                        onClick = onDismiss,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = "Close",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-                Text(
-                    text = "Drag notch to move. Drag 4 corner handles to resize.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(240.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFF8EEF3))
-                        .onSizeChanged {
-                            containerWidthPx = it.width.toFloat().coerceAtLeast(1f)
-                            containerHeightPx = it.height.toFloat().coerceAtLeast(1f)
-                        },
-                ) {
                     BoxWithConstraints(
                         modifier = Modifier.fillMaxSize(),
                     ) {
@@ -410,9 +382,9 @@ private fun NotchAdjustmentDialog(
                                     ),
                                 )
                             }
-                            NotchDashFrame(
+                            OceanAdjustmentDashFrame(
                                 modifier = Modifier.fillMaxSize(),
-                                inset = with(density) { 9.dp.toPx() },
+                                inset = 9.dp,
                             )
                             NotchResizeHandle(
                                 modifier = Modifier.align(Alignment.TopStart),
@@ -437,55 +409,13 @@ private fun NotchAdjustmentDialog(
                         }
                     }
                 }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    OutlinedButton(
-                        onClick = { resetAdjustment() },
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text("Reset")
-                    }
-                    androidx.compose.material3.Button(
-                        onClick = { onDone(notchScale, notchOffsetX, notchOffsetY) },
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text("Done")
-                    }
-                }
-            }
+            OceanAdjustmentActions(
+                dismissText = "Reset",
+                confirmText = "Done",
+                onDismiss = { resetAdjustment() },
+                onConfirm = { onDone(notchScale, notchOffsetX, notchOffsetY) },
+            )
         }
-    }
-}
-
-@Composable
-private fun NotchDashFrame(
-    modifier: Modifier = Modifier,
-    inset: Float = 0f,
-) {
-    val stroke = Color(0xFF4F7593)
-    Canvas(modifier = modifier) {
-        val strokeWidth = 2.dp.toPx()
-        val dashInset = inset.coerceAtLeast(0f)
-        drawRoundRect(
-            color = stroke.copy(alpha = 0.72f),
-            topLeft = Offset(
-                dashInset + (strokeWidth / 2f),
-                dashInset + (strokeWidth / 2f),
-            ),
-            size = androidx.compose.ui.geometry.Size(
-                width = (size.width - (dashInset * 2f) - strokeWidth).coerceAtLeast(0f),
-                height = (size.height - (dashInset * 2f) - strokeWidth).coerceAtLeast(0f),
-            ),
-            cornerRadius = CornerRadius(14.dp.toPx(), 14.dp.toPx()),
-            style = androidx.compose.ui.graphics.drawscope.Stroke(
-                width = strokeWidth,
-                pathEffect = PathEffect.dashPathEffect(
-                    intervals = floatArrayOf(10.dp.toPx(), 8.dp.toPx()),
-                ),
-            ),
-        )
     }
 }
 
@@ -512,7 +442,7 @@ private fun NotchResizeHandle(
                 .size(18.dp),
             shape = CircleShape,
             color = Color.White,
-            border = BorderStroke(1.6.dp, Color(0xFF4F7593)),
+            border = BorderStroke(1.6.dp, OceanSerenity.Primary),
         ) {}
     }
 }

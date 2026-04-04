@@ -404,8 +404,8 @@ fun EmojiBatteryApp(
                     onRestore = viewModel::restoreApplied,
                     onApply = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
-                        viewModel.applyConfig()
-                        if (AccessibilityBridge.isEnabled(context)) {
+                        val applied = viewModel.applyConfig()
+                        if (applied && AccessibilityBridge.isEnabled(context)) {
                             val snapshot = viewModel.uiState.value
                             OverlayConfigStore.saveStatusBarConfig(
                                 context,
@@ -476,8 +476,8 @@ fun EmojiBatteryApp(
                     onSetEmojiScale = viewModel::setEmojiScale,
                     onApply = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
-                        viewModel.applyLegacyBatteryConfig()
-                        if (AccessibilityBridge.isEnabled(context)) {
+                        val applied = viewModel.applyLegacyBatteryConfig()
+                        if (applied && AccessibilityBridge.isEnabled(context)) {
                             val snapshot = viewModel.uiState.value
                             OverlayConfigStore.saveStatusBarConfig(
                                 context,
@@ -616,8 +616,8 @@ fun EmojiBatteryApp(
                     },
                     onApply = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
-                        viewModel.applyRealTimeTemplate()
-                        if (AccessibilityBridge.isEnabled(context)) {
+                        val applied = viewModel.applyRealTimeTemplate()
+                        if (applied && AccessibilityBridge.isEnabled(context)) {
                             OverlayConfigStore.saveRealTime(context, uiState.selectedRealTimeTemplateId)
                             OverlayAccessibilityService.requestRefresh(context)
                         }
@@ -666,8 +666,8 @@ fun EmojiBatteryApp(
                     },
                     onApply = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
-                        viewModel.applyBatteryTroll()
-                        if (AccessibilityBridge.isEnabled(context)) {
+                        val applied = viewModel.applyBatteryTroll()
+                        if (applied && AccessibilityBridge.isEnabled(context)) {
                             val snapshot = viewModel.uiState.value
                             OverlayConfigStore.saveBatteryTroll(context, snapshot)
                             OverlayConfigStore.setBatteryEmojiSource(
@@ -685,8 +685,8 @@ fun EmojiBatteryApp(
                         } else {
                             viewModel.setBatteryTrollEnabled(true)
                             viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
-                            viewModel.applyBatteryTroll()
-                            if (AccessibilityBridge.isEnabled(context)) {
+                            val applied = viewModel.applyBatteryTroll()
+                            if (applied && AccessibilityBridge.isEnabled(context)) {
                                 val snapshot = viewModel.uiState.value
                                 OverlayConfigStore.saveBatteryTroll(context, snapshot)
                                 OverlayConfigStore.setBatteryEmojiSource(
@@ -723,8 +723,8 @@ fun EmojiBatteryApp(
                     },
                     onSave = {
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
-                        viewModel.saveStickerOverlay()
-                        if (AccessibilityBridge.isEnabled(context)) {
+                        val saved = viewModel.saveStickerOverlay()
+                        if (saved && AccessibilityBridge.isEnabled(context)) {
                             OverlayConfigStore.saveStickerOverlay(context, uiState)
                             OverlayAccessibilityService.requestRefresh(context)
                         }

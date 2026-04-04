@@ -9,6 +9,7 @@ import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.data.BundledVolioHomeRepository
 import dev.hai.emojibattery.data.HomeCatalogRepository
 import dev.hai.emojibattery.data.HomeCategoryPackResolver
+import dev.hai.emojibattery.data.HomePadCategoryRegistry
 import dev.hai.emojibattery.data.HomeStoreLocalImageResolver
 import dev.hai.emojibattery.data.PadVolioBatteryTrollRepository
 import dev.hai.emojibattery.data.PadVolioHomeRepository
@@ -475,7 +476,7 @@ class EmojiBatteryViewModel(
      * the visible tab only changes which section is edited). Accessibility must be on for success; the UI layer
      * persists overlay prefs after this when the bridge is enabled.
      */
-    fun applyConfig() {
+    fun applyConfig(): Boolean {
         var appliedSuccessfully = false
         var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
@@ -502,13 +503,16 @@ class EmojiBatteryViewModel(
         if (appliedSuccessfully) {
             advanceAchievement("apply_status_bar")
         }
+        return appliedSuccessfully
     }
 
-    fun applyLegacyBatteryConfig() {
+    fun applyLegacyBatteryConfig(): Boolean {
         var appliedSuccessfully = false
         var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
-            if (!canApplyBattery(state)) {
+            if (!state.accessibilityGranted) {
+                state.copy(applyMessage = "Enable accessibility bridge before applying.")
+            } else if (!canApplyBattery(state)) {
                 state.copy(
                     paywallState = PaywallState(
                         featureKey = "limit:apply_battery",
@@ -529,6 +533,7 @@ class EmojiBatteryViewModel(
         if (appliedSuccessfully) {
             advanceAchievement("apply_status_bar")
         }
+        return appliedSuccessfully
     }
 
     fun refreshStickerCatalog() {
@@ -741,7 +746,8 @@ class EmojiBatteryViewModel(
         _uiState.update { it.copy(showStickerAdjustmentPanel = false) }
     }
 
-    fun saveStickerOverlay() {
+    fun saveStickerOverlay(): Boolean {
+        var savedSuccessfully = false
         var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
             when {
@@ -754,17 +760,21 @@ class EmojiBatteryViewModel(
                         message = "Free users can apply sticker ${LimitedFeature.ApplySticker.freeLimit} time. Upgrade to keep using sticker overlay.",
                     ),
                 )
-                else -> state.copy(
-                    stickerOverlayEnabled = true,
-                    showStickerAdjustmentPanel = false,
-                    applyMessage = APPLY_SUCCESS_MESSAGE,
-                    userEntitlement = recordStickerApply(state.userEntitlement).also { updatedEntitlement = it },
-                )
+                else -> {
+                    savedSuccessfully = true
+                    state.copy(
+                        stickerOverlayEnabled = true,
+                        showStickerAdjustmentPanel = false,
+                        applyMessage = APPLY_SUCCESS_MESSAGE,
+                        userEntitlement = recordStickerApply(state.userEntitlement).also { updatedEntitlement = it },
+                    )
+                }
             }
         }
         if (updatedEntitlement != null) {
             advanceAchievement("save_sticker")
         }
+        return savedSuccessfully
     }
 
     fun turnOffStickerOverlay() {
@@ -871,16 +881,21 @@ class EmojiBatteryViewModel(
         }
     }
 
-    fun applyRealTimeTemplate() {
-        val selected = SampleCatalog.realTimeTemplates.firstOrNull { it.id == _uiState.value.selectedRealTimeTemplateId } ?: return
+    fun applyRealTimeTemplate(): Boolean {
+        var appliedSuccessfully = false
+        val selected = SampleCatalog.realTimeTemplates.firstOrNull { it.id == _uiState.value.selectedRealTimeTemplateId } ?: return false
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
                 state.copy(applyMessage = "Enable accessibility bridge before applying.")
             } else {
+                appliedSuccessfully = true
                 state.copy(applyMessage = APPLY_SUCCESS_MESSAGE)
             }
         }
-        advanceAchievement("template_explorer")
+        if (appliedSuccessfully) {
+            advanceAchievement("template_explorer")
+        }
+        return appliedSuccessfully
     }
 
     fun selectBatteryTrollTemplate(templateId: String) {
@@ -984,7 +999,8 @@ class EmojiBatteryViewModel(
         }
     }
 
-    fun applyBatteryTroll() {
+    fun applyBatteryTroll(): Boolean {
+        var appliedSuccessfully = false
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
                 state.copy(applyMessage = "Enable accessibility bridge before applying.")
@@ -999,13 +1015,17 @@ class EmojiBatteryViewModel(
                     applyMessage = "Battery Troll is disabled.",
                 )
             } else {
+                appliedSuccessfully = true
                 state.copy(
                     trollOverlayEnabled = true,
                     applyMessage = APPLY_SUCCESS_MESSAGE,
                 )
             }
         }
-        advanceAchievement("template_explorer")
+        if (appliedSuccessfully) {
+            advanceAchievement("template_explorer")
+        }
+        return appliedSuccessfully
     }
 
     fun turnOffBatteryTroll() {
@@ -1232,8 +1252,8 @@ class EmojiBatteryViewModel(
         categoryId: String,
     ): List<HomeBatteryItem> {
         val packName = HomeCategoryPackResolver.packNameFor(categoryId)
-        val preferBundledAssets = dev.hai.emojibattery.data.HomePadCategoryRegistry.usesBundledAssets(categoryId)
-        val shouldSkipPad = preferBundledAssets || !dev.hai.emojibattery.data.HomePadCategoryRegistry.hasPadPack(categoryId)
+        val preferBundledAssets = HomePadCategoryRegistry.usesBundledAssets(categoryId)
+        val shouldSkipPad = preferBundledAssets || !HomePadCategoryRegistry.hasPadPack(categoryId)
         val padItems = if (shouldSkipPad) {
             null
         } else {
@@ -1251,6 +1271,18 @@ class EmojiBatteryViewModel(
         val merged = bundledItems
             ?: padItems
             ?: emptyList()
+        val fallbackItems = if (merged.isEmpty() && HomePadCategoryRegistry.isHotCategory(categoryId)) {
+            loadHotFallbackItems(app)
+        } else {
+            emptyList()
+        }
+        val resolvedItems = if (merged.isNotEmpty()) {
+            merged
+        } else if (fallbackItems.isNotEmpty()) {
+            fallbackItems
+        } else {
+            emptyList()
+        }
         when {
             preferBundledAssets && bundledItems != null -> Log.d(
                 TAG,
@@ -1261,9 +1293,28 @@ class EmojiBatteryViewModel(
                 TAG,
                 "offlineStore: items from bundled assets count=${merged.size} category=$categoryId",
             )
+            fallbackItems.isNotEmpty() -> Log.d(
+                TAG,
+                "offlineStore: HOT fallback from bundled categories count=${resolvedItems.size} category=$categoryId",
+            )
             else -> Log.w(TAG, "offlineStore: no PAD/bundled items for $categoryId")
         }
-        return HomeStoreLocalImageResolver.enrichItems(app, merged, packName = packName)
+        return if (fallbackItems.isNotEmpty()) {
+            resolvedItems
+        } else {
+            HomeStoreLocalImageResolver.enrichItems(app, resolvedItems, packName = packName)
+        }
+    }
+
+    private suspend fun loadHotFallbackItems(app: Application): List<HomeBatteryItem> {
+        val mixedItems = HomePadCategoryRegistry.bundledCategoryIds
+            .flatMap { bundledCategoryId ->
+                loadOfflineHomeStoreItems(app, bundledCategoryId)
+            }
+            .shuffled()
+            .take(18)
+        Log.d(TAG, "loadHotFallbackItems: categoryCount=${HomePadCategoryRegistry.bundledCategoryIds.size} mixedCount=${mixedItems.size}")
+        return mixedItems
     }
 
     private fun hasFeatureAccess(state: AppUiState, featureKey: String): Boolean {
