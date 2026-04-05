@@ -1,26 +1,50 @@
 default_platform(:android)
+PACKAGE_NAME = "co.q7labs.co.emoji"
 
 platform :android do
-  desc "Build signed release AAB and upload to Google Play internal track"
-  lane :internal do
-    gradle(task: "clean")
-    gradle(task: "bundle", build_type: "Release")
+  private_lane :build_release_aab do
+    gradle_props = {}
+    version_code = ENV["VERSION_CODE"]
+    version_code_base = ENV["VERSION_CODE_BASE"]
+    gradle_props["VERSION_CODE"] = version_code if version_code.to_s != ""
+    gradle_props["VERSION_CODE_BASE"] = version_code_base if version_code_base.to_s != ""
+
+    gradle(task: "clean", properties: gradle_props)
+    gradle(task: "bundle", build_type: "Release", properties: gradle_props)
 
     aab_path = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
     aab_path ||= Dir["app/build/outputs/bundle/release/*.aab"].max_by { |f| File.mtime(f) }
 
     UI.user_error!("Release AAB not found at app/build/outputs/bundle/release") unless aab_path
 
+    aab_path
+  end
+
+  private_lane :upload_release do |options|
+    aab_path = build_release_aab
+    track = options.fetch(:track)
+
     upload_to_play_store(
-      package_name: CredentialsManager::AppfileConfig.try_fetch_value(:package_name),
-      track: "internal",
+      package_name: PACKAGE_NAME,
+      track: track,
       aab: aab_path,
       json_key_data: ENV.fetch("SERVICE_ACCOUNT_JSON_PLAINTEXT"),
       skip_upload_apk: true,
+      skip_upload_metadata: true,
       skip_upload_screenshots: true,
-      skip_upload_images: false,
-      skip_upload_changelogs: false,
-      release_status: "completed"
+      skip_upload_images: true,
+      skip_upload_changelogs: true,
+      release_status: "draft"
     )
+  end
+
+  desc "Build signed release AAB and upload to Google Play internal track"
+  lane :internal do
+    upload_release(track: "internal")
+  end
+
+  desc "Build signed release AAB and upload to Google Play production track"
+  lane :production do
+    upload_release(track: "production")
   end
 end

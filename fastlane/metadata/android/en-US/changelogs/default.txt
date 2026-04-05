@@ -1,3 +1,3 @@
-- Initial release
-- Feature highlights go here
-- Keep under 500 characters per Play Store guidelines
+- Launching Emoji Battery with customizable battery icons and status bar themes
+- Includes stickers, gesture actions, notch customization, and Ocean Serenity UI refresh
+- Improved status bar editor, template loading, and apply flows for a smoother first release

@@ -5,6 +5,7 @@
     <string name="splash_tagline">Customize your status bar battery &amp; emoji</string>
     <!-- Splash / language / onboarding — aligned with decompiled strings.xml -->
     <string name="loading_dot">Loading...</string>
+    <string name="this_action_may_be_content_ads">(This action may contain ads content)</string>
     <string name="select_your_language">Select your language</string>
     <string name="language">Language</string>
     <string name="language_default">Default</string>

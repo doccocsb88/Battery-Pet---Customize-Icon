@@ -22,3 +22,4 @@ play-secrets/
 *.jks
 *.keystore
 service-account*.json
+fastlane/report.xml

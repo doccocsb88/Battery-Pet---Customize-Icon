@@ -1,17 +1,40 @@
-# Fastlane Play Internal Upload
+fastlane documentation
+----
 
-This folder configures Android internal-track deployment for package `co.q7labs.co.emoji`.
+# Installation
 
-## Required env vars
+Make sure you have the latest version of the Xcode command line tools installed:
 
-- `SERVICE_ACCOUNT_JSON_PLAINTEXT`
-- `SIGNING_KEY_STORE_FILE`
-- `SIGNING_KEY_ALIAS`
-- `SIGNING_STORE_PASSWORD`
-- `SIGNING_KEY_PASSWORD`
-
-## Run
-
-```bash
-fastlane android internal
+```sh
+xcode-select --install
 ```
+
+For _fastlane_ installation instructions, see [Installing _fastlane_](https://docs.fastlane.tools/#installing-fastlane)
+
+# Available Actions
+
+## Android
+
+### android internal
+
+```sh
+[bundle exec] fastlane android internal
+```
+
+Build signed release AAB and upload to Google Play internal track
+
+### android production
+
+```sh
+[bundle exec] fastlane android production
+```
+
+Build signed release AAB and upload to Google Play production track
+
+----
+
+This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
+
+More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).
+
+The documentation of _fastlane_ can be found on [docs.fastlane.tools](https://docs.fastlane.tools).

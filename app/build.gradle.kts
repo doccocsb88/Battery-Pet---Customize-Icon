@@ -29,11 +29,26 @@ val dynamicStickerAssetPackNames = File(rootDir, "app_pack").listFiles()
     .orEmpty()
 
 val versionCodeBase = (findProperty("VERSION_CODE_BASE") as String?)?.toIntOrNull() ?: 1000
-val fallbackVersionCode = (findProperty("VERSION_CODE") as String?)?.toIntOrNull() ?: 1
-val computedVersionCode = System.getenv("GITHUB_RUN_NUMBER")
+val explicitVersionCode = (findProperty("VERSION_CODE") as String?)?.toIntOrNull()
+val ciRunVersionCode = System.getenv("GITHUB_RUN_NUMBER")
     ?.toIntOrNull()
     ?.let { versionCodeBase + it }
-    ?: fallbackVersionCode
+
+val requestedTasks = gradle.startParameter.taskNames.map { it.lowercase() }
+val isReleaseBuildRequested = requestedTasks.any {
+    "release" in it || "publish" in it || "upload" in it
+}
+
+val computedVersionCode = explicitVersionCode
+    ?: ciRunVersionCode
+    ?: if (isReleaseBuildRequested) {
+        error(
+            "Release builds require VERSION_CODE or GITHUB_RUN_NUMBER. " +
+                "Refusing to fall back to versionCode=1 for a Play upload.",
+        )
+    } else {
+        1
+    }
 
 val signingStoreFilePath = System.getenv("SIGNING_KEY_STORE_FILE")
     ?: (findProperty("SIGNING_KEY_STORE_FILE") as String?)

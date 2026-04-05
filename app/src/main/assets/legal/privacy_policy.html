@@ -6,66 +6,113 @@
   <title>Privacy Policy</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #fff9fb; color: #23161f; }
-    main { max-width: 860px; margin: 0 auto; padding: 24px 20px 48px; line-height: 1.6; }
+    main { max-width: 920px; margin: 0 auto; padding: 24px 20px 48px; line-height: 1.65; }
     h1, h2 { color: #35185a; }
     h1 { font-size: 32px; margin-bottom: 8px; }
     h2 { margin-top: 28px; font-size: 22px; }
     p, li { font-size: 16px; color: #4e4250; }
     .card { background: #ffffff; border: 1px solid #f0d8e3; border-radius: 18px; padding: 16px; margin-top: 16px; }
+    .muted { color: #6b5f6e; }
     ul { padding-left: 20px; }
+    a { color: #0d72b9; }
   </style>
 </head>
 <body>
   <main>
     <h1>Privacy Policy</h1>
-    <p>Last updated: March 21, 2026</p>
+    <p class="muted">Last updated: April 4, 2026</p>
 
     <div class="card">
-      <p>This application provides battery icon customization, premium subscription access, and optional accessibility-based overlay features. This Privacy Policy explains what data the app processes, why it is used, and what controls are available to the user.</p>
+      <p><strong>Emoji Battery Icon Customize</strong> ("the app", "we", "our", or "us") provides battery icon customization, status bar overlays, sticker features, premium purchases, and optional accessibility-assisted overlay behavior. This Privacy Policy explains what information the app accesses or processes, how it is used, and what choices you have.</p>
+      <p>If you have any questions, contact us at <a href="mailto:mrhaihcmus@gmail.com">mrhaihcmus@gmail.com</a>.</p>
     </div>
 
-    <h2>Information We Process</h2>
+    <h2>Summary</h2>
     <ul>
-      <li><strong>On-device configuration data:</strong> selected icon style, sticker choices, template choices, and local premium unlock state.</li>
-      <li><strong>Purchase state from Google Play:</strong> the app uses Google Play Billing to determine whether weekly or lifetime premium access is active.</li>
-      <li><strong>Runtime system state:</strong> battery percent, charging state, connectivity state, signal level, date, and time may be processed on-device to render the overlay.</li>
-      <li><strong>Accessibility service events:</strong> if you enable the accessibility service, the app may monitor accessibility events needed to display and refresh the overlay experience.</li>
+      <li>We do not require you to create an account to use the core app.</li>
+      <li>We do not sell your personal information.</li>
+      <li>Most customization data is stored locally on your device.</li>
+      <li>Some features use Google Play services for billing and asset delivery.</li>
+      <li>The app can access certain device and system states, including phone state, Wi-Fi state, battery state, and accessibility events, only to power the visual overlay and related features you enable.</li>
+    </ul>
+
+    <h2>Information We Access or Process</h2>
+    <ul>
+      <li><strong>Local app settings and selections:</strong> selected battery icon, sticker, overlay template, notch settings, adjustment values, and premium-related local state.</li>
+      <li><strong>Purchase and entitlement state:</strong> Google Play Billing is used to process weekly subscriptions and one-time lifetime purchases and to confirm whether premium access is active.</li>
+      <li><strong>System status used for overlays:</strong> battery percentage, charging status, network connectivity, Wi-Fi state, signal-related phone state, date, and time may be processed on-device to render your chosen status bar overlay.</li>
+      <li><strong>Accessibility service events:</strong> if you turn on the app's accessibility service, the app may observe accessibility events required to display, refresh, and position overlay content.</li>
+      <li><strong>Basic network requests:</strong> if you browse remote content or download asset packs, the app may request content from our content endpoints or Google Play asset delivery. Those requests may involve technical information that is normally transmitted over the internet, such as IP address, device/network metadata, and request logs handled by the hosting provider or platform provider.</li>
+    </ul>
+
+    <h2>Permissions We Request and Why</h2>
+    <ul>
+      <li><strong>android.permission.READ_PHONE_STATE</strong>: used only to determine signal-related phone state needed for signal overlay rendering and status bar visual updates. We do not use this permission to read your contacts, call recordings, or message content.</li>
+      <li><strong>android.permission.ACCESS_WIFI_STATE</strong>: used to display Wi-Fi-related visual status in the overlay.</li>
+      <li><strong>android.permission.ACCESS_NETWORK_STATE</strong>: used to understand connectivity state for overlay presentation and content availability.</li>
+      <li><strong>android.permission.INTERNET</strong>: used for Google Play Billing, Google Play asset delivery, and app content/template requests.</li>
+      <li><strong>android.permission.VIBRATE</strong>: used for in-app interaction feedback where available.</li>
+      <li><strong>Accessibility Service</strong>: optional and only used for user-facing overlay functionality, refresh actions, and related status bar behavior that you explicitly enable.</li>
+    </ul>
+
+    <h2>How We Use Information</h2>
+    <ul>
+      <li>To render battery icons, stickers, templates, and status bar overlay effects that you choose.</li>
+      <li>To enable, refresh, resize, and position overlay content and notch/sticker adjustments.</li>
+      <li>To verify premium access, restore purchases, and present the correct paywall or entitlement state.</li>
+      <li>To load built-in content, on-demand asset packs, and remote template metadata.</li>
+      <li>To maintain app stability and expected feature behavior on your device.</li>
     </ul>
 
     <h2>What We Do Not Intentionally Collect</h2>
     <ul>
-      <li>We do not intentionally collect your text messages, contacts, photos, or precise location for the core features described in this app.</li>
-      <li>We do not use the accessibility service to read personal conversations or to profile user behavior for advertising.</li>
+      <li>We do not intentionally collect your contacts, text messages, photos, videos, microphone audio, or precise location for the app's core features.</li>
+      <li>We do not use accessibility access to read personal conversations, passwords, or personal files for advertising or profiling purposes.</li>
+      <li>We do not sell your personal information.</li>
     </ul>
 
-    <h2>How Data Is Used</h2>
+    <h2>Third Parties and Service Providers</h2>
+    <p>The app may rely on third-party services to provide limited parts of the experience:</p>
     <ul>
-      <li>To render status bar overlays and premium content you choose to activate.</li>
-      <li>To restore purchases and enforce premium entitlements through Google Play Billing.</li>
-      <li>To preserve your selected local configuration on the device.</li>
+      <li><strong>Google Play Billing:</strong> handles payment processing, subscription management, taxes, refunds, and related transaction flows under Google's own terms and privacy practices.</li>
+      <li><strong>Google Play Asset Delivery / Play services:</strong> used to deliver on-demand content packs and related platform-managed resources.</li>
+      <li><strong>Remote content endpoints:</strong> the app may fetch public content or template metadata from service endpoints used by the app. Those providers may receive technical request data necessary to return the requested content.</li>
     </ul>
 
-    <h2>Accessibility Permission</h2>
-    <p>The accessibility service is optional. If enabled, it is used for overlay presentation and refresh logic. The service should only be enabled if you want to use those features.</p>
+    <h2>Accessibility Service Disclosure</h2>
+    <p>The accessibility service is optional. If enabled, it is used only to support user-requested overlay functionality, including showing or refreshing battery, sticker, or status bar visuals. The service is not intended to collect personal content for analytics or advertising. You can disable the service at any time in Android accessibility settings.</p>
 
-    <h2>Storage</h2>
-    <p>Configuration and overlay state are stored locally on your device through app storage. Google Play handles payment processing and subscription lifecycle according to its own policies.</p>
+    <h2>Data Retention</h2>
+    <ul>
+      <li>Most customization data is stored locally on your device until you change it, clear app data, or uninstall the app.</li>
+      <li>Purchase records are maintained by Google Play according to Google's policies.</li>
+      <li>Technical logs related to third-party network requests, if any, are governed by the relevant service provider.</li>
+    </ul>
 
-    <h2>Purchases</h2>
-    <p>Weekly and lifetime premium products are processed through Google Play. Pricing, taxes, renewals, refunds, and account controls are subject to Google Play terms and policies.</p>
-
-    <h2>Your Choices</h2>
+    <h2>Your Choices and Controls</h2>
     <ul>
       <li>You can disable the accessibility service at any time in Android settings.</li>
-      <li>You can uninstall the app to remove locally stored app data, subject to Android and device behavior.</li>
-      <li>You can manage or cancel subscriptions in Google Play.</li>
+      <li>You can revoke app permissions through Android settings, although some features may stop working.</li>
+      <li>You can manage or cancel subscriptions through your Google Play account.</li>
+      <li>You can delete local app data by clearing storage or uninstalling the app.</li>
+      <li>You can contact us at <a href="mailto:mrhaihcmus@gmail.com">mrhaihcmus@gmail.com</a> if you have privacy questions.</li>
     </ul>
 
     <h2>Children</h2>
-    <p>This app is not directed to children under the applicable minimum age for contractual purchases without parental or guardian involvement.</p>
+    <p>The app is not directed to children for independent purchases. If a child uses the app, purchases should be supervised by a parent or guardian as required by applicable law and Google Play rules.</p>
 
-    <h2>Changes</h2>
-    <p>We may update this Privacy Policy from time to time. Material changes should be reflected in an updated effective date inside this page.</p>
+    <h2>International Processing</h2>
+    <p>Depending on the service used, information related to billing, asset delivery, or network requests may be processed by Google or hosting providers in countries other than your own. Those providers are responsible for their own infrastructure and compliance obligations.</p>
+
+    <h2>Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. If we make material changes, we will revise the date shown at the top of this page.</p>
+
+    <h2>Contact</h2>
+    <div class="card">
+      <p>Email: <a href="mailto:mrhaihcmus@gmail.com">mrhaihcmus@gmail.com</a></p>
+      <p>App: Emoji Battery Icon Customize</p>
+      <p>Please note that Google Play may require this policy to be published at a publicly accessible web URL, not only bundled inside the app.</p>
+    </div>
   </main>
 </body>
 </html>
