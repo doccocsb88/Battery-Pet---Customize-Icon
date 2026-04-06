@@ -2,8 +2,10 @@ package dev.hai.emojibattery.app
 
 import dev.hai.emojibattery.ui.screen.*
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.ContextWrapper
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -57,6 +59,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import dev.hai.emojibattery.ads.rememberGoogleMobileAdsService
 import dev.hai.emojibattery.billing.GooglePlayPurchaseService
 import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.model.CustomizeEntry
@@ -82,6 +85,8 @@ fun EmojiBatteryApp(
 ) {
     val context = LocalContext.current.applicationContext
     val rawContext = LocalContext.current
+    val hostActivity = rawContext.findActivity()
+    val adsService = rememberGoogleMobileAdsService()
     val lifecycleOwner = LocalLifecycleOwner.current
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
@@ -96,6 +101,23 @@ fun EmojiBatteryApp(
     var showAccessibilityConsent by remember { mutableStateOf(false) }
     var transientSuccessMessage by remember { mutableStateOf<String?>(null) }
     var successToastResetToken by remember { mutableStateOf(0L) }
+    val mainTabRoutes = remember {
+        setOf(
+            AppRoute.Home.route,
+            AppRoute.Customize.route,
+            AppRoute.Settings.route,
+        )
+    }
+    val navigateToMainDestination: (AppRoute, MainSection) -> Unit = { destination, section ->
+        viewModel.selectMainSection(section)
+        navController.navigate(destination.route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
     val onSetOverlayEnabled: (Boolean) -> Unit = { enabled ->
         viewModel.setStatusBarOverlayEnabled(enabled)
         OverlayConfigStore.setStatusBarEnabled(context, enabled)
@@ -145,13 +167,28 @@ fun EmojiBatteryApp(
                 MainBottomBar(
                     currentRoute = route,
                     onNavigate = { destination, section ->
-                        viewModel.selectMainSection(section)
-                        navController.navigate(destination.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+                        if (route == destination.route) {
+                            return@MainBottomBar
+                        }
+
+                        val shouldShowInterstitial =
+                            route in mainTabRoutes &&
+                                destination.route in mainTabRoutes &&
+                                hostActivity != null
+
+                        if (shouldShowInterstitial) {
+                            adsService.showInterstitial(
+                                activity = hostActivity,
+                                isPremium = uiState.premiumUnlocked,
+                                onUnavailable = {
+                                    navigateToMainDestination(destination, section)
+                                },
+                                onDismissed = {
+                                    navigateToMainDestination(destination, section)
+                                },
+                            )
+                        } else {
+                            navigateToMainDestination(destination, section)
                         }
                     },
                 )
@@ -849,6 +886,12 @@ fun EmojiBatteryApp(
             }
         }
     }
+}
+
+private tailrec fun android.content.Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 /**

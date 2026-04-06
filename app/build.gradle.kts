@@ -4,6 +4,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+fun String.asBuildConfigString(): String = "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
+
 val dynamicHomeAssetPackModules = File(rootDir, "app_pack").listFiles()
     ?.asSequence()
     ?.filter { it.isDirectory && it.name.startsWith("home_pack_") }
@@ -27,6 +29,19 @@ val dynamicStickerAssetPackNames = File(rootDir, "app_pack").listFiles()
     ?.sorted()
     ?.toList()
     .orEmpty()
+
+val admobAppId = (findProperty("ADMOB_APP_ID") as String?)
+    ?.takeIf { it.isNotBlank() }
+    ?: "ca-app-pub-3940256099942544~3347511713"
+val admobBannerAdUnitId = (findProperty("ADMOB_BANNER_AD_UNIT_ID") as String?)
+    ?.takeIf { it.isNotBlank() }
+    ?: "ca-app-pub-3940256099942544/6300978111"
+val admobInterstitialAdUnitId = (findProperty("ADMOB_INTERSTITIAL_AD_UNIT_ID") as String?)
+    ?.takeIf { it.isNotBlank() }
+    ?: "ca-app-pub-3940256099942544/1033173712"
+val admobInterstitialThrottleMs = (findProperty("ADMOB_INTERSTITIAL_THROTTLE_MS") as String?)
+    ?.toLongOrNull()
+    ?: 45_000L
 
 val versionCodeBase = (findProperty("VERSION_CODE_BASE") as String?)?.toIntOrNull() ?: 1000
 val explicitVersionCode = (findProperty("VERSION_CODE") as String?)?.toIntOrNull()
@@ -75,6 +90,11 @@ android {
         targetSdk = 35
         versionCode = computedVersionCode
         versionName = "0.1.0"
+        manifestPlaceholders["adMobAppId"] = admobAppId
+        buildConfigField("String", "ADMOB_APP_ID", admobAppId.asBuildConfigString())
+        buildConfigField("String", "ADMOB_BANNER_AD_UNIT_ID", admobBannerAdUnitId.asBuildConfigString())
+        buildConfigField("String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", admobInterstitialAdUnitId.asBuildConfigString())
+        buildConfigField("long", "ADMOB_INTERSTITIAL_THROTTLE_MS", "${admobInterstitialThrottleMs}L")
         buildConfigField(
             "String[]",
             "STICKER_ASSET_PACKS",
@@ -164,6 +184,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.8.4")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("com.google.android.gms:play-services-ads:23.6.0")
     implementation("com.android.billingclient:billing-ktx:7.1.1")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
