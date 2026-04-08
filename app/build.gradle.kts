@@ -32,13 +32,13 @@ val dynamicStickerAssetPackNames = File(rootDir, "app_pack").listFiles()
 
 val admobAppId = (findProperty("ADMOB_APP_ID") as String?)
     ?.takeIf { it.isNotBlank() }
-    ?: "ca-app-pub-3940256099942544~3347511713"
+    ?: "ca-app-pub-9552312736312538~2877897667"
 val admobBannerAdUnitId = (findProperty("ADMOB_BANNER_AD_UNIT_ID") as String?)
     ?.takeIf { it.isNotBlank() }
     ?: "ca-app-pub-3940256099942544/6300978111"
 val admobInterstitialAdUnitId = (findProperty("ADMOB_INTERSTITIAL_AD_UNIT_ID") as String?)
     ?.takeIf { it.isNotBlank() }
-    ?: "ca-app-pub-3940256099942544/1033173712"
+    ?: "ca-app-pub-9552312736312538/1417273078"
 val admobInterstitialThrottleMs = (findProperty("ADMOB_INTERSTITIAL_THROTTLE_MS") as String?)
     ?.toLongOrNull()
     ?: 45_000L

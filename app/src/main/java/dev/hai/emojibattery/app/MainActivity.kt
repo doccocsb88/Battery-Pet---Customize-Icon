@@ -11,8 +11,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.hai.emojibattery.app.EmojiBatteryApp
-import dev.hai.emojibattery.app.EmojiBatteryViewModel
 import dev.hai.emojibattery.locale.AppLocalePreferences
 import dev.hai.emojibattery.ui.theme.EmojiBatteryTheme
 

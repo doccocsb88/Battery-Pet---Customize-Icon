@@ -168,6 +168,7 @@ fun EmojiBatteryApp(
                     currentRoute = route,
                     onNavigate = { destination, section ->
                         if (route == destination.route) {
+                            Log.d(TAG, "tabNavigate: ignore same route=${destination.route}")
                             return@MainBottomBar
                         }
 
@@ -175,19 +176,28 @@ fun EmojiBatteryApp(
                             route in mainTabRoutes &&
                                 destination.route in mainTabRoutes &&
                                 hostActivity != null
+                        Log.d(
+                            TAG,
+                            "tabNavigate: from=$route to=${destination.route}, " +
+                                "shouldShowInterstitial=$shouldShowInterstitial, " +
+                                "hasHostActivity=${hostActivity != null}, premium=${uiState.premiumUnlocked}",
+                        )
 
                         if (shouldShowInterstitial) {
                             adsService.showInterstitial(
                                 activity = hostActivity,
                                 isPremium = uiState.premiumUnlocked,
                                 onUnavailable = {
+                                    Log.d(TAG, "tabNavigate: interstitial unavailable -> navigate directly")
                                     navigateToMainDestination(destination, section)
                                 },
                                 onDismissed = {
+                                    Log.d(TAG, "tabNavigate: interstitial dismissed -> navigate")
                                     navigateToMainDestination(destination, section)
                                 },
                             )
                         } else {
+                            Log.d(TAG, "tabNavigate: no interstitial path -> navigate directly")
                             navigateToMainDestination(destination, section)
                         }
                     },
@@ -893,6 +903,8 @@ private tailrec fun android.content.Context.findActivity(): Activity? = when (th
     is ContextWrapper -> baseContext.findActivity()
     else -> null
 }
+
+private const val TAG = "EmojiBatteryApp"
 
 /**
  * Maps Customize hub entries to the status-bar editor tab (original [StatusBarCustomFragment] ViewPager
