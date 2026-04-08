@@ -1,5 +1,6 @@
 package dev.hai.emojibattery.app
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val routeOverride = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        applyOrientationPolicy()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         AppLocalePreferences.applyAppLocalesAtStartup(this)
         super.onCreate(savedInstanceState)
@@ -48,5 +50,23 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         routeOverride.value = intent.getStringExtra("route")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        applyOrientationPolicy()
+    }
+
+    private fun applyOrientationPolicy() {
+        requestedOrientation =
+            if (resources.configuration.smallestScreenWidthDp >= LARGE_SCREEN_SMALLEST_WIDTH_DP) {
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+    }
+
+    private companion object {
+        const val LARGE_SCREEN_SMALLEST_WIDTH_DP = 600
     }
 }
