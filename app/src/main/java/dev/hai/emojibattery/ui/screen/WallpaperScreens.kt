@@ -502,6 +502,10 @@ private fun WallpaperCategoryCard(
 
 private fun categoryCoverCaption(title: String): String =
     when {
+        title.contains("cat", ignoreCase = true) ->
+            "Adorable cats in charming scenes, perfect for a warm and relaxing look."
+        title.contains("dog", ignoreCase = true) ->
+            "Cute dogs in fun and heartwarming styles to brighten your day."
         title.contains("vapor", ignoreCase = true) ->
             "Neon retro vibes and dreamy gradients."
         title.contains("dark", ignoreCase = true) || title.contains("amoled", ignoreCase = true) ->

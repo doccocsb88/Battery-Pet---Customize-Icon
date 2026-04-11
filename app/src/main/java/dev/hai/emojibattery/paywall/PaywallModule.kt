@@ -211,21 +211,22 @@ fun PaywallScreen(
                 )
             }
 
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(0.dp))
 
             // ─── Benefits Section (tonal layer) ───
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
                 AlpineBenefitRow(glyph = "💎", text = stringResource(R.string.unlimited_library_icon_sticker))
-//                AlpineBenefitRow(glyph = "🚫", text = stringResource(R.string.no_ad_experience_2))
-                AlpineBenefitRow(glyph = "🚀", text = stringResource(R.string.early_update_new_feature))
+                AlpineBenefitRow(glyph = "🐾", text = stringResource(R.string.benefit_unlock_all_adorable_wallpapers))
+                AlpineBenefitRow(glyph = "🎨", text = stringResource(R.string.benefit_pick_your_vibe_change_anytime))
+                AlpineBenefitRow(glyph = "🚫", text = stringResource(R.string.benefit_no_ads_just_pure_cuteness))
             }
 
-            Spacer(Modifier.height(28.dp))
+            Spacer(Modifier.height(12.dp))
 
             // ─── Plan List ───
             Column(
@@ -329,7 +330,7 @@ fun PaywallScreen(
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
             // ─── Legal Links (no dividers — Alpine rule) ───
             Row(
@@ -450,9 +451,9 @@ private fun AlpineBenefitRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 2.dp),
+            .padding(vertical = 0.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Box(
             modifier = Modifier
@@ -462,9 +463,9 @@ private fun AlpineBenefitRow(
         )
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodySmall,
             color = Alpine.OnSurface,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.Medium,
         )
     }
 }
@@ -486,7 +487,7 @@ private fun AlpinePlanCard(
         OutlinedCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 84.dp)
+                .heightIn(min = 76.dp)
                 .clickable(enabled = enabled, onClick = onClick),
             shape = Alpine.RoundXL,
             colors = CardDefaults.outlinedCardColors(containerColor = Alpine.SurfaceLowest),
@@ -498,7 +499,7 @@ private fun AlpinePlanCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 18.dp, vertical = 14.dp),
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

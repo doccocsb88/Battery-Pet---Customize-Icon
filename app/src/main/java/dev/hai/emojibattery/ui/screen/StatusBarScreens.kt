@@ -1920,27 +1920,42 @@ private fun StatusBarBackgroundTemplateSection(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun StatusBarTemplatePlaceholderGrid(count: Int) {
-    FlowRow(
+    val columns = 3
+    val spacing = 12.dp
+    val placeholders = List(count) { it }
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        maxItemsInEachRow = 3,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(spacing),
     ) {
-        repeat(count) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(0.31f),
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+        placeholders.chunked(columns).forEach { rowItems ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(6.dp)
-                        .aspectRatio(2f)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)),
-                )
+                rowItems.forEach {
+                    Surface(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(6.dp)
+                                .aspectRatio(2f)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)),
+                        )
+                    }
+                }
+                repeat(columns - rowItems.size) {
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(2f),
+                    )
+                }
             }
         }
     }
@@ -1953,66 +1968,76 @@ private fun StatusBarTemplateGrid(
     selectedAssetUrl: String?,
     onSelectPhoto: (String?) -> Unit,
 ) {
-    FlowRow(
+    val columns = 3
+    val spacing = 12.dp
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        maxItemsInEachRow = 3,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(spacing),
     ) {
-        entries.forEach { entry ->
-            val selected = entry.assetUrl == selectedAssetUrl
-            Surface(
-                onClick = {
-                    if (selected) {
-                        onSelectPhoto(null)
-                    } else {
-                        onSelectPhoto(entry.assetUrl)
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(0.31f),
-                shape = RoundedCornerShape(12.dp),
-                color = if (selected) {
-                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
-                } else {
-                    MaterialTheme.colorScheme.surface
-                },
-                border = BorderStroke(
-                    1.5.dp,
-                    if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
-                ),
+        entries.chunked(columns).forEach { rowItems ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(6.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    AsyncImage(
-                        model = entry.assetUrl,
-                        contentDescription = entry.label,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(2f)
-                            .clip(RoundedCornerShape(10.dp)),
-                        contentScale = ContentScale.Crop,
-                    )
-                    if (selected) {
+                rowItems.forEach { entry ->
+                    val selected = entry.assetUrl == selectedAssetUrl
+                    Surface(
+                        onClick = {
+                            if (selected) onSelectPhoto(null) else onSelectPhoto(entry.assetUrl)
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        },
+                        border = BorderStroke(
+                            1.5.dp,
+                            if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
+                        ),
+                    ) {
                         Box(
                             modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .size(18.dp)
-                                .clip(CircleShape)
-                                .background(StrawberryMilk.Secondary),
+                                .fillMaxWidth()
+                                .padding(6.dp),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                contentDescription = null,
-                                modifier = Modifier.size(12.dp),
-                                tint = Color.White,
+                            AsyncImage(
+                                model = entry.assetUrl,
+                                contentDescription = entry.label,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(2f)
+                                    .clip(RoundedCornerShape(10.dp)),
+                                contentScale = ContentScale.Crop,
                             )
+                            if (selected) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .size(18.dp)
+                                        .clip(CircleShape)
+                                        .background(StrawberryMilk.Secondary),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Check,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(12.dp),
+                                        tint = Color.White,
+                                    )
+                                }
+                            }
                         }
                     }
+                }
+                repeat(columns - rowItems.size) {
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(2f),
+                    )
                 }
             }
         }
@@ -2244,85 +2269,87 @@ private fun StatusBarVolioChoiceGrid(
 ) {
     val horizontalSpacing = 12.dp
     val columns = StatusBarVolioGridColumns
-
-    val cellFill = when (columns) {
-        3 -> 0.31f
-        else -> 0.23f
-    }
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(horizontalSpacing),
     ) {
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            maxItemsInEachRow = columns,
-            horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
-            verticalArrangement = Arrangement.spacedBy(horizontalSpacing),
-        ) {
-            items.forEach { item ->
-                val selected = item.id == selectedId
-                Surface(
-                    onClick = { onSelect(item.id) },
-                    modifier = Modifier
-                        .fillMaxWidth(cellFill)
-                        .aspectRatio(1f),
-                    shape = RoundedCornerShape(12.dp),
-                    color = if (selected) {
-                        StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    },
-                    border = BorderStroke(
-                        1.dp,
-                        if (selected) {
-                            StrawberryMilk.Secondary
-                        } else {
-                            MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
-                        },
-                    ),
-                    shadowElevation = 0.dp,
-                ) {
-                    Box(
+        items.chunked(columns).forEach { rowItems ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
+            ) {
+                rowItems.forEach { item ->
+                    val selected = item.id == selectedId
+                    Surface(
+                        onClick = { onSelect(item.id) },
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        val thumb = previewImageUrl(item)?.takeIf { it.isNotBlank() }
-                        if (thumb != null) {
-                            AsyncImage(
-                                model = thumb,
-                                contentDescription = item.title,
-                                modifier = Modifier
-                                    .size(56.dp)
-                                    .clip(RoundedCornerShape(10.dp)),
-                                contentScale = ContentScale.Crop,
-                            )
+                            .weight(1f)
+                            .aspectRatio(1f),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (selected) {
+                            StrawberryMilk.PrimaryContainer.copy(alpha = 0.95f)
                         } else {
-                            Image(
-                                painter = painterResource(item.previewRes),
-                                contentDescription = item.title,
-                                modifier = Modifier.size(56.dp),
-                            )
-                        }
-                        if (selected) {
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .size(18.dp)
-                                    .clip(CircleShape)
-                                    .background(StrawberryMilk.Secondary),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(12.dp),
-                                    tint = Color.White,
+                            MaterialTheme.colorScheme.surface
+                        },
+                        border = BorderStroke(
+                            1.dp,
+                            if (selected) {
+                                StrawberryMilk.Secondary
+                            } else {
+                                MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
+                            },
+                        ),
+                        shadowElevation = 0.dp,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            val thumb = previewImageUrl(item)?.takeIf { it.isNotBlank() }
+                            if (thumb != null) {
+                                AsyncImage(
+                                    model = thumb,
+                                    contentDescription = item.title,
+                                    modifier = Modifier
+                                        .size(56.dp)
+                                        .clip(RoundedCornerShape(10.dp)),
+                                    contentScale = ContentScale.Crop,
                                 )
+                            } else {
+                                Image(
+                                    painter = painterResource(item.previewRes),
+                                    contentDescription = item.title,
+                                    modifier = Modifier.size(56.dp),
+                                )
+                            }
+                            if (selected) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .size(18.dp)
+                                        .clip(CircleShape)
+                                        .background(StrawberryMilk.Secondary),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Check,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(12.dp),
+                                        tint = Color.White,
+                                    )
+                                }
                             }
                         }
                     }
+                }
+                repeat(columns - rowItems.size) {
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f),
+                    )
                 }
             }
         }
