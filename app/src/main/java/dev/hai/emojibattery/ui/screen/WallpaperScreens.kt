@@ -259,6 +259,7 @@ internal fun WallpaperPreviewScreen(
                                     imageUrl = item.assetUrl,
                                     contentDescription = item.name,
                                     modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.FillBounds,
                                 )
                                 Box(
                                     modifier = Modifier
@@ -446,7 +447,7 @@ private fun WallpaperCategoryCard(
                     color = OceanSerenity.OnSurfaceVariant,
                 )
                 Text(
-                    text = "Thumbnail uses the first image from the category folder.",
+                    text = categoryCoverCaption(title),
                     style = MaterialTheme.typography.bodySmall,
                     color = OceanSerenity.OnSurfaceVariant.copy(alpha = 0.92f),
                 )
@@ -459,6 +460,32 @@ private fun WallpaperCategoryCard(
         }
     }
 }
+
+private fun categoryCoverCaption(title: String): String =
+    when {
+        title.contains("vapor", ignoreCase = true) ->
+            "Neon retro vibes and dreamy gradients."
+        title.contains("dark", ignoreCase = true) || title.contains("amoled", ignoreCase = true) ->
+            "Deep shadows and bold contrast for night mode."
+        title.contains("nature", ignoreCase = true) ->
+            "Fresh landscapes and calming natural tones."
+        title.contains("love", ignoreCase = true) ->
+            "Soft romantic themes with warm emotion."
+        title.contains("geometric", ignoreCase = true) || title.contains("pattern", ignoreCase = true) ->
+            "Clean shapes and stylish repeating forms."
+        title.contains("draw", ignoreCase = true) || title.contains("abstract", ignoreCase = true) ->
+            "Art-inspired visuals with expressive color."
+        title.contains("japan", ignoreCase = true) || title.contains("japani", ignoreCase = true) ->
+            "Scenic Japanese moments with peaceful mood."
+        title.contains("blue", ignoreCase = true) ->
+            "Cool blue palettes with serene atmosphere."
+        title.contains("photo", ignoreCase = true) ->
+            "Real-world captures with crisp detail."
+        title.contains("motivat", ignoreCase = true) ->
+            "Positive energy and uplifting visual quotes."
+        else ->
+            "Handpicked wallpapers tailored to this style."
+    }
 
 @Composable
 private fun WallpaperGridCard(
@@ -509,12 +536,13 @@ private fun WallpaperArtwork(
     imageUrl: String,
     contentDescription: String,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
 ) {
     AsyncImage(
         model = imageUrl,
         contentDescription = contentDescription,
         modifier = modifier,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
         placeholder = painterResource(R.drawable.img_bg_emoji_sticker),
         error = painterResource(R.drawable.img_bg_emoji_sticker),
     )
