@@ -10,27 +10,30 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Wallpaper
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +56,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -82,6 +86,7 @@ internal fun WallpaperScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             OriginalTopShell(
                 title = "Wallpaper",
@@ -99,7 +104,7 @@ internal fun WallpaperScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 item { WallpaperHeroCard() }
@@ -120,8 +125,9 @@ internal fun WallpaperScreen(
 @Composable
 internal fun WallpaperCategoryScreen(
     categoryId: String,
+    isPremiumUser: Boolean,
     onBack: () -> Unit,
-    onOpenPreview: (String, String) -> Unit,
+    onOpenPreview: (String, String, Boolean) -> Unit,
 ) {
     val context = LocalContext.current.applicationContext
     var category by remember(categoryId) { mutableStateOf<PadWallpaperCategory?>(null) }
@@ -151,6 +157,7 @@ internal fun WallpaperCategoryScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             WallpaperTopBar(
                 title = category?.title ?: "Wallpaper",
@@ -180,18 +187,17 @@ internal fun WallpaperCategoryScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        items(items, key = { it.id }) { item ->
+                        itemsIndexed(items, key = { _, item -> item.id }) { itemIndex, item ->
+                            val isLocked = !isPremiumUser && itemIndex >= FREE_WALLPAPER_COUNT_PER_CATEGORY
                             WallpaperGridCard(
                                 item = item,
-                                onClick = { onOpenPreview(categoryId, item.id) },
+                                locked = isLocked,
+                                onClick = { onOpenPreview(categoryId, item.id, isLocked) },
                             )
                         }
                     }
                 }
             }
-            NavigationBarScrim(
-                modifier = Modifier.align(Alignment.BottomCenter),
-            )
         }
     }
 }
@@ -200,11 +206,14 @@ internal fun WallpaperCategoryScreen(
 internal fun WallpaperPreviewScreen(
     categoryId: String,
     wallpaperId: String,
+    isPremiumUser: Boolean,
     onBack: () -> Unit,
+    onOpenPaywall: () -> Unit,
     onSetBackgroundDone: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val appContext = context.applicationContext
+    val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     var category by remember(categoryId) { mutableStateOf<PadWallpaperCategory?>(null) }
     val itemsByCategory = remember { mutableStateMapOf<String, List<PadWallpaperItem>>() }
@@ -224,10 +233,14 @@ internal fun WallpaperPreviewScreen(
         loading = false
     }
 
-    val item = itemsByCategory[categoryId].orEmpty().firstOrNull { it.id == wallpaperId }
+    val categoryItems = itemsByCategory[categoryId].orEmpty()
+    val item = categoryItems.firstOrNull { it.id == wallpaperId }
+    val itemIndex = categoryItems.indexOfFirst { it.id == wallpaperId }
+    val isLocked = item != null && !isPremiumUser && itemIndex >= FREE_WALLPAPER_COUNT_PER_CATEGORY
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             WallpaperTopBar(
                 title = category?.title ?: "Wallpaper Preview",
@@ -248,7 +261,7 @@ internal fun WallpaperPreviewScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(padding),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                        contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         item {
@@ -270,6 +283,13 @@ internal fun WallpaperPreviewScreen(
                                         modifier = Modifier.fillMaxSize(),
                                         contentScale = ContentScale.FillBounds,
                                     )
+//                                    if (isLocked) {
+//                                        PremiumBadge(
+//                                            modifier = Modifier
+//                                                .align(Alignment.TopEnd)
+//                                                .padding(14.dp),
+//                                        )
+//                                    }
                                     Box(
                                         modifier = Modifier
                                             .align(Alignment.BottomStart)
@@ -296,6 +316,10 @@ internal fun WallpaperPreviewScreen(
                             Button(
                                 onClick = {
                                     if (settingWallpaper) return@Button
+                                    if (isLocked) {
+                                        onOpenPaywall()
+                                        return@Button
+                                    }
                                     scope.launch {
                                         settingWallpaper = true
                                         val result = WallpaperSetter.setWallpaper(
@@ -338,17 +362,25 @@ internal fun WallpaperPreviewScreen(
                                 }
                                 Spacer(Modifier.size(10.dp))
                                 Text(
-                                    text = if (settingWallpaper) "Setting background..." else "Set Background",
+                                    text = when {
+                                        settingWallpaper -> "Setting background..."
+                                        isLocked -> "Unlock Premium"
+                                        else -> "Set Background"
+                                    },
                                     fontWeight = FontWeight.SemiBold,
                                 )
                             }
+                            Spacer(
+                                modifier = Modifier.height(
+                                    with(density) {
+                                        WindowInsets.navigationBars.getBottom(this).toDp()
+                                    } + 12.dp,
+                                ),
+                            )
                         }
                     }
                 }
             }
-            NavigationBarScrim(
-                modifier = Modifier.align(Alignment.BottomCenter),
-            )
         }
     }
 }
@@ -497,6 +529,7 @@ private fun categoryCoverCaption(title: String): String =
 @Composable
 private fun WallpaperGridCard(
     item: PadWallpaperItem,
+    locked: Boolean,
     onClick: () -> Unit,
 ) {
     Card(
@@ -514,6 +547,13 @@ private fun WallpaperGridCard(
                 contentDescription = item.name,
                 modifier = Modifier.fillMaxSize(),
             )
+            if (locked) {
+                PremiumBadge(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(10.dp),
+                )
+            }
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -524,6 +564,35 @@ private fun WallpaperGridCard(
                         ),
                     )
                     .height(20.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun PremiumBadge(
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(999.dp),
+        color = StrawberryMilk.Primary,
+        contentColor = Color.White,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Lock,
+                contentDescription = null,
+                modifier = Modifier.size(13.dp),
+            )
+            Text(
+                text = "Premium",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
             )
         }
     }
@@ -552,52 +621,48 @@ private fun WallpaperTopBar(
     subtitle: String,
     onBack: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    Surface(
+        color = Color.White,
+        contentColor = OceanSerenity.OnSurface,
+        tonalElevation = 1.dp,
+        shadowElevation = 4.dp,
     ) {
-        IconButton(onClick = onBack) {
-            androidx.compose.foundation.Image(
-                painter = painterResource(R.drawable.ic_back_40_new),
-                contentDescription = "Back",
-                modifier = Modifier.size(36.dp),
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    androidx.compose.foundation.Image(
+                        painter = painterResource(R.drawable.ic_back_40_new),
+                        contentDescription = "Back",
+                        modifier = Modifier.size(36.dp),
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = OceanSerenity.OnSurface,
+                    )
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = OceanSerenity.OnSurfaceVariant,
+                    )
+                }
+            }
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = OceanSerenity.Outline.copy(alpha = 0.45f),
             )
         }
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = OceanSerenity.OnSurface,
-            )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = OceanSerenity.OnSurfaceVariant,
-            )
-        }
-    }
-}
-
-@Composable
-private fun NavigationBarScrim(
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(OceanSerenity.PrimaryContainer.copy(alpha = 0.68f)),
-    ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsBottomHeight(WindowInsets.navigationBars),
-        )
     }
 }
 
@@ -669,3 +734,5 @@ private fun WallpaperEmptyState(
         )
     }
 }
+
+private const val FREE_WALLPAPER_COUNT_PER_CATEGORY = 2

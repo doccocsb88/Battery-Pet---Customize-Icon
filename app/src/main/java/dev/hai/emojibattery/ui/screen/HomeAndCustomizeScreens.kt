@@ -198,6 +198,7 @@ private fun HomeScreenScaffold(
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             OriginalTopShell(
                 title = stringResource(R.string.battery_icon_title),
@@ -369,6 +370,7 @@ internal fun CustomizeHubScreen(
     )
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             Surface(
                 color = MaterialTheme.colorScheme.surface,

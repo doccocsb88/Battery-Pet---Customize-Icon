@@ -364,11 +364,24 @@ fun EmojiBatteryApp(
                 val categoryId = entry.arguments?.getString("categoryId").orEmpty()
                 WallpaperCategoryScreen(
                     categoryId = categoryId,
+                    isPremiumUser = uiState.premiumUnlocked,
                     onBack = { navController.popBackStack() },
-                    onOpenPreview = { selectedCategoryId, wallpaperId ->
-                        navController.navigate(
-                            AppRoute.WallpaperPreview.create(selectedCategoryId, wallpaperId),
-                        )
+                    onOpenPreview = { selectedCategoryId, wallpaperId, locked ->
+                        val navigateToPreview = {
+                            navController.navigate(
+                                AppRoute.WallpaperPreview.create(selectedCategoryId, wallpaperId),
+                            )
+                        }
+                        if (locked && hostActivity != null) {
+                            adsService.showInterstitial(
+                                activity = hostActivity,
+                                isPremium = uiState.premiumUnlocked,
+                                onUnavailable = navigateToPreview,
+                                onDismissed = navigateToPreview,
+                            )
+                        } else {
+                            navigateToPreview()
+                        }
                     },
                 )
             }
@@ -384,7 +397,9 @@ fun EmojiBatteryApp(
                 WallpaperPreviewScreen(
                     categoryId = categoryId,
                     wallpaperId = wallpaperId,
+                    isPremiumUser = uiState.premiumUnlocked,
                     onBack = { navController.popBackStack() },
+                    onOpenPaywall = viewModel::openStore,
                     onSetBackgroundDone = viewModel::postApplyMessage,
                 )
             }
