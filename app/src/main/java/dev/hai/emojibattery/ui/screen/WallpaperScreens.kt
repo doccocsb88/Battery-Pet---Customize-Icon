@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -156,34 +159,39 @@ internal fun WallpaperCategoryScreen(
             )
         },
     ) { padding ->
-        when {
-            loading -> WallpaperCategoryLoadingState(modifier = Modifier.padding(padding))
-            category == null -> WallpaperEmptyState(
-                message = "Wallpaper category not found.",
-                modifier = Modifier.padding(padding),
-            )
-            items.isEmpty() -> WallpaperEmptyState(
-                message = "No wallpapers available in this category yet.",
-                modifier = Modifier.padding(padding),
-            )
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(items, key = { it.id }) { item ->
-                        WallpaperGridCard(
-                            item = item,
-                            onClick = { onOpenPreview(categoryId, item.id) },
-                        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                loading -> WallpaperCategoryLoadingState(modifier = Modifier.padding(padding))
+                category == null -> WallpaperEmptyState(
+                    message = "Wallpaper category not found.",
+                    modifier = Modifier.padding(padding),
+                )
+                items.isEmpty() -> WallpaperEmptyState(
+                    message = "No wallpapers available in this category yet.",
+                    modifier = Modifier.padding(padding),
+                )
+                else -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(items, key = { it.id }) { item ->
+                            WallpaperGridCard(
+                                item = item,
+                                onClick = { onOpenPreview(categoryId, item.id) },
+                            )
+                        }
                     }
                 }
             }
+            NavigationBarScrim(
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
     }
 }
@@ -222,126 +230,125 @@ internal fun WallpaperPreviewScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             WallpaperTopBar(
-                title = item?.name ?: "Wallpaper Preview",
+                title = category?.title ?: "Wallpaper Preview",
                 subtitle = "Preview and apply to your phone",
                 onBack = onBack,
             )
         },
     ) { padding ->
-        when {
-            loading -> WallpaperLoadingState(modifier = Modifier.padding(padding))
-            item == null -> WallpaperEmptyState(
-                message = "Wallpaper not found.",
-                modifier = Modifier.padding(padding),
-            )
-            else -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    item {
-                        Surface(
-                            shape = RoundedCornerShape(32.dp),
-                            color = Color.White,
-                            tonalElevation = 0.dp,
-                            shadowElevation = 0.dp,
-                            border = BorderStroke(1.dp, OceanSerenity.Outline.copy(alpha = 0.24f)),
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(0.58f),
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                loading -> WallpaperLoadingState(modifier = Modifier.padding(padding))
+                item == null -> WallpaperEmptyState(
+                    message = "Wallpaper not found.",
+                    modifier = Modifier.padding(padding),
+                )
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        item {
+                            Surface(
+                                shape = RoundedCornerShape(32.dp),
+                                color = Color.White,
+                                tonalElevation = 0.dp,
+                                shadowElevation = 0.dp,
+                                border = BorderStroke(1.dp, OceanSerenity.Outline.copy(alpha = 0.24f)),
                             ) {
-                                WallpaperArtwork(
-                                    imageUrl = item.assetUrl,
-                                    contentDescription = item.name,
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.FillBounds,
-                                )
                                 Box(
                                     modifier = Modifier
-                                        .align(Alignment.BottomStart)
                                         .fillMaxWidth()
-                                        .background(
-                                            Brush.verticalGradient(
-                                                listOf(Color.Transparent, Color.Black.copy(alpha = 0.54f)),
-                                            ),
-                                        )
-                                        .padding(18.dp),
+                                        .aspectRatio(0.58f),
                                 ) {
-                                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                        Text(
-                                            text = item.name,
-                                            color = Color.White,
-                                            style = MaterialTheme.typography.titleLarge,
-                                            fontWeight = FontWeight.Bold,
-                                        )
-                                        Text(
-                                            text = "Tap Set Background to use this wallpaper on your phone.",
-                                            color = Color.White.copy(alpha = 0.82f),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                        )
+                                    WallpaperArtwork(
+                                        imageUrl = item.assetUrl,
+                                        contentDescription = item.name,
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.FillBounds,
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .align(Alignment.BottomStart)
+                                            .fillMaxWidth()
+                                            .background(
+                                                Brush.verticalGradient(
+                                                    listOf(Color.Transparent, Color.Black.copy(alpha = 0.54f)),
+                                                ),
+                                            )
+                                            .padding(18.dp),
+                                    ) {
+                                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                            Text(
+                                                text = "Tap Set Background to use this wallpaper on your phone.",
+                                                color = Color.White.copy(alpha = 0.82f),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    item {
-                        Button(
-                            onClick = {
-                                if (settingWallpaper) return@Button
-                                scope.launch {
-                                    settingWallpaper = true
-                                    val result = WallpaperSetter.setWallpaper(
-                                        context = appContext,
-                                        imageUrl = item.assetUrl,
-                                        fallbackResId = R.drawable.img_bg_emoji_sticker,
+                        item {
+                            Button(
+                                onClick = {
+                                    if (settingWallpaper) return@Button
+                                    scope.launch {
+                                        settingWallpaper = true
+                                        val result = WallpaperSetter.setWallpaper(
+                                            context = appContext,
+                                            imageUrl = item.assetUrl,
+                                            fallbackResId = R.drawable.img_bg_emoji_sticker,
+                                        )
+                                        settingWallpaper = false
+                                        onSetBackgroundDone(
+                                            if (result.isSuccess) {
+                                                "Wallpaper set successfully."
+                                            } else {
+                                                result.exceptionOrNull()?.message ?: "Unable to set wallpaper."
+                                            },
+                                        )
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                                enabled = !settingWallpaper,
+                                shape = RoundedCornerShape(20.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = OceanSerenity.Primary,
+                                    contentColor = OceanSerenity.OnPrimary,
+                                ),
+                            ) {
+                                if (settingWallpaper) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(18.dp),
+                                        strokeWidth = 2.dp,
+                                        color = OceanSerenity.OnPrimary,
                                     )
-                                    settingWallpaper = false
-                                    onSetBackgroundDone(
-                                        if (result.isSuccess) {
-                                            "Wallpaper set successfully."
-                                        } else {
-                                            result.exceptionOrNull()?.message ?: "Unable to set wallpaper."
-                                        },
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Wallpaper,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp),
                                     )
                                 }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            enabled = !settingWallpaper,
-                            shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = OceanSerenity.Primary,
-                                contentColor = OceanSerenity.OnPrimary,
-                            ),
-                        ) {
-                            if (settingWallpaper) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(18.dp),
-                                    strokeWidth = 2.dp,
-                                    color = OceanSerenity.OnPrimary,
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Rounded.Wallpaper,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp),
+                                Spacer(Modifier.size(10.dp))
+                                Text(
+                                    text = if (settingWallpaper) "Setting background..." else "Set Background",
+                                    fontWeight = FontWeight.SemiBold,
                                 )
                             }
-                            Spacer(Modifier.size(10.dp))
-                            Text(
-                                text = if (settingWallpaper) "Setting background..." else "Set Background",
-                                fontWeight = FontWeight.SemiBold,
-                            )
                         }
                     }
                 }
             }
+            NavigationBarScrim(
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
     }
 }
@@ -516,17 +523,8 @@ private fun WallpaperGridCard(
                             listOf(Color.Transparent, Color.Black.copy(alpha = 0.48f)),
                         ),
                     )
-                    .padding(12.dp),
-            ) {
-                Text(
-                    text = item.name,
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+                    .height(20.dp),
+            )
         }
     }
 }
@@ -583,6 +581,23 @@ private fun WallpaperTopBar(
                 color = OceanSerenity.OnSurfaceVariant,
             )
         }
+    }
+}
+
+@Composable
+private fun NavigationBarScrim(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(OceanSerenity.PrimaryContainer.copy(alpha = 0.68f)),
+    ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsBottomHeight(WindowInsets.navigationBars),
+        )
     }
 }
 
