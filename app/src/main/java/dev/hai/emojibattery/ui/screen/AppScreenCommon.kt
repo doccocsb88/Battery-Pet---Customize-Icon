@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -472,6 +473,7 @@ internal fun MainBottomBar(
     val items = listOf(
         Triple(AppRoute.Home, MainSection.Home, Icons.Rounded.Home),
         Triple(AppRoute.Customize, MainSection.Customize, Icons.Rounded.AutoAwesome),
+        Triple(AppRoute.Wallpaper, MainSection.Wallpaper, Icons.Rounded.Image),
         Triple(AppRoute.Settings, MainSection.Settings, Icons.Rounded.Settings),
     )
     val barShape = RoundedCornerShape(topStart = 48.dp, topEnd = 48.dp)

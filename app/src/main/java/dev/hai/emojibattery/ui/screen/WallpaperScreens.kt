@@ -1,0 +1,628 @@
+package dev.hai.emojibattery.ui.screen
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Wallpaper
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import co.q7labs.co.emoji.R
+import dev.hai.emojibattery.data.PadWallpaperCategory
+import dev.hai.emojibattery.data.PadWallpaperItem
+import dev.hai.emojibattery.data.PadWallpaperRepository
+import dev.hai.emojibattery.service.WallpaperSetter
+import dev.hai.emojibattery.ui.theme.OceanSerenity
+import dev.hai.emojibattery.ui.theme.StrawberryMilk
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+@Composable
+internal fun WallpaperScreen(
+    onOpenCategory: (String) -> Unit,
+) {
+    val context = LocalContext.current.applicationContext
+    val categories = remember { mutableStateListOf<PadWallpaperCategory>() }
+
+    LaunchedEffect(Unit) {
+        categories.clear()
+        categories.addAll(PadWallpaperRepository.loadCategories(context))
+    }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            OriginalTopShell(
+                title = "Wallpaper",
+                onLeftSecondary = {},
+                showLeftSecondary = false,
+                onSearch = {},
+                trailingContent = { Spacer(Modifier.size(40.dp)) },
+            )
+        },
+    ) { padding ->
+        if (categories.isEmpty()) {
+            WallpaperLoadingState(modifier = Modifier.padding(padding))
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                item { WallpaperHeroCard() }
+                items(categories.size, key = { index -> categories[index].id }) { index ->
+                    val category = categories[index]
+                    WallpaperCategoryCard(
+                        title = category.title ?: category.packName,
+                        itemCount = category.items.size,
+                        thumbnailUrl = PadWallpaperRepository.thumbnailAssetUrl(category),
+                        onClick = { onOpenCategory(category.id) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+internal fun WallpaperCategoryScreen(
+    categoryId: String,
+    onBack: () -> Unit,
+    onOpenPreview: (String, String) -> Unit,
+) {
+    val context = LocalContext.current.applicationContext
+    var category by remember(categoryId) { mutableStateOf<PadWallpaperCategory?>(null) }
+    var items by remember(categoryId) { mutableStateOf<List<PadWallpaperItem>>(emptyList()) }
+    var loading by remember(categoryId) { mutableStateOf(true) }
+
+    LaunchedEffect(categoryId) {
+        loading = true
+        val categories = PadWallpaperRepository.loadCategories(context)
+        val resolved = categories.firstOrNull { it.id == categoryId }
+        category = resolved
+        items = emptyList()
+        if (resolved != null) {
+            repeat(3) { attempt ->
+                val loadedItems = PadWallpaperRepository.loadItemsForCategory(context, resolved)
+                if (loadedItems.isNotEmpty()) {
+                    items = loadedItems
+                    return@repeat
+                }
+                if (attempt < 2) {
+                    delay(900)
+                }
+            }
+        }
+        loading = false
+    }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            WallpaperTopBar(
+                title = category?.title ?: "Wallpaper",
+                subtitle = if (loading) "Preparing wallpapers..." else "${items.size} wallpapers",
+                onBack = onBack,
+            )
+        },
+    ) { padding ->
+        when {
+            loading -> WallpaperCategoryLoadingState(modifier = Modifier.padding(padding))
+            category == null -> WallpaperEmptyState(
+                message = "Wallpaper category not found.",
+                modifier = Modifier.padding(padding),
+            )
+            items.isEmpty() -> WallpaperEmptyState(
+                message = "No wallpapers available in this category yet.",
+                modifier = Modifier.padding(padding),
+            )
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    items(items, key = { it.id }) { item ->
+                        WallpaperGridCard(
+                            item = item,
+                            onClick = { onOpenPreview(categoryId, item.id) },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+internal fun WallpaperPreviewScreen(
+    categoryId: String,
+    wallpaperId: String,
+    onBack: () -> Unit,
+    onSetBackgroundDone: (String) -> Unit,
+) {
+    val context = LocalContext.current
+    val appContext = context.applicationContext
+    val scope = rememberCoroutineScope()
+    var category by remember(categoryId) { mutableStateOf<PadWallpaperCategory?>(null) }
+    val itemsByCategory = remember { mutableStateMapOf<String, List<PadWallpaperItem>>() }
+    var loading by remember(categoryId, wallpaperId) { mutableStateOf(true) }
+    var settingWallpaper by remember { mutableStateOf(false) }
+
+    LaunchedEffect(categoryId) {
+        loading = true
+        val categories = PadWallpaperRepository.loadCategories(appContext)
+        val resolved = categories.firstOrNull { it.id == categoryId }
+        category = resolved
+        if (resolved != null) {
+            itemsByCategory[categoryId] = PadWallpaperRepository.loadItemsForCategory(appContext, resolved)
+        } else {
+            itemsByCategory.remove(categoryId)
+        }
+        loading = false
+    }
+
+    val item = itemsByCategory[categoryId].orEmpty().firstOrNull { it.id == wallpaperId }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            WallpaperTopBar(
+                title = item?.name ?: "Wallpaper Preview",
+                subtitle = "Preview and apply to your phone",
+                onBack = onBack,
+            )
+        },
+    ) { padding ->
+        when {
+            loading -> WallpaperLoadingState(modifier = Modifier.padding(padding))
+            item == null -> WallpaperEmptyState(
+                message = "Wallpaper not found.",
+                modifier = Modifier.padding(padding),
+            )
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    item {
+                        Surface(
+                            shape = RoundedCornerShape(32.dp),
+                            color = Color.White,
+                            tonalElevation = 0.dp,
+                            shadowElevation = 0.dp,
+                            border = BorderStroke(1.dp, OceanSerenity.Outline.copy(alpha = 0.24f)),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(0.58f),
+                            ) {
+                                WallpaperArtwork(
+                                    imageUrl = item.assetUrl,
+                                    contentDescription = item.name,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomStart)
+                                        .fillMaxWidth()
+                                        .background(
+                                            Brush.verticalGradient(
+                                                listOf(Color.Transparent, Color.Black.copy(alpha = 0.54f)),
+                                            ),
+                                        )
+                                        .padding(18.dp),
+                                ) {
+                                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                        Text(
+                                            text = item.name,
+                                            color = Color.White,
+                                            style = MaterialTheme.typography.titleLarge,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                        Text(
+                                            text = "Tap Set Background to use this wallpaper on your phone.",
+                                            color = Color.White.copy(alpha = 0.82f),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        Button(
+                            onClick = {
+                                if (settingWallpaper) return@Button
+                                scope.launch {
+                                    settingWallpaper = true
+                                    val result = WallpaperSetter.setWallpaper(
+                                        context = appContext,
+                                        imageUrl = item.assetUrl,
+                                        fallbackResId = R.drawable.img_bg_emoji_sticker,
+                                    )
+                                    settingWallpaper = false
+                                    onSetBackgroundDone(
+                                        if (result.isSuccess) {
+                                            "Wallpaper set successfully."
+                                        } else {
+                                            result.exceptionOrNull()?.message ?: "Unable to set wallpaper."
+                                        },
+                                    )
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            enabled = !settingWallpaper,
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = OceanSerenity.Primary,
+                                contentColor = OceanSerenity.OnPrimary,
+                            ),
+                        ) {
+                            if (settingWallpaper) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = OceanSerenity.OnPrimary,
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Rounded.Wallpaper,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                )
+                            }
+                            Spacer(Modifier.size(10.dp))
+                            Text(
+                                text = if (settingWallpaper) "Setting background..." else "Set Background",
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun WallpaperHeroCard() {
+    Card(
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        listOf(
+                            OceanSerenity.Primary.copy(alpha = 0.96f),
+                            StrawberryMilk.Secondary.copy(alpha = 0.9f),
+                        ),
+                    ),
+                )
+                .padding(20.dp),
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White.copy(alpha = 0.18f))
+                            .padding(10.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Image,
+                            contentDescription = null,
+                            tint = Color.White,
+                        )
+                    }
+                    Text(
+                        text = "Curated wallpaper collections",
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Text(
+                    text = "Each category is delivered as its own asset pack. Open a collection, preview any wallpaper, then set it as your phone background.",
+                    color = Color.White.copy(alpha = 0.86f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun WallpaperCategoryCard(
+    title: String,
+    itemCount: Int,
+    thumbnailUrl: String,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = BorderStroke(1.dp, OceanSerenity.Outline.copy(alpha = 0.18f)),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(width = 94.dp, height = 126.dp)
+                    .clip(RoundedCornerShape(18.dp)),
+            ) {
+                WallpaperArtwork(
+                    imageUrl = thumbnailUrl,
+                    contentDescription = title,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OceanSerenity.OnSurface,
+                )
+                Text(
+                    text = "$itemCount wallpapers",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = OceanSerenity.OnSurfaceVariant,
+                )
+                Text(
+                    text = "Thumbnail uses the first image from the category folder.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = OceanSerenity.OnSurfaceVariant.copy(alpha = 0.92f),
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                contentDescription = null,
+                tint = OceanSerenity.Primary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun WallpaperGridCard(
+    item: PadWallpaperItem,
+    onClick: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(0.72f),
+        onClick = onClick,
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = BorderStroke(1.dp, OceanSerenity.Outline.copy(alpha = 0.16f)),
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            WallpaperArtwork(
+                imageUrl = item.assetUrl,
+                contentDescription = item.name,
+                modifier = Modifier.fillMaxSize(),
+            )
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Color.Transparent, Color.Black.copy(alpha = 0.48f)),
+                        ),
+                    )
+                    .padding(12.dp),
+            ) {
+                Text(
+                    text = item.name,
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun WallpaperArtwork(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+) {
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        contentScale = ContentScale.Crop,
+        placeholder = painterResource(R.drawable.img_bg_emoji_sticker),
+        error = painterResource(R.drawable.img_bg_emoji_sticker),
+    )
+}
+
+@Composable
+private fun WallpaperTopBar(
+    title: String,
+    subtitle: String,
+    onBack: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onBack) {
+            androidx.compose.foundation.Image(
+                painter = painterResource(R.drawable.ic_back_40_new),
+                contentDescription = "Back",
+                modifier = Modifier.size(36.dp),
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = OceanSerenity.OnSurface,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = OceanSerenity.OnSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun WallpaperLoadingState(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(color = OceanSerenity.Primary)
+    }
+}
+
+@Composable
+private fun WallpaperCategoryLoadingState(
+    modifier: Modifier = Modifier,
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(6) { index ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(0.72f),
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (index % 2 == 0) {
+                        OceanSerenity.PrimaryContainer.copy(alpha = 0.32f)
+                    } else {
+                        StrawberryMilk.PrimaryContainer.copy(alpha = 0.45f)
+                    },
+                ),
+                border = BorderStroke(1.dp, OceanSerenity.Outline.copy(alpha = 0.12f)),
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(22.dp),
+                        strokeWidth = 2.2.dp,
+                        color = OceanSerenity.Primary,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun WallpaperEmptyState(
+    message: String,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = message,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}

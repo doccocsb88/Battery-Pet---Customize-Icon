@@ -7,6 +7,14 @@ sealed class AppRoute(val route: String) {
     data object Tutorial : AppRoute("tutorial")
     data object Home : AppRoute("home")
     data object Customize : AppRoute("customize")
+    data object Wallpaper : AppRoute("wallpaper")
+    data object WallpaperCategory : AppRoute("wallpaper/category/{categoryId}") {
+        fun create(categoryId: String): String = "wallpaper/category/$categoryId"
+    }
+    data object WallpaperPreview : AppRoute("wallpaper/preview/{categoryId}/{wallpaperId}") {
+        fun create(categoryId: String, wallpaperId: String): String =
+            "wallpaper/preview/$categoryId/$wallpaperId"
+    }
     data object Gesture : AppRoute("gesture")
     data object Achievement : AppRoute("achievement")
     data object StatusBarCustom : AppRoute("statusbar_custom")

@@ -96,6 +96,7 @@ fun EmojiBatteryApp(
     val showBottomBar = route in setOf(
         AppRoute.Home.route,
         AppRoute.Customize.route,
+        AppRoute.Wallpaper.route,
         AppRoute.Settings.route,
     )
     var showAccessibilityConsent by remember { mutableStateOf(false) }
@@ -105,6 +106,7 @@ fun EmojiBatteryApp(
         setOf(
             AppRoute.Home.route,
             AppRoute.Customize.route,
+            AppRoute.Wallpaper.route,
             AppRoute.Settings.route,
         )
     }
@@ -345,6 +347,45 @@ fun EmojiBatteryApp(
                     onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
                     onOpenPremium = viewModel::openStore,
                     onSetOverlayEnabled = onSetOverlayEnabled,
+                )
+            }
+            composable(AppRoute.Wallpaper.route) {
+                WallpaperScreen(
+                    onOpenCategory = { categoryId ->
+                        viewModel.selectMainSection(MainSection.Wallpaper)
+                        navController.navigate(AppRoute.WallpaperCategory.create(categoryId))
+                    },
+                )
+            }
+            composable(
+                route = AppRoute.WallpaperCategory.route,
+                arguments = listOf(navArgument("categoryId") { type = NavType.StringType }),
+            ) { entry ->
+                val categoryId = entry.arguments?.getString("categoryId").orEmpty()
+                WallpaperCategoryScreen(
+                    categoryId = categoryId,
+                    onBack = { navController.popBackStack() },
+                    onOpenPreview = { selectedCategoryId, wallpaperId ->
+                        navController.navigate(
+                            AppRoute.WallpaperPreview.create(selectedCategoryId, wallpaperId),
+                        )
+                    },
+                )
+            }
+            composable(
+                route = AppRoute.WallpaperPreview.route,
+                arguments = listOf(
+                    navArgument("categoryId") { type = NavType.StringType },
+                    navArgument("wallpaperId") { type = NavType.StringType },
+                ),
+            ) { entry ->
+                val categoryId = entry.arguments?.getString("categoryId").orEmpty()
+                val wallpaperId = entry.arguments?.getString("wallpaperId").orEmpty()
+                WallpaperPreviewScreen(
+                    categoryId = categoryId,
+                    wallpaperId = wallpaperId,
+                    onBack = { navController.popBackStack() },
+                    onSetBackgroundDone = viewModel::postApplyMessage,
                 )
             }
             composable(AppRoute.Notch.route) {

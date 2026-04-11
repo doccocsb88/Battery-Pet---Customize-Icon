@@ -225,6 +225,10 @@ class EmojiBatteryViewModel(
         _uiState.update { it.copy(infoMessage = message) }
     }
 
+    fun postApplyMessage(message: String) {
+        _uiState.update { it.copy(applyMessage = message) }
+    }
+
     fun selectMainSection(section: MainSection) {
         _uiState.update { it.copy(activeMainSection = section) }
     }

@@ -22,6 +22,14 @@ val dynamicStickerAssetPackModules = File(rootDir, "app_pack").listFiles()
     ?.toList()
     .orEmpty()
 
+val dynamicWallpaperAssetPackModules = File(rootDir, "app_pack").listFiles()
+    ?.asSequence()
+    ?.filter { it.isDirectory && it.name.startsWith("wallpaper_pack_") }
+    ?.map { ":${it.name}" }
+    ?.sorted()
+    ?.toList()
+    .orEmpty()
+
 val dynamicStickerAssetPackNames = File(rootDir, "app_pack").listFiles()
     ?.asSequence()
     ?.filter { it.isDirectory && it.name.startsWith("sticker_pack_") }
@@ -163,7 +171,7 @@ android {
         ":theme_pack_countryside",
         ":theme_pack_fantasy",
         ":theme_pack_chinese_spring_landscape",
-    ) + dynamicHomeAssetPackModules + dynamicStickerAssetPackModules
+    ) + dynamicHomeAssetPackModules + dynamicStickerAssetPackModules + dynamicWallpaperAssetPackModules
 }
 
 dependencies {

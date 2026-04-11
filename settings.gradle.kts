@@ -59,3 +59,14 @@ stickerPackDirs.forEach { dir ->
     include(moduleName)
     project(moduleName).projectDir = dir
 }
+
+val wallpaperPackDirs = packsRootDir.listFiles()
+    ?.filter { it.isDirectory && it.name.startsWith("wallpaper_pack_") }
+    .orEmpty()
+    .sortedBy { it.name }
+
+wallpaperPackDirs.forEach { dir ->
+    val moduleName = ":${dir.name}"
+    include(moduleName)
+    project(moduleName).projectDir = dir
+}

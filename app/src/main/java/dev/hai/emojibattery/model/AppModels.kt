@@ -5,6 +5,7 @@ import co.q7labs.co.emoji.R
 enum class MainSection(val title: String) {
     Home("Home"),
     Customize("Customize"),
+    Wallpaper("Wallpaper"),
     Gesture("Gesture"),
     Settings("Settings"),
     Achievement("Achievement"),
