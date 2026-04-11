@@ -60,11 +60,10 @@ internal fun OnboardingScreen(
 
     Scaffold(
         containerColor = colorResource(R.color.onboarding_scaffold),
-    ) { innerPadding ->
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(

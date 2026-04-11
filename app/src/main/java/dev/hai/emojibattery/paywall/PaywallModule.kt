@@ -1,7 +1,12 @@
 package dev.hai.emojibattery.paywall
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -43,6 +48,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,6 +60,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +69,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.billing.BillingUiState
 import dev.hai.emojibattery.billing.PurchaseService
@@ -125,6 +134,28 @@ fun PaywallScreen(
     onOpenTerms: () -> Unit,
     onPurchase: (productId: String, subscriptionOfferToken: String?) -> Unit,
 ) {
+    val context = LocalContext.current
+    val density = LocalDensity.current
+    val statusBarTopInset = with(density) { WindowInsets.statusBars.getTop(this).toDp() }
+    val hostActivity = context.findActivity()
+
+    DisposableEffect(hostActivity) {
+        val window = hostActivity?.window
+        val previousStatusBarColor = window?.statusBarColor
+        if (window != null) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+        }
+        onDispose {
+            if (window != null) {
+                WindowCompat.setDecorFitsSystemWindows(window, true)
+                if (previousStatusBarColor != null) {
+                    window.statusBarColor = previousStatusBarColor
+                }
+            }
+        }
+    }
+
     val monthly = billingState.monthlyPlan
     val weekly = billingState.weeklyPlan
     val lifetime = billingState.lifetimePlan
@@ -394,7 +425,7 @@ fun PaywallScreen(
         // ─── Close button (glassmorphism pill) ───
         Box(
             modifier = Modifier
-                .padding(top = 12.dp, start = 12.dp)
+                .padding(top = statusBarTopInset + 8.dp, start = 12.dp)
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(Alpine.OnSurface.copy(alpha = 0.28f))
@@ -440,6 +471,12 @@ fun PaywallScreen(
             )
         }
     }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 // ─── Benefit Row ─────────────────────────────────────────────────

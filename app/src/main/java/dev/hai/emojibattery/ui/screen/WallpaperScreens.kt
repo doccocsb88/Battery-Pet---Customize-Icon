@@ -111,7 +111,7 @@ internal fun WallpaperScreen(
                 items(categories.size, key = { index -> categories[index].id }) { index ->
                     val category = categories[index]
                     WallpaperCategoryCard(
-                        title = category.title ?: category.packName,
+                        title = categoryDisplayTitle(category.title ?: category.packName),
                         itemCount = category.items.size,
                         thumbnailUrl = PadWallpaperRepository.thumbnailAssetUrl(category),
                         onClick = { onOpenCategory(category.id) },
@@ -160,7 +160,7 @@ internal fun WallpaperCategoryScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             WallpaperTopBar(
-                title = category?.title ?: "Wallpaper",
+                title = categoryDisplayTitle(category?.title ?: "Wallpaper"),
                 subtitle = if (loading) "Preparing wallpapers..." else "${items.size} wallpapers",
                 onBack = onBack,
             )
@@ -243,7 +243,7 @@ internal fun WallpaperPreviewScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             WallpaperTopBar(
-                title = category?.title ?: "Wallpaper Preview",
+                title = categoryDisplayTitle(category?.title ?: "Wallpaper Preview"),
                 subtitle = "Preview and apply to your phone",
                 onBack = onBack,
             )
@@ -506,6 +506,10 @@ private fun categoryCoverCaption(title: String): String =
             "Adorable cats in charming scenes, perfect for a warm and relaxing look."
         title.contains("dog", ignoreCase = true) ->
             "Cute dogs in fun and heartwarming styles to brighten your day."
+        title.contains("abstract", ignoreCase = true) || title.contains("ab tract", ignoreCase = true) ->
+            "Creative abstract wallpapers with modern colors and unique styles."
+        title.contains("cute", ignoreCase = true) ->
+            "Adorable and charming wallpapers to brighten your day."
         title.contains("vapor", ignoreCase = true) ->
             "Neon retro vibes and dreamy gradients."
         title.contains("dark", ignoreCase = true) || title.contains("amoled", ignoreCase = true) ->
@@ -529,6 +533,9 @@ private fun categoryCoverCaption(title: String): String =
         else ->
             "Handpicked wallpapers tailored to this style."
     }
+
+private fun categoryDisplayTitle(raw: String): String =
+    if (raw.equals("Ab Tract", ignoreCase = true)) "Abstract" else raw
 
 @Composable
 private fun WallpaperGridCard(
