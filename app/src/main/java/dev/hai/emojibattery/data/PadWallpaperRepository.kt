@@ -15,6 +15,7 @@ data class PadWallpaperCategory(
     @SerializedName("pack_name") val packName: String,
     @SerializedName("delivery_pack_name") val deliveryPackName: String,
     val title: String?,
+    val description: String?,
     @SerializedName("thumbnail_asset_path") val thumbnailAssetPath: String,
     val items: List<PadWallpaperItemMeta>,
 )

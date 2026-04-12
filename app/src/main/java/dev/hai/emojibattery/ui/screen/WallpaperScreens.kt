@@ -112,6 +112,7 @@ internal fun WallpaperScreen(
                     val category = categories[index]
                     WallpaperCategoryCard(
                         title = categoryDisplayTitle(category.title ?: category.packName),
+                        description = category.description,
                         itemCount = category.items.size,
                         thumbnailUrl = PadWallpaperRepository.thumbnailAssetUrl(category),
                         onClick = { onOpenCategory(category.id) },
@@ -441,6 +442,7 @@ private fun WallpaperHeroCard() {
 @Composable
 private fun WallpaperCategoryCard(
     title: String,
+    description: String?,
     itemCount: Int,
     thumbnailUrl: String,
     onClick: () -> Unit,
@@ -486,7 +488,7 @@ private fun WallpaperCategoryCard(
                     color = OceanSerenity.OnSurfaceVariant,
                 )
                 Text(
-                    text = categoryCoverCaption(title),
+                    text = description?.takeIf { it.isNotBlank() } ?: categoryCoverCaption(title),
                     style = MaterialTheme.typography.bodySmall,
                     color = OceanSerenity.OnSurfaceVariant.copy(alpha = 0.92f),
                 )

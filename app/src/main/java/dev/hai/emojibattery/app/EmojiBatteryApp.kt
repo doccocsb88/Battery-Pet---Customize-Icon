@@ -207,7 +207,10 @@ fun EmojiBatteryApp(
             }
         },
     ) { padding ->
-        val navHostContainerModifier = if (route == null || route == AppRoute.Splash.route) {
+        val isEdgeToEdgeRoute = route == null ||
+            route == AppRoute.Splash.route ||
+            route == AppRoute.Paywall.route
+        val navHostContainerModifier = if (isEdgeToEdgeRoute) {
             Modifier.fillMaxSize()
         } else {
             Modifier

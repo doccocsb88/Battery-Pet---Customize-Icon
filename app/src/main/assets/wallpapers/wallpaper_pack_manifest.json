@@ -4,180 +4,520 @@
     "pack_name": "Cat",
     "delivery_pack_name": "wallpaper_01_cat",
     "title": "Cat",
-    "thumbnail_asset_path": "wallpapers/category_thumbs/01_cat__Gemini_Generated_Image_1y3k631y3k631y3k.webp",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_cat__Gemini_Generated_Image_1y3k631y3k631y3k.png",
     "items": [
       {
         "id": "Gemini_Generated_Image_1y3k631y3k631y3k",
         "name": "Gemini Generated Image 1y3k631y3k631y3k",
-        "file": "Gemini_Generated_Image_1y3k631y3k631y3k.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_1y3k631y3k631y3k.webp"
+        "file": "Gemini_Generated_Image_1y3k631y3k631y3k.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_1y3k631y3k631y3k.png"
       },
       {
         "id": "Gemini_Generated_Image_2vyo0s2vyo0s2vyo",
         "name": "Gemini Generated Image 2vyo0s2vyo0s2vyo",
-        "file": "Gemini_Generated_Image_2vyo0s2vyo0s2vyo.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_2vyo0s2vyo0s2vyo.webp"
+        "file": "Gemini_Generated_Image_2vyo0s2vyo0s2vyo.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_2vyo0s2vyo0s2vyo.png"
       },
       {
         "id": "Gemini_Generated_Image_2zvy282zvy282zvy",
         "name": "Gemini Generated Image 2zvy282zvy282zvy",
-        "file": "Gemini_Generated_Image_2zvy282zvy282zvy.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_2zvy282zvy282zvy.webp"
+        "file": "Gemini_Generated_Image_2zvy282zvy282zvy.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_2zvy282zvy282zvy.png"
       },
       {
         "id": "Gemini_Generated_Image_57tfzw57tfzw57tf",
         "name": "Gemini Generated Image 57tfzw57tfzw57tf",
-        "file": "Gemini_Generated_Image_57tfzw57tfzw57tf.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_57tfzw57tfzw57tf.webp"
+        "file": "Gemini_Generated_Image_57tfzw57tfzw57tf.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_57tfzw57tfzw57tf.png"
       },
       {
         "id": "Gemini_Generated_Image_5a53pe5a53pe5a53",
         "name": "Gemini Generated Image 5a53pe5a53pe5a53",
-        "file": "Gemini_Generated_Image_5a53pe5a53pe5a53.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_5a53pe5a53pe5a53.webp"
+        "file": "Gemini_Generated_Image_5a53pe5a53pe5a53.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_5a53pe5a53pe5a53.png"
       },
       {
         "id": "Gemini_Generated_Image_6pf49f6pf49f6pf4",
         "name": "Gemini Generated Image 6pf49f6pf49f6pf4",
-        "file": "Gemini_Generated_Image_6pf49f6pf49f6pf4.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_6pf49f6pf49f6pf4.webp"
+        "file": "Gemini_Generated_Image_6pf49f6pf49f6pf4.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_6pf49f6pf49f6pf4.png"
       },
       {
         "id": "Gemini_Generated_Image_avgx55avgx55avgx",
         "name": "Gemini Generated Image Avgx55avgx55avgx",
-        "file": "Gemini_Generated_Image_avgx55avgx55avgx.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_avgx55avgx55avgx.webp"
+        "file": "Gemini_Generated_Image_avgx55avgx55avgx.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_avgx55avgx55avgx.png"
       },
       {
         "id": "Gemini_Generated_Image_dkx1imdkx1imdkx1",
         "name": "Gemini Generated Image Dkx1imdkx1imdkx1",
-        "file": "Gemini_Generated_Image_dkx1imdkx1imdkx1.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_dkx1imdkx1imdkx1.webp"
+        "file": "Gemini_Generated_Image_dkx1imdkx1imdkx1.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_dkx1imdkx1imdkx1.png"
       },
       {
         "id": "Gemini_Generated_Image_foh7mtfoh7mtfoh7",
         "name": "Gemini Generated Image Foh7mtfoh7mtfoh7",
-        "file": "Gemini_Generated_Image_foh7mtfoh7mtfoh7.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_foh7mtfoh7mtfoh7.webp"
+        "file": "Gemini_Generated_Image_foh7mtfoh7mtfoh7.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_foh7mtfoh7mtfoh7.png"
       },
       {
         "id": "Gemini_Generated_Image_gwrw5jgwrw5jgwrw",
         "name": "Gemini Generated Image Gwrw5jgwrw5jgwrw",
-        "file": "Gemini_Generated_Image_gwrw5jgwrw5jgwrw.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_gwrw5jgwrw5jgwrw.webp"
+        "file": "Gemini_Generated_Image_gwrw5jgwrw5jgwrw.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_gwrw5jgwrw5jgwrw.png"
       },
       {
         "id": "Gemini_Generated_Image_hu0uaohu0uaohu0u",
         "name": "Gemini Generated Image Hu0uaohu0uaohu0u",
-        "file": "Gemini_Generated_Image_hu0uaohu0uaohu0u.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_hu0uaohu0uaohu0u.webp"
+        "file": "Gemini_Generated_Image_hu0uaohu0uaohu0u.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_hu0uaohu0uaohu0u.png"
       },
       {
         "id": "Gemini_Generated_Image_m28qn2m28qn2m28q",
         "name": "Gemini Generated Image M28qn2m28qn2m28q",
-        "file": "Gemini_Generated_Image_m28qn2m28qn2m28q.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_m28qn2m28qn2m28q.webp"
+        "file": "Gemini_Generated_Image_m28qn2m28qn2m28q.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_m28qn2m28qn2m28q.png"
       },
       {
         "id": "Gemini_Generated_Image_rn1wzzrn1wzzrn1w",
         "name": "Gemini Generated Image Rn1wzzrn1wzzrn1w",
-        "file": "Gemini_Generated_Image_rn1wzzrn1wzzrn1w.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_rn1wzzrn1wzzrn1w.webp"
+        "file": "Gemini_Generated_Image_rn1wzzrn1wzzrn1w.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_rn1wzzrn1wzzrn1w.png"
       },
       {
         "id": "Gemini_Generated_Image_sn1fbksn1fbksn1f",
         "name": "Gemini Generated Image Sn1fbksn1fbksn1f",
-        "file": "Gemini_Generated_Image_sn1fbksn1fbksn1f.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_sn1fbksn1fbksn1f.webp"
+        "file": "Gemini_Generated_Image_sn1fbksn1fbksn1f.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_sn1fbksn1fbksn1f.png"
       },
       {
         "id": "Gemini_Generated_Image_sq31mesq31mesq31",
         "name": "Gemini Generated Image Sq31mesq31mesq31",
-        "file": "Gemini_Generated_Image_sq31mesq31mesq31.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_sq31mesq31mesq31.webp"
+        "file": "Gemini_Generated_Image_sq31mesq31mesq31.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_sq31mesq31mesq31.png"
       },
       {
         "id": "Gemini_Generated_Image_trqptntrqptntrqp",
         "name": "Gemini Generated Image Trqptntrqptntrqp",
-        "file": "Gemini_Generated_Image_trqptntrqptntrqp.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_trqptntrqptntrqp.webp"
+        "file": "Gemini_Generated_Image_trqptntrqptntrqp.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_trqptntrqptntrqp.png"
       },
       {
         "id": "Gemini_Generated_Image_zhh3xuzhh3xuzhh3",
         "name": "Gemini Generated Image Zhh3xuzhh3xuzhh3",
-        "file": "Gemini_Generated_Image_zhh3xuzhh3xuzhh3.webp",
-        "path": "wallpapers/01_cat/Gemini_Generated_Image_zhh3xuzhh3xuzhh3.webp"
+        "file": "Gemini_Generated_Image_zhh3xuzhh3xuzhh3.png",
+        "path": "wallpapers/01_cat/Gemini_Generated_Image_zhh3xuzhh3xuzhh3.png"
       }
     ]
+  },
+  {
+    "id": "01_dino",
+    "pack_name": "Dino",
+    "delivery_pack_name": "wallpaper_01_dino",
+    "title": "Dino",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_dino__Gemini_Generated_Image_2er28z2er28z2er2.webp",
+    "items": [
+      {
+        "id": "Gemini_Generated_Image_2er28z2er28z2er2",
+        "name": "Gemini Generated Image 2er28z2er28z2er2",
+        "file": "Gemini_Generated_Image_2er28z2er28z2er2.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_2er28z2er28z2er2.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_2zo2nd2zo2nd2zo2",
+        "name": "Gemini Generated Image 2zo2nd2zo2nd2zo2",
+        "file": "Gemini_Generated_Image_2zo2nd2zo2nd2zo2.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_2zo2nd2zo2nd2zo2.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_91lvni91lvni91lv (1)",
+        "name": "Gemini Generated Image 91lvni91lvni91lv (1)",
+        "file": "Gemini_Generated_Image_91lvni91lvni91lv (1).webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_91lvni91lvni91lv (1).webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_c2zvalc2zvalc2zv",
+        "name": "Gemini Generated Image C2zvalc2zvalc2zv",
+        "file": "Gemini_Generated_Image_c2zvalc2zvalc2zv.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_c2zvalc2zvalc2zv.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_db11rddb11rddb11",
+        "name": "Gemini Generated Image Db11rddb11rddb11",
+        "file": "Gemini_Generated_Image_db11rddb11rddb11.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_db11rddb11rddb11.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_ns1hmens1hmens1h",
+        "name": "Gemini Generated Image Ns1hmens1hmens1h",
+        "file": "Gemini_Generated_Image_ns1hmens1hmens1h.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_ns1hmens1hmens1h.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_oq6ox4oq6ox4oq6o",
+        "name": "Gemini Generated Image Oq6ox4oq6ox4oq6o",
+        "file": "Gemini_Generated_Image_oq6ox4oq6ox4oq6o.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_oq6ox4oq6ox4oq6o.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_p5hgw6p5hgw6p5hg",
+        "name": "Gemini Generated Image P5hgw6p5hgw6p5hg",
+        "file": "Gemini_Generated_Image_p5hgw6p5hgw6p5hg.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_p5hgw6p5hgw6p5hg.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_ser474ser474ser4",
+        "name": "Gemini Generated Image Ser474ser474ser4",
+        "file": "Gemini_Generated_Image_ser474ser474ser4.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_ser474ser474ser4.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_vildtvildtvildtv",
+        "name": "Gemini Generated Image Vildtvildtvildtv",
+        "file": "Gemini_Generated_Image_vildtvildtvildtv.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_vildtvildtvildtv.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_z0iax0z0iax0z0ia",
+        "name": "Gemini Generated Image Z0iax0z0iax0z0ia",
+        "file": "Gemini_Generated_Image_z0iax0z0iax0z0ia.webp",
+        "path": "wallpapers/01_dino/Gemini_Generated_Image_z0iax0z0iax0z0ia.webp"
+      }
+    ],
+    "description": "Playful pastel dinosaurs with a fun, happy energy."
   },
   {
     "id": "01_dog",
     "pack_name": "Dog",
     "delivery_pack_name": "wallpaper_01_dog",
     "title": "Dog",
-    "thumbnail_asset_path": "wallpapers/category_thumbs/01_dog__Gemini_Generated_Image_3oykgw3oykgw3oyk.webp",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_dog__Gemini_Generated_Image_3oykgw3oykgw3oyk.png",
     "items": [
       {
         "id": "Gemini_Generated_Image_3oykgw3oykgw3oyk",
         "name": "Gemini Generated Image 3oykgw3oykgw3oyk",
-        "file": "Gemini_Generated_Image_3oykgw3oykgw3oyk.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_3oykgw3oykgw3oyk.webp"
+        "file": "Gemini_Generated_Image_3oykgw3oykgw3oyk.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_3oykgw3oykgw3oyk.png"
       },
       {
         "id": "Gemini_Generated_Image_bz6tsfbz6tsfbz6t",
         "name": "Gemini Generated Image Bz6tsfbz6tsfbz6t",
-        "file": "Gemini_Generated_Image_bz6tsfbz6tsfbz6t.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_bz6tsfbz6tsfbz6t.webp"
+        "file": "Gemini_Generated_Image_bz6tsfbz6tsfbz6t.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_bz6tsfbz6tsfbz6t.png"
       },
       {
         "id": "Gemini_Generated_Image_e2gr55e2gr55e2gr",
         "name": "Gemini Generated Image E2gr55e2gr55e2gr",
-        "file": "Gemini_Generated_Image_e2gr55e2gr55e2gr.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_e2gr55e2gr55e2gr.webp"
+        "file": "Gemini_Generated_Image_e2gr55e2gr55e2gr.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_e2gr55e2gr55e2gr.png"
       },
       {
         "id": "Gemini_Generated_Image_f2eh15f2eh15f2eh",
         "name": "Gemini Generated Image F2eh15f2eh15f2eh",
-        "file": "Gemini_Generated_Image_f2eh15f2eh15f2eh.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_f2eh15f2eh15f2eh.webp"
+        "file": "Gemini_Generated_Image_f2eh15f2eh15f2eh.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_f2eh15f2eh15f2eh.png"
       },
       {
         "id": "Gemini_Generated_Image_ipa592ipa592ipa5",
         "name": "Gemini Generated Image Ipa592ipa592ipa5",
-        "file": "Gemini_Generated_Image_ipa592ipa592ipa5.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_ipa592ipa592ipa5.webp"
+        "file": "Gemini_Generated_Image_ipa592ipa592ipa5.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_ipa592ipa592ipa5.png"
       },
       {
         "id": "Gemini_Generated_Image_m5aep6m5aep6m5ae",
         "name": "Gemini Generated Image M5aep6m5aep6m5ae",
-        "file": "Gemini_Generated_Image_m5aep6m5aep6m5ae.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_m5aep6m5aep6m5ae.webp"
+        "file": "Gemini_Generated_Image_m5aep6m5aep6m5ae.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_m5aep6m5aep6m5ae.png"
       },
       {
         "id": "Gemini_Generated_Image_pvyxkupvyxkupvyx",
         "name": "Gemini Generated Image Pvyxkupvyxkupvyx",
-        "file": "Gemini_Generated_Image_pvyxkupvyxkupvyx.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_pvyxkupvyxkupvyx.webp"
+        "file": "Gemini_Generated_Image_pvyxkupvyxkupvyx.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_pvyxkupvyxkupvyx.png"
       },
       {
         "id": "Gemini_Generated_Image_vwbklbvwbklbvwbk",
         "name": "Gemini Generated Image Vwbklbvwbklbvwbk",
-        "file": "Gemini_Generated_Image_vwbklbvwbklbvwbk.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_vwbklbvwbklbvwbk.webp"
+        "file": "Gemini_Generated_Image_vwbklbvwbklbvwbk.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_vwbklbvwbklbvwbk.png"
       },
       {
         "id": "Gemini_Generated_Image_wznpilwznpilwznp",
         "name": "Gemini Generated Image Wznpilwznpilwznp",
-        "file": "Gemini_Generated_Image_wznpilwznpilwznp.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_wznpilwznpilwznp.webp"
+        "file": "Gemini_Generated_Image_wznpilwznpilwznp.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_wznpilwznpilwznp.png"
       },
       {
         "id": "Gemini_Generated_Image_ylc5k9ylc5k9ylc5",
         "name": "Gemini Generated Image Ylc5k9ylc5k9ylc5",
-        "file": "Gemini_Generated_Image_ylc5k9ylc5k9ylc5.webp",
-        "path": "wallpapers/01_dog/Gemini_Generated_Image_ylc5k9ylc5k9ylc5.webp"
+        "file": "Gemini_Generated_Image_ylc5k9ylc5k9ylc5.png",
+        "path": "wallpapers/01_dog/Gemini_Generated_Image_ylc5k9ylc5k9ylc5.png"
       }
     ]
+  },
+  {
+    "id": "01_panda",
+    "pack_name": "Panda",
+    "delivery_pack_name": "wallpaper_01_panda",
+    "title": "Panda",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_panda__Gemini_Generated_Image_3jue8b3jue8b3jue.webp",
+    "items": [
+      {
+        "id": "Gemini_Generated_Image_3jue8b3jue8b3jue",
+        "name": "Gemini Generated Image 3jue8b3jue8b3jue",
+        "file": "Gemini_Generated_Image_3jue8b3jue8b3jue.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_3jue8b3jue8b3jue.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_427fwg427fwg427f",
+        "name": "Gemini Generated Image 427fwg427fwg427f",
+        "file": "Gemini_Generated_Image_427fwg427fwg427f.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_427fwg427fwg427f.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_4oozfz4oozfz4ooz",
+        "name": "Gemini Generated Image 4oozfz4oozfz4ooz",
+        "file": "Gemini_Generated_Image_4oozfz4oozfz4ooz.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_4oozfz4oozfz4ooz.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_7vozv17vozv17voz",
+        "name": "Gemini Generated Image 7vozv17vozv17voz",
+        "file": "Gemini_Generated_Image_7vozv17vozv17voz.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_7vozv17vozv17voz.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_85i8q285i8q285i8",
+        "name": "Gemini Generated Image 85i8q285i8q285i8",
+        "file": "Gemini_Generated_Image_85i8q285i8q285i8.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_85i8q285i8q285i8.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_8p18zc8p18zc8p18",
+        "name": "Gemini Generated Image 8p18zc8p18zc8p18",
+        "file": "Gemini_Generated_Image_8p18zc8p18zc8p18.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_8p18zc8p18zc8p18.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_c6hieac6hieac6hi",
+        "name": "Gemini Generated Image C6hieac6hieac6hi",
+        "file": "Gemini_Generated_Image_c6hieac6hieac6hi.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_c6hieac6hieac6hi.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_f3vef6f3vef6f3ve",
+        "name": "Gemini Generated Image F3vef6f3vef6f3ve",
+        "file": "Gemini_Generated_Image_f3vef6f3vef6f3ve.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_f3vef6f3vef6f3ve.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_r22bcxr22bcxr22b",
+        "name": "Gemini Generated Image R22bcxr22bcxr22b",
+        "file": "Gemini_Generated_Image_r22bcxr22bcxr22b.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_r22bcxr22bcxr22b.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_srv9b1srv9b1srv9",
+        "name": "Gemini Generated Image Srv9b1srv9b1srv9",
+        "file": "Gemini_Generated_Image_srv9b1srv9b1srv9.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_srv9b1srv9b1srv9.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_sv3ay2sv3ay2sv3a",
+        "name": "Gemini Generated Image Sv3ay2sv3ay2sv3a",
+        "file": "Gemini_Generated_Image_sv3ay2sv3ay2sv3a.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_sv3ay2sv3ay2sv3a.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_syd3vlsyd3vlsyd3",
+        "name": "Gemini Generated Image Syd3vlsyd3vlsyd3",
+        "file": "Gemini_Generated_Image_syd3vlsyd3vlsyd3.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_syd3vlsyd3vlsyd3.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_wpj2phwpj2phwpj2",
+        "name": "Gemini Generated Image Wpj2phwpj2phwpj2",
+        "file": "Gemini_Generated_Image_wpj2phwpj2phwpj2.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_wpj2phwpj2phwpj2.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_zeopb8zeopb8zeop",
+        "name": "Gemini Generated Image Zeopb8zeopb8zeop",
+        "file": "Gemini_Generated_Image_zeopb8zeopb8zeop.webp",
+        "path": "wallpapers/01_panda/Gemini_Generated_Image_zeopb8zeopb8zeop.webp"
+      },
+      {
+        "id": "l",
+        "name": "L",
+        "file": "l.webp",
+        "path": "wallpapers/01_panda/l.webp"
+      }
+    ],
+    "description": "Soft, cozy, and adorable moments full of warmth."
+  },
+  {
+    "id": "01_samurice",
+    "pack_name": "Samurai",
+    "delivery_pack_name": "wallpaper_samurai",
+    "title": "Samurai",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_samurice__Gemini_Generated_Image_3d5mho3d5mho3d5m.webp",
+    "items": [
+      {
+        "id": "Gemini_Generated_Image_3d5mho3d5mho3d5m",
+        "name": "Gemini Generated Image 3d5mho3d5mho3d5m",
+        "file": "Gemini_Generated_Image_3d5mho3d5mho3d5m.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_3d5mho3d5mho3d5m.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_491x0x491x0x491x",
+        "name": "Gemini Generated Image 491x0x491x0x491x",
+        "file": "Gemini_Generated_Image_491x0x491x0x491x.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_491x0x491x0x491x.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_eudu61eudu61eudu",
+        "name": "Gemini Generated Image Eudu61eudu61eudu",
+        "file": "Gemini_Generated_Image_eudu61eudu61eudu.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_eudu61eudu61eudu.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_hgnklghgnklghgnk",
+        "name": "Gemini Generated Image Hgnklghgnklghgnk",
+        "file": "Gemini_Generated_Image_hgnklghgnklghgnk.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_hgnklghgnklghgnk.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_hsseedhsseedhsse",
+        "name": "Gemini Generated Image Hsseedhsseedhsse",
+        "file": "Gemini_Generated_Image_hsseedhsseedhsse.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_hsseedhsseedhsse.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_k8qhhak8qhhak8qh",
+        "name": "Gemini Generated Image K8qhhak8qhhak8qh",
+        "file": "Gemini_Generated_Image_k8qhhak8qhhak8qh.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_k8qhhak8qhhak8qh.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_pvowbhpvowbhpvow",
+        "name": "Gemini Generated Image Pvowbhpvowbhpvow",
+        "file": "Gemini_Generated_Image_pvowbhpvowbhpvow.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_pvowbhpvowbhpvow.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_q5am7yq5am7yq5am",
+        "name": "Gemini Generated Image Q5am7yq5am7yq5am",
+        "file": "Gemini_Generated_Image_q5am7yq5am7yq5am.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_q5am7yq5am7yq5am.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_whnr2whnr2whnr2w",
+        "name": "Gemini Generated Image Whnr2whnr2whnr2w",
+        "file": "Gemini_Generated_Image_whnr2whnr2whnr2w.webp",
+        "path": "wallpapers/01_samurice/Gemini_Generated_Image_whnr2whnr2whnr2w.webp"
+      }
+    ],
+    "description": "Elegant warriors with a cute, powerful Japanese vibe."
+  },
+  {
+    "id": "01_sua",
+    "pack_name": "Jellyfish",
+    "delivery_pack_name": "wallpaper_jellyfish",
+    "title": "Jellyfish",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_sua__Gemini_Generated_Image_1mq44v1mq44v1mq4.webp",
+    "items": [
+      {
+        "id": "Gemini_Generated_Image_1mq44v1mq44v1mq4",
+        "name": "Gemini Generated Image 1mq44v1mq44v1mq4",
+        "file": "Gemini_Generated_Image_1mq44v1mq44v1mq4.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_1mq44v1mq44v1mq4.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_3t9fp23t9fp23t9f",
+        "name": "Gemini Generated Image 3t9fp23t9fp23t9f",
+        "file": "Gemini_Generated_Image_3t9fp23t9fp23t9f.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_3t9fp23t9fp23t9f.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_7aqu5y7aqu5y7aqu",
+        "name": "Gemini Generated Image 7aqu5y7aqu5y7aqu",
+        "file": "Gemini_Generated_Image_7aqu5y7aqu5y7aqu.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_7aqu5y7aqu5y7aqu.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_8x0zja8x0zja8x0z",
+        "name": "Gemini Generated Image 8x0zja8x0zja8x0z",
+        "file": "Gemini_Generated_Image_8x0zja8x0zja8x0z.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_8x0zja8x0zja8x0z.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_fk235pfk235pfk23",
+        "name": "Gemini Generated Image Fk235pfk235pfk23",
+        "file": "Gemini_Generated_Image_fk235pfk235pfk23.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_fk235pfk235pfk23.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_p4mtgwp4mtgwp4mt",
+        "name": "Gemini Generated Image P4mtgwp4mtgwp4mt",
+        "file": "Gemini_Generated_Image_p4mtgwp4mtgwp4mt.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_p4mtgwp4mtgwp4mt.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_qxagj9qxagj9qxag",
+        "name": "Gemini Generated Image Qxagj9qxagj9qxag",
+        "file": "Gemini_Generated_Image_qxagj9qxagj9qxag.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_qxagj9qxagj9qxag.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_t4wv2jt4wv2jt4wv",
+        "name": "Gemini Generated Image T4wv2jt4wv2jt4wv",
+        "file": "Gemini_Generated_Image_t4wv2jt4wv2jt4wv.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_t4wv2jt4wv2jt4wv.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_u4pm98u4pm98u4pm",
+        "name": "Gemini Generated Image U4pm98u4pm98u4pm",
+        "file": "Gemini_Generated_Image_u4pm98u4pm98u4pm.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_u4pm98u4pm98u4pm.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_va6pkrva6pkrva6p",
+        "name": "Gemini Generated Image Va6pkrva6pkrva6p",
+        "file": "Gemini_Generated_Image_va6pkrva6pkrva6p.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_va6pkrva6pkrva6p.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_vc64g1vc64g1vc64",
+        "name": "Gemini Generated Image Vc64g1vc64g1vc64",
+        "file": "Gemini_Generated_Image_vc64g1vc64g1vc64.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_vc64g1vc64g1vc64.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_xywuz8xywuz8xywu",
+        "name": "Gemini Generated Image Xywuz8xywuz8xywu",
+        "file": "Gemini_Generated_Image_xywuz8xywuz8xywu.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_xywuz8xywuz8xywu.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_yfoajjyfoajjyfoa",
+        "name": "Gemini Generated Image Yfoajjyfoajjyfoa",
+        "file": "Gemini_Generated_Image_yfoajjyfoajjyfoa.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_yfoajjyfoajjyfoa.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_yirweuyirweuyirw",
+        "name": "Gemini Generated Image Yirweuyirweuyirw",
+        "file": "Gemini_Generated_Image_yirweuyirweuyirw.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_yirweuyirweuyirw.webp"
+      },
+      {
+        "id": "Gemini_Generated_Image_z590qqz590qqz590",
+        "name": "Gemini Generated Image Z590qqz590qqz590",
+        "file": "Gemini_Generated_Image_z590qqz590qqz590.webp",
+        "path": "wallpapers/01_sua/Gemini_Generated_Image_z590qqz590qqz590.webp"
+      }
+    ],
+    "description": "Glowing underwater beauty with a calm, dreamy feel."
   },
   {
     "id": "100_getmotivated",
@@ -1131,93 +1471,6 @@
     ]
   },
   {
-    "id": "126_minimali-tic",
-    "pack_name": "Minimali Tic",
-    "delivery_pack_name": "wallpaper_126_minimali_tic",
-    "title": "Minimali Tic",
-    "thumbnail_asset_path": "wallpapers/category_thumbs/126_minimali_tic__35476_baritopdown_thumb.webp",
-    "items": [
-      {
-        "id": "35476_baritopdown_thumb",
-        "name": "Baritopdown",
-        "file": "35476_baritopdown_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35476_baritopdown_thumb.webp"
-      },
-      {
-        "id": "35480_peace_thumb",
-        "name": "Peace",
-        "file": "35480_peace_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35480_peace_thumb.webp"
-      },
-      {
-        "id": "35481_minimalwindow_thumb",
-        "name": "Minimalwindow",
-        "file": "35481_minimalwindow_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35481_minimalwindow_thumb.webp"
-      },
-      {
-        "id": "35483_concentricminimal_thumb",
-        "name": "Concentricminimal",
-        "file": "35483_concentricminimal_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35483_concentricminimal_thumb.webp"
-      },
-      {
-        "id": "35485_midnight-ol_thumb",
-        "name": "Midnight Ol",
-        "file": "35485_midnight-ol_thumb.png",
-        "path": "wallpapers/126_minimali-tic/35485_midnight-ol_thumb.png"
-      },
-      {
-        "id": "35487_pringwillcome_thumb",
-        "name": "Pringwillcome",
-        "file": "35487_pringwillcome_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35487_pringwillcome_thumb.webp"
-      },
-      {
-        "id": "35491_gummytrend_thumb",
-        "name": "Gummytrend",
-        "file": "35491_gummytrend_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35491_gummytrend_thumb.webp"
-      },
-      {
-        "id": "35524_violetdoor_thumb",
-        "name": "Violetdoor",
-        "file": "35524_violetdoor_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35524_violetdoor_thumb.webp"
-      },
-      {
-        "id": "35525_clockworkconnection_thumb",
-        "name": "Clockworkconnection",
-        "file": "35525_clockworkconnection_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35525_clockworkconnection_thumb.webp"
-      },
-      {
-        "id": "35532_co-miclowfi_thumb",
-        "name": "Co Miclowfi",
-        "file": "35532_co-miclowfi_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35532_co-miclowfi_thumb.webp"
-      },
-      {
-        "id": "35533_terracode_thumb",
-        "name": "Terracode",
-        "file": "35533_terracode_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35533_terracode_thumb.webp"
-      },
-      {
-        "id": "35538_blue-creenglitch_thumb",
-        "name": "Blue Creenglitch",
-        "file": "35538_blue-creenglitch_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35538_blue-creenglitch_thumb.webp"
-      },
-      {
-        "id": "35539_tranded_thumb",
-        "name": "Tranded",
-        "file": "35539_tranded_thumb.webp",
-        "path": "wallpapers/126_minimali-tic/35539_tranded_thumb.webp"
-      }
-    ]
-  },
-  {
     "id": "12_blackamoled",
     "pack_name": "Blackamoled",
     "delivery_pack_name": "wallpaper_12_blackamoled",
@@ -1370,105 +1623,6 @@
         "name": "A Inglecloud",
         "file": "35389_a-inglecloud_thumb.webp",
         "path": "wallpapers/132_madeinblue/35389_a-inglecloud_thumb.webp"
-      }
-    ]
-  },
-  {
-    "id": "19_urf-kate",
-    "pack_name": "Urf Kate",
-    "delivery_pack_name": "wallpaper_19_urf_kate",
-    "title": "Urf Kate",
-    "thumbnail_asset_path": "wallpapers/category_thumbs/19_urf_kate__31765_tropicalwater_thumb.webp",
-    "items": [
-      {
-        "id": "31765_tropicalwater_thumb",
-        "name": "Tropicalwater",
-        "file": "31765_tropicalwater_thumb.webp",
-        "path": "wallpapers/19_urf-kate/31765_tropicalwater_thumb.webp"
-      },
-      {
-        "id": "31845_ummerdayonmar_thumb",
-        "name": "Ummerdayonmar",
-        "file": "31845_ummerdayonmar_thumb.webp",
-        "path": "wallpapers/19_urf-kate/31845_ummerdayonmar_thumb.webp"
-      },
-      {
-        "id": "32289_felineenjoyment_thumb",
-        "name": "Felineenjoyment",
-        "file": "32289_felineenjoyment_thumb.webp",
-        "path": "wallpapers/19_urf-kate/32289_felineenjoyment_thumb.webp"
-      },
-      {
-        "id": "32443_riverwalk_thumb",
-        "name": "Riverwalk",
-        "file": "32443_riverwalk_thumb.webp",
-        "path": "wallpapers/19_urf-kate/32443_riverwalk_thumb.webp"
-      },
-      {
-        "id": "32571_laketree_thumb",
-        "name": "Laketree",
-        "file": "32571_laketree_thumb.webp",
-        "path": "wallpapers/19_urf-kate/32571_laketree_thumb.webp"
-      },
-      {
-        "id": "32851_8bitnight-ky_thumb",
-        "name": "8bitnight Ky",
-        "file": "32851_8bitnight-ky_thumb.webp",
-        "path": "wallpapers/19_urf-kate/32851_8bitnight-ky_thumb.webp"
-      },
-      {
-        "id": "32878_catboard1_thumb",
-        "name": "Catboard1",
-        "file": "32878_catboard1_thumb.webp",
-        "path": "wallpapers/19_urf-kate/32878_catboard1_thumb.webp"
-      },
-      {
-        "id": "32969_catboard2_thumb",
-        "name": "Catboard2",
-        "file": "32969_catboard2_thumb.webp",
-        "path": "wallpapers/19_urf-kate/32969_catboard2_thumb.webp"
-      },
-      {
-        "id": "33116_eagleona-kateboard_thumb",
-        "name": "Eagleona Kateboard",
-        "file": "33116_eagleona-kateboard_thumb.webp",
-        "path": "wallpapers/19_urf-kate/33116_eagleona-kateboard_thumb.webp"
-      },
-      {
-        "id": "33517_jjkitadori_thumb",
-        "name": "Jjkitadori",
-        "file": "33517_jjkitadori_thumb.webp",
-        "path": "wallpapers/19_urf-kate/33517_jjkitadori_thumb.webp"
-      },
-      {
-        "id": "34000_totheocean_thumb",
-        "name": "Totheocean",
-        "file": "34000_totheocean_thumb.webp",
-        "path": "wallpapers/19_urf-kate/34000_totheocean_thumb.webp"
-      },
-      {
-        "id": "34002_runtothe-ea_thumb",
-        "name": "Runtothe Ea",
-        "file": "34002_runtothe-ea_thumb.webp",
-        "path": "wallpapers/19_urf-kate/34002_runtothe-ea_thumb.webp"
-      },
-      {
-        "id": "34101_eagull_thumb",
-        "name": "Eagull",
-        "file": "34101_eagull_thumb.webp",
-        "path": "wallpapers/19_urf-kate/34101_eagull_thumb.webp"
-      },
-      {
-        "id": "34517_palm-paradi-e_thumb",
-        "name": "Palm Paradi E",
-        "file": "34517_palm-paradi-e_thumb.webp",
-        "path": "wallpapers/19_urf-kate/34517_palm-paradi-e_thumb.webp"
-      },
-      {
-        "id": "34816_tormyocean_thumb",
-        "name": "Tormyocean",
-        "file": "34816_tormyocean_thumb.webp",
-        "path": "wallpapers/19_urf-kate/34816_tormyocean_thumb.webp"
       }
     ]
   },
@@ -1838,36 +1992,6 @@
         "name": "Minimal Tudy",
         "file": "35211_minimal-tudy_thumb.webp",
         "path": "wallpapers/4_pattern/35211_minimal-tudy_thumb.webp"
-      },
-      {
-        "id": "35240_vintagemonkey_thumb",
-        "name": "35240_vintagemonkey_thumb",
-        "file": "35240_vintagemonkey_thumb.webp",
-        "path": "wallpapers/4_pattern/35240_vintagemonkey_thumb.webp"
-      },
-      {
-        "id": "35384_dokicheckerboardpattern_thumb",
-        "name": "35384_dokicheckerboardpattern_thumb",
-        "file": "35384_dokicheckerboardpattern_thumb.webp",
-        "path": "wallpapers/4_pattern/35384_dokicheckerboardpattern_thumb.webp"
-      },
-      {
-        "id": "35401_redchri-tma-pattern_thumb",
-        "name": "35401_redchri-tma-pattern_thumb",
-        "file": "35401_redchri-tma-pattern_thumb.webp",
-        "path": "wallpapers/4_pattern/35401_redchri-tma-pattern_thumb.webp"
-      },
-      {
-        "id": "35527_peachwormhole_thumb",
-        "name": "35527_peachwormhole_thumb",
-        "file": "35527_peachwormhole_thumb.webp",
-        "path": "wallpapers/4_pattern/35527_peachwormhole_thumb.webp"
-      },
-      {
-        "id": "35560_orangeverdallure_thumb",
-        "name": "35560_orangeverdallure_thumb",
-        "file": "35560_orangeverdallure_thumb.webp",
-        "path": "wallpapers/4_pattern/35560_orangeverdallure_thumb.webp"
       }
     ]
   }

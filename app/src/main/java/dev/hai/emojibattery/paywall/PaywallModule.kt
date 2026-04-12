@@ -425,18 +425,17 @@ fun PaywallScreen(
         // ─── Close button (glassmorphism pill) ───
         Box(
             modifier = Modifier
-                .padding(top = statusBarTopInset + 8.dp, start = 12.dp)
+                .align(Alignment.TopEnd)
+                .padding(top = statusBarTopInset + 8.dp, end = 12.dp)
                 .size(40.dp)
-                .clip(CircleShape)
-                .background(Alpine.OnSurface.copy(alpha = 0.28f))
                 .clickable(onClick = onClose),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Rounded.Close,
                 contentDescription = null,
-                tint = Alpine.OnPrimary,
-                modifier = Modifier.size(20.dp),
+                tint = Color.White.copy(alpha = 0.95f),
+                modifier = Modifier.size(30.dp),
             )
         }
 
