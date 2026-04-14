@@ -37,7 +37,8 @@ object PadBackgroundTemplateRepository {
     private const val MANIFEST_ASSET_PATH = "background_templates/themes_pack_manifest.json"
     private val FALLBACK_PACKS = setOf("chinese_spring_landscape", "countryside")
     private val gson = Gson()
-    private val categoriesType = object : TypeToken<List<PadBackgroundTemplateCategory>>() {}.type
+    private val categoriesType =
+        TypeToken.getParameterized(List::class.java, PadBackgroundTemplateCategory::class.java).type
 
     suspend fun loadCategories(context: Context): List<PadBackgroundTemplateCategory> = withContext(Dispatchers.IO) {
         runCatching {

@@ -22,8 +22,10 @@ object BundledVolioHomeRepository {
     private const val ASSET_ROOT = "bundled_volio/home"
 
     private val gson = Gson()
-    private val categoryListType = object : TypeToken<VolioListResponse<VolioCategoryDto>>() {}.type
-    private val itemListType = object : TypeToken<VolioListResponse<VolioEmojiBatteryItemDto>>() {}.type
+    private val categoryListType =
+        TypeToken.getParameterized(VolioListResponse::class.java, VolioCategoryDto::class.java).type
+    private val itemListType =
+        TypeToken.getParameterized(VolioListResponse::class.java, VolioEmojiBatteryItemDto::class.java).type
 
     fun hasBundledCatalog(assets: AssetManager): Boolean =
         assets.list("bundled_volio/home")?.contains("categories_all.json") == true

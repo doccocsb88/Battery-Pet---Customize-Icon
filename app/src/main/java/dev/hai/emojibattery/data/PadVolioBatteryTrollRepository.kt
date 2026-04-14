@@ -29,8 +29,10 @@ object PadVolioBatteryTrollRepository {
 
     private const val TAG = "PadVolioBatteryTroll"
     private val gson = Gson()
-    private val categoryListType = object : TypeToken<VolioListResponse<VolioCategoryDto>>() {}.type
-    private val itemListType = object : TypeToken<VolioListResponse<VolioEmojiBatteryItemDto>>() {}.type
+    private val categoryListType =
+        TypeToken.getParameterized(VolioListResponse::class.java, VolioCategoryDto::class.java).type
+    private val itemListType =
+        TypeToken.getParameterized(VolioListResponse::class.java, VolioEmojiBatteryItemDto::class.java).type
 
     suspend fun fetchTemplates(context: Context): List<BatteryTrollTemplate> = withContext(Dispatchers.IO) {
         val ready = withTimeoutOrNull(12_000L) {

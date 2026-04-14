@@ -23,8 +23,10 @@ object VolioStickerRepository {
     private const val STICKERS_PER_CATALOG_PAGE = 16
 
     private val gson = Gson()
-    private val categoryListType = object : TypeToken<VolioListResponse<VolioCategoryDto>>() {}.type
-    private val itemListType = object : TypeToken<VolioListResponse<VolioEmojiBatteryItemDto>>() {}.type
+    private val categoryListType =
+        TypeToken.getParameterized(VolioListResponse::class.java, VolioCategoryDto::class.java).type
+    private val itemListType =
+        TypeToken.getParameterized(VolioListResponse::class.java, VolioEmojiBatteryItemDto::class.java).type
 
     data class StickerCatalogPageInfo(
         val pageFile: File,

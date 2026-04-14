@@ -21,7 +21,8 @@ object PadVolioHomeRepository {
     private const val TAG = "PadVolioHome"
 
     private val gson = Gson()
-    private val itemListType = object : TypeToken<VolioListResponse<VolioEmojiBatteryItemDto>>() {}.type
+    private val itemListType =
+        TypeToken.getParameterized(VolioListResponse::class.java, VolioEmojiBatteryItemDto::class.java).type
 
     suspend fun fetchItemsForCategory(context: Context, categoryId: String): List<HomeBatteryItem> =
         withContext(Dispatchers.IO) {

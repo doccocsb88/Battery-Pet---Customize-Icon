@@ -37,7 +37,8 @@ object PadWallpaperRepository {
     private const val MANIFEST_ASSET_PATH = "wallpapers/wallpaper_pack_manifest.json"
     private const val MAX_CACHED_CATEGORY_ITEMS = 2
     private val gson = Gson()
-    private val categoriesType = object : TypeToken<List<PadWallpaperCategory>>() {}.type
+    private val categoriesType =
+        TypeToken.getParameterized(List::class.java, PadWallpaperCategory::class.java).type
     @Volatile
     private var categoriesCache: List<PadWallpaperCategory>? = null
     private val cacheLock = Any()
