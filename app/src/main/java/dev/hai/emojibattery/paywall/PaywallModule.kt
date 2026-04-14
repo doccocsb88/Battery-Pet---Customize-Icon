@@ -159,6 +159,10 @@ fun PaywallScreen(
     val monthly = billingState.monthlyPlan
     val weekly = billingState.weeklyPlan
     val lifetime = billingState.lifetimePlan
+    val unavailablePrice = stringResource(R.string.paywall_price_unavailable)
+    val weeklyTermsPrice = weekly?.displayPrice ?: unavailablePrice
+    val monthlyTermsPrice = monthly?.displayPrice ?: unavailablePrice
+    val lifetimeTermsPrice = lifetime?.displayPrice ?: unavailablePrice
     val loadingPrices = billingState.loading
     val isStoreMode = paywall?.launchMode == PaywallLaunchMode.Store
     val weeklyTrialDays = billingState.weeklyTrialDays
@@ -363,34 +367,14 @@ fun PaywallScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // ─── Legal Links (no dividers — Alpine rule) ───
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.terms_amp_conditions),
-                    modifier = Modifier.clickable(onClick = onOpenTerms),
-                    color = Alpine.OnSurfaceVariant,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Medium,
-                )
-                Text(
-                    text = "  ·  ",
-                    color = Alpine.OnSurfaceVariant.copy(alpha = 0.4f),
-                    style = MaterialTheme.typography.labelMedium,
-                )
-                Text(
-                    text = stringResource(R.string.privacy_policy),
-                    modifier = Modifier.clickable(onClick = onOpenPolicy),
-                    color = Alpine.OnSurfaceVariant,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
+            PaywallSubscriptionTermsSection(
+                weeklyPrice = weeklyTermsPrice,
+                monthlyPrice = monthlyTermsPrice,
+                lifetimePrice = lifetimeTermsPrice,
+                onOpenTerms = onOpenTerms,
+                onOpenPolicy = onOpenPolicy,
+                onCancelAnytime = onManageSubscriptions,
+            )
 
             Spacer(Modifier.height(8.dp))
 
@@ -469,6 +453,78 @@ fun PaywallScreen(
                 },
             )
         }
+    }
+}
+
+@Composable
+private fun PaywallSubscriptionTermsSection(
+    weeklyPrice: String,
+    monthlyPrice: String,
+    lifetimePrice: String,
+    onOpenTerms: () -> Unit,
+    onOpenPolicy: () -> Unit,
+    onCancelAnytime: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(R.string.paywall_subscription_terms_title),
+            color = Alpine.OnSurfaceVariant,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.terms_amp_conditions),
+                modifier = Modifier.clickable(onClick = onOpenTerms),
+                color = Alpine.OnSurfaceVariant,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = "  |  ",
+                color = Alpine.OnSurfaceVariant.copy(alpha = 0.45f),
+                style = MaterialTheme.typography.labelMedium,
+            )
+            Text(
+                text = stringResource(R.string.privacy_policy),
+                modifier = Modifier.clickable(onClick = onOpenPolicy),
+                color = Alpine.OnSurfaceVariant,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = "  |  ",
+                color = Alpine.OnSurfaceVariant.copy(alpha = 0.45f),
+                style = MaterialTheme.typography.labelMedium,
+            )
+            Text(
+                text = stringResource(R.string.paywall_cancel_anytime),
+                modifier = Modifier.clickable(onClick = onCancelAnytime),
+                color = Alpine.OnSurfaceVariant,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+        Text(
+            text = stringResource(
+                R.string.paywall_subscription_terms_body,
+                weeklyPrice,
+                monthlyPrice,
+                lifetimePrice,
+            ),
+            color = Alpine.OnSurfaceVariant,
+            style = MaterialTheme.typography.bodySmall,
+            lineHeight = 18.sp,
+        )
     }
 }
 

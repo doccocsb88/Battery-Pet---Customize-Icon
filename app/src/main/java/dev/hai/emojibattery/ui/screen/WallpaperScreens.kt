@@ -2,6 +2,7 @@ package dev.hai.emojibattery.ui.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Wallpaper
@@ -33,13 +35,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,11 +59,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -131,16 +138,24 @@ internal fun WallpaperCategoryScreen(
     onOpenPreview: (String, String, Boolean) -> Unit,
 ) {
     val context = LocalContext.current.applicationContext
-    var category by remember(categoryId) { mutableStateOf<PadWallpaperCategory?>(null) }
-    var items by remember(categoryId) { mutableStateOf<List<PadWallpaperItem>>(emptyList()) }
-    var loading by remember(categoryId) { mutableStateOf(true) }
+    val cachedCategories = remember { PadWallpaperRepository.peekCachedCategories().orEmpty() }
+    val cachedCategory = remember(categoryId, cachedCategories) {
+        cachedCategories.firstOrNull { it.id == categoryId }
+    }
+    val cachedItems = remember(categoryId) { PadWallpaperRepository.peekCachedItems(categoryId).orEmpty() }
+    var category by remember(categoryId) { mutableStateOf(cachedCategory) }
+    var items by remember(categoryId) { mutableStateOf(cachedItems) }
+    var loading by remember(categoryId) { mutableStateOf(cachedCategory == null || cachedItems.isEmpty()) }
 
     LaunchedEffect(categoryId) {
+        if (category != null && items.isNotEmpty()) {
+            loading = false
+            return@LaunchedEffect
+        }
         loading = true
         val categories = PadWallpaperRepository.loadCategories(context)
         val resolved = categories.firstOrNull { it.id == categoryId }
         category = resolved
-        items = emptyList()
         if (resolved != null) {
             repeat(3) { attempt ->
                 val loadedItems = PadWallpaperRepository.loadItemsForCategory(context, resolved)
@@ -203,6 +218,7 @@ internal fun WallpaperCategoryScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WallpaperPreviewScreen(
     categoryId: String,
@@ -220,6 +236,9 @@ internal fun WallpaperPreviewScreen(
     val itemsByCategory = remember { mutableStateMapOf<String, List<PadWallpaperItem>>() }
     var loading by remember(categoryId, wallpaperId) { mutableStateOf(true) }
     var settingWallpaper by remember { mutableStateOf(false) }
+    var selectedTarget by remember { mutableStateOf(WallpaperSetter.Target.BOTH) }
+    var showSetTargetSheet by remember { mutableStateOf(false) }
+    val setTargetSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(categoryId) {
         loading = true
@@ -238,6 +257,27 @@ internal fun WallpaperPreviewScreen(
     val item = categoryItems.firstOrNull { it.id == wallpaperId }
     val itemIndex = categoryItems.indexOfFirst { it.id == wallpaperId }
     val isLocked = item != null && !isPremiumUser && itemIndex >= FREE_WALLPAPER_COUNT_PER_CATEGORY
+
+    fun applyWallpaper(target: WallpaperSetter.Target, imageUrl: String) {
+        scope.launch {
+            selectedTarget = target
+            settingWallpaper = true
+            val result = WallpaperSetter.setWallpaper(
+                context = appContext,
+                imageUrl = imageUrl,
+                fallbackResId = R.drawable.img_bg_emoji_sticker,
+                target = target,
+            )
+            settingWallpaper = false
+            onSetBackgroundDone(
+                if (result.isSuccess) {
+                    wallpaperSetSuccessMessage(target)
+                } else {
+                    result.exceptionOrNull()?.message ?: wallpaperSetErrorMessage(target)
+                },
+            )
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -304,7 +344,7 @@ internal fun WallpaperPreviewScreen(
                                     ) {
                                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                             Text(
-                                                text = "Tap Set Background to use this wallpaper on your phone.",
+                                                text = "Tap Set Wallpaper and choose Home, Lock, or Both.",
                                                 color = Color.White.copy(alpha = 0.82f),
                                                 style = MaterialTheme.typography.bodyMedium,
                                             )
@@ -321,22 +361,7 @@ internal fun WallpaperPreviewScreen(
                                         onOpenPaywall()
                                         return@Button
                                     }
-                                    scope.launch {
-                                        settingWallpaper = true
-                                        val result = WallpaperSetter.setWallpaper(
-                                            context = appContext,
-                                            imageUrl = item.assetUrl,
-                                            fallbackResId = R.drawable.img_bg_emoji_sticker,
-                                        )
-                                        settingWallpaper = false
-                                        onSetBackgroundDone(
-                                            if (result.isSuccess) {
-                                                "Wallpaper set successfully."
-                                            } else {
-                                                result.exceptionOrNull()?.message ?: "Unable to set wallpaper."
-                                            },
-                                        )
-                                    }
+                                    showSetTargetSheet = true
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -364,9 +389,9 @@ internal fun WallpaperPreviewScreen(
                                 Spacer(Modifier.size(10.dp))
                                 Text(
                                     text = when {
-                                        settingWallpaper -> "Setting background..."
+                                        settingWallpaper -> "Setting ${wallpaperTargetLabel(selectedTarget).lowercase()}..."
                                         isLocked -> "Unlock Premium"
-                                        else -> "Set Background"
+                                        else -> "Set Wallpaper"
                                     },
                                     fontWeight = FontWeight.SemiBold,
                                 )
@@ -383,6 +408,165 @@ internal fun WallpaperPreviewScreen(
                 }
             }
         }
+    }
+
+    val previewItem = item
+    if (showSetTargetSheet && !isLocked && previewItem != null && !settingWallpaper) {
+        ModalBottomSheet(
+            onDismissRequest = { showSetTargetSheet = false },
+            sheetState = setTargetSheetState,
+            containerColor = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        ) {
+            WallpaperSetTargetSheet(
+                onDismiss = { showSetTargetSheet = false },
+                onSelect = { target ->
+                    showSetTargetSheet = false
+                    applyWallpaper(target, previewItem.assetUrl)
+                },
+            )
+        }
+    }
+}
+
+private fun wallpaperTargetLabel(target: WallpaperSetter.Target): String =
+    when (target) {
+        WallpaperSetter.Target.HOME -> "Home Screen"
+        WallpaperSetter.Target.LOCK -> "Lock Screen"
+        WallpaperSetter.Target.BOTH -> "Both Screens"
+    }
+
+private fun wallpaperSetSuccessMessage(target: WallpaperSetter.Target): String =
+    when (target) {
+        WallpaperSetter.Target.HOME -> "Home screen wallpaper set successfully."
+        WallpaperSetter.Target.LOCK -> "Lock screen wallpaper set successfully."
+        WallpaperSetter.Target.BOTH -> "Wallpaper set on home and lock screens."
+    }
+
+private fun wallpaperSetErrorMessage(target: WallpaperSetter.Target): String =
+    when (target) {
+        WallpaperSetter.Target.HOME -> "Unable to set home screen wallpaper."
+        WallpaperSetter.Target.LOCK -> "Unable to set lock screen wallpaper on this device."
+        WallpaperSetter.Target.BOTH -> "Unable to set wallpaper on both screens."
+    }
+
+@Composable
+private fun WallpaperSetTargetSheet(
+    onDismiss: () -> Unit,
+    onSelect: (WallpaperSetter.Target) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 14.dp),
+    ) {
+        Text(
+            text = "Set wallpaper to",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 4.dp),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Text(
+            text = "Choose where to apply this wallpaper",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        WallpaperSetTargetRow(
+            icon = Icons.Rounded.Home,
+            title = "Home screen",
+            subtitle = "Apply to your home screen only",
+            onClick = { onSelect(WallpaperSetter.Target.HOME) },
+        )
+        HorizontalDivider(color = OceanSerenity.Outline.copy(alpha = 0.22f))
+        WallpaperSetTargetRow(
+            icon = Icons.Rounded.Lock,
+            title = "Lock screen",
+            subtitle = "Apply to your lock screen only",
+            onClick = { onSelect(WallpaperSetter.Target.LOCK) },
+        )
+        HorizontalDivider(color = OceanSerenity.Outline.copy(alpha = 0.22f))
+        WallpaperSetTargetRow(
+            icon = Icons.Rounded.Wallpaper,
+            title = "Both screens",
+            subtitle = "Set home and lock screens together",
+            onClick = { onSelect(WallpaperSetter.Target.BOTH) },
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Cancel",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onDismiss)
+                .padding(vertical = 14.dp),
+            textAlign = TextAlign.Center,
+            color = OceanSerenity.Primary,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+@Composable
+private fun WallpaperSetTargetRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 14.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = OceanSerenity.Primary.copy(alpha = 0.12f),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = OceanSerenity.Primary,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = subtitle,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+            contentDescription = null,
+            tint = OceanSerenity.Primary.copy(alpha = 0.92f),
+        )
     }
 }
 

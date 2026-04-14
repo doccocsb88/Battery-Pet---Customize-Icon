@@ -35,16 +35,36 @@ data class PadWallpaperItem(
 
 object PadWallpaperRepository {
     private const val MANIFEST_ASSET_PATH = "wallpapers/wallpaper_pack_manifest.json"
+    private const val MAX_CACHED_CATEGORY_ITEMS = 2
     private val gson = Gson()
     private val categoriesType = object : TypeToken<List<PadWallpaperCategory>>() {}.type
+    @Volatile
+    private var categoriesCache: List<PadWallpaperCategory>? = null
+    private val cacheLock = Any()
+    private val itemsCache = object : LinkedHashMap<String, List<PadWallpaperItem>>(
+        MAX_CACHED_CATEGORY_ITEMS,
+        0.75f,
+        true,
+    ) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, List<PadWallpaperItem>>): Boolean =
+            size > MAX_CACHED_CATEGORY_ITEMS
+    }
 
     suspend fun loadCategories(context: Context): List<PadWallpaperCategory> = withContext(Dispatchers.IO) {
+        categoriesCache?.let { return@withContext it }
         runCatching {
             context.assets.open(MANIFEST_ASSET_PATH).bufferedReader().use { reader ->
                 gson.fromJson<List<PadWallpaperCategory>>(reader, categoriesType).orEmpty()
             }
         }.getOrElse { emptyList() }
+            .also { loaded ->
+                if (loaded.isNotEmpty()) {
+                    categoriesCache = loaded
+                }
+            }
     }
+
+    fun peekCachedCategories(): List<PadWallpaperCategory>? = categoriesCache
 
     fun thumbnailAssetUrl(category: PadWallpaperCategory): String =
         "file:///android_asset/${category.thumbnailAssetPath.trimStart('/')}"
@@ -53,6 +73,9 @@ object PadWallpaperRepository {
         context: Context,
         category: PadWallpaperCategory,
     ): List<PadWallpaperItem> = withContext(Dispatchers.IO) {
+        synchronized(cacheLock) {
+            itemsCache[category.id]
+        }?.let { return@withContext it }
         val ready = runCatching {
             StoreOnDemandAssetPack.waitUntilCompleted(
                 context = context.applicationContext,
@@ -74,6 +97,16 @@ object PadWallpaperRepository {
                 name = item.name?.takeIf { it.isNotBlank() } ?: item.file,
                 assetUrl = Uri.fromFile(file).toString(),
             )
+        }.also { loaded ->
+            if (loaded.isNotEmpty()) {
+                synchronized(cacheLock) {
+                    itemsCache[category.id] = loaded
+                }
+            }
         }
+    }
+
+    fun peekCachedItems(categoryId: String): List<PadWallpaperItem>? = synchronized(cacheLock) {
+        itemsCache[categoryId]
     }
 }

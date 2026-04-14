@@ -11,10 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object WallpaperSetter {
+    enum class Target(val flags: Int) {
+        HOME(WallpaperManager.FLAG_SYSTEM),
+        LOCK(WallpaperManager.FLAG_LOCK),
+        BOTH(WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK),
+    }
+
     suspend fun setWallpaper(
         context: Context,
         imageUrl: String?,
         @DrawableRes fallbackResId: Int,
+        target: Target = Target.BOTH,
     ): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
             val imageLoader = ImageLoader.Builder(context)
@@ -27,7 +34,13 @@ object WallpaperSetter {
             val result = imageLoader.execute(request)
             val drawable = (result as? SuccessResult)?.drawable
                 ?: error("Unable to load wallpaper source.")
-            WallpaperManager.getInstance(context).setBitmap(drawable.toBitmap())
+            WallpaperManager.getInstance(context).setBitmap(
+                drawable.toBitmap(),
+                null,
+                true,
+                target.flags,
+            )
+            Unit
         }
     }
 }
