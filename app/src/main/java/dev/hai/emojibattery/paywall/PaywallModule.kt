@@ -371,6 +371,8 @@ fun PaywallScreen(
                 weeklyPrice = weeklyTermsPrice,
                 monthlyPrice = monthlyTermsPrice,
                 lifetimePrice = lifetimeTermsPrice,
+                monthlyHasFreeTrial = billingState.monthlyHasFreeTrial,
+                monthlyTrialDays = monthlyTrialDays,
                 onOpenTerms = onOpenTerms,
                 onOpenPolicy = onOpenPolicy,
                 onCancelAnytime = onManageSubscriptions,
@@ -461,10 +463,20 @@ private fun PaywallSubscriptionTermsSection(
     weeklyPrice: String,
     monthlyPrice: String,
     lifetimePrice: String,
+    monthlyHasFreeTrial: Boolean,
+    monthlyTrialDays: Int?,
     onOpenTerms: () -> Unit,
     onOpenPolicy: () -> Unit,
     onCancelAnytime: () -> Unit,
 ) {
+    val monthlyTermsLine = when {
+        monthlyHasFreeTrial && monthlyTrialDays != null -> stringResource(
+            R.string.paywall_subscription_terms_monthly_line_trial,
+            monthlyTrialDays,
+            monthlyPrice,
+        )
+        else -> stringResource(R.string.paywall_subscription_terms_monthly_line, monthlyPrice)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -520,6 +532,7 @@ private fun PaywallSubscriptionTermsSection(
                 weeklyPrice,
                 monthlyPrice,
                 lifetimePrice,
+                monthlyTermsLine,
             ),
             color = Alpine.OnSurfaceVariant,
             style = MaterialTheme.typography.bodySmall,
