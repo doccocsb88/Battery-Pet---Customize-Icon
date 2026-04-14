@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -137,6 +138,7 @@ fun PaywallScreen(
     val context = LocalContext.current
     val density = LocalDensity.current
     val statusBarTopInset = with(density) { WindowInsets.statusBars.getTop(this).toDp() }
+    val navigationBarBottomInset = with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
     val hostActivity = context.findActivity()
 
     DisposableEffect(hostActivity) {
@@ -405,7 +407,7 @@ fun PaywallScreen(
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp + navigationBarBottomInset))
         }
 
         // ─── Close button (glassmorphism pill) ───
