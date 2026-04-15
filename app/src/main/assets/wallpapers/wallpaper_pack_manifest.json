@@ -520,6 +520,182 @@
     "description": "Glowing underwater beauty with a calm, dreamy feel."
   },
   {
+    "id": "01_budda",
+    "pack_name": "Buddhist Zen",
+    "delivery_pack_name": "wallpaper_01_budda",
+    "title": "Buddhist Zen",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_budda__douyin.wtf_tiktok_7558357187505048843_11.webp",
+    "items": [
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_11",
+        "name": "Ink-Wash Zen Landscape",
+        "file": "douyin.wtf_tiktok_7558357187505048843_11.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_11.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_13",
+        "name": "Emerald Valley Retreat",
+        "file": "douyin.wtf_tiktok_7558357187505048843_13.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_13.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_15",
+        "name": "Pavilions Above the Clouds",
+        "file": "douyin.wtf_tiktok_7558357187505048843_15.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_15.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_17",
+        "name": "Azure Ice Waves",
+        "file": "douyin.wtf_tiktok_7558357187505048843_17.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_17.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_19",
+        "name": "Jade Buddha Serenity",
+        "file": "douyin.wtf_tiktok_7558357187505048843_19.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_19.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_21",
+        "name": "Dawn Over Ink Mountains",
+        "file": "douyin.wtf_tiktok_7558357187505048843_21.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_21.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_23",
+        "name": "Ancient Village by the Lake",
+        "file": "douyin.wtf_tiktok_7558357187505048843_23.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_23.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_25",
+        "name": "Silk Scroll Landscape",
+        "file": "douyin.wtf_tiktok_7558357187505048843_25.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_25.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_27",
+        "name": "Porcelain Mountain Vase",
+        "file": "douyin.wtf_tiktok_7558357187505048843_27.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_27.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_29",
+        "name": "Ancient Tree in Mist",
+        "file": "douyin.wtf_tiktok_7558357187505048843_29.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_29.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_3",
+        "name": "Golden Buddha Radiance",
+        "file": "douyin.wtf_tiktok_7558357187505048843_3.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_3.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_5",
+        "name": "Lotus Under Moonlight",
+        "file": "douyin.wtf_tiktok_7558357187505048843_5.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_5.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_7",
+        "name": "Golden Snow Peaks",
+        "file": "douyin.wtf_tiktok_7558357187505048843_7.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_7.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7558357187505048843_9",
+        "name": "Silent Red Torii",
+        "file": "douyin.wtf_tiktok_7558357187505048843_9.webp",
+        "path": "wallpapers/01_budda/douyin.wtf_tiktok_7558357187505048843_9.webp"
+      }
+    ],
+    "description": "Calm Buddha and ink-wash scenes in soothing blue-gold tones."
+  },
+  {
+    "id": "01_japans",
+    "pack_name": "Dreamy Japan",
+    "delivery_pack_name": "wallpaper_01_japans",
+    "title": "Dreamy Japan",
+    "thumbnail_asset_path": "wallpapers/category_thumbs/01_japans__douyin.wtf_tiktok_7600710017964100885_10.webp",
+    "items": [
+      {
+        "id": "douyin.wtf_tiktok_7600710017964100885_10",
+        "name": "Red Lantern Torii",
+        "file": "douyin.wtf_tiktok_7600710017964100885_10.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7600710017964100885_10.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7600710017964100885_2",
+        "name": "Shinto Path Reflection",
+        "file": "douyin.wtf_tiktok_7600710017964100885_2.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7600710017964100885_2.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7600710017964100885_4",
+        "name": "Cherry Blossom Alley",
+        "file": "douyin.wtf_tiktok_7600710017964100885_4.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7600710017964100885_4.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7600710017964100885_6",
+        "name": "Blue Night Pagoda",
+        "file": "douyin.wtf_tiktok_7600710017964100885_6.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7600710017964100885_6.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7600710017964100885_8",
+        "name": "Mount Fuji Train Journey",
+        "file": "douyin.wtf_tiktok_7600710017964100885_8.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7600710017964100885_8.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7601827133928819988_10",
+        "name": "Tokyo at Sunset",
+        "file": "douyin.wtf_tiktok_7601827133928819988_10.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7601827133928819988_10.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7601827133928819988_12",
+        "name": "Moonlit Japanese Castle",
+        "file": "douyin.wtf_tiktok_7601827133928819988_12.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7601827133928819988_12.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7601827133928819988_14",
+        "name": "Blue Hour Fuji Town",
+        "file": "douyin.wtf_tiktok_7601827133928819988_14.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7601827133928819988_14.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7601827133928819988_2",
+        "name": "Geisha in Snow",
+        "file": "douyin.wtf_tiktok_7601827133928819988_2.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7601827133928819988_2.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7601827133928819988_4",
+        "name": "Tokyo Night Rush",
+        "file": "douyin.wtf_tiktok_7601827133928819988_4.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7601827133928819988_4.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7601827133928819988_6",
+        "name": "Torii in Snow",
+        "file": "douyin.wtf_tiktok_7601827133928819988_6.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7601827133928819988_6.webp"
+      },
+      {
+        "id": "douyin.wtf_tiktok_7601827133928819988_8",
+        "name": "Snowy Temple Town",
+        "file": "douyin.wtf_tiktok_7601827133928819988_8.webp",
+        "path": "wallpapers/01_japans/douyin.wtf_tiktok_7601827133928819988_8.webp"
+      }
+    ],
+    "description": "Cinematic Japan with torii, temples, geisha, and Mount Fuji."
+  },
+  {
     "id": "100_getmotivated",
     "pack_name": "Getmotivated",
     "delivery_pack_name": "wallpaper_100_getmotivated",
