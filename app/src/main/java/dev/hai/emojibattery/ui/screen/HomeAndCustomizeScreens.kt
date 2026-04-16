@@ -35,6 +35,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.DataUsage
 import androidx.compose.material.icons.rounded.Flight
 import androidx.compose.material.icons.rounded.Mood
@@ -347,6 +348,7 @@ internal fun CustomizeHubScreen(
     onOpenSticker: () -> Unit,
     onOpenFeature: (CustomizeEntry) -> Unit,
     onOpenStatusBarCustom: () -> Unit,
+    onOpenThemeList: () -> Unit,
     onOpenAccessibility: () -> Unit,
     onOpenSearch: () -> Unit,
     onOpenNotch: () -> Unit,
@@ -439,6 +441,11 @@ internal fun CustomizeHubScreen(
                 cta = stringResource(R.string.home_promo_troll_cta),
                 leadingIconRes = R.drawable.ic_battery_troll_customize_32,
                 onClick = onOpenBatteryTroll,
+            )
+            ThemeShortcutCard(
+                title = stringResource(R.string.theme_shortcut_title),
+                subtitle = stringResource(R.string.theme_shortcut_subtitle),
+                onClick = onOpenThemeList,
             )
             Surface(
                 onClick = onOpenStatusBarCustom,
@@ -640,6 +647,57 @@ internal fun SmallCustomizeCard(
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.ExtraBold,
                 style = MaterialTheme.typography.titleLarge,
+            )
+        }
+    }
+}
+
+@Composable
+internal fun ThemeShortcutCard(
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 2.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(R.drawable.img_btn_status_bar_new),
+                contentDescription = title,
+                modifier = Modifier.size(40.dp),
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Text(
+                    title,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.ExtraBold,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Text(
+                    subtitle,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+            Icon(
+                imageVector = Icons.Rounded.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

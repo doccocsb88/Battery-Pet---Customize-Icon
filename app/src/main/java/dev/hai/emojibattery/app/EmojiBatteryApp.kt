@@ -342,6 +342,7 @@ fun EmojiBatteryApp(
                         viewModel.selectStatusTab(StatusBarTab.Battery)
                         navController.navigate(AppRoute.StatusBarCustom.route)
                     },
+                    onOpenThemeList = { navController.navigate(AppRoute.ThemeList.route) },
                     onOpenAccessibility = { showAccessibilityConsent = true },
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
                     onOpenNotch = { navController.navigate(AppRoute.Notch.route) },
@@ -802,6 +803,27 @@ fun EmojiBatteryApp(
                                 OverlayAccessibilityService.requestRefresh(context)
                             }
                         }
+                    },
+                )
+            }
+            composable(AppRoute.ThemeList.route) {
+                ThemeListScreen(
+                    onBack = { navController.popBackStack() },
+                    onOpenThemeDetail = { themeId ->
+                        navController.navigate(AppRoute.ThemeDetail.create(themeId))
+                    },
+                )
+            }
+            composable(
+                route = AppRoute.ThemeDetail.route,
+                arguments = listOf(navArgument("themeId") { type = NavType.StringType }),
+            ) { entry ->
+                val themeId = entry.arguments?.getString("themeId").orEmpty()
+                ThemeDetailScreen(
+                    themeId = themeId,
+                    onBack = { navController.popBackStack() },
+                    onApplyTheme = { optionId ->
+                        viewModel.postInfoMessage("Theme option placeholder applied: $optionId")
                     },
                 )
             }

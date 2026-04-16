@@ -196,6 +196,8 @@
     <string name="home_promo_troll_title">Battery Troll</string>
     <string name="home_promo_troll_body">Just for fun, fake your battery % to everyone</string>
     <string name="home_promo_troll_cta">Troll Mode</string>
+    <string name="theme_shortcut_title">Theme</string>
+    <string name="theme_shortcut_subtitle">Open theme list and customize each module</string>
     <string name="home_badge_new">NEW</string>
     <string name="home_status_bar_customize">Status Bar Customize</string>
     <string name="home_notch">Notch</string>
@@ -272,6 +274,20 @@
     <string name="legacy_theme_status_active">Active template</string>
     <string name="legacy_theme_status_inactive">Tap to load accent and surface colors</string>
     <string name="legacy_settings_tab_description">In the original app this tab is part of `StatusBarCustomFragment` and updates the same shared `BatteryConfig` preview state.</string>
+    <string name="theme_list_title">Theme List</string>
+    <string name="theme_list_subtitle">Choose a theme to open detail options.</string>
+    <string name="theme_list_item_count">%1$d options</string>
+    <string name="theme_detail_title">%1$s Theme</string>
+    <string name="theme_detail_subtitle">Select one option by preview image.</string>
+    <string name="theme_option_empty">No options available for this theme.</string>
+    <string name="theme_option_selected">Selected theme option</string>
+    <string name="apply_theme">Apply Theme</string>
+    <string name="theme_preview_swipe_hint">Swipe preview to change background</string>
+    <string name="theme_preview_clock_widget">Clock Widget</string>
+    <string name="theme_preview_battery_widget">Battery Widget</string>
+    <string name="theme_preview_style">Style</string>
+    <string name="theme_preview_layout">Layout</string>
+    <string name="theme_preview_default">Default</string>
 
     <!-- Real-time feature -->
     <string name="realtime_screen_title">Real Time</string>

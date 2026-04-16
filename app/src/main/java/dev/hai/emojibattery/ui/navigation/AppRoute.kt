@@ -38,6 +38,10 @@ sealed class AppRoute(val route: String) {
     data object RealTime : AppRoute("real_time")
     data object BatteryTroll : AppRoute("battery_troll")
     data object EmojiSticker : AppRoute("emoji_sticker")
+    data object ThemeList : AppRoute("theme_list")
+    data object ThemeDetail : AppRoute("theme_detail/{themeId}") {
+        fun create(themeId: String): String = "theme_detail/$themeId"
+    }
     data object FeatureDetail : AppRoute("feature/{feature}") {
         fun create(feature: String): String = "feature/$feature"
     }

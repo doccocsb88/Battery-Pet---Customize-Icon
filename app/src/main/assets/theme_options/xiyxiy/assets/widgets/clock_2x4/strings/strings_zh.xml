@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="date_time">M月d日 EEEE</string>
+    <string name="date_time_12">M月d日 Eaa</string>
+	<string name="date_lunar">YY年 NNNN</string>
+</resources>

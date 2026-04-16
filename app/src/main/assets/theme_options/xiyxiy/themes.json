@@ -1,0 +1,440 @@
+{
+  "themes": [
+    {
+      "id": "xiuyu",
+      "name": "XiuYu",
+      "options": [
+        {
+          "id": "xiuyu_option_01",
+          "name": "XiuYu Default",
+          "previewImage": "w_0",
+          "components": {
+            "wallpaper": {
+              "default": "w_0",
+              "variants": [
+                "w_0",
+                "w_1",
+                "w_2",
+                "w_3",
+                "w_4",
+                "w_5",
+                "w_6",
+                "w_7",
+                "w_8",
+                "w_9"
+              ]
+            },
+            "lockscreen": "theme_bg_template_02",
+            "clock_widget": {
+              "type": "maml_clock",
+              "engine": "awesome",
+              "module": "clock_2x4",
+              "assetRoot": "assets/widgets/clock_2x4",
+              "manifest": "manifest.xml",
+              "strings": {
+                "default": "strings/strings.xml",
+                "zh": "strings/strings_zh.xml"
+              },
+              "size": "2x4",
+              "supports": {
+                "styleSwitch": true,
+                "weather": true,
+                "steps": true,
+                "secondAnimation": true
+              },
+              "styleVariables": {
+                "secondColorStyle": {
+                  "name": "mz_color",
+                  "default": 0,
+                  "min": 0,
+                  "max": 4,
+                  "selectionMode": "srcid_suffix_index"
+                }
+              },
+              "runtimeVariables": {
+                "secondTens": "miaos",
+                "secondOnes": "miaog"
+              },
+              "manifestLogic": {
+                "secondBasePath": "styles/{glyph}.png",
+                "secondVariantSelector": "#mz_color",
+                "secondFrameGroupTens": "ss1..ss6",
+                "secondFrameGroupOnes": "sg1..sg10"
+              },
+              "assets": {
+                "timeDigits": [
+                  "styles/time",
+                  "styles/time1",
+                  "styles/time2",
+                  "styles/time3"
+                ],
+                "dateDigits": [
+                  "styles/time",
+                  "styles/time1",
+                  "styles/time2",
+                  "styles/time3"
+                ],
+                "secondDigits": [
+                  "styles/a",
+                  "styles/b",
+                  "styles/c",
+                  "styles/d",
+                  "styles/e",
+                  "styles/f",
+                  "styles/g",
+                  "styles/h",
+                  "styles/i",
+                  "styles/j"
+                ],
+                "weekDays": [
+                  "xq/x",
+                  "xq/y"
+                ],
+                "secondDigitsNormalized": {
+                  "folder": "styles",
+                  "digitToGlyph": {
+                    "0": "a",
+                    "1": "b",
+                    "2": "c",
+                    "3": "d",
+                    "4": "e",
+                    "5": "f",
+                    "6": "g",
+                    "7": "h",
+                    "8": "i",
+                    "9": "j"
+                  },
+                  "glyphVariants": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "filePattern": "{glyph}_{variant}.png",
+                  "secondsRender": {
+                    "tens": {
+                      "var": "miaos",
+                      "validRange": [
+                        0,
+                        5
+                      ]
+                    },
+                    "ones": {
+                      "var": "miaog",
+                      "validRange": [
+                        0,
+                        9
+                      ]
+                    }
+                  }
+                }
+              },
+              "styleCatalog13": {
+                "version": 1,
+                "sourceFolders": [
+                  "styles"
+                ],
+                "styles": [
+                  {
+                    "id": "S01_TIME",
+                    "label": "time",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 0,
+                    "secondGlyphHint": "a"
+                  },
+                  {
+                    "id": "S02_TIME1",
+                    "label": "time1",
+                    "source": "styles",
+                    "timePrefix": "styles/time1",
+                    "secondVariant": 1,
+                    "secondGlyphHint": "b"
+                  },
+                  {
+                    "id": "S03_TIME2",
+                    "label": "time2",
+                    "source": "styles",
+                    "timePrefix": "styles/time2",
+                    "secondVariant": 2,
+                    "secondGlyphHint": "c"
+                  },
+                  {
+                    "id": "S04_TIME3",
+                    "label": "time3",
+                    "source": "styles",
+                    "timePrefix": "styles/time3",
+                    "secondVariant": 3,
+                    "secondGlyphHint": "d"
+                  },
+                  {
+                    "id": "S05_A",
+                    "label": "a",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 0,
+                    "secondGlyphHint": "a"
+                  },
+                  {
+                    "id": "S06_B",
+                    "label": "b",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 1,
+                    "secondGlyphHint": "b"
+                  },
+                  {
+                    "id": "S07_C",
+                    "label": "c",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 2,
+                    "secondGlyphHint": "c"
+                  },
+                  {
+                    "id": "S08_D",
+                    "label": "d",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 3,
+                    "secondGlyphHint": "d"
+                  },
+                  {
+                    "id": "S09_E",
+                    "label": "e",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 4,
+                    "secondGlyphHint": "e"
+                  },
+                  {
+                    "id": "S10_F",
+                    "label": "f",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 0,
+                    "secondGlyphHint": "f"
+                  },
+                  {
+                    "id": "S11_G",
+                    "label": "g",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 1,
+                    "secondGlyphHint": "g"
+                  },
+                  {
+                    "id": "S12_H",
+                    "label": "h",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 2,
+                    "secondGlyphHint": "h"
+                  },
+                  {
+                    "id": "S13_J",
+                    "label": "j",
+                    "source": "styles",
+                    "timePrefix": "styles/time",
+                    "secondVariant": 3,
+                    "secondGlyphHint": "j"
+                  }
+                ]
+              }
+            },
+            "battery_widget": {
+              "type": "maml_battery",
+              "assetRoot": "assets/widgets/battery_widget",
+              "driver": "aod",
+              "description": "aod/aod_description.xml",
+              "layout": "aod/m2.xml",
+              "variables": {
+                "enable": "#battery_enable",
+                "level": "#battery_level",
+                "state": "#battery_state"
+              },
+              "stateMap": {
+                "normal": [
+                  {
+                    "max": 10,
+                    "asset": "aod/b/0.png"
+                  },
+                  {
+                    "max": 25,
+                    "asset": "aod/b/1.png"
+                  },
+                  {
+                    "max": 50,
+                    "asset": "aod/b/2.png"
+                  },
+                  {
+                    "max": 75,
+                    "asset": "aod/b/3.png"
+                  },
+                  {
+                    "max": 100,
+                    "asset": "aod/b/4.png"
+                  }
+                ],
+                "charging": [
+                  {
+                    "max": 10,
+                    "asset": "aod/c/0.png"
+                  },
+                  {
+                    "max": 25,
+                    "asset": "aod/c/1.png"
+                  },
+                  {
+                    "max": 50,
+                    "asset": "aod/c/2.png"
+                  },
+                  {
+                    "max": 75,
+                    "asset": "aod/c/3.png"
+                  },
+                  {
+                    "max": 100,
+                    "asset": "aod/c/4.png"
+                  }
+                ]
+              },
+              "statusbarSprite": {
+                "assetRoot": "statusbar",
+                "type": "sprite_sheet",
+                "layout": "vertical",
+                "frame": {
+                  "width": 90,
+                  "height": 75
+                },
+                "indexing": "top_to_bottom",
+                "progressMapping": "linear",
+                "modes": {
+                  "normal": {
+                    "asset": "stat_sys_battery",
+                    "frames": 16
+                  },
+                  "charging": {
+                    "asset": "stat_sys_battery_charge",
+                    "frames": 16
+                  },
+                  "digital": {
+                    "asset": "stat_sys_battery_digital",
+                    "frames": 8
+                  },
+                  "charge_digit": {
+                    "asset": "stat_sys_battery_charge_digit",
+                    "frames": 16
+                  },
+                  "power_save": {
+                    "asset": "stat_sys_battery_power_save",
+                    "frames": 16
+                  },
+                  "power_save_charge": {
+                    "asset": "stat_sys_battery_power_save_charge",
+                    "frames": 16
+                  },
+                  "power_save_digit": {
+                    "asset": "stat_sys_battery_power_save_digit",
+                    "frames": 16
+                  },
+                  "power_save_digit_charge": {
+                    "asset": "stat_sys_battery_power_save_digit_charge",
+                    "frames": 16
+                  },
+                  "performance_mode": {
+                    "asset": "stat_sys_battery_performance_mode",
+                    "frames": 16
+                  },
+                  "performance_mode_digit": {
+                    "asset": "stat_sys_battery_performance_mode_digit",
+                    "frames": 8
+                  }
+                }
+              }
+            },
+            "battery": {
+              "assetRoot": "assets/battery",
+              "type": "sprite_sheet",
+              "layout": "vertical",
+              "frame": {
+                "width": 90,
+                "height": 75
+              },
+              "indexing": "top_to_bottom",
+              "progressMapping": "linear",
+              "modes": {
+                "normal": {
+                  "asset": "stat_sys_battery",
+                  "frames": 16
+                },
+                "charging": {
+                  "asset": "stat_sys_battery_charge",
+                  "frames": 16
+                },
+                "digital": {
+                  "asset": "stat_sys_battery_digital",
+                  "frames": 8
+                },
+                "charge_digit": {
+                  "asset": "stat_sys_battery_charge_digit",
+                  "frames": 16
+                },
+                "power_save": {
+                  "asset": "stat_sys_battery_power_save",
+                  "frames": 16
+                },
+                "power_save_charge": {
+                  "asset": "stat_sys_battery_power_save_charge",
+                  "frames": 16
+                },
+                "power_save_digit": {
+                  "asset": "stat_sys_battery_power_save_digit",
+                  "frames": 16
+                },
+                "power_save_digit_charge": {
+                  "asset": "stat_sys_battery_power_save_digit_charge",
+                  "frames": 16
+                },
+                "performance_mode": {
+                  "asset": "stat_sys_battery_performance_mode",
+                  "frames": 16
+                },
+                "performance_mode_digit": {
+                  "asset": "stat_sys_battery_performance_mode_digit",
+                  "frames": 8
+                }
+              }
+            },
+            "wifi": [
+              "xiuyu_wifi_0",
+              "xiuyu_wifi_1",
+              "xiuyu_wifi_2",
+              "xiuyu_wifi_3",
+              "xiuyu_wifi_4"
+            ],
+            "signal": "ic_item_signal",
+            "bluetooth": [
+              "xiuyu_bluetooth_1",
+              "xiuyu_bluetooth_2",
+              "xiuyu_bluetooth_3",
+              "xiuyu_bluetooth_4",
+              "xiuyu_bluetooth_5"
+            ],
+            "charge": "ic_item_charge",
+            "data": [
+              "xiuyu_data_2g",
+              "xiuyu_data_3g",
+              "xiuyu_data_4g",
+              "xiuyu_data_5g",
+              "xiuyu_data_6g"
+            ],
+            "hotspot": "ic_item_hotspot",
+            "airplane": "ic_item_airplane"
+          }
+        }
+      ]
+    }
+  ]
+}
