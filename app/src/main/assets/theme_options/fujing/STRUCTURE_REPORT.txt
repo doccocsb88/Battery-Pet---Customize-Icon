@@ -1,0 +1,14 @@
+Output: /Users/mac/Documents/hai/Themes-zzz/extracted_mtz_fujing/_structured_assets/Themes/fujing
+Theme ID: fujing
+Theme Name: 浮境
+Asset counts by folder:
+- wallpaper: 6
+- lockscreen: 1
+- battery: 40
+- wifi: 5
+- signal: 5
+- bluetooth: 5
+- charge: 1
+- data: 5
+- hotspot: 5
+- airplane: 1

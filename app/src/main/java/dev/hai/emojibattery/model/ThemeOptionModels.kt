@@ -36,134 +36,16 @@ data class ThemeBatterySpriteSheet(
     val modes: Map<String, ThemeBatteryMode>,
 )
 
-data class ThemeClockWidgetStrings(
-    val default: String,
-    val zh: String,
-)
-
-data class ThemeClockWidgetSupports(
-    val styleSwitch: Boolean,
-    val weather: Boolean,
-    val steps: Boolean,
-    val secondAnimation: Boolean,
-)
-
-data class ThemeClockWidgetAssets(
-    val timeDigits: List<String>,
-    val dateDigits: List<String>,
-    val secondDigits: List<String>,
-    val weekDays: List<String>,
-    val secondDigitsNormalized: ThemeClockSecondDigitsNormalized?,
-)
-
-data class ThemeClockWidgetStyleVariable(
-    val name: String,
-    val default: Int,
-    val min: Int,
-    val max: Int,
-    val selectionMode: String,
-)
-
-data class ThemeClockWidgetStyleVariables(
-    val secondColorStyle: ThemeClockWidgetStyleVariable?,
-)
-
-data class ThemeClockWidgetRuntimeVariables(
-    val secondTens: String,
-    val secondOnes: String,
-)
-
-data class ThemeClockWidgetManifestLogic(
-    val secondBasePath: String,
-    val secondVariantSelector: String,
-    val secondFrameGroupTens: String,
-    val secondFrameGroupOnes: String,
-)
-
-data class ThemeClockStyleDefinition(
-    val id: String,
-    val label: String,
-    val source: String,
-    val timePrefix: String,
-    val secondVariant: Int,
-    val secondGlyphHint: String,
-)
-
-data class ThemeClockStyleCatalog13(
-    val version: Int,
-    val sourceFolders: List<String>,
-    val styles: List<ThemeClockStyleDefinition>,
-)
-
-data class ThemeClockSecondRenderSlot(
-    val variable: String,
-    val min: Int,
-    val max: Int,
-)
-
-data class ThemeClockSecondsRender(
-    val tens: ThemeClockSecondRenderSlot?,
-    val ones: ThemeClockSecondRenderSlot?,
-)
-
-data class ThemeClockSecondDigitsNormalized(
-    val folder: String,
-    val digitToGlyph: Map<String, String>,
-    val glyphVariants: List<Int>,
-    val filePattern: String,
-    val secondsRender: ThemeClockSecondsRender?,
-)
-
-data class ThemeClockWidgetConfig(
-    val type: String,
-    val engine: String,
-    val module: String,
-    val assetRoot: String,
-    val manifest: String,
-    val strings: ThemeClockWidgetStrings,
-    val size: String,
-    val supports: ThemeClockWidgetSupports,
-    val styleVariables: ThemeClockWidgetStyleVariables?,
-    val runtimeVariables: ThemeClockWidgetRuntimeVariables?,
-    val manifestLogic: ThemeClockWidgetManifestLogic?,
-    val styleCatalog13: ThemeClockStyleCatalog13?,
-    val assets: ThemeClockWidgetAssets,
-)
-
-data class ThemeBatteryWidgetVariables(
-    val enable: String,
-    val level: String,
-    val state: String,
-)
-
-data class ThemeBatteryWidgetStateItem(
-    val max: Int,
-    val asset: String,
-)
-
-data class ThemeBatteryWidgetConfig(
-    val type: String,
-    val assetRoot: String,
-    val driver: String,
-    val description: String,
-    val layout: String,
-    val variables: ThemeBatteryWidgetVariables,
-    val stateMap: Map<String, List<ThemeBatteryWidgetStateItem>>,
-    val statusbarSprite: ThemeBatterySpriteSheet?,
-)
-
 data class ThemeOptionComponents(
     val wallpaper: ThemeWallpaperConfig,
     val lockScreen: String,
-    val clockWidget: ThemeClockWidgetConfig?,
-    val batteryWidget: ThemeBatteryWidgetConfig?,
     val battery: ThemeBatterySpriteSheet?,
     val wifi: List<String>,
-    val signal: String,
+    val signal: List<String>,
     val bluetooth: List<String>,
     val charge: String,
     val data: List<String>,
-    val hotspot: String,
+    val hotspot: List<String>,
     val airplane: String,
 )
 
@@ -185,13 +67,11 @@ fun ThemeOptionComponents.wallpaperPreviewAsset(): String = wallpaper.default
 fun ThemeOptionComponents.batteryPreviewAsset(): String =
     battery?.modes?.get("normal")?.asset
         ?: battery?.modes?.values?.firstOrNull()?.asset
-        ?: batteryWidget?.statusbarSprite?.modes?.get("normal")?.asset
-        ?: batteryWidget?.statusbarSprite?.modes?.values?.firstOrNull()?.asset
         ?: charge
 
 object ThemeOptionCatalog {
     private const val ROOT_ASSET_DIR = "theme_options"
-    private val PACK_DIRS = listOf("xiyxiy", "xiyxiy2")
+    private val PACK_DIRS = listOf("xiyxiy", "fujing")
     private val IMAGE_EXTS = listOf("png", "jpg", "jpeg", "webp")
 
     fun assetUri(assetPath: String): String = "file:///android_asset/$assetPath"
@@ -231,7 +111,6 @@ object ThemeOptionCatalog {
                     val rawOptionId = optionObject.optString("id").ifBlank { "option_$optionIndex" }
                     val componentsObject = optionObject.optJSONObject("components") ?: JSONObject()
                     val wallpaperConfig = parseWallpaperConfig(assets, packDir, componentsObject)
-                    val batteryWidget = parseBatteryWidgetConfig(assets, packDir, componentsObject)
 
                     options += ThemeOptionItem(
                         id = "${scopedThemeId}__${rawOptionId}",
@@ -250,17 +129,11 @@ object ThemeOptionCatalog {
                                 componentDir = "lockscreen",
                                 assetKey = componentsObject.optString("lockscreen"),
                             ),
-                            clockWidget = parseClockWidgetConfig(
-                                assets = assets,
-                                packDir = packDir,
-                                componentsObject = componentsObject,
-                            ),
-                            batteryWidget = batteryWidget,
                             battery = parseBatteryConfig(
                                 assets = assets,
                                 packDir = packDir,
                                 componentsObject = componentsObject,
-                            ) ?: batteryWidget?.statusbarSprite,
+                            ),
                             wifi = resolveAssetArray(
                                 assets = assets,
                                 packDir = packDir,
@@ -268,11 +141,12 @@ object ThemeOptionCatalog {
                                 componentsObject = componentsObject,
                                 key = "wifi",
                             ),
-                            signal = resolveAssetPath(
+                            signal = resolveAssetListOrSingle(
                                 assets = assets,
                                 packDir = packDir,
                                 componentDir = "signal",
-                                assetKey = componentsObject.optString("signal"),
+                                componentsObject = componentsObject,
+                                key = "signal",
                             ),
                             bluetooth = resolveAssetArray(
                                 assets = assets,
@@ -294,11 +168,12 @@ object ThemeOptionCatalog {
                                 componentsObject = componentsObject,
                                 key = "data",
                             ),
-                            hotspot = resolveAssetPath(
+                            hotspot = resolveAssetListOrSingle(
                                 assets = assets,
                                 packDir = packDir,
                                 componentDir = "hotspot",
-                                assetKey = componentsObject.optString("hotspot"),
+                                componentsObject = componentsObject,
+                                key = "hotspot",
                             ),
                             airplane = resolveAssetPath(
                                 assets = assets,
@@ -358,286 +233,6 @@ object ThemeOptionCatalog {
             assetKey = wallpaperNode?.toString().orEmpty(),
         )
         return ThemeWallpaperConfig(default = single, variants = listOf(single).filter { it.isNotBlank() })
-    }
-
-    private fun parseClockWidgetConfig(
-        assets: AssetManager,
-        packDir: String,
-        componentsObject: JSONObject,
-    ): ThemeClockWidgetConfig? {
-        val clockObject = componentsObject.optJSONObject("clock_widget") ?: return null
-        val assetRoot = normalizeAssetRoot(
-            parentAssetRoot = "",
-            rawAssetRoot = clockObject.optString("assetRoot"),
-            fallback = "assets/widgets/clock_2x4",
-        )
-
-        val stringsObject = clockObject.optJSONObject("strings") ?: JSONObject()
-        val strings = ThemeClockWidgetStrings(
-            default = resolveAssetPathByRoot(
-                assets = assets,
-                packDir = packDir,
-                assetRoot = assetRoot,
-                assetKey = stringsObject.optString("default"),
-            ),
-            zh = resolveAssetPathByRoot(
-                assets = assets,
-                packDir = packDir,
-                assetRoot = assetRoot,
-                assetKey = stringsObject.optString("zh"),
-            ),
-        )
-
-        val supportsObject = clockObject.optJSONObject("supports") ?: JSONObject()
-        val supports = ThemeClockWidgetSupports(
-            styleSwitch = supportsObject.optBoolean("styleSwitch"),
-            weather = supportsObject.optBoolean("weather"),
-            steps = supportsObject.optBoolean("steps"),
-            secondAnimation = supportsObject.optBoolean("secondAnimation"),
-        )
-
-        val styleVariablesObject = clockObject.optJSONObject("styleVariables")
-        val styleVariables = styleVariablesObject?.let { styleJson ->
-            val secondColorStyleObject = styleJson.optJSONObject("secondColorStyle")
-            ThemeClockWidgetStyleVariables(
-                secondColorStyle = secondColorStyleObject?.let { secondStyle ->
-                    ThemeClockWidgetStyleVariable(
-                        name = secondStyle.optString("name"),
-                        default = secondStyle.optInt("default"),
-                        min = secondStyle.optInt("min"),
-                        max = secondStyle.optInt("max"),
-                        selectionMode = secondStyle.optString("selectionMode"),
-                    )
-                },
-            )
-        }
-
-        val runtimeVariablesObject = clockObject.optJSONObject("runtimeVariables")
-        val runtimeVariables = runtimeVariablesObject?.let {
-            ThemeClockWidgetRuntimeVariables(
-                secondTens = it.optString("secondTens"),
-                secondOnes = it.optString("secondOnes"),
-            )
-        }
-
-        val manifestLogicObject = clockObject.optJSONObject("manifestLogic")
-        val manifestLogic = manifestLogicObject?.let {
-            ThemeClockWidgetManifestLogic(
-                secondBasePath = it.optString("secondBasePath"),
-                secondVariantSelector = it.optString("secondVariantSelector"),
-                secondFrameGroupTens = it.optString("secondFrameGroupTens"),
-                secondFrameGroupOnes = it.optString("secondFrameGroupOnes"),
-            )
-        }
-
-        val styleCatalog13Object = clockObject.optJSONObject("styleCatalog13")
-        val styleCatalog13 = styleCatalog13Object?.let { catalog ->
-            val foldersArray = catalog.optJSONArray("sourceFolders") ?: JSONArray()
-            val sourceFolders = buildList {
-                for (index in 0 until foldersArray.length()) {
-                    val folder = foldersArray.optString(index)
-                    if (folder.isNotBlank()) add(folder)
-                }
-            }
-
-            val stylesArray = catalog.optJSONArray("styles") ?: JSONArray()
-            val styles = buildList {
-                for (index in 0 until stylesArray.length()) {
-                    val styleObject = stylesArray.optJSONObject(index) ?: continue
-                    add(
-                        ThemeClockStyleDefinition(
-                            id = styleObject.optString("id").ifBlank { "style_${index + 1}" },
-                            label = styleObject.optString("label").ifBlank { "Style ${index + 1}" },
-                            source = styleObject.optString("source"),
-                            timePrefix = resolveRelativePathByRoot(
-                                packDir = packDir,
-                                assetRoot = assetRoot,
-                                relativePath = styleObject.optString("timePrefix"),
-                            ),
-                            secondVariant = styleObject.optInt("secondVariant"),
-                            secondGlyphHint = styleObject.optString("secondGlyphHint"),
-                        ),
-                    )
-                }
-            }
-
-            ThemeClockStyleCatalog13(
-                version = catalog.optInt("version", 1),
-                sourceFolders = sourceFolders,
-                styles = styles,
-            )
-        }
-
-        val assetsObject = clockObject.optJSONObject("assets") ?: JSONObject()
-        val secondDigitsNormalizedObject = assetsObject.optJSONObject("secondDigitsNormalized")
-        val secondDigitsNormalized = secondDigitsNormalizedObject?.let { normalized ->
-            val digitToGlyphObject = normalized.optJSONObject("digitToGlyph") ?: JSONObject()
-            val digitToGlyph = linkedMapOf<String, String>()
-            val glyphKeys = digitToGlyphObject.keys()
-            while (glyphKeys.hasNext()) {
-                val key = glyphKeys.next()
-                digitToGlyph[key] = digitToGlyphObject.optString(key)
-            }
-
-            val glyphVariantsArray = normalized.optJSONArray("glyphVariants") ?: JSONArray()
-            val glyphVariants = buildList {
-                for (index in 0 until glyphVariantsArray.length()) {
-                    add(glyphVariantsArray.optInt(index))
-                }
-            }
-
-            val secondsRenderObject = normalized.optJSONObject("secondsRender")
-            val secondsRender = secondsRenderObject?.let { render ->
-                ThemeClockSecondsRender(
-                    tens = render.optJSONObject("tens")?.let { tens ->
-                        val range = tens.optJSONArray("validRange") ?: JSONArray()
-                        ThemeClockSecondRenderSlot(
-                            variable = tens.optString("var"),
-                            min = range.optInt(0),
-                            max = range.optInt(1),
-                        )
-                    },
-                    ones = render.optJSONObject("ones")?.let { ones ->
-                        val range = ones.optJSONArray("validRange") ?: JSONArray()
-                        ThemeClockSecondRenderSlot(
-                            variable = ones.optString("var"),
-                            min = range.optInt(0),
-                            max = range.optInt(1),
-                        )
-                    },
-                )
-            }
-
-            ThemeClockSecondDigitsNormalized(
-                folder = resolveRelativePathByRoot(
-                    packDir = packDir,
-                    assetRoot = assetRoot,
-                    relativePath = normalized.optString("folder"),
-                ),
-                digitToGlyph = digitToGlyph,
-                glyphVariants = glyphVariants,
-                filePattern = normalized.optString("filePattern"),
-                secondsRender = secondsRender,
-            )
-        }
-
-        val widgetAssets = ThemeClockWidgetAssets(
-            timeDigits = resolveRelativeAssetArrayByRoot(
-                packDir = packDir,
-                assetRoot = assetRoot,
-                array = assetsObject.optJSONArray("timeDigits"),
-            ),
-            dateDigits = resolveRelativeAssetArrayByRoot(
-                packDir = packDir,
-                assetRoot = assetRoot,
-                array = assetsObject.optJSONArray("dateDigits"),
-            ),
-            secondDigits = resolveRelativeAssetArrayByRoot(
-                packDir = packDir,
-                assetRoot = assetRoot,
-                array = assetsObject.optJSONArray("secondDigits"),
-            ),
-            weekDays = resolveRelativeAssetArrayByRoot(
-                packDir = packDir,
-                assetRoot = assetRoot,
-                array = assetsObject.optJSONArray("weekDays"),
-            ),
-            secondDigitsNormalized = secondDigitsNormalized,
-        )
-
-        return ThemeClockWidgetConfig(
-            type = clockObject.optString("type"),
-            engine = clockObject.optString("engine"),
-            module = clockObject.optString("module"),
-            assetRoot = buildAssetRootPath(packDir, assetRoot),
-            manifest = resolveAssetPathByRoot(
-                assets = assets,
-                packDir = packDir,
-                assetRoot = assetRoot,
-                assetKey = clockObject.optString("manifest"),
-            ),
-            strings = strings,
-            size = clockObject.optString("size"),
-            supports = supports,
-            styleVariables = styleVariables,
-            runtimeVariables = runtimeVariables,
-            manifestLogic = manifestLogic,
-            styleCatalog13 = styleCatalog13,
-            assets = widgetAssets,
-        )
-    }
-
-    private fun parseBatteryWidgetConfig(
-        assets: AssetManager,
-        packDir: String,
-        componentsObject: JSONObject,
-    ): ThemeBatteryWidgetConfig? {
-        val batteryWidgetObject = componentsObject.optJSONObject("battery_widget") ?: return null
-        val assetRoot = normalizeAssetRoot(
-            parentAssetRoot = "",
-            rawAssetRoot = batteryWidgetObject.optString("assetRoot"),
-            fallback = "assets/widgets/battery_widget",
-        )
-
-        val variablesObject = batteryWidgetObject.optJSONObject("variables") ?: JSONObject()
-        val variables = ThemeBatteryWidgetVariables(
-            enable = variablesObject.optString("enable"),
-            level = variablesObject.optString("level"),
-            state = variablesObject.optString("state"),
-        )
-
-        val stateMapObject = batteryWidgetObject.optJSONObject("stateMap") ?: JSONObject()
-        val stateMap = linkedMapOf<String, List<ThemeBatteryWidgetStateItem>>()
-        val states = stateMapObject.keys()
-        while (states.hasNext()) {
-            val stateName = states.next()
-            val itemsArray = stateMapObject.optJSONArray(stateName) ?: JSONArray()
-            val mappedItems = mutableListOf<ThemeBatteryWidgetStateItem>()
-            for (index in 0 until itemsArray.length()) {
-                val itemObject = itemsArray.optJSONObject(index) ?: continue
-                mappedItems += ThemeBatteryWidgetStateItem(
-                    max = itemObject.optInt("max"),
-                    asset = resolveAssetPathByRoot(
-                        assets = assets,
-                        packDir = packDir,
-                        assetRoot = assetRoot,
-                        assetKey = itemObject.optString("asset"),
-                    ),
-                )
-            }
-            stateMap[stateName] = mappedItems
-        }
-
-        val statusbarSprite = batteryWidgetObject.optJSONObject("statusbarSprite")?.let {
-            parseBatterySpriteSheet(
-                assets = assets,
-                packDir = packDir,
-                spriteObject = it,
-                parentAssetRoot = assetRoot,
-                fallbackAssetRoot = "$assetRoot/statusbar",
-            )
-        }
-
-        return ThemeBatteryWidgetConfig(
-            type = batteryWidgetObject.optString("type"),
-            assetRoot = buildAssetRootPath(packDir, assetRoot),
-            driver = batteryWidgetObject.optString("driver"),
-            description = resolveAssetPathByRoot(
-                assets = assets,
-                packDir = packDir,
-                assetRoot = assetRoot,
-                assetKey = batteryWidgetObject.optString("description"),
-            ),
-            layout = resolveAssetPathByRoot(
-                assets = assets,
-                packDir = packDir,
-                assetRoot = assetRoot,
-                assetKey = batteryWidgetObject.optString("layout"),
-            ),
-            variables = variables,
-            stateMap = stateMap,
-            statusbarSprite = statusbarSprite,
-        )
     }
 
     private fun parseBatteryConfig(
@@ -753,29 +348,36 @@ object ThemeOptionCatalog {
         return resolved
     }
 
-    private fun resolveRelativeAssetArrayByRoot(
+    private fun resolveAssetListOrSingle(
+        assets: AssetManager,
         packDir: String,
-        assetRoot: String,
-        array: JSONArray?,
+        componentDir: String,
+        componentsObject: JSONObject,
+        key: String,
     ): List<String> {
-        if (array == null) return emptyList()
-        val resolved = mutableListOf<String>()
-        for (index in 0 until array.length()) {
-            val relative = array.optString(index)
-            if (relative.isBlank()) continue
-            resolved += resolveRelativePathByRoot(packDir, assetRoot, relative)
+        return when (val node = componentsObject.opt(key)) {
+            is JSONArray -> {
+                val resolved = mutableListOf<String>()
+                for (index in 0 until node.length()) {
+                    resolved += resolveAssetPath(
+                        assets = assets,
+                        packDir = packDir,
+                        componentDir = componentDir,
+                        assetKey = node.optString(index),
+                    )
+                }
+                resolved.filter { it.isNotBlank() }
+            }
+            null -> emptyList()
+            else -> listOf(
+                resolveAssetPath(
+                    assets = assets,
+                    packDir = packDir,
+                    componentDir = componentDir,
+                    assetKey = node.toString(),
+                ),
+            ).filter { it.isNotBlank() }
         }
-        return resolved
-    }
-
-    private fun resolveRelativePathByRoot(
-        packDir: String,
-        assetRoot: String,
-        relativePath: String,
-    ): String {
-        if (relativePath.isBlank()) return ""
-        val rootPath = buildAssetRootPath(packDir, assetRoot)
-        return "$rootPath/$relativePath".replace("//", "/")
     }
 
     private fun resolveAssetPath(

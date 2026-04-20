@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Clock frameRate="60" resDensity="480" scaleByDensity="false" screenWidth="1080" type="awesome" useVariableUpdater="Battery,DateTime.Day,DateTime.Hour,DateTime.Minute,DateTime.Second" version="2">
+	<Var name="sfrn" expression="eq((#year%4),0)*ne((#year%100),0)+eq((#year%400),0)"/>
+	<Var name="jths" expression="86400-#hour24*60*60-#minute*60-#second"/>
+	<Var name="bzhs" expression="604800-(ifelse(eq(#day_of_week-1,0),7,#day_of_week-1)-1)*86400-#hour24*60*60-#minute*60-#second"/>
+	<Var name="byhs" expression="((eq(#month,0)+eq(#month,2)+eq(#month,4)+eq(#month,6)+eq(#month,7)+eq(#month,9)+eq(#month,11))*31+eq(#month,1)*ifelse(#sfrn,29,28)+(eq(#month,3)+eq(#month,5)+eq(#month,8)+eq(#month,10))*30)*24*60*60-(#date-1)*24*60*60-#hour24*60*60-#minute*60-#second"/>
+	<Var name="bygq" expression="(((eq(#month,0)+eq(#month,2)+eq(#month,4)+eq(#month,6)+eq(#month,7)+eq(#month,9)+eq(#month,11))*31+eq(#month,1)*ifelse(#sfrn,29,28)+(eq(#month,3)+eq(#month,5)+eq(#month,8)+eq(#month,10))*30)*24*60*60)"/>
+	<Var name="bybfb" expression="((eq(#month,0)+eq(#month,2)+eq(#month,4)+eq(#month,6)+eq(#month,7)+eq(#month,9)+eq(#month,11))*31+eq(#month,1)*ifelse(#sfrn,29,28)+(eq(#month,3)+eq(#month,5)+eq(#month,8)+eq(#month,10))*30)-(#date-1)"/>
+	<Var name="bfb" expression="100*#bybfb/(((eq(#month,0)+eq(#month,2)+eq(#month,4)+eq(#month,6)+eq(#month,7)+eq(#month,9)+eq(#month,11))*31+eq(#month,1)*ifelse(#sfrn,29,28)+(eq(#month,3)+eq(#month,5)+eq(#month,8)+eq(#month,10))*30))"/>
+	<Var alias="今天剩余时间" name="remaining_time" expression="int((#remaining_hour*60*60+#remaining_minute*60+#remaining_second)/86400*100)"/>
+	<Var alias="今天剩余分钟" name="remaining" expression="int(1440-(#hour24*60+#minute))"/>
+	<Var alias="当前剩余小时" name="remaining_hour" expression="23-#hour24"/>
+	<Var alias="当前剩余分钟" name="remaining_minute" expression="59-#minute"/>
+	<Var alias="当前剩余秒" name="remaining_second" expression="60-#second"/>
+	<Var alias="是否闰年变量" name="leap_year" expression="eq((#year%4),0)*ne((#year%100),0)+eq((#year%400),0)"/>
+	<Var alias="今年已过去天数" name="past_days" expression="gt(#month+1,1)*31+(28+#lya)*gt(#month+1,2)+gt(#month+1,3)*31+gt(#month+1,4)*30+gt(#month+1,5)*31+gt(#month+1,6)*30+gt(#month+1,7)*31+gt(#month+1,8)*31+gt(#month+1,9)*30+gt(#month+1,10)*31+gt(#month+1,11)*30+gt(#month+1,12)*31+#date"/>
+	<Var alias="今年剩余天数" name="remaining_days" expression="365+#leap_year-#past_days"/>
+	<Var alias="今年剩余天数比例" name="remaining_dayss" expression="int((#past_days)/(365+#leap_year)*100)"/>
+	<VariableBinders>
+		<ContentProviderBinder name="WeatherProvider" uri="content://weather/actualWeatherData/1" columns="city_id,city_name,weather_type,aqilevel,description,temperature,forecast_type,tmphighs,tmplows,wind,humidity,sunrise,sunset,pressure,weathernamesfrom,forecast_type,publish_time" countName="hasweather">
+			<Variable name="weather_city_id" type="string" column="city_id"/>
+			<Variable name="weather_location" type="string" column="city_name"/>
+			<Variable name="weather_id" type="int" column="weather_type"/>
+			<Variable name="weather_temperature" type="int" column="temperature"/>
+			<Variable name="weather_temperature" type="string" column="temperature"/>
+			<Variable name="weather_temperature_range" type="string" column="temperature_range"/>
+			<Variable name="weather_aqi" type="int" column="aqilevel"/>
+			<Variable name="weather_sunrise" type="int" column="sunrise"/>
+			<Variable name="weather_sunset" type="int" column="sunset"/>
+			<Variable name="weather_forecast_type" type="int" column="forecast_type"/>
+			<Variable name="weather_wind" type="string" column="wind"/>
+			<Variable name="weather_pressure" type="int" column="pressure"/>
+			<Variable name="weather_humidity" type="int" column="humidity"/>
+			<Variable name="weather_type" type="string" column="weather_type"/>
+			<Variable name="weather_description" type="string" column="description"/>
+			<Variable name="weather_weathernamesfrom" type="string" column="weathernamesfrom"/>
+			<Variable name="weather_temphigh" type="string" column="tmphighs"/>
+			<Variable name="weather_templow" type="string" column="tmplows"/>
+			<Variable name="weather_publish_time" type="string" column="publish_time"/>
+			<Trigger>
+				<!-- 天气 -->
+				<VariableCommand name="weatherId" expression="ifelse(#weather_id}25||#weather_id{0,0, (#weather_id}=4**#weather_id{=6||#weather_id}=8**#weather_id{=11||#weather_id==25),4,#weather_id}=13**#weather_id{=17,13 ,#weather_id}=18**#weather_id{=21||#weather_id==23,18,#weather_id)"/>
+			</Trigger>
+		</ContentProviderBinder>
+		<!-- 注意：不可卸载 小米健康App -->
+		<ContentProviderBinder name="MiSteps" uri="content://com.mi.health.provider.main/activity/steps/brief" column="steps,goal,distance,energy,strength_duration,summary" countName="hasSteps">
+			<Variable name="MiSteps_steps" type="string" column="steps"/>
+			<Variable name="MiSteps_goal" type="string" column="goal"/>
+			<Variable name="MiSteps_distance" type="string" column="distance"/>
+			<Variable name="MiSteps_energy" type="string" column="energy"/>
+			<Variable name="MiSteps_strength_duration" type="string" column="strength_duration"/>
+			<Variable name="MiSteps_summary" type="string" column="summary"/>
+		</ContentProviderBinder>
+		<BroadcastBinder action="initialization">
+			<Variable name="MiSteps_steps" type="string" extra="MiSteps_steps"/>
+			<Variable name="word_3" type="string" extra="word_3"/>
+		</BroadcastBinder>
+	</VariableBinders>
+	<ExternalCommands>
+		<Trigger action="resume,pause">
+			<AnimationCommand command="play" target="qq"/>
+			<AnimationCommand command="play" target="qq2"/>
+			<BinderCommand name="MiSteps" command="refresh"/>
+		</Trigger>
+		<Trigger action="resume">
+			<AnimationCommand target="framerateControllerAni" command="play"/>
+			<AnimationCommand target="YC_Ani1" command="play"/>
+			<AnimationCommand target="YC_Ani2" command="play"/>
+			<AnimationCommand target="YC_Ani3" command="play"/>
+			<AnimationCommand target="YC_Ani4" command="play"/>
+			<AnimationCommand target="YC_Ani5" command="play"/>
+			<AnimationCommand target="YC_Ani6" command="play"/>
+			<AnimationCommand target="YC_Ani7" command="play"/>
+			<Command target="ms_Ani.animation" value="play"/>
+			<Command target="fs_Ani.animation" value="play"/>
+			<Command target="ss_Ani.animation" value="play"/>
+			<Command target="mm_Ani.animation" value="play"/>
+			<Command target="fm_Ani.animation" value="play"/>
+			<Command target="sm_Ani.animation" value="play"/>
+			<Command target="aphms_Ani.animation" value="play"/>
+			<Command target="aphfs_Ani.animation" value="play"/>
+			<Command target="aphss_Ani.animation" value="play"/>
+			<Command target="aphmm_Ani.animation" value="play"/>
+			<Command target="aphfm_Ani.animation" value="play"/>
+			<Command target="aphsm_Ani.animation" value="play"/>
+		</Trigger>
+		<Trigger action="pause">
+			<AnimationCommand target="framerateControllerAni" command="play(0,0)"/>
+			<AnimationCommand target="YC_Ani1" command="play(0,0)"/>
+			<AnimationCommand target="YC_Ani2" command="play(0,0)"/>
+			<AnimationCommand target="YC_Ani3" command="play(0,0)"/>
+			<AnimationCommand target="YC_Ani4" command="play(0,0)"/>
+			<AnimationCommand target="YC_Ani5" command="play(0,0)"/>
+			<AnimationCommand target="YC_Ani6" command="play(0,0)"/>
+			<AnimationCommand target="YC_Ani7" command="play(0,0)"/>
+		</Trigger>
+	</ExternalCommands>
+	<!-- 动画 -->
+	<!--    秒钟十(变量动画） -->
+	<Var name="ms_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="0" time="0" easeType="BackEaseOut"/>
+			<Item value="-119" time="700"/>
+			<Item value="-119" time="9300" easeType="QuintEaseIn"/>
+			<Item value="-238" time="10000"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="aphms_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="102" time="0" easeType="BackEaseOut"/>
+			<Item value="255" time="700"/>
+			<Item value="255" time="9300" easeType="QuintEaseIn"/>
+			<Item value="102" time="10000"/>
+		</VariableAnimation>
+	</Var>
+	<!--    秒钟个(变量动画） -->
+	<Var name="mm_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="0" time="0" easeType="BackEaseOut"/>
+			<Item value="-119" time="500" easeType="QuintEaseIn"/>
+			<Item value="-238" time="1000"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="aphmm_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="102" time="0" easeType="BackEaseOut"/>
+			<Item value="255" time="500"/>
+			<Item value="102" time="1000" easeType="QuintEaseIn"/>
+		</VariableAnimation>
+	</Var>
+	<!--    分钟十(变量动画） -->
+	<Var name="fs_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="0" time="0" easeType="BackEaseOut"/>
+			<Item value="-119" time="1100"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="aphfs_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="102" time="0" easeType="BackEaseOut"/>
+			<Item value="255" time="1100"/>
+		</VariableAnimation>
+	</Var>
+	<!--    分钟个(变量动画） -->
+	<Var name="fm_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="0" time="0" easeType="BackEaseOut"/>
+			<Item value="-119" time="900"/>
+			<Item value="-119" time="59100" easeType="QuintEaseIn"/>
+			<Item value="-238" time="60000"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="aphfm_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="102" time="0" easeType="BackEaseOut"/>
+			<Item value="255" time="900"/>
+			<Item value="255" time="59100" easeType="QuintEaseIn"/>
+			<Item value="102" time="60000"/>
+		</VariableAnimation>
+	</Var>
+	<!--    时钟十(变量动画） -->
+	<Var name="ss_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="0" time="0" easeType="BackEaseOut"/>
+			<Item value="-119" time="1500"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="aphss_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="102" time="0" easeType="BackEaseOut"/>
+			<Item value="255" time="1500"/>
+		</VariableAnimation>
+	</Var>
+	<!--    时钟个(变量动画） -->
+	<Var name="sm_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="0" time="0" easeType="BackEaseOut"/>
+			<Item value="-119" time="1300"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="aphsm_Ani">
+		<VariableAnimation loop="false" initPause="false" resetOnRestart="true">
+			<Item value="102" time="0" easeType="BackEaseOut"/>
+			<Item value="255" time="1300"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="YC_Ani1">
+		<VariableAnimation loop="false" initPause="false">
+			<AniFrame value="0" time="0" easeType="BackEaseOut"/>
+			<AniFrame value="1" time="1100"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="YC_Ani2">
+		<VariableAnimation loop="false" initPause="false">
+			<AniFrame value="0" time="100" easeType="BackEaseOut"/>
+			<AniFrame value="1" time="1200"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="YC_Ani3">
+		<VariableAnimation loop="false" initPause="false">
+			<AniFrame value="0" time="200" easeType="BackEaseOut"/>
+			<AniFrame value="1" time="1300"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="YC_Ani4">
+		<VariableAnimation loop="false" initPause="false">
+			<AniFrame value="0" time="300" easeType="BackEaseOut"/>
+			<AniFrame value="1" time="1400"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="YC_Ani5">
+		<VariableAnimation loop="false" initPause="false">
+			<AniFrame value="0" time="400" easeType="BackEaseOut"/>
+			<AniFrame value="1" time="1500"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="YC_Ani6">
+		<VariableAnimation loop="false" initPause="false">
+			<AniFrame value="0" time="500" easeType="BackEaseOut"/>
+			<AniFrame value="1" time="1600"/>
+		</VariableAnimation>
+	</Var>
+	<Var name="YC_Ani7">
+		<VariableAnimation loop="false" initPause="false">
+			<AniFrame value="0" time="600" easeType="BackEaseOut"/>
+			<AniFrame value="1" time="1700"/>
+		</VariableAnimation>
+	</Var>
+	<!--    秒钟位移(变量动画） -->
+	<VarArray type="number">
+		<Vars>
+			<Var name="miaog" index="#second%10"/>
+		</Vars>
+		<Items>
+			<Item value="0"/>
+			<Item value="1"/>
+			<Item value="2"/>
+			<Item value="3"/>
+			<Item value="4"/>
+			<Item value="5"/>
+			<Item value="6"/>
+			<Item value="7"/>
+			<Item value="8"/>
+			<Item value="9"/>
+		</Items>
+	</VarArray>
+	<VarArray type="number">
+		<Vars>
+			<Var name="miaos" index="#second/10"/>
+		</Vars>
+		<Items>
+			<Item value="0"/>
+			<Item value="1"/>
+			<Item value="2"/>
+			<Item value="3"/>
+			<Item value="4"/>
+			<Item value="5"/>
+		</Items>
+	</VarArray>
+	<!--    分钟位移(变量动画） -->
+	<VarArray type="number">
+		<Vars>
+			<Var name="feng" index="#minute%10"/>
+		</Vars>
+		<Items>
+			<Item value="0"/>
+			<Item value="1"/>
+			<Item value="2"/>
+			<Item value="3"/>
+			<Item value="4"/>
+			<Item value="5"/>
+			<Item value="6"/>
+			<Item value="7"/>
+			<Item value="8"/>
+			<Item value="9"/>
+		</Items>
+	</VarArray>
+	<VarArray type="number">
+		<Vars>
+			<Var name="fens" index="#minute/10"/>
+		</Vars>
+		<Items>
+			<Item value="0"/>
+			<Item value="1"/>
+			<Item value="2"/>
+			<Item value="3"/>
+			<Item value="4"/>
+			<Item value="5"/>
+		</Items>
+	</VarArray>
+	<!--    时钟位移(变量动画） -->
+	<VarArray type="number">
+		<Vars>
+			<Var name="shig" index="#hour24%10"/>
+		</Vars>
+		<Items>
+			<Item value="0"/>
+			<Item value="1"/>
+			<Item value="2"/>
+			<Item value="3"/>
+			<Item value="4"/>
+			<Item value="5"/>
+			<Item value="6"/>
+			<Item value="7"/>
+			<Item value="8"/>
+			<Item value="9"/>
+		</Items>
+	</VarArray>
+	<VarArray type="number">
+		<Vars>
+			<Var name="shis" index="#hour24/10"/>
+		</Vars>
+		<Items>
+			<Item value="0"/>
+			<Item value="1"/>
+			<Item value="2"/>
+		</Items>
+	</VarArray>
+	<VarArray type="number">
+		<Vars>
+			<Var name="shis12" index="#hour12/10"/>
+		</Vars>
+		<Items>
+			<Item value="1"/>
+			<Item value="2"/>
+		</Items>
+	</VarArray>
+	<VarArray type="number">
+		<Vars>
+			<Var name="shif12" index="#hour12%10"/>
+		</Vars>
+		<Items>
+			<Item value="0"/>
+			<Item value="1"/>
+			<Item value="2"/>
+			<Item value="3"/>
+			<Item value="4"/>
+			<Item value="5"/>
+			<Item value="6"/>
+			<Item value="7"/>
+			<Item value="8"/>
+			<Item value="9"/>
+		</Items>
+	</VarArray>
+	<!-- 动画触发事件 -->
+	<Var name="time3" expression="#miaos" threshold="1">
+		<Trigger>
+			<Command target="ms_Ani.animation" value="play"/>
+			<Command target="aphms_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<Var name="time4" expression="#miaog" threshold="1">
+		<Trigger>
+			<Command target="mm_Ani.animation" value="play"/>
+			<Command target="aphmm_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<Var name="time1" expression="#feng" threshold="1">
+		<Trigger>
+			<Command target="fm_Ani.animation" value="play"/>
+			<Command target="aphfm_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<Var name="time2" expression="#fens" threshold="1">
+		<Trigger>
+			<Command target="fs_Ani.animation" value="play"/>
+			<Command target="aphfs_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<Var name="time5" expression="#shig" threshold="1">
+		<Trigger>
+			<Command target="sm_Ani.animation" value="play"/>
+			<Command target="aphsm_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<Var name="time6" expression="#shis" threshold="1">
+		<Trigger>
+			<Command target="ss_Ani.animation" value="play"/>
+			<Command target="aphss_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<Var name="time7" expression="#shig" threshold="1">
+		<Trigger>
+			<Command target="sm_Ani.animation" value="play"/>
+			<Command target="aphsm_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<Var name="time8" expression="#shis" threshold="1">
+		<Trigger>
+			<Command target="ss_Ani.animation" value="play"/>
+			<Command target="aphss_Ani.animation" value="play"/>
+		</Trigger>
+	</Var>
+	<!-- 时钟底板 -->
+	<Group y="0" x="0" visibility="1">
+		<Group x="0" visibility="1">
+			<!-- 日期触摸 -->
+			<Button align="right" alignV="center" h="60" w="100" y="#view_height/2" x="#view_width/2-270" visibility="eq(#bjqh_num,0)">
+				<Triggers>
+					<Trigger action="up">
+						<IntentCommand action="android.intent.action.MAIN" package="com.android.calendar" class="com.android.calendar.AllInOneActivity"/>
+					</Trigger>
+				</Triggers>
+			</Button>
+			<Button align="left" alignV="center" h="60" w="100" y="#view_height/2" x="#view_width/2+270" visibility="eq(#bjqh_num,0)">
+				<Triggers>
+					<Trigger action="up">
+						<IntentCommand action="android.intent.action.MAIN" package="com.android.calendar" class="com.android.calendar.AllInOneActivity"/>
+					</Trigger>
+				</Triggers>
+			</Button>
+			<!-- 1 -->
+			<Group alpha="255*#YC_Ani1" visibility="eq(#clock_num,0)">
+				<Image name="ss1" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="7/s0.png" srcid="#sjys_num" visibility="eq(#miaos,0)"/>
+				<Image name="ss2" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="7/g1.png" srcid="#sjys_num" visibility="eq(#miaos,1)"/>
+				<Image name="ss3" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="7/g2.png" srcid="#sjys_num" visibility="eq(#miaos,2)"/>
+				<Image name="ss4" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="7/g3.png" srcid="#sjys_num" visibility="eq(#miaos,3)"/>
+				<Image name="ss5" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="7/g4.png" srcid="#sjys_num" visibility="eq(#miaos,4)"/>
+				<Image name="ss6" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="7/s5.png" srcid="#sjys_num" visibility="eq(#miaos,5)"/>
+				<!--    秒个位数 -->
+				<Image name="sg10" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g0.png" srcid="#sjys_num" visibility="eq(#miaog,0)"/>
+				<Image name="sg2" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g1.png" srcid="#sjys_num" visibility="eq(#miaog,1)"/>
+				<Image name="sg3" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g2.png" srcid="#sjys_num" visibility="eq(#miaog,2)"/>
+				<Image name="sg4" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g3.png" srcid="#sjys_num" visibility="eq(#miaog,3)"/>
+				<Image name="sg5" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g4.png" srcid="#sjys_num" visibility="eq(#miaog,4)"/>
+				<Image name="sg6" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g5.png" srcid="#sjys_num" visibility="eq(#miaog,5)"/>
+				<Image name="sg7" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g6.png" srcid="#sjys_num" visibility="eq(#miaog,6)"/>
+				<Image name="sg8" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g7.png" srcid="#sjys_num" visibility="eq(#miaog,7)"/>
+				<Image name="sg9" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g8.png" srcid="#sjys_num" visibility="eq(#miaog,8)"/>
+				<Image name="sg1" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="7/g9.png" srcid="#sjys_num" visibility="eq(#miaog,9)"/>
+				<!--    分十位数 -->
+				<!--    分十位数 -->
+				<!--    分十位数 -->
+				<Image name="fs1" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="7/s0.png" srcid="#sjys_num" visibility="eq(#fens,0)"/>
+				<Image name="fs2" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="7/g1.png" srcid="#sjys_num" visibility="eq(#fens,1)"/>
+				<Image name="fs3" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="7/g2.png" srcid="#sjys_num" visibility="eq(#fens,2)"/>
+				<Image name="fs4" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="7/g3.png" srcid="#sjys_num" visibility="eq(#fens,3)"/>
+				<Image name="fs5" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="7/g4.png" srcid="#sjys_num" visibility="eq(#fens,4)"/>
+				<Image name="fs6" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="7/s5.png" srcid="#sjys_num" visibility="eq(#fens,5)"/>
+				<!--    分个位数 -->
+				<Image name="fg1" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g0.png" srcid="#sjys_num" visibility="eq(#feng,0)"/>
+				<Image name="fg2" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g1.png" srcid="#sjys_num" visibility="eq(#feng,1)"/>
+				<Image name="fg3" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g2.png" srcid="#sjys_num" visibility="eq(#feng,2)"/>
+				<Image name="fg4" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g3.png" srcid="#sjys_num" visibility="eq(#feng,3)"/>
+				<Image name="fg5" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g4.png" srcid="#sjys_num" visibility="eq(#feng,4)"/>
+				<Image name="fg6" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g5.png" srcid="#sjys_num" visibility="eq(#feng,5)"/>
+				<Image name="fg7" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g6.png" srcid="#sjys_num" visibility="eq(#feng,6)"/>
+				<Image name="fg8" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g7.png" srcid="#sjys_num" visibility="eq(#feng,7)"/>
+				<Image name="fg9" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g8.png" srcid="#sjys_num" visibility="eq(#feng,8)"/>
+				<Image name="fg10" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="7/g9.png" srcid="#sjys_num" visibility="eq(#feng,9)"/>
+				<!--    时钟十位数24 -->
+				<!--    时钟十位数24 -->
+				<!--    时钟十位数24 -->
+				<Group visibility="eq(#time_format,1)">
+					<Image name="hgb1" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="7/ss0.png" srcid="#sjys_num" visibility="eq(#shis,0)"/>
+					<Image name="hgb2" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="7/g1.png" srcid="#sjys_num" visibility="eq(#shis,1)"/>
+					<Image name="hgb3" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="7/ss2.png" srcid="#sjys_num" visibility="eq(#shis,2)"/>
+					<!--    时钟个位数24 -->
+					<Image name="hga1" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g0.png" srcid="#sjys_num" visibility="eq(#hour24%10,0)"/>
+					<Image name="hga2" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g1.png" srcid="#sjys_num" visibility="eq(#hour24%10,1)"/>
+					<Image name="hga3" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g2.png" srcid="#sjys_num" visibility="eq(#hour24%10,2)"/>
+					<Image name="hga4" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g3.png" srcid="#sjys_num" visibility="eq(#hour24%10,3)"/>
+					<Image name="hga5" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g4.png" srcid="#sjys_num" visibility="eq(#hour24%10,4)"/>
+					<Image name="hga6" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g5.png" srcid="#sjys_num" visibility="eq(#hour24%10,5)"/>
+					<Image name="hga7" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g6.png" srcid="#sjys_num" visibility="eq(#hour24%10,6)"/>
+					<Image name="hga8" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g7.png" srcid="#sjys_num" visibility="eq(#hour24%10,7)"/>
+					<Image name="hga9" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g8.png" srcid="#sjys_num" visibility="eq(#hour24%10,8)"/>
+					<Image name="hga10" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="7/g9.png" srcid="#sjys_num" visibility="eq(#hour24%10,9)"/>
+				</Group>
+				<!--    时钟十位数12 -->
+				<!--    时钟十位数12 -->
+				<!--    时钟十位数12 -->
+				<Group visibility="eq(#time_format,0)">
+					<Group visibility="ne(#hour24,12)*#hour24">
+						<Image name="hgd1" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="7/ss0.png" srcid="#sjys_num" visibility="eq(#shis12,1)"/>
+					</Group>
+					<Image name="hgd2" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="7/g1.png" srcid="#sjys_num" visibility="eq(#shis12,2)"/>
+					<!--    时钟个位数12 -->
+					<Group visibility="ne(#hour24,12)*#hour24">
+						<Image name="hgc1" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g0.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,0)"/>
+					</Group>
+					<Image name="hgc2" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g1.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,1)"/>
+					<Image name="hgc3" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g2.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,2)"/>
+					<Image name="hgc4" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g3.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,3)"/>
+					<Image name="hgc5" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g4.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,4)"/>
+					<Image name="hgc6" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g5.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,5)"/>
+					<Image name="hgc7" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g6.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,6)"/>
+					<Image name="hgc8" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g7.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,7)"/>
+					<Image name="hgc9" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g8.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,8)"/>
+					<Image name="hgc10" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="7/g9.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,9)"/>
+				</Group>
+				<!--    :素材 -->
+				<Image x="#view_width/2+90" y="#view_height/2+119-119*#YC_Ani2" alpha="255*#YC_Ani2" align="center" alignV="center" srcid="#sjys_num" src="7/dot.png"/>
+				<Image x="#view_width/2-90" y="#view_height/2+119-119*#YC_Ani2" alpha="255*#YC_Ani2" align="center" alignV="center" srcid="#sjys_num" src="7/dot.png"/>
+			</Group>
+			<Group alpha="255*#YC_Ani1" visibility="eq(#clock_num,1)">
+				<Image name="ss1" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="8/s0.png" srcid="#sjys_num" visibility="eq(#miaos,0)"/>
+				<Image name="ss2" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="8/g1.png" srcid="#sjys_num" visibility="eq(#miaos,1)"/>
+				<Image name="ss3" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="8/g2.png" srcid="#sjys_num" visibility="eq(#miaos,2)"/>
+				<Image name="ss4" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="8/g3.png" srcid="#sjys_num" visibility="eq(#miaos,3)"/>
+				<Image name="ss5" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="8/g4.png" srcid="#sjys_num" visibility="eq(#miaos,4)"/>
+				<Image name="ss6" x="#view_width/2+144" y="#view_height/2+119+#ms_Ani" alpha="#aphms_Ani" align="center" alignV="center" src="8/s5.png" srcid="#sjys_num" visibility="eq(#miaos,5)"/>
+				<!--    秒个位数 -->
+				<Image name="sg10" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g0.png" srcid="#sjys_num" visibility="eq(#miaog,0)"/>
+				<Image name="sg2" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g1.png" srcid="#sjys_num" visibility="eq(#miaog,1)"/>
+				<Image name="sg3" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g2.png" srcid="#sjys_num" visibility="eq(#miaog,2)"/>
+				<Image name="sg4" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g3.png" srcid="#sjys_num" visibility="eq(#miaog,3)"/>
+				<Image name="sg5" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g4.png" srcid="#sjys_num" visibility="eq(#miaog,4)"/>
+				<Image name="sg6" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g5.png" srcid="#sjys_num" visibility="eq(#miaog,5)"/>
+				<Image name="sg7" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g6.png" srcid="#sjys_num" visibility="eq(#miaog,6)"/>
+				<Image name="sg8" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g7.png" srcid="#sjys_num" visibility="eq(#miaog,7)"/>
+				<Image name="sg9" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g8.png" srcid="#sjys_num" visibility="eq(#miaog,8)"/>
+				<Image name="sg1" x="#view_width/2+220" y="#view_height/2+119+#mm_Ani" alpha="#aphmm_Ani" align="center" alignV="center" src="8/g9.png" srcid="#sjys_num" visibility="eq(#miaog,9)"/>
+				<!--    分十位数 -->
+				<!--    分十位数 -->
+				<!--    分十位数 -->
+				<Image name="fs1" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="8/s0.png" srcid="#sjys_num" visibility="eq(#fens,0)"/>
+				<Image name="fs2" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="8/g1.png" srcid="#sjys_num" visibility="eq(#fens,1)"/>
+				<Image name="fs3" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="8/g2.png" srcid="#sjys_num" visibility="eq(#fens,2)"/>
+				<Image name="fs4" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="8/g3.png" srcid="#sjys_num" visibility="eq(#fens,3)"/>
+				<Image name="fs5" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="8/g4.png" srcid="#sjys_num" visibility="eq(#fens,4)"/>
+				<Image name="fs6" x="#view_width/2-38" align="center" alignV="center" y="#view_height/2+119+#fs_Ani" alpha="#aphfs_Ani" src="8/s5.png" srcid="#sjys_num" visibility="eq(#fens,5)"/>
+				<!--    分个位数 -->
+				<Image name="fg1" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g0.png" srcid="#sjys_num" visibility="eq(#feng,0)"/>
+				<Image name="fg2" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g1.png" srcid="#sjys_num" visibility="eq(#feng,1)"/>
+				<Image name="fg3" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g2.png" srcid="#sjys_num" visibility="eq(#feng,2)"/>
+				<Image name="fg4" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g3.png" srcid="#sjys_num" visibility="eq(#feng,3)"/>
+				<Image name="fg5" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g4.png" srcid="#sjys_num" visibility="eq(#feng,4)"/>
+				<Image name="fg6" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g5.png" srcid="#sjys_num" visibility="eq(#feng,5)"/>
+				<Image name="fg7" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g6.png" srcid="#sjys_num" visibility="eq(#feng,6)"/>
+				<Image name="fg8" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g7.png" srcid="#sjys_num" visibility="eq(#feng,7)"/>
+				<Image name="fg9" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g8.png" srcid="#sjys_num" visibility="eq(#feng,8)"/>
+				<Image name="fg10" x="#view_width/2+38" y="#view_height/2+119+#fm_Ani" alpha="#aphfm_Ani" align="center" alignV="center" src="8/g9.png" srcid="#sjys_num" visibility="eq(#feng,9)"/>
+				<!--    时钟十位数24 -->
+				<!--    时钟十位数24 -->
+				<!--    时钟十位数24 -->
+				<Group visibility="eq(#time_format,1)">
+					<Image name="hgb1" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="8/ss0.png" srcid="#sjys_num" visibility="eq(#shis,0)"/>
+					<Image name="hgb2" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="8/g1.png" srcid="#sjys_num" visibility="eq(#shis,1)"/>
+					<Image name="hgb3" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="8/ss2.png" srcid="#sjys_num" visibility="eq(#shis,2)"/>
+					<!--    时钟个位数24 -->
+					<Image name="hga1" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g0.png" srcid="#sjys_num" visibility="eq(#hour24%10,0)"/>
+					<Image name="hga2" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g1.png" srcid="#sjys_num" visibility="eq(#hour24%10,1)"/>
+					<Image name="hga3" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g2.png" srcid="#sjys_num" visibility="eq(#hour24%10,2)"/>
+					<Image name="hga4" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g3.png" srcid="#sjys_num" visibility="eq(#hour24%10,3)"/>
+					<Image name="hga5" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g4.png" srcid="#sjys_num" visibility="eq(#hour24%10,4)"/>
+					<Image name="hga6" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g5.png" srcid="#sjys_num" visibility="eq(#hour24%10,5)"/>
+					<Image name="hga7" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g6.png" srcid="#sjys_num" visibility="eq(#hour24%10,6)"/>
+					<Image name="hga8" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g7.png" srcid="#sjys_num" visibility="eq(#hour24%10,7)"/>
+					<Image name="hga9" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g8.png" srcid="#sjys_num" visibility="eq(#hour24%10,8)"/>
+					<Image name="hga10" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" align="center" alignV="center" src="8/g9.png" srcid="#sjys_num" visibility="eq(#hour24%10,9)"/>
+				</Group>
+				<!--    时钟十位数12 -->
+				<!--    时钟十位数12 -->
+				<!--    时钟十位数12 -->
+				<Group visibility="eq(#time_format,0)">
+					<Group visibility="ne(#hour24,12)*#hour24">
+						<Image name="hgd1" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="8/ss0.png" srcid="#sjys_num" visibility="eq(#shis12,1)"/>
+					</Group>
+					<Image name="hgd2" x="#view_width/2-220" y="#view_height/2+119+#ss_Ani" alpha="#aphss_Ani" align="center" alignV="center" src="8/g1.png" srcid="#sjys_num" visibility="eq(#shis12,2)"/>
+					<!--    时钟个位数12 -->
+					<Group visibility="ne(#hour24,12)*#hour24">
+						<Image name="hgc1" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g0.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,0)"/>
+					</Group>
+					<Image name="hgc2" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g1.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,1)"/>
+					<Image name="hgc3" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g2.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,2)"/>
+					<Image name="hgc4" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g3.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,3)"/>
+					<Image name="hgc5" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g4.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,4)"/>
+					<Image name="hgc6" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g5.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,5)"/>
+					<Image name="hgc7" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g6.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,6)"/>
+					<Image name="hgc8" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g7.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,7)"/>
+					<Image name="hgc9" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g8.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,8)"/>
+					<Image name="hgc10" x="#view_width/2-144" y="#view_height/2+119+#sm_Ani" alpha="#aphsm_Ani" src="8/g9.png" align="center" alignV="center" srcid="#sjys_num" visibility="eq(#hour12%10,9)"/>
+				</Group>
+				<!--    :素材 -->
+				<Image x="#view_width/2+90" y="#view_height/2+119-119*#YC_Ani2" alpha="255*#YC_Ani2" align="center" alignV="center" srcid="#sjys_num" src="8/dot.png"/>
+				<Image x="#view_width/2-90" y="#view_height/2+119-119*#YC_Ani2" alpha="255*#YC_Ani2" align="center" alignV="center" srcid="#sjys_num" src="8/dot.png"/>
+			</Group>
+			<Group visibility="eq(#bjqh_num,1)*eq(#clock_num,0)">
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,0)||eq(#sjys_num,5)||eq(#sjys_num,8)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="7/z1.png"/>
+				<Image visibility="eq(#sjys_num,0)||eq(#sjys_num,5)||eq(#sjys_num,8)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="7/z1.png"/>
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,1)||eq(#sjys_num,3)||eq(#sjys_num,4)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="7/z3.png"/>
+				<Image visibility="eq(#sjys_num,1)||eq(#sjys_num,3)||eq(#sjys_num,4)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="7/z4.png"/>
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="7/z2.png"/>
+				<Image visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="7/z2.png"/>
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,7)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="7/z8.png"/>
+				<Image visibility="eq(#sjys_num,7)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="7/z8.png"/>
+			</Group>
+			<Group visibility="eq(#bjqh_num,1)*eq(#clock_num,1)">
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,0)||eq(#sjys_num,5)||eq(#sjys_num,8)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="8/z1.png"/>
+				<Image visibility="eq(#sjys_num,0)||eq(#sjys_num,5)||eq(#sjys_num,8)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="8/z1.png"/>
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,1)||eq(#sjys_num,3)||eq(#sjys_num,4)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="8/z3.png"/>
+				<Image visibility="eq(#sjys_num,1)||eq(#sjys_num,3)||eq(#sjys_num,4)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="8/z4.png"/>
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="8/z2.png"/>
+				<Image visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="8/z2.png"/>
+				<!--    装饰素材（暂时隐藏） -->
+				<Image visibility="eq(#sjys_num,7)" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" src="8/z8.png"/>
+				<Image visibility="eq(#sjys_num,7)" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="8/z8.png"/>
+			</Group>
+			<!--    日期、星期(和时钟一体的样式） -->
+			<Group visibility="eq(#bjqh_num,0)*eq(#clock_num,0)">
+				<DateTime visibility="eq(#sjys_num,0)||eq(#sjys_num,8)" color="#ffffff" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" size="50" format="MM/dd" name="Date" fontFamily="mipro-extralight"/>
+				<DateTime visibility="eq(#sjys_num,0)||eq(#sjys_num,8)" color="#ffffff" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" size="50" format="EEEE" name="Date" fontFamily="mipro-extralight"/>
+				<DateTime visibility="eq(#sjys_num,1)||eq(#sjys_num,5)||eq(#sjys_num,7)" color="#ffffff" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" size="50" format="MM/dd" name="Date" fontFamily="mipro-normal"/>
+				<DateTime visibility="eq(#sjys_num,1)||eq(#sjys_num,5)||eq(#sjys_num,7)" color="#ffffff" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" size="50" format="EEEE" name="Date" fontFamily="mipro-normal"/>
+				<DateTime visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" color="#ffffff" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" size="50" format="MM/dd" name="Date" fontFamily="mipro-medium"/>
+				<DateTime visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" color="#ffffff" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" size="50" format="EEEE" name="Date" fontFamily="mipro-medium"/>
+				<Group visibility="eq(#sjys_num,3)">
+					<ImageChars x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" space="5" src="x7/date.png" string="formatDate('MM.dd',#time_sys)" charNameMap=".spot,:colon,%pct, space"/>
+					<Image x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="x7/we.png" srcid="#day_of_week"/>
+				</Group>
+				<Group visibility="eq(#sjys_num,4)">
+					<ImageChars x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" space="5" src="q7/date.png" string="formatDate('MM.dd',#time_sys)" charNameMap=".spot,:colon,%pct, space"/>
+					<Image x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="q7/we.png" srcid="#day_of_week"/>
+				</Group>
+			</Group>
+			<Group visibility="eq(#bjqh_num,0)*eq(#clock_num,1)">
+				<DateTime visibility="eq(#sjys_num,0)||eq(#sjys_num,8)" color="#000000" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" size="50" format="MM/dd" name="Date" fontFamily="mipro-extralight"/>
+				<DateTime visibility="eq(#sjys_num,0)||eq(#sjys_num,8)" color="#000000" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" size="50" format="EEEE" name="Date" fontFamily="mipro-extralight"/>
+				<DateTime visibility="eq(#sjys_num,1)||eq(#sjys_num,5)||eq(#sjys_num,7)" color="#000000" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" size="50" format="MM/dd" name="Date" fontFamily="mipro-normal"/>
+				<DateTime visibility="eq(#sjys_num,1)||eq(#sjys_num,5)||eq(#sjys_num,7)" color="#000000" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" size="50" format="EEEE" name="Date" fontFamily="mipro-normal"/>
+				<DateTime visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" color="#000000" x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" size="50" format="MM/dd" name="Date" fontFamily="mipro-medium"/>
+				<DateTime visibility="eq(#sjys_num,2)||eq(#sjys_num,6)" color="#000000" x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" size="50" format="EEEE" name="Date" fontFamily="mipro-medium"/>
+				<Group visibility="eq(#sjys_num,3)">
+					<ImageChars x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" space="5" src="x8/date.png" string="formatDate('MM.dd',#time_sys)" charNameMap=".spot,:colon,%pct, space"/>
+					<Image x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="x8/we.png" srcid="#day_of_week"/>
+				</Group>
+				<Group visibility="eq(#sjys_num,4)">
+					<ImageChars x="#view_width/2-270" y="#view_height/2+119-119*#YC_Ani3" alpha="255*#YC_Ani3" align="right" alignV="center" space="5" src="q8/date.png" string="formatDate('MM.dd',#time_sys)" charNameMap=".spot,:colon,%pct, space"/>
+					<Image x="#view_width/2+270" y="#view_height/2+119-119*#YC_Ani1" alpha="255*#YC_Ani1" align="left" alignV="center" src="q8/we.png" srcid="#day_of_week"/>
+				</Group>
+			</Group>
+		</Group>
+		<Group visibility="#tipy">
+			<!-- 布局切换（左侧） -->
+			<Image visibility="#clock_num==0" alpha="255*#YC_Ani5" tint="#ffffff" x="60" y="#view_height-40" align="left" alignV="center" src="1.png" touchable="true"/>
+			<Image visibility="#clock_num==1" alpha="255*#YC_Ani5" tint="#000000" x="60" y="#view_height-40" align="left" alignV="center" src="1.png" touchable="true"/>
+			<!-- 黑白颜色切换（中间） -->
+			<Image visibility="#clock_num==0" alpha="255*#YC_Ani5" tint="#ffffff" x="#view_width/2" y="#view_height-40" align="center" alignV="center" src="2.png" touchable="true"/>
+			<Image visibility="#clock_num==1" alpha="255*#YC_Ani5" tint="#000000" x="#view_width/2" y="#view_height-40" align="center" alignV="center" src="2.png" touchable="true"/>
+			<!-- 时钟字体切换（右侧） -->
+			<Image visibility="#clock_num==0" alpha="255*#YC_Ani5" tint="#ffffff" x="#view_width-60" y="#view_height-40" align="right" alignV="center" src="3.png" touchable="true"/>
+			<Image visibility="#clock_num==1" alpha="255*#YC_Ani5" tint="#000000" x="#view_width-60" y="#view_height-40" align="right" alignV="center" src="3.png" touchable="true"/>
+		</Group>
+		<Button name="clock_button" h="300" w="520" x="#view_width/2" y="#view_height/2" align="center" alignV="center"/>
+		<!-- 内容切换 -->
+		<VariableCommand name="bjqh_num" expression="0" const="true"/>
+		<Var name="tip" expression="1" const="true"/>
+		<!--2-->
+		<Button x="80" y="#view_height-40" align="center" alignV="center" w="120" h="80">
+			<Triggers>
+				<Trigger action="up">
+					<VariableCommand name="bjqh_num" expression="ifelse(gt(#bjqh_num,0),0,#bjqh_num+1)" persist="true"/>
+				</Trigger>
+			</Triggers>
+		</Button>
+		<!-- 颜色切换 -->
+		<VariableCommand name="clock_num" expression="0" const="true"/>
+		<Var name="tipy" expression="1" const="true"/>
+		<Button x="#view_width/2" y="#view_height-40" align="center" alignV="center" w="#view_width" h="80" visibility="#tipy">
+			<Triggers>
+				<Trigger action="up">
+					<VariableCommand expression="0" name="tipy" persist="true"/>
+				</Trigger>
+			</Triggers>
+		</Button>
+		<Button x="#view_width/2" y="#view_height-40" align="center" alignV="center" w="120" h="80">
+			<Triggers>
+				<Trigger action="up">
+					<VariableCommand name="clock_num" expression="ifelse(gt(#clock_num,0),0,#clock_num+1)" persist="true"/>
+				</Trigger>
+			</Triggers>
+		</Button>
+		<!-- 时钟字体切换 -->
+		<VariableCommand name="sjys_num" expression="0" const="true"/>
+		<Var name="tip" expression="1" const="true"/>
+		<!--2-->
+		<Button x="#view_width-80" y="#view_height-40" align="center" alignV="center" w="120" h="80">
+			<Triggers>
+				<Trigger action="up">
+					<VariableCommand name="sjys_num" expression="ifelse(gt(#sjys_num,7),0,#sjys_num+1)" persist="true"/>
+				</Trigger>
+			</Triggers>
+		</Button>
+	</Group>
+</Clock>
