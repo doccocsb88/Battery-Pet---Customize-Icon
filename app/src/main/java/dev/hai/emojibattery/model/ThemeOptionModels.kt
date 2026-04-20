@@ -71,7 +71,22 @@ fun ThemeOptionComponents.batteryPreviewAsset(): String =
 
 object ThemeOptionCatalog {
     private const val ROOT_ASSET_DIR = "theme_options"
-    private val PACK_DIRS = listOf("xiyxiy", "fujing")
+    private val PACK_DIRS = listOf(
+        "xiyxiy",
+        "fujing",
+        "morandi",
+        "star_seeker",
+        "the_time_of_the_wind",
+        "tide_v2",
+        "toonify",
+        "trabas_v12",
+        "trend_astronaut",
+        "sur_mod_miui13_v1",
+        "swift_ax",
+        "technology_pro",
+        "tenebre_v13",
+        "the_astronaut",
+    )
     private val IMAGE_EXTS = listOf("png", "jpg", "jpeg", "webp")
 
     fun assetUri(assetPath: String): String = "file:///android_asset/$assetPath"

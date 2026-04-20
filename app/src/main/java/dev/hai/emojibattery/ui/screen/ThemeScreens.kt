@@ -2,9 +2,9 @@ package dev.hai.emojibattery.ui.screen
 
 import android.graphics.BitmapFactory
 import android.graphics.Color as AndroidColor
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,16 +15,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -67,6 +69,12 @@ internal fun ThemeListScreen(
 ) {
     val context = LocalContext.current
     val themes = remember(context) { ThemeOptionCatalog.loadFromAssets(context) }
+    val configuration = LocalConfiguration.current
+    val deviceAspectRatio = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
+        val width = configuration.screenWidthDp.toFloat().coerceAtLeast(1f)
+        val height = configuration.screenHeightDp.toFloat().coerceAtLeast(1f)
+        width / height
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -93,15 +101,17 @@ internal fun ThemeListScreen(
             }
         },
     ) { padding ->
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 12.dp),
             contentPadding = PaddingValues(bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
                     text = stringResource(R.string.theme_list_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
@@ -110,7 +120,7 @@ internal fun ThemeListScreen(
                 )
             }
             if (themes.isEmpty()) {
-                item {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
                         text = stringResource(R.string.theme_option_empty),
                         style = MaterialTheme.typography.bodyMedium,
@@ -119,9 +129,10 @@ internal fun ThemeListScreen(
                     )
                 }
             } else {
-                items(themes) { theme ->
+                items(items = themes, key = { it.id }) { theme ->
                     ThemeListItem(
                         theme = theme,
+                        deviceAspectRatio = deviceAspectRatio,
                         onClick = { onOpenThemeDetail(theme.id) },
                     )
                 }
@@ -133,46 +144,36 @@ internal fun ThemeListScreen(
 @Composable
 private fun ThemeListItem(
     theme: ThemeDefinition,
+    deviceAspectRatio: Float,
     onClick: () -> Unit,
 ) {
     val cover = theme.options.firstOrNull()?.previewImage.orEmpty()
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 2.dp,
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ThemePreviewImage(
                 assetPath = cover,
                 contentDescription = theme.name,
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(12.dp)),
+                    .fillMaxWidth(0.9f)
+                    .aspectRatio(deviceAspectRatio)
+                    .clip(RoundedCornerShape(14.dp)),
             )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = theme.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = stringResource(R.string.theme_list_item_count, theme.options.size),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Icon(
-                imageVector = Icons.Rounded.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            Text(
+                text = theme.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -217,16 +218,18 @@ internal fun ThemeDetailScreen(
             }
         },
         bottomBar = {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                shadowElevation = 8.dp,
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
             ) {
                 Button(
                     onClick = { onApplyTheme(selectedOptionId) },
                     enabled = selectedOptionId.isNotEmpty(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
                         .height(52.dp),
                 ) {
                     Text(
@@ -246,14 +249,6 @@ internal fun ThemeDetailScreen(
             contentPadding = PaddingValues(bottom = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item {
-                Text(
-                    text = stringResource(R.string.theme_detail_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                )
-            }
             if (theme == null || theme.options.isEmpty()) {
                 item {
                     Text(
@@ -267,7 +262,6 @@ internal fun ThemeDetailScreen(
                 items(theme.options) { option ->
                     ThemeOptionPreviewCard(
                         option = option,
-                        selected = option.id == selectedOptionId,
                         onClick = { selectedOptionId = option.id },
                     )
                 }
@@ -279,7 +273,6 @@ internal fun ThemeDetailScreen(
 @Composable
 private fun ThemeOptionPreviewCard(
     option: ThemeOptionItem,
-    selected: Boolean,
     onClick: () -> Unit,
 ) {
     val fallbackBackground = option.components.wallpaperPreviewAsset().ifBlank { option.previewImage }
@@ -294,73 +287,37 @@ private fun ThemeOptionPreviewCard(
     val hasMultipleWallpapers = wallpaperAssets.size > 1
     val currentBackground = wallpaperAssets.getOrNull(wallpaperIndex).orEmpty().ifBlank { fallbackBackground }
 
-    Surface(
-        onClick = onClick,
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(
-            width = if (selected) 2.dp else 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
-            },
-        ),
-        shadowElevation = 1.dp,
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .clip(RoundedCornerShape(12.dp)),
     ) {
-        Column(
+        ThemePreviewCard(
+            option = option,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                ThemePreviewCard(
-                    option = option,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .pointerInput(option.id, wallpaperAssets.size, wallpaperIndex) {
-                            if (!hasMultipleWallpapers) return@pointerInput
-                            detectHorizontalDragGestures(
-                                onHorizontalDrag = { _, dragAmount ->
-                                    totalDragX += dragAmount
-                                },
-                                onDragCancel = { totalDragX = 0f },
-                                onDragEnd = {
-                                    val size = wallpaperAssets.size
-                                    when {
-                                        totalDragX <= -swipeThresholdPx ->
-                                            wallpaperIndex = (wallpaperIndex + 1) % size
-                                        totalDragX >= swipeThresholdPx ->
-                                            wallpaperIndex = (wallpaperIndex - 1 + size) % size
-                                    }
-                                    totalDragX = 0f
-                                },
-                            )
-                        }
-                        .clip(RoundedCornerShape(12.dp)),
-                    backgroundOverride = currentBackground,
-                    wallpaperPosition = wallpaperIndex + 1,
-                    wallpaperTotal = wallpaperAssets.size,
-                )
-                if (selected) {
-                    Icon(
-                        imageVector = Icons.Rounded.CheckCircle,
-                        contentDescription = stringResource(R.string.theme_option_selected),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(8.dp),
+                .pointerInput(option.id, wallpaperAssets.size, wallpaperIndex) {
+                    if (!hasMultipleWallpapers) return@pointerInput
+                    detectHorizontalDragGestures(
+                        onHorizontalDrag = { _, dragAmount ->
+                            totalDragX += dragAmount
+                        },
+                        onDragCancel = { totalDragX = 0f },
+                        onDragEnd = {
+                            val size = wallpaperAssets.size
+                            when {
+                                totalDragX <= -swipeThresholdPx ->
+                                    wallpaperIndex = (wallpaperIndex + 1) % size
+                                totalDragX >= swipeThresholdPx ->
+                                    wallpaperIndex = (wallpaperIndex - 1 + size) % size
+                            }
+                            totalDragX = 0f
+                        },
                     )
-                }
-            }
-            Text(
-                text = option.name,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
+                },
+            backgroundOverride = currentBackground,
+        )
     }
 }
 
@@ -369,8 +326,6 @@ private fun ThemePreviewCard(
     option: ThemeOptionItem,
     modifier: Modifier = Modifier,
     backgroundOverride: String = "",
-    wallpaperPosition: Int = 1,
-    wallpaperTotal: Int = 1,
 ) {
     val configuration = LocalConfiguration.current
     val deviceAspectRatio = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
@@ -382,7 +337,6 @@ private fun ThemePreviewCard(
     val background = backgroundOverride.ifBlank {
         option.components.wallpaperPreviewAsset().ifBlank { option.previewImage }
     }
-    val lockScreen = option.components.lockScreen
     val context = LocalContext.current
     val wifi = remember(context, option.id, option.components.wifi) {
         pickStatusPreviewAsset(context, option.components.wifi)
@@ -406,92 +360,52 @@ private fun ThemePreviewCard(
     val airplane = option.components.airplane
     val charge = option.components.charge
 
-    Surface(
+    Box(
         modifier = modifier,
-        shape = RoundedCornerShape(14.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+        contentAlignment = Alignment.Center,
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 6.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .width((configuration.screenWidthDp * 0.8f).dp)
+                .clip(RoundedCornerShape(22.dp))
+                .background(Color.Black)
+                .padding(horizontal = 6.dp, vertical = 8.dp),
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.58f)
-                    .clip(RoundedCornerShape(22.dp))
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
                     .background(Color.Black)
-                    .padding(horizontal = 6.dp, vertical = 8.dp),
+                    .aspectRatio(deviceAspectRatio),
             ) {
+                ThemePreviewImage(
+                    assetPath = background,
+                    contentDescription = "${option.name} background",
+                    modifier = Modifier.fillMaxSize(),
+                )
                 Box(
                     modifier = Modifier
+                        .align(Alignment.TopCenter)
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.Black)
-                        .aspectRatio(deviceAspectRatio),
-                ) {
-                    ThemePreviewImage(
-                        assetPath = background,
-                        contentDescription = "${option.name} background",
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                    if (lockScreen.isNotBlank()) {
-                        AsyncImage(
-                            model = ThemeOptionCatalog.assetUri(lockScreen),
-                            contentDescription = "${option.name} lockscreen",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop,
-                            alpha = 0.26f,
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .fillMaxWidth()
-                            .height(28.dp)
-                            .background(Color.Black.copy(alpha = 0.32f)),
-                    )
-                    ThemeStatusBarRow(
-                        timeText = "9:41",
-                        hotspot = hotspot,
-                        wifi = wifi,
-                        signal = signal,
-                        data = data,
-                        bluetooth = bluetooth,
-                        airplane = airplane,
-                        charge = charge,
-                        batteryAsset = batteryAsset,
-                        batterySprite = option.components.battery,
-                        batteryMode = batteryMode,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .fillMaxWidth()
-                            .padding(horizontal = 6.dp, vertical = 4.dp),
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    text = "${wallpaperPosition.coerceAtLeast(1)}/${wallpaperTotal.coerceAtLeast(1)}",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold,
+                        .height(28.dp)
+                        .background(Color.Black.copy(alpha = 0.32f)),
                 )
-            }
-            if (wallpaperTotal > 1) {
-                Text(
-                    text = stringResource(R.string.theme_preview_swipe_hint),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                ThemeStatusBarRow(
+                    timeText = "9:41",
+                    hotspot = hotspot,
+                    wifi = wifi,
+                    signal = signal,
+                    data = data,
+                    bluetooth = bluetooth,
+                    airplane = airplane,
+                    charge = charge,
+                    batteryAsset = batteryAsset,
+                    batterySprite = option.components.battery,
+                    batteryMode = batteryMode,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp, vertical = 4.dp),
                 )
             }
         }

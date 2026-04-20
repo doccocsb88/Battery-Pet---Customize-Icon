@@ -1,0 +1,82 @@
+{
+  "themes": [
+    {
+      "id": "swift_ax",
+      "name": "Swift AX",
+      "options": [
+        {
+          "id": "swift_ax_default",
+          "name": "Swift AX Default",
+          "previewImage": "w_0",
+          "components": {
+            "wallpaper": {
+              "default": "w_0",
+              "variants": [
+                "w_0"
+              ]
+            },
+            "lockscreen": "l_0",
+            "wifi": [
+              "status_bar_toggle_wifi_on"
+            ],
+            "signal": [
+              "status_bar_toggle_data_on"
+            ],
+            "bluetooth": [
+              "status_bar_toggle_bluetooth_on"
+            ],
+            "charge": "",
+            "data": [
+              "status_bar_toggle_data_on"
+            ],
+            "hotspot": [
+              "status_bar_toggle_wifi_ap_on"
+            ],
+            "airplane": "status_bar_toggle_flight_mode_on",
+            "battery": {
+              "type": "sprite_sheet",
+              "assetRoot": "assets/battery",
+              "layout": "vertical",
+              "frame": {
+                "width": 76,
+                "height": 60
+              },
+              "indexing": "top_to_bottom",
+              "progressMapping": "linear",
+              "modes": {
+                "normal": {
+                  "asset": "stat_sys_battery",
+                  "frames": 50
+                },
+                "charging": {
+                  "asset": "stat_sys_battery_charge",
+                  "frames": 50
+                },
+                "digital": {
+                  "asset": "stat_sys_battery_digital",
+                  "frames": 50
+                },
+                "charge_digit": {
+                  "asset": "stat_sys_battery_charge_digit",
+                  "frames": 50
+                },
+                "power_save": {
+                  "asset": "stat_sys_battery_power_save",
+                  "frames": 50
+                },
+                "power_save_charge": {
+                  "asset": "stat_sys_battery_power_save_charge",
+                  "frames": 50
+                },
+                "power_save_digit": {
+                  "asset": "stat_sys_battery_power_save_digit",
+                  "frames": 50
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

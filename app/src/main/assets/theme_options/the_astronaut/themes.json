@@ -1,0 +1,41 @@
+{
+  "themes": [
+    {
+      "id": "the_astronaut",
+      "name": "The Astronaut",
+      "options": [
+        {
+          "id": "the_astronaut_default",
+          "name": "The Astronaut Default",
+          "previewImage": "w_0",
+          "components": {
+            "wallpaper": {
+              "default": "w_0",
+              "variants": [
+                "w_0"
+              ]
+            },
+            "lockscreen": "l_0",
+            "wifi": [
+              "status_bar_toggle_wifi_on"
+            ],
+            "signal": [
+              "status_bar_toggle_data_on"
+            ],
+            "bluetooth": [
+              "status_bar_toggle_bluetooth_on"
+            ],
+            "charge": "ic_battery_settings",
+            "data": [
+              "status_bar_toggle_data_on"
+            ],
+            "hotspot": [
+              "status_bar_toggle_wifi_ap_on"
+            ],
+            "airplane": "status_bar_toggle_flight_mode_on"
+          }
+        }
+      ]
+    }
+  ]
+}

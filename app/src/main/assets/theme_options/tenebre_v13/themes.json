@@ -1,0 +1,103 @@
+{
+  "themes": [
+    {
+      "id": "tenebre_v13",
+      "name": "Tenebre V13",
+      "options": [
+        {
+          "id": "tenebre_v13_default",
+          "name": "Tenebre V13 Default",
+          "previewImage": "w_0",
+          "components": {
+            "wallpaper": {
+              "default": "w_0",
+              "variants": [
+                "w_0"
+              ]
+            },
+            "lockscreen": "l_0",
+            "wifi": [
+              "stat_sys_wifi_signal_0",
+              "stat_sys_wifi_signal_1",
+              "stat_sys_wifi_signal_2",
+              "stat_sys_wifi_signal_3",
+              "stat_sys_wifi_signal_4"
+            ],
+            "signal": [
+              "stat_sys_signal_0",
+              "stat_sys_signal_1",
+              "stat_sys_signal_2",
+              "stat_sys_signal_3",
+              "stat_sys_signal_4",
+              "stat_sys_signal_5"
+            ],
+            "bluetooth": [
+              "stat_sys_data_bluetooth",
+              "stat_sys_data_bluetooth_in",
+              "stat_sys_data_bluetooth_out",
+              "stat_sys_data_bluetooth_inout",
+              "stat_sys_data_bluetooth_connected"
+            ],
+            "charge": "stat_sys_battery_charging",
+            "data": [
+              "stat_sys_signal_data",
+              "stat_sys_signal_in",
+              "stat_sys_signal_out",
+              "stat_sys_signal_inout",
+              "stat_sys_signal_dual_data"
+            ],
+            "hotspot": [
+              "stat_sys_wifi_ap_on"
+            ],
+            "airplane": "stat_sys_signal_flightmode",
+            "battery": {
+              "type": "sprite_sheet",
+              "assetRoot": "assets/battery",
+              "layout": "vertical",
+              "frame": {
+                "width": 64,
+                "height": 60
+              },
+              "indexing": "top_to_bottom",
+              "progressMapping": "linear",
+              "modes": {
+                "normal": {
+                  "asset": "stat_sys_battery",
+                  "frames": 14
+                },
+                "charging": {
+                  "asset": "stat_sys_battery_charge",
+                  "frames": 14
+                },
+                "digital": {
+                  "asset": "stat_sys_battery_digital",
+                  "frames": 14
+                },
+                "charge_digit": {
+                  "asset": "stat_sys_battery_charge_digit",
+                  "frames": 14
+                },
+                "power_save": {
+                  "asset": "stat_sys_battery_power_save",
+                  "frames": 14
+                },
+                "power_save_digit": {
+                  "asset": "stat_sys_battery_power_save_digit",
+                  "frames": 14
+                },
+                "performance_mode": {
+                  "asset": "stat_sys_battery_performance_mode",
+                  "frames": 14
+                },
+                "performance_mode_digit": {
+                  "asset": "stat_sys_battery_performance_mode_digit",
+                  "frames": 14
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
