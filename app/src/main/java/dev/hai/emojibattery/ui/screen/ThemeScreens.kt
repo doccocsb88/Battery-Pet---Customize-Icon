@@ -226,8 +226,8 @@ private fun ThemeListItem(
                     .fillMaxWidth()
                     .aspectRatio(previewAspectRatio)
                     .clip(RoundedCornerShape(14.dp)),
-                contentScale = ContentScale.FillWidth,
-                alignment = Alignment.BottomEnd,
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.Center,
             )
             Text(
                 text = theme.name,
