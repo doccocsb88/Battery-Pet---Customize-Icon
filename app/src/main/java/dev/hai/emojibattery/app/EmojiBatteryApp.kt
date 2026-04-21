@@ -833,23 +833,27 @@ fun EmojiBatteryApp(
                     themeId = themeId,
                     onBack = { navController.popBackStack() },
                     onApplyTheme = { optionId ->
-                        val selectedOption = themeOptions.firstOrNull { it.id == optionId }
-                        if (selectedOption == null) {
-                            viewModel.postInfoMessage("Theme option not found: $optionId")
+                        viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        if (!AccessibilityBridge.isEnabled(context)) {
+                            showAccessibilityConsent = true
+                            viewModel.postInfoMessage("Enable accessibility bridge before applying.")
                         } else {
-                            OverlayConfigStore.applyThemeSelection(context, selectedOption)
-                            if (AccessibilityBridge.isEnabled(context)) {
+                            val selectedOption = themeOptions.firstOrNull { it.id == optionId }
+                            if (selectedOption == null) {
+                                viewModel.postInfoMessage("Theme option not found: $optionId")
+                            } else {
+                                OverlayConfigStore.applyThemeSelection(context, selectedOption)
                                 OverlayAccessibilityService.requestRefresh(context)
+                                themeApplyScope.launch {
+                                    WallpaperApplyService.applyThemeWallpapers(
+                                        context = context,
+                                        option = selectedOption,
+                                        fallbackResId = R.drawable.img_bg_emoji_sticker,
+                                    )
+                                        ?.let { viewModel.postInfoMessage(it) }
+                                }
+                                viewModel.postApplyMessage("Applied successfully.")
                             }
-                            themeApplyScope.launch {
-                                WallpaperApplyService.applyThemeWallpapers(
-                                    context = context,
-                                    option = selectedOption,
-                                    fallbackResId = R.drawable.img_bg_emoji_sticker,
-                                )
-                                    ?.let { viewModel.postInfoMessage(it) }
-                            }
-                            viewModel.postApplyMessage("Applied successfully.")
                         }
                     },
                 )
