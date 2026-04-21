@@ -51,7 +51,7 @@ val admobInterstitialThrottleMs = (findProperty("ADMOB_INTERSTITIAL_THROTTLE_MS"
     ?.toLongOrNull()
     ?: 45_000L
 
-val versionCodeBase = (findProperty("VERSION_CODE_BASE") as String?)?.toIntOrNull() ?: 1000
+val versionCodeBase = (findProperty("VERSION_CODE_BASE") as String?)?.toIntOrNull() ?: 1001
 val explicitVersionCode = (findProperty("VERSION_CODE") as String?)?.toIntOrNull()
 val ciRunVersionCode = System.getenv("GITHUB_RUN_NUMBER")
     ?.toIntOrNull()
@@ -97,7 +97,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = computedVersionCode
-        versionName = "0.1.2"
+        versionName = "0.1.3"
         manifestPlaceholders["adMobAppId"] = admobAppId
         buildConfigField("String", "ADMOB_APP_ID", admobAppId.asBuildConfigString())
         buildConfigField("String", "ADMOB_BANNER_AD_UNIT_ID", admobBannerAdUnitId.asBuildConfigString())
