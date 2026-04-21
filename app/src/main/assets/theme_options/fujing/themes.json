@@ -2,11 +2,11 @@
   "themes": [
     {
       "id": "fujing",
-      "name": "浮境",
+      "name": "Floating",
       "options": [
         {
           "id": "fujing_default",
-          "name": "浮境 Default",
+          "name": "Floating Default",
           "previewImage": "w_0",
           "statusBarColor": "#0F2C36",
           "components": {

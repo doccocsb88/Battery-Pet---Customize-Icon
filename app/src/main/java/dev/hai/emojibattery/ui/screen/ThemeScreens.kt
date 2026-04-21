@@ -226,7 +226,7 @@ private fun ThemeListItem(
                     .fillMaxWidth()
                     .aspectRatio(previewAspectRatio)
                     .clip(RoundedCornerShape(14.dp)),
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 alignment = Alignment.Center,
             )
             Text(
