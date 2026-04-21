@@ -33,9 +33,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -243,7 +245,7 @@ private fun ThemeListItem(
 internal fun ThemeDetailScreen(
     themeId: String,
     onBack: () -> Unit,
-    onApplyTheme: (String) -> Unit,
+    onApplyTheme: (String, String?) -> Unit,
 ) {
     val context = LocalContext.current
     val themes = remember(context) { ThemeOptionCatalog.loadFromAssets(context) }
@@ -251,6 +253,9 @@ internal fun ThemeDetailScreen(
     val theme = remember(themes, themeId) { themes.firstOrNull { it.id == themeId } ?: fallbackTheme }
     var selectedOptionId by remember(theme?.id) {
         mutableStateOf(theme?.options?.firstOrNull()?.id.orEmpty())
+    }
+    val selectedWallpaperByOptionId = remember(theme?.id) {
+        mutableStateMapOf<String, String>()
     }
 
     Scaffold(
@@ -285,7 +290,12 @@ internal fun ThemeDetailScreen(
                     .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
             ) {
                 Button(
-                    onClick = { onApplyTheme(selectedOptionId) },
+                    onClick = {
+                        onApplyTheme(
+                            selectedOptionId,
+                            selectedWallpaperByOptionId[selectedOptionId],
+                        )
+                    },
                     enabled = selectedOptionId.isNotEmpty(),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -322,6 +332,11 @@ internal fun ThemeDetailScreen(
                     ThemeOptionPreviewCard(
                         option = option,
                         onClick = { selectedOptionId = option.id },
+                        onWallpaperSelected = { selectedWallpaper ->
+                            if (selectedWallpaper.isNotBlank()) {
+                                selectedWallpaperByOptionId[option.id] = selectedWallpaper
+                            }
+                        },
                     )
                 }
             }
@@ -333,6 +348,7 @@ internal fun ThemeDetailScreen(
 private fun ThemeOptionPreviewCard(
     option: ThemeOptionItem,
     onClick: () -> Unit,
+    onWallpaperSelected: (String) -> Unit,
 ) {
     val fallbackBackground = option.components.wallpaperPreviewAsset().ifBlank { option.previewImage }
     val wallpaperAssets = remember(option.id, fallbackBackground) {
@@ -345,6 +361,9 @@ private fun ThemeOptionPreviewCard(
     val swipeThresholdPx = 40f
     val hasMultipleWallpapers = wallpaperAssets.size > 1
     val currentBackground = wallpaperAssets.getOrNull(wallpaperIndex).orEmpty().ifBlank { fallbackBackground }
+    LaunchedEffect(option.id, currentBackground) {
+        onWallpaperSelected(currentBackground)
+    }
 
     Box(
         modifier = Modifier
@@ -366,10 +385,15 @@ private fun ThemeOptionPreviewCard(
                         onDragEnd = {
                             val size = wallpaperAssets.size
                             when {
-                                totalDragX <= -swipeThresholdPx ->
+                                totalDragX <= -swipeThresholdPx -> {
                                     wallpaperIndex = (wallpaperIndex + 1) % size
-                                totalDragX >= swipeThresholdPx ->
+                                    onClick()
+                                }
+
+                                totalDragX >= swipeThresholdPx -> {
                                     wallpaperIndex = (wallpaperIndex - 1 + size) % size
+                                    onClick()
+                                }
                             }
                             totalDragX = 0f
                         },

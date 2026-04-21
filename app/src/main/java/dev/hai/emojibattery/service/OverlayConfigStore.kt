@@ -275,7 +275,11 @@ object OverlayConfigStore {
             .apply()
     }
 
-    fun applyThemeSelection(context: Context, option: ThemeOptionItem) {
+    fun applyThemeSelection(
+        context: Context,
+        option: ThemeOptionItem,
+        selectedWallpaperAsset: String? = null,
+    ) {
         val dateTimeDefaultVariant = SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
             ?.variant
             ?: "style=style_4;color=system;show=0"
@@ -295,8 +299,17 @@ object OverlayConfigStore {
             )
         }
 
+        val themeStatusIcons = option.toThemeStatusIcons().let { icons ->
+            val selectedWallpaper = selectedWallpaperAsset?.trim().orEmpty()
+            if (selectedWallpaper.isBlank()) {
+                icons
+            } else {
+                icons.copy(wallpaper = selectedWallpaper)
+            }
+        }
+
         preferences.edit()
-            .putString(KEY_THEME_STATUS_ICONS, encodeThemeStatusIcons(option.toThemeStatusIcons()))
+            .putString(KEY_THEME_STATUS_ICONS, encodeThemeStatusIcons(themeStatusIcons))
             .putString(KEY_BATTERY_EMOJI_SOURCE, BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM)
             .putString(KEY_BATTERY_ART_URL, "")
             .putInt(KEY_BATTERY_ART_DRAWABLE, 0)

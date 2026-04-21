@@ -832,7 +832,7 @@ fun EmojiBatteryApp(
                 ThemeDetailScreen(
                     themeId = themeId,
                     onBack = { navController.popBackStack() },
-                    onApplyTheme = { optionId ->
+                    onApplyTheme = { optionId, selectedWallpaperAsset ->
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
                         if (!AccessibilityBridge.isEnabled(context)) {
                             showAccessibilityConsent = true
@@ -842,13 +842,18 @@ fun EmojiBatteryApp(
                             if (selectedOption == null) {
                                 viewModel.postInfoMessage("Theme option not found: $optionId")
                             } else {
-                                OverlayConfigStore.applyThemeSelection(context, selectedOption)
+                                OverlayConfigStore.applyThemeSelection(
+                                    context = context,
+                                    option = selectedOption,
+                                    selectedWallpaperAsset = selectedWallpaperAsset,
+                                )
                                 OverlayAccessibilityService.requestRefresh(context)
                                 themeApplyScope.launch {
                                     WallpaperApplyService.applyThemeWallpapers(
                                         context = context,
                                         option = selectedOption,
                                         fallbackResId = R.drawable.img_bg_emoji_sticker,
+                                        selectedWallpaperAsset = selectedWallpaperAsset,
                                     )
                                         ?.let { viewModel.postInfoMessage(it) }
                                 }

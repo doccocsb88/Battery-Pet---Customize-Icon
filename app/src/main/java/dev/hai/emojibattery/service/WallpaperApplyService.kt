@@ -24,21 +24,38 @@ object WallpaperApplyService {
         context: Context,
         option: ThemeOptionItem,
         @DrawableRes fallbackResId: Int,
+        selectedWallpaperAsset: String? = null,
     ): String? {
-        val homeAsset = firstExistingAsset(
-            context = context,
-            candidates = listOf(
-                option.components.wallpaper.default,
-                option.previewImage,
-            ),
-        )
-        val lockAsset = firstExistingAsset(
-            context = context,
-            candidates = listOf(
-                option.components.lockScreen,
-                homeAsset.orEmpty(),
-            ),
-        )
+        val hasMultipleWallpapers = option.components.wallpaper.variants
+            .map { it.trim() }
+            .count { it.isNotBlank() } > 1
+        val selectedAsset = selectedWallpaperAsset
+            ?.trim()
+            ?.takeIf { it.isNotBlank() && assetExists(context, it) }
+        val useSelectedForBoth = hasMultipleWallpapers && selectedAsset != null
+
+        val homeAsset = if (useSelectedForBoth) {
+            selectedAsset
+        } else {
+            firstExistingAsset(
+                context = context,
+                candidates = listOf(
+                    option.components.wallpaper.default,
+                    option.previewImage,
+                ),
+            )
+        }
+        val lockAsset = if (useSelectedForBoth) {
+            selectedAsset
+        } else {
+            firstExistingAsset(
+                context = context,
+                candidates = listOf(
+                    option.components.lockScreen,
+                    homeAsset.orEmpty(),
+                ),
+            )
+        }
         val homeUri = homeAsset?.let(ThemeOptionCatalog::assetUri)
         val lockUri = lockAsset?.let(ThemeOptionCatalog::assetUri)
         if (homeUri == null && lockUri == null) {
@@ -93,7 +110,14 @@ object WallpaperApplyService {
         return candidates
             .map { it.trim() }
             .firstOrNull { path ->
-                path.isNotBlank() && runCatching { context.assets.open(path).use { } }.isSuccess
+                assetExists(context, path)
             }
+    }
+
+    private fun assetExists(
+        context: Context,
+        assetPath: String,
+    ): Boolean {
+        return runCatching { context.assets.open(assetPath).use { } }.isSuccess
     }
 }
