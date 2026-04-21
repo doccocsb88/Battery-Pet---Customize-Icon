@@ -54,6 +54,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import co.q7labs.co.emoji.R
 import coil.compose.AsyncImage
+import dev.hai.emojibattery.ads.AdMobBanner
+import dev.hai.emojibattery.ads.AdMobNativeAd
+import dev.hai.emojibattery.ads.rememberGoogleMobileAdsService
 import dev.hai.emojibattery.model.ThemeBatteryMode
 import dev.hai.emojibattery.model.ThemeBatterySpriteSheet
 import dev.hai.emojibattery.model.ThemeDefinition
@@ -61,6 +64,9 @@ import dev.hai.emojibattery.model.ThemeOptionCatalog
 import dev.hai.emojibattery.model.ThemeOptionItem
 import dev.hai.emojibattery.model.batteryPreviewAsset
 import dev.hai.emojibattery.model.wallpaperPreviewAsset
+
+/** Show a native ad every [THEME_NATIVE_AD_INTERVAL] theme items in a 2-column grid. */
+private const val THEME_NATIVE_AD_INTERVAL = 4
 
 @Composable
 internal fun ThemeListScreen(
@@ -74,6 +80,29 @@ internal fun ThemeListScreen(
         val width = configuration.screenWidthDp.toFloat().coerceAtLeast(1f)
         val height = configuration.screenHeightDp.toFloat().coerceAtLeast(1f)
         width / height
+    }
+    val adsService = rememberGoogleMobileAdsService()
+    val showAds = adsService.shouldShowAds()
+
+    // Preload native ads for the grid
+    val nativeAds = remember { androidx.compose.runtime.mutableStateMapOf<Int, com.google.android.gms.ads.nativead.NativeAd>() }
+    androidx.compose.runtime.LaunchedEffect(showAds, themes.size) {
+        if (!showAds || themes.isEmpty()) return@LaunchedEffect
+        val adCount = (themes.size / THEME_NATIVE_AD_INTERVAL).coerceAtLeast(1)
+        adsService.preloadNativeAds(
+            context = context,
+            count = adCount,
+            onEachLoaded = { index, ad ->
+                nativeAds[index] = ad
+            }
+        )
+    }
+
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose {
+            nativeAds.values.forEach { it.destroy() }
+            nativeAds.clear()
+        }
     }
 
     Scaffold(
@@ -97,6 +126,13 @@ internal fun ThemeListScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        },
+        bottomBar = {
+            if (showAds) {
+                AdMobBanner(
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
@@ -129,12 +165,33 @@ internal fun ThemeListScreen(
                     )
                 }
             } else {
-                items(items = themes, key = { it.id }) { theme ->
-                    ThemeListItem(
-                        theme = theme,
-                        deviceAspectRatio = deviceAspectRatio,
-                        onClick = { onOpenThemeDetail(theme.id) },
-                    )
+                // Interleave native ads every THEME_NATIVE_AD_INTERVAL themes
+                themes.forEachIndexed { index, theme ->
+                    if (showAds && index > 0 && index % THEME_NATIVE_AD_INTERVAL == 0) {
+                        val adIndex = (index / THEME_NATIVE_AD_INTERVAL) - 1
+                        val ad = nativeAds[adIndex]
+                        if (ad != null) {
+                            item(
+                                key = "native_ad_$index",
+                                span = { GridItemSpan(maxLineSpan) },
+                            ) {
+                                dev.hai.emojibattery.ads.AdMobNativeAdView(
+                                    ad = ad,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp),
+                                )
+                            }
+                        }
+                    }
+                    item(key = theme.id) {
+                        ThemeListItem(
+                            theme = theme,
+                            deviceAspectRatio = deviceAspectRatio,
+
+                            onClick = { onOpenThemeDetail(theme.id) },
+                        )
+                    }
                 }
             }
         }

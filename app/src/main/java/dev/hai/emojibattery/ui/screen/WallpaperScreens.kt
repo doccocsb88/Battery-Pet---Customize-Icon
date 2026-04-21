@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -70,6 +72,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import co.q7labs.co.emoji.R
+import dev.hai.emojibattery.ads.AdMobBanner
+import dev.hai.emojibattery.ads.AdMobNativeAd
+import dev.hai.emojibattery.ads.rememberGoogleMobileAdsService
 import dev.hai.emojibattery.data.PadWallpaperCategory
 import dev.hai.emojibattery.data.PadWallpaperItem
 import dev.hai.emojibattery.data.PadWallpaperRepository
@@ -79,6 +84,10 @@ import dev.hai.emojibattery.ui.theme.OceanSerenity
 import dev.hai.emojibattery.ui.theme.StrawberryMilk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+/** Show a native ad every [WALLPAPER_NATIVE_AD_INTERVAL] wallpaper items in the grid. */
+private const val WALLPAPER_NATIVE_AD_INTERVAL = 4
+
 
 @Composable
 internal fun WallpaperScreen(
@@ -147,6 +156,29 @@ internal fun WallpaperCategoryScreen(
     var category by remember(categoryId) { mutableStateOf(cachedCategory) }
     var items by remember(categoryId) { mutableStateOf(cachedItems) }
     var loading by remember(categoryId) { mutableStateOf(cachedCategory == null || cachedItems.isEmpty()) }
+    val adsService = rememberGoogleMobileAdsService()
+    val showAds = adsService.shouldShowAds()
+
+    // Preload native ads for the grid
+    val nativeAds = remember { androidx.compose.runtime.mutableStateMapOf<Int, com.google.android.gms.ads.nativead.NativeAd>() }
+    androidx.compose.runtime.LaunchedEffect(showAds, items.size) {
+        if (!showAds || items.isEmpty()) return@LaunchedEffect
+        val adCount = (items.size / WALLPAPER_NATIVE_AD_INTERVAL).coerceAtLeast(1)
+        adsService.preloadNativeAds(
+            context = context,
+            count = adCount,
+            onEachLoaded = { index, ad ->
+                nativeAds[index] = ad
+            }
+        )
+    }
+
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose {
+            nativeAds.values.forEach { it.destroy() }
+            nativeAds.clear()
+        }
+    }
 
     LaunchedEffect(categoryId) {
         if (category != null && items.isNotEmpty()) {
@@ -204,13 +236,32 @@ internal fun WallpaperCategoryScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        itemsIndexed(items, key = { _, item -> item.id }) { itemIndex, item ->
+                        items.forEachIndexed { itemIndex, item ->
+                            if (showAds && itemIndex > 0 && itemIndex % WALLPAPER_NATIVE_AD_INTERVAL == 0) {
+                                val adIndex = (itemIndex / WALLPAPER_NATIVE_AD_INTERVAL) - 1
+                                val ad = nativeAds[adIndex]
+                                if (ad != null) {
+                                    item(
+                                        key = "wallpaper_native_ad_$itemIndex",
+                                        span = { GridItemSpan(maxLineSpan) },
+                                    ) {
+                                        dev.hai.emojibattery.ads.AdMobNativeAdView(
+                                            ad = ad,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 4.dp),
+                                        )
+                                    }
+                                }
+                            }
                             val isLocked = !isPremiumUser && itemIndex >= FREE_WALLPAPER_COUNT_PER_CATEGORY
-                            WallpaperGridCard(
-                                item = item,
-                                locked = isLocked,
-                                onClick = { onOpenPreview(categoryId, item.id, isLocked) },
-                            )
+                            item(key = item.id) {
+                                WallpaperGridCard(
+                                    item = item,
+                                    locked = isLocked,
+                                    onClick = { onOpenPreview(categoryId, item.id, isLocked) },
+                                )
+                            }
                         }
                     }
                 }
@@ -255,9 +306,9 @@ internal fun WallpaperPreviewScreen(
     }
 
     val categoryItems = itemsByCategory[categoryId].orEmpty()
-    val item = categoryItems.firstOrNull { it.id == wallpaperId }
-    val itemIndex = categoryItems.indexOfFirst { it.id == wallpaperId }
-    val isLocked = item != null && !isPremiumUser && itemIndex >= FREE_WALLPAPER_COUNT_PER_CATEGORY
+    val wallpaperItem = categoryItems.firstOrNull { it.id == wallpaperId }
+    val wallpaperItemIndex = categoryItems.indexOfFirst { it.id == wallpaperId }
+    val isLocked = wallpaperItem != null && !isPremiumUser && wallpaperItemIndex >= FREE_WALLPAPER_COUNT_PER_CATEGORY
 
     fun applyWallpaper(target: WallpaperSetter.Target, imageUrl: String) {
         scope.launch {
@@ -280,9 +331,12 @@ internal fun WallpaperPreviewScreen(
         }
     }
 
+    val previewItem = wallpaperItem
+    val adsService2 = rememberGoogleMobileAdsService()
+    val showAds2 = adsService2.shouldShowAds()
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             WallpaperTopBar(
                 title = categoryDisplayTitle(category?.title ?: "Wallpaper Preview"),
@@ -290,11 +344,70 @@ internal fun WallpaperPreviewScreen(
                 onBack = onBack,
             )
         },
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
+            ) {
+                // Set Wallpaper button — always visible, outside scroll
+                Button(
+                    onClick = {
+                        if (settingWallpaper) return@Button
+                        if (isLocked) {
+                            onOpenPaywall()
+                            return@Button
+                        }
+                        showSetTargetSheet = true
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .height(56.dp),
+                    enabled = !settingWallpaper,
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = OceanSerenity.Primary,
+                        contentColor = OceanSerenity.OnPrimary,
+                    ),
+                ) {
+                    if (settingWallpaper) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            strokeWidth = 2.dp,
+                            color = OceanSerenity.OnPrimary,
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Rounded.Wallpaper,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                    Spacer(Modifier.size(10.dp))
+                    Text(
+                        text = when {
+                            settingWallpaper -> "Setting ${wallpaperTargetLabel(selectedTarget).lowercase()}..."
+                            isLocked -> "Unlock Premium"
+                            else -> "Set Wallpaper"
+                        },
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+                // Banner — only for free users, directly below button
+                if (showAds2) {
+                    AdMobBanner(
+                        modifier = Modifier.fillMaxWidth(),
+                        service = adsService2,
+                    )
+                }
+            }
+        },
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 loading -> WallpaperLoadingState(modifier = Modifier.padding(padding))
-                item == null -> WallpaperEmptyState(
+                wallpaperItem == null -> WallpaperEmptyState(
                     message = "Wallpaper not found.",
                     modifier = Modifier.padding(padding),
                 )
@@ -303,8 +416,7 @@ internal fun WallpaperPreviewScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(padding),
-                        contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(16.dp),
                     ) {
                         item {
                             Surface(
@@ -320,18 +432,11 @@ internal fun WallpaperPreviewScreen(
                                         .aspectRatio(0.58f),
                                 ) {
                                     WallpaperArtwork(
-                                        imageUrl = item.assetUrl,
-                                        contentDescription = item.name,
+                                        imageUrl = wallpaperItem.assetUrl,
+                                        contentDescription = wallpaperItem.name,
                                         modifier = Modifier.fillMaxSize(),
                                         contentScale = ContentScale.FillBounds,
                                     )
-//                                    if (isLocked) {
-//                                        PremiumBadge(
-//                                            modifier = Modifier
-//                                                .align(Alignment.TopEnd)
-//                                                .padding(14.dp),
-//                                        )
-//                                    }
                                     Box(
                                         modifier = Modifier
                                             .align(Alignment.BottomStart)
@@ -343,67 +448,14 @@ internal fun WallpaperPreviewScreen(
                                             )
                                             .padding(18.dp),
                                     ) {
-                                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                            Text(
-                                                text = "Tap Set Wallpaper and choose Home, Lock, or Both.",
-                                                color = Color.White.copy(alpha = 0.82f),
-                                                style = MaterialTheme.typography.bodyMedium,
-                                            )
-                                        }
+                                        Text(
+                                            text = "Tap Set Wallpaper and choose Home, Lock, or Both.",
+                                            color = Color.White.copy(alpha = 0.82f),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                        )
                                     }
                                 }
                             }
-                        }
-                        item {
-                            Button(
-                                onClick = {
-                                    if (settingWallpaper) return@Button
-                                    if (isLocked) {
-                                        onOpenPaywall()
-                                        return@Button
-                                    }
-                                    showSetTargetSheet = true
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp),
-                                enabled = !settingWallpaper,
-                                shape = RoundedCornerShape(20.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = OceanSerenity.Primary,
-                                    contentColor = OceanSerenity.OnPrimary,
-                                ),
-                            ) {
-                                if (settingWallpaper) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(18.dp),
-                                        strokeWidth = 2.dp,
-                                        color = OceanSerenity.OnPrimary,
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Wallpaper,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(20.dp),
-                                    )
-                                }
-                                Spacer(Modifier.size(10.dp))
-                                Text(
-                                    text = when {
-                                        settingWallpaper -> "Setting ${wallpaperTargetLabel(selectedTarget).lowercase()}..."
-                                        isLocked -> "Unlock Premium"
-                                        else -> "Set Wallpaper"
-                                    },
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                            }
-                            Spacer(
-                                modifier = Modifier.height(
-                                    with(density) {
-                                        WindowInsets.navigationBars.getBottom(this).toDp()
-                                    } + 12.dp,
-                                ),
-                            )
                         }
                     }
                 }
@@ -411,7 +463,6 @@ internal fun WallpaperPreviewScreen(
         }
     }
 
-    val previewItem = item
     if (showSetTargetSheet && !isLocked && previewItem != null && !settingWallpaper) {
         ModalBottomSheet(
             onDismissRequest = { showSetTargetSheet = false },
