@@ -70,3 +70,6 @@ wallpaperPackDirs.forEach { dir ->
     include(moduleName)
     project(moduleName).projectDir = dir
 }
+
+include(":theme_options_pack")
+project(":theme_options_pack").projectDir = file("app_pack/theme_options_pack")

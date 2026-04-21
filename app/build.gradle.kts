@@ -166,6 +166,7 @@ android {
 
     assetPacks += listOf(
         ":store_pack",
+        ":theme_options_pack",
         ":theme_pack_ocean",
         ":theme_pack_floralgarden",
         ":theme_pack_countryside",
