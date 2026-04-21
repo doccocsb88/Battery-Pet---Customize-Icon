@@ -47,9 +47,14 @@
               "stat_sys_signal_dual_data"
             ],
             "hotspot": [
-              "stat_sys_wifi_ap_on"
+              "stat_sys_wifi_ap_on",
+              "stat_sys_wifi_ap"
             ],
             "airplane": "stat_sys_signal_flightmode",
+            "ringer": [
+              "stat_sys_ringer_silent",
+              "stat_sys_ringer_vibrate"
+            ],
             "battery": {
               "type": "sprite_sheet",
               "assetRoot": "assets/battery",

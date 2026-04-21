@@ -2,6 +2,8 @@ package dev.hai.emojibattery.model
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.graphics.BitmapFactory
+import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -46,13 +48,42 @@ data class ThemeOptionComponents(
     val charge: String,
     val data: List<String>,
     val hotspot: List<String>,
+    val ringer: List<String>,
     val airplane: String,
+)
+
+data class ThemeStatusIcons(
+    val optionId: String,
+    val statusBarBackgroundType: String,
+    val statusBarColor: String,
+    val wallpaper: String,
+    val wifi: List<String>,
+    val signal: List<String>,
+    val data: List<String>,
+    val hotspot: List<String>,
+    val ringer: List<String>,
+    val bluetooth: List<String>,
+    val airplane: String,
+    val charge: String,
+    val battery: ThemeBatteryRuntime?,
+)
+
+data class ThemeBatteryRuntime(
+    val normalAsset: String,
+    val normalFrames: Int,
+    val chargingAsset: String?,
+    val chargingFrames: Int,
+    val indexing: String,
+    val frameWidth: Int,
+    val frameHeight: Int,
 )
 
 data class ThemeOptionItem(
     val id: String,
     val name: String,
     val previewImage: String,
+    val statusBarBackgroundType: String,
+    val statusBarColor: String,
     val components: ThemeOptionComponents,
 )
 
@@ -69,7 +100,45 @@ fun ThemeOptionComponents.batteryPreviewAsset(): String =
         ?: battery?.modes?.values?.firstOrNull()?.asset
         ?: charge
 
+fun ThemeOptionItem.toThemeStatusIcons(): ThemeStatusIcons {
+    fun List<String>.normalized(): List<String> = filter { it.isNotBlank() }.distinct()
+    val batterySprite = components.battery
+    val normalMode = batterySprite?.modes?.get("normal")
+        ?: batterySprite?.modes?.values?.firstOrNull()
+    val chargingMode = batterySprite?.modes?.get("charging")
+    val batteryRuntime = if (batterySprite != null && normalMode != null && normalMode.asset.isNotBlank()) {
+        ThemeBatteryRuntime(
+            normalAsset = normalMode.asset.trim(),
+            normalFrames = normalMode.frames.coerceAtLeast(1),
+            chargingAsset = chargingMode?.asset?.trim()?.takeIf { it.isNotBlank() },
+            chargingFrames = chargingMode?.frames?.coerceAtLeast(1) ?: normalMode.frames.coerceAtLeast(1),
+            indexing = batterySprite.indexing.trim().ifBlank { "top_to_bottom" },
+            frameWidth = batterySprite.frame.width.coerceAtLeast(0),
+            frameHeight = batterySprite.frame.height.coerceAtLeast(0),
+        )
+    } else {
+        null
+    }
+
+    return ThemeStatusIcons(
+        optionId = id,
+        statusBarBackgroundType = statusBarBackgroundType.trim().ifBlank { "bluebackground" },
+        statusBarColor = statusBarColor.trim(),
+        wallpaper = components.wallpaperPreviewAsset().ifBlank { previewImage }.trim(),
+        wifi = components.wifi.normalized(),
+        signal = components.signal.normalized(),
+        data = components.data.normalized(),
+        hotspot = components.hotspot.normalized(),
+        ringer = components.ringer.normalized(),
+        bluetooth = components.bluetooth.normalized(),
+        airplane = components.airplane.trim(),
+        charge = components.charge.trim(),
+        battery = batteryRuntime,
+    )
+}
+
 object ThemeOptionCatalog {
+    private const val TAG = "ThemeSpriteValidator"
     private const val ROOT_ASSET_DIR = "theme_options"
     private val PACK_DIRS = listOf(
         "xiyxiy",
@@ -88,6 +157,9 @@ object ThemeOptionCatalog {
         "the_astronaut",
     )
     private val IMAGE_EXTS = listOf("png", "jpg", "jpeg", "webp")
+    @Volatile
+    private var spriteValidationDone = false
+    private val spriteValidationLock = Any()
 
     fun assetUri(assetPath: String): String = "file:///android_asset/$assetPath"
 
@@ -101,7 +173,100 @@ object ThemeOptionCatalog {
             }.getOrNull() ?: return@forEach
             result += parsePackJson(assets, packDir, jsonText)
         }
+        validateBatterySpriteConfigsOnce(assets, result)
         return result
+    }
+
+    private fun validateBatterySpriteConfigsOnce(
+        assets: AssetManager,
+        themes: List<ThemeDefinition>,
+    ) {
+        if (spriteValidationDone) return
+        synchronized(spriteValidationLock) {
+            if (spriteValidationDone) return
+            val boundsCache = mutableMapOf<String, Pair<Int, Int>?>()
+            val issues = mutableListOf<String>()
+            var checkedModes = 0
+            themes.forEach { theme ->
+                theme.options.forEach { option ->
+                    val battery = option.components.battery ?: return@forEach
+                    val indexing = battery.indexing.trim().lowercase().ifBlank { "top_to_bottom" }
+                    battery.modes.forEach { (modeName, mode) ->
+                        val asset = mode.asset.trim()
+                        if (asset.isBlank()) return@forEach
+                        val bounds = boundsCache.getOrPut(asset) {
+                            decodeAssetBounds(assets, asset)
+                        }
+                        if (bounds == null) {
+                            issues += "missing asset theme=${theme.id} option=${option.id} mode=$modeName asset=$asset"
+                            return@forEach
+                        }
+                        checkedModes += 1
+                        val (width, height) = bounds
+                        val frames = mode.frames.coerceAtLeast(1)
+                        val cfgFrameWidth = battery.frame.width.coerceAtLeast(0)
+                        val cfgFrameHeight = battery.frame.height.coerceAtLeast(0)
+
+                        if (frames > 1) {
+                            when (indexing) {
+                                "left_to_right" -> {
+                                    if (width % frames != 0) {
+                                        issues += "non-divisible width theme=${theme.id} option=${option.id} mode=$modeName asset=$asset size=${width}x$height frames=$frames"
+                                    }
+                                    val inferredFrameWidth = (width / frames).coerceAtLeast(1)
+                                    if (cfgFrameWidth > 0 && cfgFrameWidth != inferredFrameWidth) {
+                                        issues += "frameWidth mismatch theme=${theme.id} option=${option.id} mode=$modeName asset=$asset cfg=$cfgFrameWidth inferred=$inferredFrameWidth width=$width frames=$frames"
+                                    }
+                                    if (cfgFrameHeight > 0 && cfgFrameHeight != height) {
+                                        issues += "frameHeight mismatch-horizontal theme=${theme.id} option=${option.id} mode=$modeName asset=$asset cfg=$cfgFrameHeight imageHeight=$height"
+                                    }
+                                }
+
+                                else -> {
+                                    if (height % frames != 0) {
+                                        issues += "non-divisible height theme=${theme.id} option=${option.id} mode=$modeName asset=$asset size=${width}x$height frames=$frames"
+                                    }
+                                    val inferredFrameHeight = (height / frames).coerceAtLeast(1)
+                                    if (cfgFrameHeight > 0 && cfgFrameHeight != inferredFrameHeight) {
+                                        issues += "frameHeight mismatch theme=${theme.id} option=${option.id} mode=$modeName asset=$asset cfg=$cfgFrameHeight inferred=$inferredFrameHeight height=$height frames=$frames"
+                                    }
+                                    if (cfgFrameWidth > 0 && cfgFrameWidth != width) {
+                                        issues += "frameWidth mismatch-vertical theme=${theme.id} option=${option.id} mode=$modeName asset=$asset cfg=$cfgFrameWidth imageWidth=$width"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (issues.isEmpty()) {
+                Log.i(TAG, "validateBatterySpriteConfigs checkedModes=$checkedModes issues=0")
+            } else {
+                Log.w(TAG, "validateBatterySpriteConfigs checkedModes=$checkedModes issues=${issues.size}")
+                issues.forEach { issue ->
+                    Log.w(TAG, "batterySpriteIssue $issue")
+                }
+            }
+            spriteValidationDone = true
+        }
+    }
+
+    private fun decodeAssetBounds(
+        assets: AssetManager,
+        assetPath: String,
+    ): Pair<Int, Int>? {
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        return runCatching {
+            assets.open(assetPath).use { stream ->
+                BitmapFactory.decodeStream(stream, null, options)
+            }
+            if (options.outWidth > 0 && options.outHeight > 0) {
+                options.outWidth to options.outHeight
+            } else {
+                null
+            }
+        }.getOrNull()
     }
 
     private fun parsePackJson(
@@ -136,6 +301,8 @@ object ThemeOptionCatalog {
                             componentDir = "wallpaper",
                             assetKey = optionObject.optString("previewImage"),
                         ).ifBlank { wallpaperConfig.default },
+                        statusBarBackgroundType = resolveStatusBarBackgroundType(optionObject, componentsObject),
+                        statusBarColor = resolveStatusBarColor(optionObject, componentsObject),
                         components = ThemeOptionComponents(
                             wallpaper = wallpaperConfig,
                             lockScreen = resolveAssetPath(
@@ -190,6 +357,13 @@ object ThemeOptionCatalog {
                                 componentsObject = componentsObject,
                                 key = "hotspot",
                             ),
+                            ringer = resolveAssetListOrSingle(
+                                assets = assets,
+                                packDir = packDir,
+                                componentDir = "ringer",
+                                componentsObject = componentsObject,
+                                key = "ringer",
+                            ),
                             airplane = resolveAssetPath(
                                 assets = assets,
                                 packDir = packDir,
@@ -208,6 +382,51 @@ object ThemeOptionCatalog {
             )
         }
         return themes
+    }
+
+    private fun resolveStatusBarBackgroundType(
+        optionObject: JSONObject,
+        componentsObject: JSONObject,
+    ): String {
+        val direct = optionObject.optString("statusBarBackgroundType")
+        if (direct.isNotBlank()) return normalizeStatusBarBackgroundType(direct)
+        val node = componentsObject.opt("statusBarBackground")
+        val fromNode = when (node) {
+            is JSONObject -> node.optString("type")
+            else -> node?.toString().orEmpty()
+        }
+        if (fromNode.isNotBlank()) return normalizeStatusBarBackgroundType(fromNode)
+        return "bluebackground"
+    }
+
+    private fun normalizeStatusBarBackgroundType(raw: String): String {
+        return when (raw.trim().lowercase()) {
+            "wallpaper" -> "wallpaper"
+            "bluebackground", "blue_background", "blue-bg" -> "bluebackground"
+            "color" -> "color"
+            else -> "bluebackground"
+        }
+    }
+
+    private fun resolveStatusBarColor(
+        optionObject: JSONObject,
+        componentsObject: JSONObject,
+    ): String {
+        val direct = optionObject.optString("statusBarColor")
+        if (direct.isNotBlank()) return normalizeStatusBarColor(direct)
+        val node = componentsObject.opt("statusBarBackground")
+        val fromNode = if (node is JSONObject) node.optString("color") else ""
+        if (fromNode.isNotBlank()) return normalizeStatusBarColor(fromNode)
+        return ""
+    }
+
+    private fun normalizeStatusBarColor(raw: String): String {
+        val normalized = raw.trim()
+        if (normalized.isBlank()) return ""
+        val withPrefix = if (normalized.startsWith("#")) normalized else "#$normalized"
+        val hex = withPrefix.removePrefix("#")
+        val isValid = (hex.length == 6 || hex.length == 8) && hex.all { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }
+        return if (isValid) "#${hex.uppercase()}" else ""
     }
 
     private fun parseWallpaperConfig(

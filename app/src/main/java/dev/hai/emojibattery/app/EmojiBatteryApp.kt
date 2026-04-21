@@ -38,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,16 +67,19 @@ import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.MainSection
 import dev.hai.emojibattery.model.SampleCatalog
 import dev.hai.emojibattery.model.StatusBarTab
+import dev.hai.emojibattery.model.ThemeOptionCatalog
 import dev.hai.emojibattery.paywall.LegalWebViewScreen
 import dev.hai.emojibattery.paywall.PaywallScreen
 import dev.hai.emojibattery.service.AccessibilityBridge
 import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
+import dev.hai.emojibattery.service.WallpaperApplyService
 import dev.hai.emojibattery.locale.AppLanguageConfig
 import dev.hai.emojibattery.ui.accessibility.AccessibilityServiceUsageDialog
 import dev.hai.emojibattery.ui.navigation.AppRoute
 import co.q7labs.co.emoji.R
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun EmojiBatteryApp(
@@ -819,11 +823,34 @@ fun EmojiBatteryApp(
                 arguments = listOf(navArgument("themeId") { type = NavType.StringType }),
             ) { entry ->
                 val themeId = entry.arguments?.getString("themeId").orEmpty()
+                val themeApplyScope = rememberCoroutineScope()
+                val themeOptions = remember(context) {
+                    ThemeOptionCatalog
+                        .loadFromAssets(context)
+                        .flatMap { it.options }
+                }
                 ThemeDetailScreen(
                     themeId = themeId,
                     onBack = { navController.popBackStack() },
                     onApplyTheme = { optionId ->
-                        viewModel.postInfoMessage("Theme option placeholder applied: $optionId")
+                        val selectedOption = themeOptions.firstOrNull { it.id == optionId }
+                        if (selectedOption == null) {
+                            viewModel.postInfoMessage("Theme option not found: $optionId")
+                        } else {
+                            OverlayConfigStore.applyThemeSelection(context, selectedOption)
+                            if (AccessibilityBridge.isEnabled(context)) {
+                                OverlayAccessibilityService.requestRefresh(context)
+                            }
+                            themeApplyScope.launch {
+                                WallpaperApplyService.applyThemeWallpapers(
+                                    context = context,
+                                    option = selectedOption,
+                                    fallbackResId = R.drawable.img_bg_emoji_sticker,
+                                )
+                                    ?.let { viewModel.postInfoMessage(it) }
+                            }
+                            viewModel.postApplyMessage("Applied successfully.")
+                        }
                     },
                 )
             }

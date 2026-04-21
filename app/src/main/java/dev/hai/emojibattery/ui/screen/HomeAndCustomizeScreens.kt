@@ -35,11 +35,11 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.DataUsage
 import androidx.compose.material.icons.rounded.Flight
 import androidx.compose.material.icons.rounded.Mood
 import androidx.compose.material.icons.rounded.NotificationsActive
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.SignalCellular4Bar
 import androidx.compose.material.icons.rounded.Tune
@@ -444,7 +444,6 @@ internal fun CustomizeHubScreen(
             )
             ThemeShortcutCard(
                 title = stringResource(R.string.theme_shortcut_title),
-                subtitle = stringResource(R.string.theme_shortcut_subtitle),
                 onClick = onOpenThemeList,
             )
             Surface(
@@ -655,7 +654,6 @@ internal fun SmallCustomizeCard(
 @Composable
 internal fun ThemeShortcutCard(
     title: String,
-    subtitle: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -673,11 +671,22 @@ internal fun ThemeShortcutCard(
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                painter = painterResource(R.drawable.img_btn_status_bar_new),
-                contentDescription = title,
-                modifier = Modifier.size(40.dp),
-            )
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Box(
+                    modifier = Modifier.size(40.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Palette,
+                        contentDescription = title,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
+            }
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -688,17 +697,7 @@ internal fun ThemeShortcutCard(
                     fontWeight = FontWeight.ExtraBold,
                     style = MaterialTheme.typography.titleLarge,
                 )
-                Text(
-                    subtitle,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall,
-                )
             }
-            Icon(
-                imageVector = Icons.Rounded.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

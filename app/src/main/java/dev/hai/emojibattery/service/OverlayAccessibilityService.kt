@@ -138,6 +138,7 @@ class OverlayAccessibilityService : AccessibilityService() {
     }
 
     private fun refreshOverlay() {
+        val wifiEnabled = isWifiEnabled()
         val gestureSnapshot = GestureSettingsStore.read(this)
         overlayManager.setGestureEnabled(gestureSnapshot.gestureEnabled)
         overlayManager.render(
@@ -146,7 +147,8 @@ class OverlayAccessibilityService : AccessibilityService() {
                 batteryPercent = batteryPercent,
                 charging = charging,
                 hotspotEnabled = isHotspotEnabled(),
-                wifiEnabled = isWifiEnabled(),
+                wifiEnabled = wifiEnabled,
+                wifiLevel = if (wifiEnabled) readWifiSignalLevel() else 0,
                 mobileConnected = isMobileConnected(),
                 airplaneMode = isAirplaneModeOn(),
                 signalLevel = signalLevel,
@@ -167,6 +169,7 @@ class OverlayAccessibilityService : AccessibilityService() {
             addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
             addAction("android.net.wifi.WIFI_AP_STATE_CHANGED")
             addAction("android.net.wifi.WIFI_STATE_CHANGED")
+            addAction(WifiManager.RSSI_CHANGED_ACTION)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(connectivityReceiver, filter, RECEIVER_NOT_EXPORTED)
@@ -241,6 +244,15 @@ class OverlayAccessibilityService : AccessibilityService() {
 
     private fun isAirplaneModeOn(): Boolean {
         return Settings.Global.getInt(contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1
+    }
+
+    private fun readWifiSignalLevel(): Int {
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager ?: return 0
+        return runCatching {
+            val rssi = wifiManager.connectionInfo?.rssi ?: return@runCatching 0
+            if (rssi <= -127) return@runCatching 0
+            WifiManager.calculateSignalLevel(rssi, 5).coerceIn(0, 4)
+        }.getOrDefault(0)
     }
 
     private fun isHotspotEnabled(): Boolean {

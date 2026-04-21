@@ -21,7 +21,9 @@
               "stat_sys_wifi_signal_1",
               "stat_sys_wifi_signal_2",
               "stat_sys_wifi_signal_3",
-              "stat_sys_wifi_signal_4"
+              "stat_sys_wifi_signal_4",
+              "status_bar_toggle_wifi_on",
+              "status_bar_toggle_wifi_off"
             ],
             "signal": [
               "stat_sys_signal_0",
@@ -36,7 +38,8 @@
             ],
             "charge": "ic_battery_settings",
             "data": [
-              "status_bar_toggle_data_on"
+              "status_bar_toggle_data_on",
+              "status_bar_toggle_data_off"
             ],
             "hotspot": [
               "stat_sys_wifi_ap_on"

@@ -73,6 +73,7 @@ import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.data.PadWallpaperCategory
 import dev.hai.emojibattery.data.PadWallpaperItem
 import dev.hai.emojibattery.data.PadWallpaperRepository
+import dev.hai.emojibattery.service.WallpaperApplyService
 import dev.hai.emojibattery.service.WallpaperSetter
 import dev.hai.emojibattery.ui.theme.OceanSerenity
 import dev.hai.emojibattery.ui.theme.StrawberryMilk
@@ -262,7 +263,7 @@ internal fun WallpaperPreviewScreen(
         scope.launch {
             selectedTarget = target
             settingWallpaper = true
-            val result = WallpaperSetter.setWallpaper(
+            val result = WallpaperApplyService.applyWallpaper(
                 context = appContext,
                 imageUrl = imageUrl,
                 fallbackResId = R.drawable.img_bg_emoji_sticker,

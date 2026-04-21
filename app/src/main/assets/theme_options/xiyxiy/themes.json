@@ -8,6 +8,7 @@
           "id": "xiuyu_option_01",
           "name": "XiuYu Default",
           "previewImage": "w_0",
+          "statusBarColor": "#7F838D",
           "components": {
             "wallpaper": {
               "default": "w_0",
@@ -31,50 +32,50 @@
               "layout": "vertical",
               "frame": {
                 "width": 90,
-                "height": 75
+                "height": 60
               },
               "indexing": "top_to_bottom",
               "progressMapping": "linear",
               "modes": {
                 "normal": {
                   "asset": "stat_sys_battery",
-                  "frames": 16
+                  "frames": 20
                 },
                 "charging": {
                   "asset": "stat_sys_battery_charge",
-                  "frames": 16
+                  "frames": 20
                 },
                 "digital": {
                   "asset": "stat_sys_battery_digital",
-                  "frames": 8
+                  "frames": 10
                 },
                 "charge_digit": {
                   "asset": "stat_sys_battery_charge_digit",
-                  "frames": 16
+                  "frames": 20
                 },
                 "power_save": {
                   "asset": "stat_sys_battery_power_save",
-                  "frames": 16
+                  "frames": 20
                 },
                 "power_save_charge": {
                   "asset": "stat_sys_battery_power_save_charge",
-                  "frames": 16
+                  "frames": 20
                 },
                 "power_save_digit": {
                   "asset": "stat_sys_battery_power_save_digit",
-                  "frames": 16
+                  "frames": 20
                 },
                 "power_save_digit_charge": {
                   "asset": "stat_sys_battery_power_save_digit_charge",
-                  "frames": 16
+                  "frames": 20
                 },
                 "performance_mode": {
                   "asset": "stat_sys_battery_performance_mode",
-                  "frames": 16
+                  "frames": 20
                 },
                 "performance_mode_digit": {
                   "asset": "stat_sys_battery_performance_mode_digit",
-                  "frames": 8
+                  "frames": 10
                 }
               }
             },
@@ -102,7 +103,11 @@
               "xiuyu_data_6g"
             ],
             "hotspot": "ic_item_hotspot",
-            "airplane": "ic_item_airplane"
+            "airplane": "ic_item_airplane",
+            "ringer": [
+              "stat_sys_ringer_silent",
+              "stat_sys_ringer_vibrate"
+            ]
           }
         }
       ]

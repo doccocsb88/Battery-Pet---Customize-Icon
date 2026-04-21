@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,6 +24,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
@@ -148,6 +148,7 @@ private fun ThemeListItem(
     onClick: () -> Unit,
 ) {
     val cover = theme.options.firstOrNull()?.previewImage.orEmpty()
+    val previewAspectRatio = (deviceAspectRatio * 1.08f).coerceIn(0.5f, 0.75f)
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(20.dp),
@@ -157,17 +158,19 @@ private fun ThemeListItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+                .padding(1.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ThemePreviewImage(
                 assetPath = cover,
                 contentDescription = theme.name,
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .aspectRatio(deviceAspectRatio)
+                    .fillMaxWidth()
+                    .aspectRatio(previewAspectRatio)
                     .clip(RoundedCornerShape(14.dp)),
+                contentScale = ContentScale.FillWidth,
+                alignment = Alignment.BottomEnd,
             )
             Text(
                 text = theme.name,
@@ -222,8 +225,7 @@ internal fun ThemeDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .navigationBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
             ) {
                 Button(
                     onClick = { onApplyTheme(selectedOptionId) },
@@ -318,6 +320,34 @@ private fun ThemeOptionPreviewCard(
                 },
             backgroundOverride = currentBackground,
         )
+        if (hasMultipleWallpapers) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 12.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.78f))
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                wallpaperAssets.forEachIndexed { index, _ ->
+                    val isSelected = index == wallpaperIndex
+                    Box(
+                        modifier = Modifier
+                            .size(if (isSelected) 7.dp else 6.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (isSelected) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.30f)
+                                },
+                            ),
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -637,6 +667,8 @@ private fun ThemePreviewImage(
     assetPath: String,
     contentDescription: String,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
+    alignment: Alignment = Alignment.Center,
 ) {
     if (assetPath.isBlank()) {
         Surface(
@@ -651,6 +683,7 @@ private fun ThemePreviewImage(
         model = ThemeOptionCatalog.assetUri(assetPath),
         contentDescription = contentDescription,
         modifier = modifier,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
+        alignment = alignment,
     )
 }

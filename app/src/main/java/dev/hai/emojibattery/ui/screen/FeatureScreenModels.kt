@@ -304,7 +304,7 @@ internal val RingerPackOptions = (1..16)
 private val RingerStyles = setOf("bell", "mute", "wave") + RingerPackOptions.map { it.id }
 
 internal fun parseRingerVariant(raw: String?): RingerVariantState {
-    val fallback = RingerVariantState(styleId = "bell", colorId = "blue")
+    val fallback = RingerVariantState(styleId = "bell", colorId = "system")
     if (raw.isNullOrBlank()) return fallback
     if (";" !in raw && !raw.contains("=")) {
         val normalized = raw.lowercase()

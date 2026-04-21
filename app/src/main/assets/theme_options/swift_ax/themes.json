@@ -17,20 +17,24 @@
             },
             "lockscreen": "l_0",
             "wifi": [
+              "status_bar_toggle_wifi_off",
               "status_bar_toggle_wifi_on"
             ],
             "signal": [
-              "status_bar_toggle_data_on"
+              "status_bar_toggle_data_on",
+              "status_bar_toggle_data_off"
             ],
             "bluetooth": [
               "status_bar_toggle_bluetooth_on"
             ],
             "charge": "",
             "data": [
-              "status_bar_toggle_data_on"
+              "status_bar_toggle_data_on",
+              "status_bar_toggle_data_off"
             ],
             "hotspot": [
-              "status_bar_toggle_wifi_ap_on"
+              "status_bar_toggle_wifi_ap_on",
+              "status_bar_toggle_wifi_ap_off"
             ],
             "airplane": "status_bar_toggle_flight_mode_on",
             "battery": {

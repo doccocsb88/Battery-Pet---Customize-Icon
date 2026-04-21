@@ -8,6 +8,7 @@
           "id": "fujing_default",
           "name": "浮境 Default",
           "previewImage": "w_0",
+          "statusBarColor": "#0F2C36",
           "components": {
             "wallpaper": {
               "default": "w_0",
@@ -57,6 +58,10 @@
               "stat_sys_hotspot_signal_4"
             ],
             "airplane": "stat_sys_signal_flightmode",
+            "ringer": [
+              "stat_sys_ringer_silent",
+              "stat_sys_ringer_vibrate"
+            ],
             "battery": {
               "type": "sprite_sheet",
               "assetRoot": "assets/battery",

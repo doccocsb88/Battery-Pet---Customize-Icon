@@ -9,8 +9,12 @@ import dev.hai.emojibattery.model.CustomizeEntry
 import dev.hai.emojibattery.model.FeatureConfig
 import dev.hai.emojibattery.model.HomeBatteryItem
 import dev.hai.emojibattery.model.SampleCatalog
+import dev.hai.emojibattery.model.ThemeBatteryRuntime
+import dev.hai.emojibattery.model.ThemeOptionItem
+import dev.hai.emojibattery.model.ThemeStatusIcons
 import dev.hai.emojibattery.model.batteryTrollTemplateForId
 import dev.hai.emojibattery.model.stickerPresetForId
+import dev.hai.emojibattery.model.toThemeStatusIcons
 
 data class OverlaySnapshot(
     val statusBarEnabled: Boolean,
@@ -59,6 +63,12 @@ data class OverlaySnapshot(
     val notchScale: Float,
     val notchOffsetX: Float,
     val notchOffsetY: Float,
+    /** Theme wallpaper crop calibration for status-bar strip rendering only. */
+    val themeWallpaperCropScale: Float,
+    /** Horizontal shift for wallpaper crop calibration (-1f..1f). */
+    val themeWallpaperCropOffsetX: Float,
+    /** Vertical shift for wallpaper crop calibration (-1f..1f). */
+    val themeWallpaperCropOffsetY: Float,
     val statusBarHeight: Float,
     val leftMargin: Float,
     val rightMargin: Float,
@@ -76,6 +86,7 @@ data class OverlaySnapshot(
     val animationOffsetX: Float,
     val animationAssetPath: String?,
     val animationIsLottie: Boolean,
+    val themeStatusIcons: ThemeStatusIcons?,
     val featureConfigs: Map<CustomizeEntry, FeatureConfig>,
 )
 
@@ -93,6 +104,8 @@ object OverlayConfigStore {
     const val BATTERY_EMOJI_SOURCE_BATTERY_TROLL = "battery_troll"
     private const val MIN_STATUS_BAR_HEIGHT_FACTOR = 0.5f
     private const val MAX_STATUS_BAR_HEIGHT_FACTOR = 2f
+    private const val MIN_THEME_WALLPAPER_CROP_SCALE = 0.75f
+    private const val MAX_THEME_WALLPAPER_CROP_SCALE = 1.35f
 
     private const val PREFS = "overlay_config"
     private const val KEY_STATUS_ENABLED = "status_enabled"
@@ -136,6 +149,9 @@ object OverlayConfigStore {
     private const val KEY_NOTCH_SCALE = "notch_scale"
     private const val KEY_NOTCH_OFFSET_X = "notch_offset_x"
     private const val KEY_NOTCH_OFFSET_Y = "notch_offset_y"
+    private const val KEY_THEME_WALLPAPER_CROP_SCALE = "theme_wallpaper_crop_scale"
+    private const val KEY_THEME_WALLPAPER_CROP_OFFSET_X = "theme_wallpaper_crop_offset_x"
+    private const val KEY_THEME_WALLPAPER_CROP_OFFSET_Y = "theme_wallpaper_crop_offset_y"
     private const val KEY_STATUS_BAR_HEIGHT = "status_bar_height"
     private const val KEY_STATUS_LEFT_MARGIN = "status_left_margin"
     private const val KEY_STATUS_RIGHT_MARGIN = "status_right_margin"
@@ -151,6 +167,7 @@ object OverlayConfigStore {
     private const val KEY_ANIMATION_SIZE_PERCENT = "animation_size_percent"
     private const val KEY_ANIMATION_OFFSET_X = "animation_offset_x"
     private const val KEY_ANIMATION_TEMPLATE_ID = "animation_template_id"
+    private const val KEY_THEME_STATUS_ICONS = "theme_status_icons"
     private const val KEY_FEATURE_CONFIGS = "feature_configs"
 
     /**
@@ -220,6 +237,78 @@ object OverlayConfigStore {
     fun saveFeatureConfigs(context: Context, featureConfigs: Map<CustomizeEntry, FeatureConfig>) {
         prefs(context).edit()
             .putString(KEY_FEATURE_CONFIGS, encodeFeatureConfigs(featureConfigs))
+            .apply()
+    }
+
+    fun saveThemeStatusIcons(context: Context, themeStatusIcons: ThemeStatusIcons?) {
+        prefs(context).edit().apply {
+            if (themeStatusIcons == null) {
+                remove(KEY_THEME_STATUS_ICONS)
+            } else {
+                putString(KEY_THEME_STATUS_ICONS, encodeThemeStatusIcons(themeStatusIcons))
+            }
+            apply()
+        }
+    }
+
+    fun saveThemeWallpaperCropCalibration(
+        context: Context,
+        scale: Float,
+        offsetX: Float,
+        offsetY: Float,
+    ) {
+        prefs(context).edit()
+            .putFloat(
+                KEY_THEME_WALLPAPER_CROP_SCALE,
+                scale.coerceIn(MIN_THEME_WALLPAPER_CROP_SCALE, MAX_THEME_WALLPAPER_CROP_SCALE),
+            )
+            .putFloat(KEY_THEME_WALLPAPER_CROP_OFFSET_X, offsetX.coerceIn(-1f, 1f))
+            .putFloat(KEY_THEME_WALLPAPER_CROP_OFFSET_Y, offsetY.coerceIn(-1f, 1f))
+            .apply()
+    }
+
+    fun resetThemeWallpaperCropCalibration(context: Context) {
+        prefs(context).edit()
+            .remove(KEY_THEME_WALLPAPER_CROP_SCALE)
+            .remove(KEY_THEME_WALLPAPER_CROP_OFFSET_X)
+            .remove(KEY_THEME_WALLPAPER_CROP_OFFSET_Y)
+            .apply()
+    }
+
+    fun applyThemeSelection(context: Context, option: ThemeOptionItem) {
+        val dateTimeDefaultVariant = SampleCatalog.defaultFeatureConfigs[CustomizeEntry.DateTime]
+            ?.variant
+            ?: "style=style_4;color=system;show=0"
+        val preferences = prefs(context)
+        val currentStatusBarHeight = readStatusBarHeightFactor(
+            preferences.getFloat(KEY_STATUS_BAR_HEIGHT, MIN_STATUS_BAR_HEIGHT_FACTOR),
+        )
+        val currentFeatureConfigs = decodeFeatureConfigs(preferences.getString(KEY_FEATURE_CONFIGS, null))
+        val currentDateTimeConfig = currentFeatureConfigs[CustomizeEntry.DateTime]
+            ?: FeatureConfig(enabled = true, intensity = 0.55f, variant = dateTimeDefaultVariant)
+        val updatedFeatureConfigs = currentFeatureConfigs.toMutableMap().apply {
+            this[CustomizeEntry.DateTime] = currentDateTimeConfig.copy(
+                variant = resetDateTimeColorVariant(
+                    currentVariant = currentDateTimeConfig.variant,
+                    fallbackVariant = dateTimeDefaultVariant,
+                ),
+            )
+        }
+
+        preferences.edit()
+            .putString(KEY_THEME_STATUS_ICONS, encodeThemeStatusIcons(option.toThemeStatusIcons()))
+            .putString(KEY_BATTERY_EMOJI_SOURCE, BATTERY_EMOJI_SOURCE_STATUS_BAR_CUSTOM)
+            .putString(KEY_BATTERY_ART_URL, "")
+            .putInt(KEY_BATTERY_ART_DRAWABLE, 0)
+            .putString(KEY_EMOJI_ART_URL, "")
+            .putInt(KEY_EMOJI_ART_DRAWABLE, 0)
+            .putLong(KEY_BACKGROUND, 0L)
+            .putString(KEY_BACKGROUND_TEMPLATE_PHOTO, "")
+            .putInt(KEY_BACKGROUND_TEMPLATE_DRAWABLE, 0)
+            .putFloat(KEY_STATUS_BAR_HEIGHT, currentStatusBarHeight)
+            .putBoolean(KEY_SHOW_STROKE, false)
+            .putBoolean(KEY_SHOW_PERCENTAGE, false)
+            .putString(KEY_FEATURE_CONFIGS, encodeFeatureConfigs(updatedFeatureConfigs))
             .apply()
     }
 
@@ -415,6 +504,10 @@ object OverlayConfigStore {
             notchScale = prefs.getFloat(KEY_NOTCH_SCALE, 1f).coerceIn(0.5f, 2.2f),
             notchOffsetX = prefs.getFloat(KEY_NOTCH_OFFSET_X, 0.5f).coerceIn(0f, 1f),
             notchOffsetY = prefs.getFloat(KEY_NOTCH_OFFSET_Y, 0.5f).coerceIn(0f, 1f),
+            themeWallpaperCropScale = prefs.getFloat(KEY_THEME_WALLPAPER_CROP_SCALE, 1f)
+                .coerceIn(MIN_THEME_WALLPAPER_CROP_SCALE, MAX_THEME_WALLPAPER_CROP_SCALE),
+            themeWallpaperCropOffsetX = prefs.getFloat(KEY_THEME_WALLPAPER_CROP_OFFSET_X, 0f).coerceIn(-1f, 1f),
+            themeWallpaperCropOffsetY = prefs.getFloat(KEY_THEME_WALLPAPER_CROP_OFFSET_Y, 0f).coerceIn(-1f, 1f),
             statusBarHeight = readStatusBarHeightFactor(
                 prefs.getFloat(KEY_STATUS_BAR_HEIGHT, SampleCatalog.defaultConfig.statusBarHeight),
             ),
@@ -433,6 +526,7 @@ object OverlayConfigStore {
             animationOffsetX = prefs.getFloat(KEY_ANIMATION_OFFSET_X, 0.5f).coerceIn(0f, 1f),
             animationAssetPath = animationTemplate.assetPath,
             animationIsLottie = animationTemplate.isLottie,
+            themeStatusIcons = decodeThemeStatusIcons(prefs.getString(KEY_THEME_STATUS_ICONS, null)),
             featureConfigs = decodeFeatureConfigs(prefs.getString(KEY_FEATURE_CONFIGS, null)),
         )
     }
@@ -466,6 +560,124 @@ object OverlayConfigStore {
                 }
             }
         }.getOrElse { emptyList() }
+    }
+
+    private fun encodeStringArray(values: List<String>): JSONArray {
+        val array = JSONArray()
+        values.forEach { array.put(it) }
+        return array
+    }
+
+    private fun decodeStringArray(array: JSONArray?): List<String> {
+        if (array == null) return emptyList()
+        return buildList {
+            for (index in 0 until array.length()) {
+                val value = array.optString(index).trim()
+                if (value.isNotBlank()) add(value)
+            }
+        }
+    }
+
+    private fun encodeThemeStatusIcons(themeStatusIcons: ThemeStatusIcons): String {
+        val root = JSONObject()
+        root.put("optionId", themeStatusIcons.optionId)
+        root.put("statusBarBackgroundType", themeStatusIcons.statusBarBackgroundType)
+        root.put("statusBarColor", themeStatusIcons.statusBarColor)
+        root.put("wallpaper", themeStatusIcons.wallpaper)
+        root.put("wifi", encodeStringArray(themeStatusIcons.wifi))
+        root.put("signal", encodeStringArray(themeStatusIcons.signal))
+        root.put("data", encodeStringArray(themeStatusIcons.data))
+        root.put("hotspot", encodeStringArray(themeStatusIcons.hotspot))
+        root.put("ringer", encodeStringArray(themeStatusIcons.ringer))
+        root.put("bluetooth", encodeStringArray(themeStatusIcons.bluetooth))
+        root.put("airplane", themeStatusIcons.airplane)
+        root.put("charge", themeStatusIcons.charge)
+        themeStatusIcons.battery?.let { battery ->
+            root.put("battery", encodeThemeBatteryRuntime(battery))
+        }
+        return root.toString()
+    }
+
+    private fun decodeThemeStatusIcons(raw: String?): ThemeStatusIcons? {
+        if (raw.isNullOrBlank()) return null
+        return runCatching {
+            val root = JSONObject(raw)
+            val parsed = ThemeStatusIcons(
+                optionId = root.optString("optionId").trim(),
+                statusBarBackgroundType = root.optString("statusBarBackgroundType").trim(),
+                statusBarColor = root.optString("statusBarColor").trim(),
+                wallpaper = root.optString("wallpaper").trim(),
+                wifi = decodeStringArray(root.optJSONArray("wifi")),
+                signal = decodeStringArray(root.optJSONArray("signal")),
+                data = decodeStringArray(root.optJSONArray("data")),
+                hotspot = decodeStringArray(root.optJSONArray("hotspot")),
+                ringer = decodeStringArray(root.optJSONArray("ringer")),
+                bluetooth = decodeStringArray(root.optJSONArray("bluetooth")),
+                airplane = root.optString("airplane").trim(),
+                charge = root.optString("charge").trim(),
+                battery = decodeThemeBatteryRuntime(root.optJSONObject("battery")),
+            )
+            val hasAnyIcon = parsed.airplane.isNotBlank() ||
+                parsed.charge.isNotBlank() ||
+                parsed.wifi.isNotEmpty() ||
+                parsed.signal.isNotEmpty() ||
+                parsed.data.isNotEmpty() ||
+                parsed.hotspot.isNotEmpty() ||
+                parsed.ringer.isNotEmpty() ||
+                parsed.bluetooth.isNotEmpty() ||
+                parsed.statusBarColor.isNotBlank() ||
+                parsed.wallpaper.isNotBlank() ||
+                parsed.battery != null
+            if (hasAnyIcon) parsed else null
+        }.getOrNull()
+    }
+
+    private fun encodeThemeBatteryRuntime(battery: ThemeBatteryRuntime): JSONObject {
+        val node = JSONObject()
+        node.put("normalAsset", battery.normalAsset)
+        node.put("normalFrames", battery.normalFrames)
+        node.put("chargingAsset", battery.chargingAsset ?: "")
+        node.put("chargingFrames", battery.chargingFrames)
+        node.put("indexing", battery.indexing)
+        node.put("frameWidth", battery.frameWidth)
+        node.put("frameHeight", battery.frameHeight)
+        return node
+    }
+
+    private fun decodeThemeBatteryRuntime(node: JSONObject?): ThemeBatteryRuntime? {
+        if (node == null) return null
+        val normalAsset = node.optString("normalAsset").trim()
+        if (normalAsset.isBlank()) return null
+        return ThemeBatteryRuntime(
+            normalAsset = normalAsset,
+            normalFrames = node.optInt("normalFrames", 1).coerceAtLeast(1),
+            chargingAsset = node.optString("chargingAsset").trim().takeIf { it.isNotBlank() },
+            chargingFrames = node.optInt("chargingFrames", 1).coerceAtLeast(1),
+            indexing = node.optString("indexing").trim().ifBlank { "top_to_bottom" },
+            frameWidth = node.optInt("frameWidth", 0).coerceAtLeast(0),
+            frameHeight = node.optInt("frameHeight", 0).coerceAtLeast(0),
+        )
+    }
+
+    private fun resetDateTimeColorVariant(
+        currentVariant: String,
+        fallbackVariant: String,
+    ): String {
+        val fallback = parseVariantPairs(fallbackVariant)
+        val current = parseVariantPairs(currentVariant)
+        val style = current["style"] ?: fallback["style"] ?: "style_4"
+        val show = current["show"] ?: fallback["show"] ?: "0"
+        return "style=$style;color=system;show=$show"
+    }
+
+    private fun parseVariantPairs(raw: String): Map<String, String> {
+        if (raw.isBlank()) return emptyMap()
+        return raw.split(";")
+            .mapNotNull { segment ->
+                val pair = segment.split("=", limit = 2)
+                if (pair.size == 2) pair[0].trim() to pair[1].trim() else null
+            }
+            .toMap()
     }
 
     private fun encodeFeatureConfigs(configs: Map<CustomizeEntry, FeatureConfig>): String {
