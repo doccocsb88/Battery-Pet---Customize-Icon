@@ -24,3 +24,4 @@ play-secrets/
 *.keystore
 service-account*.json
 fastlane/report.xml
+patch_manifest.py
