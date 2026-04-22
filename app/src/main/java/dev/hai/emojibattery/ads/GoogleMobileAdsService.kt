@@ -283,6 +283,7 @@ class GoogleMobileAdsService(
                 onUnavailable()
             }
         }
+        readyAd.setImmersiveMode(true)
         readyAd.show(activity)
     }
 
