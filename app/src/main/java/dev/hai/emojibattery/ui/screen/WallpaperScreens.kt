@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Home
@@ -57,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -66,9 +68,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import co.q7labs.co.emoji.R
@@ -88,6 +92,91 @@ import kotlinx.coroutines.launch
 /** Show a native ad every [WALLPAPER_NATIVE_AD_INTERVAL] wallpaper items in the grid. */
 private const val WALLPAPER_NATIVE_AD_INTERVAL = 4
 
+private val WallpaperSearchAccentBlue = Color(0xFF8FB6D4)
+private val WallpaperSearchNeutralBorder = Color(0xFFD8DDE2)
+
+private fun wallpaperQueryTokens(query: String): List<String> {
+    return query
+        .trim()
+        .lowercase()
+        .split(Regex("[^a-z0-9]+"))
+        .map { it.trim() }
+        .filter { it.length >= 2 }
+        .distinct()
+}
+
+private fun wallpaperCategoryMatches(
+    category: PadWallpaperCategory,
+    tokens: List<String>,
+    keywordIndex: Map<String, List<String>>,
+): Boolean {
+    if (tokens.isEmpty()) return true
+    val keywords = keywordIndex[category.id].orEmpty()
+    val title = (category.title ?: category.packName).orEmpty().lowercase()
+    val id = category.id.lowercase()
+    return tokens.all { token ->
+        title.contains(token) ||
+            id.contains(token) ||
+            keywords.any { it.contains(token) }
+    }
+}
+
+@Composable
+private fun WallpaperSearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, WallpaperSearchNeutralBorder),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            androidx.compose.foundation.Image(
+                painter = painterResource(R.drawable.ic_home_search),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                colorFilter = ColorFilter.tint(WallpaperSearchAccentBlue),
+            )
+            BasicTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 16.sp,
+                ),
+                decorationBox = { inner ->
+                    if (query.isBlank()) {
+                        Text(
+                            text = stringResource(R.string.wallpaper_search_hint),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                        )
+                    }
+                    inner()
+                },
+            )
+            if (query.isNotBlank()) {
+                IconButton(onClick = { onQueryChange("") }, modifier = Modifier.size(20.dp)) {
+                    androidx.compose.foundation.Image(
+                        painter = painterResource(R.drawable.ic_search_clear),
+                        contentDescription = stringResource(R.string.cd_clear),
+                        colorFilter = ColorFilter.tint(Color(0xFF94A3B8)),
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 internal fun WallpaperScreen(
@@ -95,10 +184,22 @@ internal fun WallpaperScreen(
 ) {
     val context = LocalContext.current.applicationContext
     val categories = remember { mutableStateListOf<PadWallpaperCategory>() }
+    val keywordIndex = remember { mutableStateMapOf<String, List<String>>() }
+    var query by remember { mutableStateOf("") }
+    val tokens = wallpaperQueryTokens(query)
+    val filteredCategories = categories.filter { category ->
+        wallpaperCategoryMatches(
+            category = category,
+            tokens = tokens,
+            keywordIndex = keywordIndex,
+        )
+    }
 
     LaunchedEffect(Unit) {
         categories.clear()
         categories.addAll(PadWallpaperRepository.loadCategories(context))
+        keywordIndex.clear()
+        keywordIndex.putAll(PadWallpaperRepository.loadCategoryKeywordIndex(context))
     }
 
     Scaffold(
@@ -124,16 +225,38 @@ internal fun WallpaperScreen(
                 contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                item { WallpaperHeroCard() }
-                items(categories.size, key = { index -> categories[index].id }) { index ->
-                    val category = categories[index]
-                    WallpaperCategoryCard(
-                        title = categoryDisplayTitle(category.title ?: category.packName),
-                        description = category.description,
-                        itemCount = category.items.size,
-                        thumbnailUrl = PadWallpaperRepository.thumbnailAssetUrl(category),
-                        onClick = { onOpenCategory(category.id) },
+                item {
+                    WallpaperSearchBar(
+                        query = query,
+                        onQueryChange = { query = it },
                     )
+                }
+                if (query.isBlank()) {
+                    item { WallpaperHeroCard() }
+                }
+                if (filteredCategories.isEmpty()) {
+                    item {
+                        Text(
+                            text = stringResource(R.string.wallpaper_search_no_results, query.trim()),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                } else {
+                    items(filteredCategories.size, key = { index -> filteredCategories[index].id }) { index ->
+                        val category = filteredCategories[index]
+                        WallpaperCategoryCard(
+                            title = categoryDisplayTitle(category.title ?: category.packName),
+                            description = category.description,
+                            itemCount = category.items.size,
+                            thumbnailUrl = PadWallpaperRepository.thumbnailAssetUrl(category),
+                            onClick = { onOpenCategory(category.id) },
+                        )
+                    }
                 }
             }
         }

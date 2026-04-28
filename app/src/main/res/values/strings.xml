@@ -221,6 +221,10 @@
     <string name="search_results_for">%1$d result(s) for \"%2$s\"</string>
     <string name="search_no_match">No templates matched this keyword.</string>
 
+    <!-- Wallpaper -->
+    <string name="wallpaper_search_hint">Search wallpaper categories</string>
+    <string name="wallpaper_search_no_results">No categories match \"%1$s\".</string>
+
     <!-- Achievement -->
     <string name="achievement_open">Open</string>
     <string name="achievement_claim">Claim</string>

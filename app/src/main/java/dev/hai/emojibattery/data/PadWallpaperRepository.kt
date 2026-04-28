@@ -35,12 +35,15 @@ data class PadWallpaperItem(
 
 object PadWallpaperRepository {
     private const val MANIFEST_ASSET_PATH = "wallpapers/wallpaper_pack_manifest.json"
+    private const val SLUG_INDEX_ASSET_PATH = "wallpapers/wallpaper_pack_slug_index.json"
     private const val MAX_CACHED_CATEGORY_ITEMS = 2
     private val gson = Gson()
     private val categoriesType =
         TypeToken.getParameterized(List::class.java, PadWallpaperCategory::class.java).type
     @Volatile
     private var categoriesCache: List<PadWallpaperCategory>? = null
+    @Volatile
+    private var categoryKeywordIndexCache: Map<String, List<String>>? = null
     private val cacheLock = Any()
     private val itemsCache = object : LinkedHashMap<String, List<PadWallpaperItem>>(
         MAX_CACHED_CATEGORY_ITEMS,
@@ -69,6 +72,28 @@ object PadWallpaperRepository {
 
     fun thumbnailAssetUrl(category: PadWallpaperCategory): String =
         "file:///android_asset/${category.thumbnailAssetPath.trimStart('/')}"
+
+    suspend fun loadCategoryKeywordIndex(context: Context): Map<String, List<String>> = withContext(Dispatchers.IO) {
+        categoryKeywordIndexCache?.let { return@withContext it }
+        runCatching {
+            context.assets.open(SLUG_INDEX_ASSET_PATH).bufferedReader().use { reader ->
+                gson.fromJson(reader, PadWallpaperSlugIndex::class.java)
+            }
+        }.getOrNull()
+            ?.packs
+            .orEmpty()
+            .mapNotNull { pack ->
+                val categoryId = pack.category?.id?.trim().orEmpty()
+                if (categoryId.isBlank()) return@mapNotNull null
+                categoryId to pack.keywords.orEmpty().map { it.trim().lowercase() }.filter { it.isNotBlank() }
+            }
+            .toMap()
+            .also { loaded ->
+                if (loaded.isNotEmpty()) {
+                    categoryKeywordIndexCache = loaded
+                }
+            }
+    }
 
     suspend fun loadItemsForCategory(
         context: Context,
@@ -111,3 +136,23 @@ object PadWallpaperRepository {
         itemsCache[categoryId]
     }
 }
+
+data class PadWallpaperSlugIndex(
+    val schemaVersion: Int? = null,
+    val packs: List<PadWallpaperSlugPack>? = null,
+)
+
+data class PadWallpaperSlugPack(
+    val moduleName: String? = null,
+    val moduleSlug: String? = null,
+    val deliveryPackName: String? = null,
+    val category: PadWallpaperSlugCategory? = null,
+    val keywords: List<String>? = null,
+)
+
+data class PadWallpaperSlugCategory(
+    val id: String? = null,
+    val title: String? = null,
+    val description: String? = null,
+    val thumbnailAssetPath: String? = null,
+)
