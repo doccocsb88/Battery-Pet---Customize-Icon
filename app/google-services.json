@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "406171295424",
+    "project_id": "battery-emoji-266a5",
+    "storage_bucket": "battery-emoji-266a5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406171295424:android:66012f01cc7a66fefbd725",
+        "android_client_info": {
+          "package_name": "co.q7labs.co.emoji"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqNd6JY9PWMkethVchMqcGQpyj9WzZrJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

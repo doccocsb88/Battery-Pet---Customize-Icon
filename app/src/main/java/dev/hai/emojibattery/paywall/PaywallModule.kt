@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.animation.core.animateFloatAsState
@@ -50,8 +51,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -77,6 +81,7 @@ import dev.hai.emojibattery.billing.PurchaseService
 import dev.hai.emojibattery.model.PaywallLaunchMode
 import dev.hai.emojibattery.model.PaywallState
 import dev.hai.emojibattery.model.SampleCatalog
+import dev.hai.emojibattery.tracking.TrackingServices
 
 // ─── Alpine Design Tokens ────────────────────────────────────────
 private object Alpine {
@@ -140,6 +145,82 @@ fun PaywallScreen(
     val statusBarTopInset = with(density) { WindowInsets.statusBars.getTop(this).toDp() }
     val navigationBarBottomInset = with(density) { WindowInsets.navigationBars.getBottom(this).toDp() }
     val hostActivity = context.findActivity()
+    val appContext = remember(context) { context.applicationContext }
+
+    var impressionAtMs by remember { mutableStateOf(0L) }
+    var exitTracked by remember { mutableStateOf(false) }
+    var lastSelectedProductId by remember { mutableStateOf<String?>(null) }
+    var prevOwnedProductIds by remember { mutableStateOf(billingState.ownedProductIds) }
+
+    fun planTypeForProduct(productId: String): String? = when (productId) {
+        purchaseService.weeklyProductId -> "weekly"
+        purchaseService.monthlyProductId -> "monthly"
+        purchaseService.lifetimeProductId -> "lifetime"
+        else -> null
+    }
+
+    fun trackExitOnce(reason: String) {
+        if (exitTracked) return
+        exitTracked = true
+        val dwell = if (impressionAtMs > 0) (System.currentTimeMillis() - impressionAtMs).coerceAtLeast(0) else null
+        TrackingServices.trackPaywallExit(
+            context = appContext,
+            reason = reason,
+            dwellMs = dwell,
+            productId = lastSelectedProductId,
+        )
+    }
+
+    LaunchedEffect(paywall?.featureKey, paywall?.launchMode) {
+        if (paywall == null) return@LaunchedEffect
+        impressionAtMs = System.currentTimeMillis()
+        exitTracked = false
+        lastSelectedProductId = null
+        prevOwnedProductIds = billingState.ownedProductIds
+        TrackingServices.trackPaywallImpression(
+            context = appContext,
+            paywallId = paywall.featureKey,
+            featureKey = paywall.featureKey,
+            launchMode = paywall.launchMode.name,
+            hasWeekly = billingState.weeklyPlan != null,
+            hasMonthly = billingState.monthlyPlan != null,
+            hasLifetime = billingState.lifetimePlan != null,
+        )
+    }
+
+    LaunchedEffect(billingState.ownedProductIds) {
+        if (paywall == null) return@LaunchedEffect
+        val added = billingState.ownedProductIds - prevOwnedProductIds
+        if (added.isNotEmpty()) {
+            added.forEach { productId ->
+                TrackingServices.trackPaywallPurchaseSuccess(
+                    context = appContext,
+                    productId = productId,
+                    planType = planTypeForProduct(productId),
+                )
+            }
+        }
+        prevOwnedProductIds = billingState.ownedProductIds
+    }
+
+    LaunchedEffect(billingState.errorMessage) {
+        val message = billingState.errorMessage ?: return@LaunchedEffect
+        TrackingServices.trackPaywallPurchaseError(
+            context = appContext,
+            productId = lastSelectedProductId,
+            message = message,
+        )
+    }
+
+    BackHandler(enabled = paywall != null) {
+        trackExitOnce("system_back")
+        onClose()
+    }
+
+    val onCloseTracked: () -> Unit = {
+        trackExitOnce("close_button")
+        onClose()
+    }
 
     DisposableEffect(hostActivity) {
         val window = hostActivity?.window
@@ -282,6 +363,20 @@ fun PaywallScreen(
                         footnote = weeklyFootnote,
                         badge = if (weeklyPurchased) "Purchased" else null,
                         onClick = {
+                            lastSelectedProductId = weekly.productId
+                            val planType = planTypeForProduct(weekly.productId)
+                            TrackingServices.trackPaywallItemSelected(
+                                context = appContext,
+                                productId = weekly.productId,
+                                planType = planType,
+                                hasOfferToken = !weekly.offerToken.isNullOrBlank(),
+                            )
+                            TrackingServices.trackPaywallPurchaseStarted(
+                                context = appContext,
+                                productId = weekly.productId,
+                                planType = planType,
+                                hasOfferToken = !weekly.offerToken.isNullOrBlank(),
+                            )
                             onPurchase(weekly.productId, weekly.offerToken)
                         },
                         enabled = !billingState.purchaseInFlight && !weeklyPurchased,
@@ -306,6 +401,20 @@ fun PaywallScreen(
                             else -> null
                         },
                         onClick = {
+                            lastSelectedProductId = monthly.productId
+                            val planType = planTypeForProduct(monthly.productId)
+                            TrackingServices.trackPaywallItemSelected(
+                                context = appContext,
+                                productId = monthly.productId,
+                                planType = planType,
+                                hasOfferToken = !monthly.offerToken.isNullOrBlank(),
+                            )
+                            TrackingServices.trackPaywallPurchaseStarted(
+                                context = appContext,
+                                productId = monthly.productId,
+                                planType = planType,
+                                hasOfferToken = !monthly.offerToken.isNullOrBlank(),
+                            )
                             onPurchase(monthly.productId, monthly.offerToken)
                         },
                         enabled = !billingState.purchaseInFlight && !monthlyPurchased,
@@ -322,6 +431,20 @@ fun PaywallScreen(
                         footnote = null,
                         badge = if (lifetimePurchased) "Purchased" else stringResource(R.string.popular),
                         onClick = {
+                            lastSelectedProductId = lifetime.productId
+                            val planType = planTypeForProduct(lifetime.productId)
+                            TrackingServices.trackPaywallItemSelected(
+                                context = appContext,
+                                productId = lifetime.productId,
+                                planType = planType,
+                                hasOfferToken = false,
+                            )
+                            TrackingServices.trackPaywallPurchaseStarted(
+                                context = appContext,
+                                productId = lifetime.productId,
+                                planType = planType,
+                                hasOfferToken = false,
+                            )
                             onPurchase(lifetime.productId, null)
                         },
                         enabled = !billingState.purchaseInFlight && !lifetimePurchased,
@@ -415,7 +538,7 @@ fun PaywallScreen(
                 .align(Alignment.TopEnd)
                 .padding(top = statusBarTopInset + 8.dp, end = 12.dp)
                 .size(40.dp)
-                .clickable(onClick = onClose),
+                .clickable(onClick = onCloseTracked),
             contentAlignment = Alignment.Center,
         ) {
             Icon(

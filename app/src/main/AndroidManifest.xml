@@ -21,13 +21,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EmojiBatteryPort">
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="${adMobAppId}" />
-        <activity
-            android:name="dev.hai.emojibattery.app.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.EmojiBatteryPort">
+	        <meta-data
+	            android:name="com.google.android.gms.ads.APPLICATION_ID"
+	            android:value="${adMobAppId}" />
+	        <property
+	            android:name="android.adservices.AD_SERVICES_CONFIG"
+	            android:resource="@xml/gma_ad_services_config"
+	            tools:replace="android:resource" />
+	        <activity
+	            android:name="dev.hai.emojibattery.app.MainActivity"
+	            android:exported="true"
+	            android:theme="@style/Theme.EmojiBatteryPort">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
