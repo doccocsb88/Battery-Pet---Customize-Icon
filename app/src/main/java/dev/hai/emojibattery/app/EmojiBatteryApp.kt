@@ -234,11 +234,14 @@ fun EmojiBatteryApp(
                         if (!uiState.splashDone) {
                             viewModel.finishSplash()
                         }
+                        viewModel.maybeShowPostOnboardingPaywall()
                         val latest = viewModel.uiState.value
                         val nextRoute = when {
                             AppLanguageConfig.isLanguagePickerFlowEnabled && !latest.languageChosen ->
                                 AppRoute.Language.route
                             !latest.onboardingCompleted -> AppRoute.Onboarding.route
+                            latest.paywallState?.featureKey == "flow:post_onboarding_home" ->
+                                AppRoute.Paywall.route
                             else -> AppRoute.Home.route
                         }
                         navController.navigate(nextRoute) {
@@ -270,7 +273,13 @@ fun EmojiBatteryApp(
                     uiState = uiState,
                     onSkip = {
                         viewModel.skipOnboarding()
-                        navController.navigate(AppRoute.Home.route) {
+                        val latest = viewModel.uiState.value
+                        val nextRoute = if (latest.paywallState?.featureKey == "flow:post_onboarding_home") {
+                            AppRoute.Paywall.route
+                        } else {
+                            AppRoute.Home.route
+                        }
+                        navController.navigate(nextRoute) {
                             popUpTo(AppRoute.Onboarding.route) { inclusive = true }
                         }
                     },
@@ -279,7 +288,13 @@ fun EmojiBatteryApp(
                         val isLast = uiState.onboardingPage >= SampleCatalog.onboardingPages.lastIndex
                         viewModel.nextOnboardingPage()
                         if (isLast) {
-                            navController.navigate(AppRoute.Home.route) {
+                            val latest = viewModel.uiState.value
+                            val nextRoute = if (latest.paywallState?.featureKey == "flow:post_onboarding_home") {
+                                AppRoute.Paywall.route
+                            } else {
+                                AppRoute.Home.route
+                            }
+                            navController.navigate(nextRoute) {
                                 popUpTo(AppRoute.Onboarding.route) { inclusive = true }
                             }
                         }
@@ -666,8 +681,16 @@ fun EmojiBatteryApp(
                     paywall = uiState.paywallState,
                     billingState = billingState,
                     onClose = {
+                        val featureKey = uiState.paywallState?.featureKey
                         viewModel.dismissPaywall()
-                        navController.popBackStack()
+                        if (featureKey == "flow:post_onboarding_home") {
+                            navController.navigate(AppRoute.Home.route) {
+                                popUpTo(AppRoute.Paywall.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        } else {
+                            navController.popBackStack()
+                        }
                     },
                     purchaseService = purchaseService,
                     onRestore = purchaseService::restorePurchases,

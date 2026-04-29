@@ -143,7 +143,17 @@ class EmojiBatteryViewModel(
     fun finishSplash() {
         val app = getApplication<Application>()
         AppFlowPreferences.setSplashDone(app)
-        _uiState.update { it.copy(splashDone = true) }
+        _uiState.update { state ->
+            val updated = state.copy(splashDone = true)
+            maybeShowPostOnboardingPaywall(app, updated)
+        }
+    }
+
+    fun maybeShowPostOnboardingPaywall() {
+        val app = getApplication<Application>()
+        _uiState.update { state ->
+            maybeShowPostOnboardingPaywall(app, state)
+        }
     }
 
     fun selectLocaleForLanguagePicker(localeTag: String) {
@@ -186,11 +196,13 @@ class EmojiBatteryViewModel(
         _uiState.update { state ->
             val lastIndex = SampleCatalog.onboardingPages.lastIndex
             if (state.onboardingPage >= lastIndex) {
-                AppFlowPreferences.setOnboardingDone(getApplication())
-                state.copy(
+                val app = getApplication<Application>()
+                AppFlowPreferences.setOnboardingDone(app)
+                val updated = state.copy(
                     onboardingCompleted = true,
                     infoMessage = "Onboarding completed.",
                 )
+                maybeShowPostOnboardingPaywall(app, updated)
             } else {
                 state.copy(onboardingPage = state.onboardingPage + 1)
             }
@@ -204,13 +216,29 @@ class EmojiBatteryViewModel(
     }
 
     fun skipOnboarding() {
-        AppFlowPreferences.setOnboardingDone(getApplication())
-        _uiState.update {
-            it.copy(
+        val app = getApplication<Application>()
+        AppFlowPreferences.setOnboardingDone(app)
+        _uiState.update { state ->
+            val updated = state.copy(
                 onboardingCompleted = true,
                 infoMessage = "Onboarding skipped.",
             )
+            maybeShowPostOnboardingPaywall(app, updated)
         }
+    }
+
+    private fun maybeShowPostOnboardingPaywall(app: Application, state: AppUiState): AppUiState {
+        if (!state.onboardingCompleted) return state
+        if (state.premiumUnlocked) return state
+        if (state.paywallState != null) return state
+        return state.copy(
+            paywallState = PaywallState(
+                featureKey = "flow:post_onboarding_home",
+                title = "Unlock Premium",
+                message = "Upgrade to premium to unlock all features.",
+                launchMode = PaywallLaunchMode.Store,
+            ),
+        )
     }
 
     fun clearApplyMessage() {
