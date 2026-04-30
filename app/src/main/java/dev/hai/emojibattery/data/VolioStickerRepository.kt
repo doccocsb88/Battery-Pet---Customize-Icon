@@ -4,12 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import co.q7labs.co.emoji.BuildConfig
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import dev.hai.emojibattery.data.volio.VolioCategoryDto
 import dev.hai.emojibattery.data.volio.VolioEmojiBatteryItemDto
-import dev.hai.emojibattery.data.volio.VolioListResponse
+import dev.hai.emojibattery.data.volio.parseVolioCategories
+import dev.hai.emojibattery.data.volio.parseVolioItems
 import dev.hai.emojibattery.model.StickerPreset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,12 +20,6 @@ import java.io.File
 object VolioStickerRepository {
     private const val TAG = "StickerCatalog"
     private const val STICKERS_PER_CATALOG_PAGE = 16
-
-    private val gson = Gson()
-    private val categoryListType =
-        TypeToken.getParameterized(VolioListResponse::class.java, VolioCategoryDto::class.java).type
-    private val itemListType =
-        TypeToken.getParameterized(VolioListResponse::class.java, VolioEmojiBatteryItemDto::class.java).type
 
     data class StickerCatalogPageInfo(
         val pageFile: File,
@@ -91,15 +84,15 @@ object VolioStickerRepository {
             ?: return null
         Log.d(TAG, "fetchStickerPresets: categoriesFile=${categoriesFile.absolutePath} exists=${categoriesFile.isFile}")
         val categoriesJson = categoriesFile.readText(Charsets.UTF_8)
-        val categoriesResponse: VolioListResponse<VolioCategoryDto> = gson.fromJson(categoriesJson, categoryListType)
+        val categories = parseVolioCategories(categoriesJson)
         Log.d(
             TAG,
-            "fetchStickerPresets: categoriesCount=${categoriesResponse.data.orEmpty().size}",
+            "fetchStickerPresets: categoriesCount=${categories.size}",
         )
-        val allCategory = categoriesResponse.data.orEmpty()
+        val allCategory = categories
             .filter { it.status != false }
             .firstOrNull { it.name?.contains("All", ignoreCase = true) == true }
-            ?: categoriesResponse.data.orEmpty().firstOrNull { it.status != false }
+            ?: categories.firstOrNull { it.status != false }
             ?: return null
         Log.d(
             TAG,
@@ -168,12 +161,12 @@ object VolioStickerRepository {
         val merged = buildList {
             catalogPages.forEach { pageInfo ->
                 val json = pageInfo.pageFile.readText(Charsets.UTF_8)
-                val response: VolioListResponse<VolioEmojiBatteryItemDto> = gson.fromJson(json, itemListType)
+                val items = parseVolioItems(json)
                 Log.d(
                     TAG,
-                    "loadPadLogicalPages: page=${pageInfo.pageFile.name} itemCount=${response.data.orEmpty().size}",
+                    "loadPadLogicalPages: page=${pageInfo.pageFile.name} itemCount=${items.size}",
                 )
-                addAll(response.data.orEmpty().map { it.toStickerPreset(pageInfo.mediaRoot) })
+                addAll(items.map { it.toStickerPreset(pageInfo.mediaRoot) })
             }
         }
         return merged.chunked(STICKERS_PER_CATALOG_PAGE)

@@ -4,8 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.google.gson.annotations.SerializedName
-import com.google.gson.reflect.TypeToken
 import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,19 +22,7 @@ data class PadWallpaperCategory(
     @SerializedName("description")
     val description: String?,
     @SerializedName("thumbnail_asset_path") val thumbnailAssetPath: String,
-    @SerializedName("items")
-    val items: List<PadWallpaperItemMeta>,
-)
-
-data class PadWallpaperItemMeta(
-    @SerializedName("id")
-    val id: String,
-    @SerializedName("name")
-    val name: String?,
-    @SerializedName("file")
-    val file: String,
-    @SerializedName("path")
-    val path: String,
+    val itemCount: Int,
 )
 
 data class PadWallpaperItem(
@@ -48,8 +37,6 @@ object PadWallpaperRepository {
     private const val SLUG_INDEX_ASSET_PATH = "wallpapers/wallpaper_pack_slug_index.json"
     private const val MAX_CACHED_CATEGORY_ITEMS = 2
     private val gson = Gson()
-    private val categoriesType =
-        TypeToken.getParameterized(List::class.java, PadWallpaperCategory::class.java).type
     @Volatile
     private var categoriesCache: List<PadWallpaperCategory>? = null
     @Volatile
@@ -67,8 +54,13 @@ object PadWallpaperRepository {
     suspend fun loadCategories(context: Context): List<PadWallpaperCategory> = withContext(Dispatchers.IO) {
         categoriesCache?.let { return@withContext it }
         runCatching {
-            context.assets.open(MANIFEST_ASSET_PATH).bufferedReader().use { reader ->
-                gson.fromJson<List<PadWallpaperCategory>>(reader, categoriesType).orEmpty()
+            val json = context.assets.open(MANIFEST_ASSET_PATH).bufferedReader().use { it.readText() }
+            val arr = JsonParser.parseString(json).asJsonArray
+            arr.mapNotNull { element ->
+                runCatching { parseCategory(element.asJsonObject) }.getOrElse {
+                    Log.w(TAG, "loadCategories: skip invalid category entry", it)
+                    null
+                }
             }
         }.getOrElse { error ->
             Log.w(TAG, "loadCategories: failed to read $MANIFEST_ASSET_PATH", error)
@@ -128,15 +120,31 @@ object PadWallpaperRepository {
             packName = category.deliveryPackName,
         ) ?: return@withContext emptyList()
 
-        category.items.mapNotNull { item ->
-            val file = File(root, item.path.trimStart('/'))
-            if (!file.isFile) return@mapNotNull null
-            PadWallpaperItem(
-                id = item.id,
-                name = item.name?.takeIf { it.isNotBlank() } ?: item.file,
-                assetUrl = Uri.fromFile(file).toString(),
-            )
-        }.also { loaded ->
+        val categoryDir = File(root, "wallpapers/${category.id}")
+        if (!categoryDir.isDirectory) {
+            Log.w(TAG, "loadItemsForCategory: missing folder ${categoryDir.absolutePath}")
+            return@withContext emptyList()
+        }
+
+        categoryDir.listFiles()
+            ?.asSequence()
+            ?.filter { it.isFile }
+            ?.filter { file ->
+                val name = file.name.lowercase()
+                name.endsWith(".webp") || name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")
+            }
+            ?.sortedBy { it.name }
+            ?.map { file ->
+                val fileName = file.name.substringBeforeLast('.')
+                PadWallpaperItem(
+                    id = fileName,
+                    name = fileName.replace('_', ' '),
+                    assetUrl = Uri.fromFile(file).toString(),
+                )
+            }
+            ?.toList()
+            .orEmpty()
+            .also { loaded ->
             if (loaded.isNotEmpty()) {
                 synchronized(cacheLock) {
                     itemsCache[category.id] = loaded
@@ -148,7 +156,36 @@ object PadWallpaperRepository {
     fun peekCachedItems(categoryId: String): List<PadWallpaperItem>? = synchronized(cacheLock) {
         itemsCache[categoryId]
     }
+
+    private fun parseCategory(json: JsonObject): PadWallpaperCategory {
+        val id = json.stringOrThrow("id")
+        val packName = json.stringOrThrow("pack_name")
+        val deliveryPackName = json.stringOrThrow("delivery_pack_name")
+        val title = json.stringOrNull("title")
+        val description = json.stringOrNull("description")
+        val thumbnailAssetPath = json.stringOrThrow("thumbnail_asset_path")
+        val itemCount = json.getAsJsonArray("items")?.size() ?: 0
+        return PadWallpaperCategory(
+            id = id,
+            packName = packName,
+            deliveryPackName = deliveryPackName,
+            title = title,
+            description = description,
+            thumbnailAssetPath = thumbnailAssetPath,
+            itemCount = itemCount,
+        )
+    }
 }
+
+private fun JsonObject.stringOrNull(key: String): String? {
+    val value = get(key) ?: return null
+    if (value.isJsonNull) return null
+    return value.asString
+}
+
+private fun JsonObject.stringOrThrow(key: String): String =
+    stringOrNull(key)?.takeIf { it.isNotBlank() }
+        ?: throw IllegalArgumentException("Missing or blank required key: $key")
 
 data class PadWallpaperSlugIndex(
     @SerializedName("schemaVersion")

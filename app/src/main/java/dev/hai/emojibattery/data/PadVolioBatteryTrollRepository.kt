@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.net.Uri
 import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import dev.hai.emojibattery.data.volio.VolioCategoryDto
 import dev.hai.emojibattery.data.volio.VolioEmojiBatteryItemDto
-import dev.hai.emojibattery.data.volio.VolioListResponse
+import dev.hai.emojibattery.data.volio.parseVolioCategories
+import dev.hai.emojibattery.data.volio.parseVolioItems
 import dev.hai.emojibattery.model.BatteryTrollTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,11 +27,6 @@ private const val PAD_BATTERY_TROLL_ASSET_DIR = "store/downloaded_assets/battery
 object PadVolioBatteryTrollRepository {
 
     private const val TAG = "PadVolioBatteryTroll"
-    private val gson = Gson()
-    private val categoryListType =
-        TypeToken.getParameterized(VolioListResponse::class.java, VolioCategoryDto::class.java).type
-    private val itemListType =
-        TypeToken.getParameterized(VolioListResponse::class.java, VolioEmojiBatteryItemDto::class.java).type
 
     suspend fun fetchTemplates(context: Context): List<BatteryTrollTemplate> = withContext(Dispatchers.IO) {
         val ready = withTimeoutOrNull(12_000L) {
@@ -50,11 +44,11 @@ object PadVolioBatteryTrollRepository {
             Log.d(TAG, "fetchTemplates: no categories in PAD or bundled assets")
             return@withContext emptyList()
         }
-        val categoriesResponse: VolioListResponse<VolioCategoryDto> = gson.fromJson(categoriesJson, categoryListType)
-        val allCategory = categoriesResponse.data.orEmpty()
+        val categories = parseVolioCategories(categoriesJson)
+        val allCategory = categories
             .filter { it.status != false }
             .firstOrNull { it.name?.contains("All", ignoreCase = true) == true }
-            ?: categoriesResponse.data.orEmpty().firstOrNull { it.status != false }
+            ?: categories.firstOrNull { it.status != false }
         val categoryId = allCategory?.id ?: firstBundledCategoryId(context.assets)
             ?: return@withContext emptyList()
         val pages = readPageJsons(context.assets, root, categoryId)
@@ -66,8 +60,7 @@ object PadVolioBatteryTrollRepository {
 
         val merged = buildList {
             pages.forEach { json ->
-                val response: VolioListResponse<VolioEmojiBatteryItemDto> = gson.fromJson(json, itemListType)
-                addAll(response.data.orEmpty())
+                addAll(parseVolioItems(json))
             }
         }
         val extractedRoot = File(context.cacheDir, "battery_troll_zip")

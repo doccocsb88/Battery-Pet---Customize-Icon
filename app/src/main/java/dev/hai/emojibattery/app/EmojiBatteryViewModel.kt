@@ -120,7 +120,11 @@ class EmojiBatteryViewModel(
         viewModelScope.launch {
             Log.d(TAG, "init: home tabs — bundled_volio → SampleCatalog (per-category PAD for items)")
             val app = getApplication<Application>()
-            val bundledTabs = runCatching { BundledVolioHomeRepository.fetchCategoryTabs(app) }.getOrElse { emptyList() }
+            val bundledTabs = runCatching { BundledVolioHomeRepository.fetchCategoryTabs(app) }
+                .onFailure { error ->
+                    Log.w(TAG, "init: bundled tab load failed", error)
+                }
+                .getOrElse { emptyList() }
             val tabs = if (bundledTabs.isNotEmpty()) {
                 Log.d(TAG, "init: tabs from bundled assets count=${bundledTabs.size} firstId=${bundledTabs.first().id}")
                 bundledTabs

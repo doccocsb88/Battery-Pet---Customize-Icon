@@ -2,11 +2,9 @@ package dev.hai.emojibattery.data
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import dev.hai.emojibattery.data.volio.VolioEmojiBatteryItemDto
-import dev.hai.emojibattery.data.volio.VolioListResponse
+import dev.hai.emojibattery.data.volio.parseVolioItems
 import dev.hai.emojibattery.model.HomeBatteryItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,10 +17,6 @@ import java.io.File
 object PadVolioHomeRepository {
 
     private const val TAG = "PadVolioHome"
-
-    private val gson = Gson()
-    private val itemListType =
-        TypeToken.getParameterized(VolioListResponse::class.java, VolioEmojiBatteryItemDto::class.java).type
 
     suspend fun fetchItemsForCategory(context: Context, categoryId: String): List<HomeBatteryItem> =
         withContext(Dispatchers.IO) {
@@ -55,8 +49,7 @@ object PadVolioHomeRepository {
                 val f = File(dir, name)
                 if (!f.isFile) continue
                 val json = f.readText(Charsets.UTF_8)
-                val response: VolioListResponse<VolioEmojiBatteryItemDto> = gson.fromJson(json, itemListType)
-                merged.addAll(response.data.orEmpty())
+                merged.addAll(parseVolioItems(json))
             }
             Log.d(TAG, "fetchItemsForCategory: category=$categoryId pack=$packName items=${merged.size}")
             merged.map { dto -> dto.toHomeBatteryItem(categoryId) }.shuffled()

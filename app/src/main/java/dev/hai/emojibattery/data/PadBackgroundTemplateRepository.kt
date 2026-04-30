@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.google.gson.annotations.SerializedName
-import com.google.gson.reflect.TypeToken
 import dev.hai.emojibattery.data.assets.StoreOnDemandAssetPack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -37,13 +37,13 @@ object PadBackgroundTemplateRepository {
     private const val MANIFEST_ASSET_PATH = "background_templates/themes_pack_manifest.json"
     private val FALLBACK_PACKS = setOf("chinese_spring_landscape", "countryside")
     private val gson = Gson()
-    private val categoriesType =
-        TypeToken.getParameterized(List::class.java, PadBackgroundTemplateCategory::class.java).type
 
     suspend fun loadCategories(context: Context): List<PadBackgroundTemplateCategory> = withContext(Dispatchers.IO) {
         runCatching {
-            context.assets.open(MANIFEST_ASSET_PATH).bufferedReader().use { reader ->
-                gson.fromJson<List<PadBackgroundTemplateCategory>>(reader, categoriesType).orEmpty()
+            val json = context.assets.open(MANIFEST_ASSET_PATH).bufferedReader().use { it.readText() }
+            val arr = JsonParser.parseString(json).asJsonArray
+            arr.mapNotNull { element ->
+                runCatching { gson.fromJson(element, PadBackgroundTemplateCategory::class.java) }.getOrNull()
             }
         }.onSuccess {
             Log.d(TAG, "loadCategories: count=${it.size} names=${it.joinToString { c -> c.deliveryPackName }}")

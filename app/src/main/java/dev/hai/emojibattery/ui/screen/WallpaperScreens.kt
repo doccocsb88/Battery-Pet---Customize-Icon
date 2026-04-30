@@ -185,6 +185,8 @@ internal fun WallpaperScreen(
     val context = LocalContext.current.applicationContext
     val categories = remember { mutableStateListOf<PadWallpaperCategory>() }
     val keywordIndex = remember { mutableStateMapOf<String, List<String>>() }
+    var loading by remember { mutableStateOf(true) }
+    var loadAttempted by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     val tokens = wallpaperQueryTokens(query)
     val filteredCategories = categories.filter { category ->
@@ -196,10 +198,13 @@ internal fun WallpaperScreen(
     }
 
     LaunchedEffect(Unit) {
+        loading = true
         categories.clear()
         categories.addAll(PadWallpaperRepository.loadCategories(context))
         keywordIndex.clear()
         keywordIndex.putAll(PadWallpaperRepository.loadCategoryKeywordIndex(context))
+        loadAttempted = true
+        loading = false
     }
 
     Scaffold(
@@ -215,8 +220,13 @@ internal fun WallpaperScreen(
             )
         },
     ) { padding ->
-        if (categories.isEmpty()) {
+        if (loading) {
             WallpaperLoadingState(modifier = Modifier.padding(padding))
+        } else if (loadAttempted && categories.isEmpty()) {
+            WallpaperEmptyState(
+                message = "Unable to load wallpaper categories.",
+                modifier = Modifier.padding(padding),
+            )
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -252,7 +262,7 @@ internal fun WallpaperScreen(
                         WallpaperCategoryCard(
                             title = categoryDisplayTitle(category.title ?: category.packName),
                             description = category.description,
-                            itemCount = category.items.size,
+                            itemCount = category.itemCount,
                             thumbnailUrl = PadWallpaperRepository.thumbnailAssetUrl(category),
                             onClick = { onOpenCategory(category.id) },
                         )
