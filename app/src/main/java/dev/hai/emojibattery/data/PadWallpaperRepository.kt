@@ -2,6 +2,7 @@ package dev.hai.emojibattery.data
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
@@ -11,19 +12,27 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 data class PadWallpaperCategory(
+    @SerializedName("id")
     val id: String,
     @SerializedName("pack_name") val packName: String,
     @SerializedName("delivery_pack_name") val deliveryPackName: String,
+    @SerializedName("title")
     val title: String?,
+    @SerializedName("description")
     val description: String?,
     @SerializedName("thumbnail_asset_path") val thumbnailAssetPath: String,
+    @SerializedName("items")
     val items: List<PadWallpaperItemMeta>,
 )
 
 data class PadWallpaperItemMeta(
+    @SerializedName("id")
     val id: String,
+    @SerializedName("name")
     val name: String?,
+    @SerializedName("file")
     val file: String,
+    @SerializedName("path")
     val path: String,
 )
 
@@ -34,6 +43,7 @@ data class PadWallpaperItem(
 )
 
 object PadWallpaperRepository {
+    private const val TAG = "PadWallpaper"
     private const val MANIFEST_ASSET_PATH = "wallpapers/wallpaper_pack_manifest.json"
     private const val SLUG_INDEX_ASSET_PATH = "wallpapers/wallpaper_pack_slug_index.json"
     private const val MAX_CACHED_CATEGORY_ITEMS = 2
@@ -60,7 +70,10 @@ object PadWallpaperRepository {
             context.assets.open(MANIFEST_ASSET_PATH).bufferedReader().use { reader ->
                 gson.fromJson<List<PadWallpaperCategory>>(reader, categoriesType).orEmpty()
             }
-        }.getOrElse { emptyList() }
+        }.getOrElse { error ->
+            Log.w(TAG, "loadCategories: failed to read $MANIFEST_ASSET_PATH", error)
+            emptyList()
+        }
             .also { loaded ->
                 if (loaded.isNotEmpty()) {
                     categoriesCache = loaded
@@ -138,21 +151,32 @@ object PadWallpaperRepository {
 }
 
 data class PadWallpaperSlugIndex(
+    @SerializedName("schemaVersion")
     val schemaVersion: Int? = null,
+    @SerializedName("packs")
     val packs: List<PadWallpaperSlugPack>? = null,
 )
 
 data class PadWallpaperSlugPack(
+    @SerializedName("moduleName")
     val moduleName: String? = null,
+    @SerializedName("moduleSlug")
     val moduleSlug: String? = null,
+    @SerializedName("deliveryPackName")
     val deliveryPackName: String? = null,
+    @SerializedName("category")
     val category: PadWallpaperSlugCategory? = null,
+    @SerializedName("keywords")
     val keywords: List<String>? = null,
 )
 
 data class PadWallpaperSlugCategory(
+    @SerializedName("id")
     val id: String? = null,
+    @SerializedName("title")
     val title: String? = null,
+    @SerializedName("description")
     val description: String? = null,
+    @SerializedName("thumbnailAssetPath")
     val thumbnailAssetPath: String? = null,
 )

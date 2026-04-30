@@ -15,5 +15,9 @@
     <fields>;
 }
 
+-keepclassmembers,allowobfuscation class dev.hai.emojibattery.data.PadWallpaper** {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
 # Keep TypeToken subclasses created inline so their generic type information survives.
 -keep class * extends com.google.gson.reflect.TypeToken

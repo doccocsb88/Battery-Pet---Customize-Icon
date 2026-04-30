@@ -1,6 +1,7 @@
 package dev.hai.emojibattery.data.assets
 
 import android.content.Context
+import android.util.Log
 import com.google.android.play.core.assetpacks.AssetPackManagerFactory
 import com.google.android.play.core.assetpacks.model.AssetPackStatus
 import kotlinx.coroutines.delay
@@ -14,6 +15,7 @@ import java.io.File
  * PAD only applies when the app is installed from Play; sideloaded builds may not receive the pack.
  */
 object StoreOnDemandAssetPack {
+    private const val TAG = "StoreAssetPack"
 
     const val PACK_NAME = "store_pack"
 
@@ -33,7 +35,11 @@ object StoreOnDemandAssetPack {
 
     suspend fun waitUntilCompleted(context: Context, packName: String): Boolean {
         val assetPackManager = manager(context)
-        assetPackManager.fetch(listOf(packName)).await()
+        runCatching {
+            assetPackManager.fetch(listOf(packName)).await()
+        }.onFailure { error ->
+            Log.w(TAG, "waitUntilCompleted: fetch failed pack=$packName", error)
+        }
         val deadline = System.currentTimeMillis() + DEFAULT_WAIT_TIMEOUT_MS
         while (true) {
             val states = assetPackManager.getPackStates(listOf(packName)).await()
@@ -42,7 +48,6 @@ object StoreOnDemandAssetPack {
                 AssetPackStatus.COMPLETED -> return true
                 AssetPackStatus.FAILED,
                 AssetPackStatus.CANCELED,
-                AssetPackStatus.NOT_INSTALLED,
                 AssetPackStatus.UNKNOWN,
                 AssetPackStatus.REQUIRES_USER_CONFIRMATION,
                 AssetPackStatus.WAITING_FOR_WIFI,
