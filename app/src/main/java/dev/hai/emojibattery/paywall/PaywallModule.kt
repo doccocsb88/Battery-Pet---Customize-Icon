@@ -203,15 +203,6 @@ fun PaywallScreen(
         prevOwnedProductIds = billingState.ownedProductIds
     }
 
-    LaunchedEffect(billingState.errorMessage) {
-        val message = billingState.errorMessage ?: return@LaunchedEffect
-        TrackingServices.trackPaywallPurchaseError(
-            context = appContext,
-            productId = lastSelectedProductId,
-            message = message,
-        )
-    }
-
     BackHandler(enabled = paywall != null) {
         trackExitOnce("system_back")
         onClose()
@@ -371,12 +362,6 @@ fun PaywallScreen(
                                 planType = planType,
                                 hasOfferToken = !weekly.offerToken.isNullOrBlank(),
                             )
-                            TrackingServices.trackPaywallPurchaseStarted(
-                                context = appContext,
-                                productId = weekly.productId,
-                                planType = planType,
-                                hasOfferToken = !weekly.offerToken.isNullOrBlank(),
-                            )
                             onPurchase(weekly.productId, weekly.offerToken)
                         },
                         enabled = !billingState.purchaseInFlight && !weeklyPurchased,
@@ -409,12 +394,6 @@ fun PaywallScreen(
                                 planType = planType,
                                 hasOfferToken = !monthly.offerToken.isNullOrBlank(),
                             )
-                            TrackingServices.trackPaywallPurchaseStarted(
-                                context = appContext,
-                                productId = monthly.productId,
-                                planType = planType,
-                                hasOfferToken = !monthly.offerToken.isNullOrBlank(),
-                            )
                             onPurchase(monthly.productId, monthly.offerToken)
                         },
                         enabled = !billingState.purchaseInFlight && !monthlyPurchased,
@@ -434,12 +413,6 @@ fun PaywallScreen(
                             lastSelectedProductId = lifetime.productId
                             val planType = planTypeForProduct(lifetime.productId)
                             TrackingServices.trackPaywallItemSelected(
-                                context = appContext,
-                                productId = lifetime.productId,
-                                planType = planType,
-                                hasOfferToken = false,
-                            )
-                            TrackingServices.trackPaywallPurchaseStarted(
                                 context = appContext,
                                 productId = lifetime.productId,
                                 planType = planType,

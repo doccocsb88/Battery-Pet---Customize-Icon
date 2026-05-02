@@ -56,6 +56,8 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     private val subscriptionProductIds: Set<String> = setOf(weeklyProductId) + monthlyCandidateProductIds
 
     private var billingClient: BillingClient? = null
+    private var appContext: Context? = null
+    private var pendingPurchaseProductId: String? = null
     private val productCache = mutableMapOf<String, ProductDetails>()
     private val ownedProducts = mutableSetOf<String>()
 
@@ -64,6 +66,7 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
 
     override fun start(context: Context) {
         if (billingClient?.isReady == true) return
+        appContext = context.applicationContext
         val client = BillingClient.newBuilder(context.applicationContext)
             .enablePendingPurchases(
                 PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
@@ -72,6 +75,10 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             .build()
         billingClient = client
         _uiState.value = _uiState.value.copy(loading = true, errorMessage = null)
+        connect(client)
+    }
+
+    private fun connect(client: BillingClient) {
         client.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -89,6 +96,7 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
 
             override fun onBillingServiceDisconnected() {
                 _uiState.value = _uiState.value.copy(connected = false)
+                connect(client)
             }
         })
     }
@@ -115,12 +123,40 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             }
             .build()
         _uiState.value = _uiState.value.copy(purchaseInFlight = true, errorMessage = null)
-        client.launchBillingFlow(
+        pendingPurchaseProductId = productId
+        val launchResult = client.launchBillingFlow(
             activity,
             BillingFlowParams.newBuilder()
                 .setProductDetailsParamsList(listOf(productParams))
                 .build(),
         )
+        if (launchResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            appContext?.let { context ->
+                dev.hai.emojibattery.tracking.TrackingServices.trackPaywallPurchaseStarted(
+                    context = context,
+                    productId = productId,
+                    planType = planTypeForProduct(productId),
+                    hasOfferToken = !subscriptionOfferToken.isNullOrBlank(),
+                )
+            }
+        } else if (launchResult.responseCode != BillingClient.BillingResponseCode.USER_CANCELED) {
+            val message = launchResult.debugMessage.ifBlank { "Purchase failed." }
+            _uiState.value = _uiState.value.copy(
+                purchaseInFlight = false,
+                errorMessage = message,
+            )
+            appContext?.let { context ->
+                dev.hai.emojibattery.tracking.TrackingServices.trackPaywallPurchaseError(
+                    context = context,
+                    productId = productId,
+                    message = message,
+                )
+            }
+            pendingPurchaseProductId = null
+        } else {
+            _uiState.value = _uiState.value.copy(purchaseInFlight = false)
+            pendingPurchaseProductId = null
+        }
     }
 
     override fun restorePurchases() {
@@ -150,12 +186,22 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             purchases.forEach(::acknowledgeIfNeeded)
             refreshPurchases()
         } else if (result.responseCode != BillingClient.BillingResponseCode.USER_CANCELED) {
+            val message = result.debugMessage.ifBlank { "Purchase failed." }
             _uiState.value = _uiState.value.copy(
                 purchaseInFlight = false,
-                errorMessage = result.debugMessage.ifBlank { "Purchase failed." },
+                errorMessage = message,
             )
+            appContext?.let { context ->
+                dev.hai.emojibattery.tracking.TrackingServices.trackPaywallPurchaseError(
+                    context = context,
+                    productId = pendingPurchaseProductId,
+                    message = message,
+                )
+            }
+            pendingPurchaseProductId = null
         } else {
             _uiState.value = _uiState.value.copy(purchaseInFlight = false)
+            pendingPurchaseProductId = null
         }
     }
 
@@ -225,8 +271,11 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
 
     private fun refreshPurchases() {
         val client = billingClient ?: return
+        val previousOwnedProductIds = _uiState.value.ownedProductIds
         ownedProducts.clear()
         var pendingCallbacks = 2
+        var hadFailure = false
+        var refreshErrorMessage: String? = null
         val listener = PurchasesResponseListener { result, purchases ->
             if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                 purchases.forEach { purchase ->
@@ -235,14 +284,21 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
                         ownedProducts += purchase.products
                     }
                 }
+            } else {
+                hadFailure = true
+                if (refreshErrorMessage == null) {
+                    refreshErrorMessage = result.debugMessage.ifBlank { "Could not refresh purchases." }
+                }
             }
             pendingCallbacks -= 1
             if (pendingCallbacks == 0) {
                 _uiState.value = _uiState.value.copy(
-                    ownedProductIds = ownedProducts.toSet(),
+                    ownedProductIds = if (hadFailure) previousOwnedProductIds else ownedProducts.toSet(),
                     purchaseInFlight = false,
                     loading = false,
+                    errorMessage = refreshErrorMessage ?: _uiState.value.errorMessage,
                 )
+                pendingPurchaseProductId = null
             }
         }
         client.queryPurchasesAsync(
@@ -261,6 +317,13 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         client.acknowledgePurchase(
             AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build(),
         ) { }
+    }
+
+    private fun planTypeForProduct(productId: String): String? = when (productId) {
+        weeklyProductId -> "weekly"
+        monthlyProductId, monthlyFallbackProductId -> "monthly"
+        lifetimeProductId -> "lifetime"
+        else -> null
     }
 
     private fun weeklyHasFreeTrialPhases(details: ProductDetails): Boolean = hasFreeTrialPhases(details)
