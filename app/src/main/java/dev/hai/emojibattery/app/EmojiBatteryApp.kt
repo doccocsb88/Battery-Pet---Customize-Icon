@@ -133,6 +133,21 @@ fun EmojiBatteryApp(
             OverlayAccessibilityService.requestRefresh(context)
         }
     }
+    val navigateWithInterstitial: (String) -> Unit = { destinationRoute ->
+        val navigateDirectly = {
+            navController.navigate(destinationRoute)
+        }
+        if (hostActivity != null) {
+            adsService.showInterstitial(
+                activity = hostActivity,
+                isPremium = uiState.premiumUnlocked,
+                onUnavailable = navigateDirectly,
+                onDismissed = navigateDirectly,
+            )
+        } else {
+            navigateDirectly()
+        }
+    }
 
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
@@ -338,12 +353,12 @@ fun EmojiBatteryApp(
                                 selectedItemId = selectedItem.id,
                             )
                         }
-                        navController.navigate(AppRoute.StatusBarCustom.route)
+                        navigateWithInterstitial(AppRoute.StatusBarCustom.route)
                     },
                     onOpenLegacyBattery = { navController.navigate(AppRoute.LegacyBattery.route) },
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
                     onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
-                    onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
+                    onOpenBatteryTroll = { navigateWithInterstitial(AppRoute.BatteryTroll.route) },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
                     onOpenPremium = viewModel::openStore,
                     onSetOverlayEnabled = onSetOverlayEnabled,
@@ -359,7 +374,7 @@ fun EmojiBatteryApp(
                             CustomizeEntry.Settings,
                             -> {
                                 customizeEntryToStatusBarTab(entry)?.let { viewModel.selectStatusTab(it) }
-                                navController.navigate(AppRoute.StatusBarCustom.route)
+                                navigateWithInterstitial(AppRoute.StatusBarCustom.route)
                             }
 
                             else -> navController.navigate(AppRoute.FeatureDetail.create(entry.title))
@@ -367,15 +382,15 @@ fun EmojiBatteryApp(
                     },
                     onOpenStatusBarCustom = {
                         viewModel.selectStatusTab(StatusBarTab.Battery)
-                        navController.navigate(AppRoute.StatusBarCustom.route)
+                        navigateWithInterstitial(AppRoute.StatusBarCustom.route)
                     },
-                    onOpenThemeList = { navController.navigate(AppRoute.ThemeList.route) },
+                    onOpenThemeList = { navigateWithInterstitial(AppRoute.ThemeList.route) },
                     onOpenAccessibility = { showAccessibilityConsent = true },
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
-                    onOpenNotch = { navController.navigate(AppRoute.Notch.route) },
-                    onOpenAnimation = { navController.navigate(AppRoute.Animation.route) },
+                    onOpenNotch = { navigateWithInterstitial(AppRoute.Notch.route) },
+                    onOpenAnimation = { navigateWithInterstitial(AppRoute.Animation.route) },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
-                    onOpenBatteryTroll = { navController.navigate(AppRoute.BatteryTroll.route) },
+                    onOpenBatteryTroll = { navigateWithInterstitial(AppRoute.BatteryTroll.route) },
                     onOpenPremium = viewModel::openStore,
                     onSetOverlayEnabled = onSetOverlayEnabled,
                 )
