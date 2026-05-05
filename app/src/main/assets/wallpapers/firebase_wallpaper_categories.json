@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "categories": [
+    {
+      "id": "firebase_couple",
+      "source": "firebase_storage",
+      "title": "Couple",
+      "subtitle": "Romantic pair wallpapers",
+      "description": "Sweet couple moments and cozy romantic scenes for a warm, affectionate look.",
+      "item_count": 28,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/couple/",
+      "thumbnail_file_name": "couple_10.webp",
+      "keywords": ["couple", "love", "romantic", "pair"]
+    },
+    {
+      "id": "firebase_matching",
+      "source": "firebase_storage",
+      "title": "Matching",
+      "subtitle": "Matching wallpapers for two screens",
+      "description": "Playful matching wallpaper sets designed for pairs who want a coordinated style.",
+      "item_count": 20,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/matching/",
+      "thumbnail_file_name": "Gemini_Generated_Image_c7kidlc7kidlc7ki.png",
+      "keywords": ["matching", "pair", "couple", "duo"]
+    }
+  ]
+}

@@ -98,7 +98,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = computedVersionCode
-        versionName = "0.1.4"
+        versionName = "0.1.5"
         manifestPlaceholders["adMobAppId"] = admobAppId
         buildConfigField("String", "ADMOB_APP_ID", admobAppId.asBuildConfigString())
         buildConfigField("String", "ADMOB_BANNER_AD_UNIT_ID", admobBannerAdUnitId.asBuildConfigString())
@@ -199,6 +199,8 @@ dependencies {
     implementation("com.android.billingclient:billing-ktx:7.1.1")
     implementation(firebaseBom)
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
+    implementation("com.google.firebase:firebase-config-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
@@ -212,4 +214,5 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    debugImplementation("com.google.firebase:firebase-appcheck-debug")
 }

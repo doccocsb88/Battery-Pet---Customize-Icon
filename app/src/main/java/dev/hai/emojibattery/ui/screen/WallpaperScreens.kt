@@ -79,9 +79,10 @@ import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.ads.AdMobBanner
 import dev.hai.emojibattery.ads.AdMobNativeAd
 import dev.hai.emojibattery.ads.rememberGoogleMobileAdsService
-import dev.hai.emojibattery.data.PadWallpaperCategory
-import dev.hai.emojibattery.data.PadWallpaperItem
-import dev.hai.emojibattery.data.PadWallpaperRepository
+import dev.hai.emojibattery.data.WallpaperCatalogCategory
+import dev.hai.emojibattery.data.WallpaperCatalogItem
+import dev.hai.emojibattery.data.WallpaperCatalogRepository
+import dev.hai.emojibattery.data.WallpaperCategorySource
 import dev.hai.emojibattery.service.WallpaperApplyService
 import dev.hai.emojibattery.service.WallpaperSetter
 import dev.hai.emojibattery.ui.theme.OceanSerenity
@@ -106,13 +107,13 @@ private fun wallpaperQueryTokens(query: String): List<String> {
 }
 
 private fun wallpaperCategoryMatches(
-    category: PadWallpaperCategory,
+    category: WallpaperCatalogCategory,
     tokens: List<String>,
     keywordIndex: Map<String, List<String>>,
 ): Boolean {
     if (tokens.isEmpty()) return true
     val keywords = keywordIndex[category.id].orEmpty()
-    val title = (category.title ?: category.packName).orEmpty().lowercase()
+    val title = category.title.orEmpty().lowercase()
     val id = category.id.lowercase()
     return tokens.all { token ->
         title.contains(token) ||
@@ -183,7 +184,7 @@ internal fun WallpaperScreen(
     onOpenCategory: (String) -> Unit,
 ) {
     val context = LocalContext.current.applicationContext
-    val categories = remember { mutableStateListOf<PadWallpaperCategory>() }
+    val categories = remember { mutableStateListOf<WallpaperCatalogCategory>() }
     val keywordIndex = remember { mutableStateMapOf<String, List<String>>() }
     var loading by remember { mutableStateOf(true) }
     var loadAttempted by remember { mutableStateOf(false) }
@@ -200,11 +201,17 @@ internal fun WallpaperScreen(
     LaunchedEffect(Unit) {
         loading = true
         categories.clear()
-        categories.addAll(PadWallpaperRepository.loadCategories(context))
+        categories.addAll(WallpaperCatalogRepository.loadPadCategories(context))
         keywordIndex.clear()
-        keywordIndex.putAll(PadWallpaperRepository.loadCategoryKeywordIndex(context))
+        keywordIndex.putAll(WallpaperCatalogRepository.loadCategoryKeywordIndex(context))
         loadAttempted = true
         loading = false
+
+        val firebaseCategories = WallpaperCatalogRepository.loadFirebaseCategories(context)
+        if (firebaseCategories.isNotEmpty()) {
+            val existingIds = categories.map { it.id }.toHashSet()
+            categories.addAll(firebaseCategories.filterNot { it.id in existingIds })
+        }
     }
 
     Scaffold(
@@ -260,10 +267,11 @@ internal fun WallpaperScreen(
                     items(filteredCategories.size, key = { index -> filteredCategories[index].id }) { index ->
                         val category = filteredCategories[index]
                         WallpaperCategoryCard(
-                            title = categoryDisplayTitle(category.title ?: category.packName),
-                            description = category.description,
+                            title = categoryDisplayTitle(category.title ?: "Wallpaper"),
+                            description = category.description ?: category.subtitle,
                             itemCount = category.itemCount,
-                            thumbnailUrl = PadWallpaperRepository.thumbnailAssetUrl(category),
+                            source = category.source,
+                            thumbnailUrl = category.thumbnailUrl,
                             onClick = { onOpenCategory(category.id) },
                         )
                     }
@@ -281,12 +289,14 @@ internal fun WallpaperCategoryScreen(
     onOpenPreview: (String, String, Boolean) -> Unit,
 ) {
     val context = LocalContext.current.applicationContext
-    val cachedCategories = remember { PadWallpaperRepository.peekCachedCategories().orEmpty() }
+    val cachedCategories = remember { WallpaperCatalogRepository.peekCachedCategories().orEmpty() }
     val cachedCategory = remember(categoryId, cachedCategories) {
         cachedCategories.firstOrNull { it.id == categoryId }
     }
-    val cachedItems = remember(categoryId) { PadWallpaperRepository.peekCachedItems(categoryId).orEmpty() }
-    var category by remember(categoryId) { mutableStateOf(cachedCategory) }
+    val cachedItems = remember(categoryId, cachedCategory?.source) {
+        cachedCategory?.let { WallpaperCatalogRepository.peekCachedItems(categoryId, it.source).orEmpty() }.orEmpty()
+    }
+    var category by remember(categoryId) { mutableStateOf<WallpaperCatalogCategory?>(cachedCategory) }
     var items by remember(categoryId) { mutableStateOf(cachedItems) }
     var loading by remember(categoryId) { mutableStateOf(cachedCategory == null || cachedItems.isEmpty()) }
     val adsService = rememberGoogleMobileAdsService()
@@ -319,12 +329,12 @@ internal fun WallpaperCategoryScreen(
             return@LaunchedEffect
         }
         loading = true
-        val categories = PadWallpaperRepository.loadCategories(context)
+        val categories = WallpaperCatalogRepository.loadCategories(context)
         val resolved = categories.firstOrNull { it.id == categoryId }
         category = resolved
         if (resolved != null) {
             repeat(3) { attempt ->
-                val loadedItems = PadWallpaperRepository.loadItemsForCategory(context, resolved)
+                val loadedItems = WallpaperCatalogRepository.loadItemsForCategory(context, resolved)
                 if (loadedItems.isNotEmpty()) {
                     items = loadedItems
                     return@repeat
@@ -343,7 +353,11 @@ internal fun WallpaperCategoryScreen(
         topBar = {
             WallpaperTopBar(
                 title = categoryDisplayTitle(category?.title ?: "Wallpaper"),
-                subtitle = if (loading) "Preparing wallpapers..." else "${items.size} wallpapers",
+                subtitle = when {
+                    loading -> "Preparing wallpapers..."
+                    category?.subtitle?.isNullOrBlank() == false -> "${items.size} wallpapers • ${category?.subtitle}"
+                    else -> "${items.size} wallpapers"
+                },
                 onBack = onBack,
             )
         },
@@ -417,8 +431,8 @@ internal fun WallpaperPreviewScreen(
     val appContext = context.applicationContext
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
-    var category by remember(categoryId) { mutableStateOf<PadWallpaperCategory?>(null) }
-    val itemsByCategory = remember { mutableStateMapOf<String, List<PadWallpaperItem>>() }
+    var category by remember(categoryId) { mutableStateOf<WallpaperCatalogCategory?>(null) }
+    val itemsByCategory = remember { mutableStateMapOf<String, List<WallpaperCatalogItem>>() }
     var loading by remember(categoryId, wallpaperId) { mutableStateOf(true) }
     var settingWallpaper by remember { mutableStateOf(false) }
     var selectedTarget by remember { mutableStateOf(WallpaperSetter.Target.BOTH) }
@@ -427,11 +441,11 @@ internal fun WallpaperPreviewScreen(
 
     LaunchedEffect(categoryId) {
         loading = true
-        val categories = PadWallpaperRepository.loadCategories(appContext)
+        val categories = WallpaperCatalogRepository.loadCategories(appContext)
         val resolved = categories.firstOrNull { it.id == categoryId }
         category = resolved
         if (resolved != null) {
-            itemsByCategory[categoryId] = PadWallpaperRepository.loadItemsForCategory(appContext, resolved)
+            itemsByCategory[categoryId] = WallpaperCatalogRepository.loadItemsForCategory(appContext, resolved)
         } else {
             itemsByCategory.remove(categoryId)
         }
@@ -799,7 +813,7 @@ private fun WallpaperHeroCard() {
                     )
                 }
                 Text(
-                    text = "Each category is delivered as its own asset pack. Open a collection, preview any wallpaper, then set it as your phone background.",
+                    text = "Browse wallpapers from bundled asset packs and Firebase cloud collections. Open a category, preview any wallpaper, then set it as your phone background.",
                     color = Color.White.copy(alpha = 0.86f),
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -813,6 +827,7 @@ private fun WallpaperCategoryCard(
     title: String,
     description: String?,
     itemCount: Int,
+    source: WallpaperCategorySource,
     thumbnailUrl: String,
     onClick: () -> Unit,
 ) {
@@ -852,7 +867,7 @@ private fun WallpaperCategoryCard(
                     color = OceanSerenity.OnSurface,
                 )
                 Text(
-                    text = "$itemCount wallpapers",
+                    text = wallpaperCategoryCountLabel(itemCount, source),
                     style = MaterialTheme.typography.bodyMedium,
                     color = OceanSerenity.OnSurfaceVariant,
                 )
@@ -868,6 +883,17 @@ private fun WallpaperCategoryCard(
                 tint = OceanSerenity.Primary,
             )
         }
+    }
+}
+
+private fun wallpaperCategoryCountLabel(
+    itemCount: Int,
+    source: WallpaperCategorySource,
+): String {
+    return when {
+        itemCount > 0 -> "$itemCount wallpapers"
+        source == WallpaperCategorySource.FIREBASE_STORAGE -> "Cloud collection"
+        else -> "Wallpaper collection"
     }
 }
 
@@ -910,7 +936,7 @@ private fun categoryDisplayTitle(raw: String): String =
 
 @Composable
 private fun WallpaperGridCard(
-    item: PadWallpaperItem,
+    item: WallpaperCatalogItem,
     locked: Boolean,
     onClick: () -> Unit,
 ) {
