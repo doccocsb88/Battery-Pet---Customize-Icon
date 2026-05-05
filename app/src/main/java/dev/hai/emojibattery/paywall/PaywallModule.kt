@@ -295,8 +295,8 @@ fun PaywallScreen(
                     .height(300.dp),
             ) {
                 // Header image with overlay blend
-                Image(
-                    painter = painterResource(R.drawable.img_header_iap_full),
+                coil.compose.AsyncImage(
+                    model = R.drawable.img_header_iap_full,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize(),

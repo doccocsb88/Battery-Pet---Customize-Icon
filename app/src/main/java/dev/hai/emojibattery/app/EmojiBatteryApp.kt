@@ -38,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -106,6 +107,7 @@ fun EmojiBatteryApp(
     var showAccessibilityConsent by remember { mutableStateOf(false) }
     var transientSuccessMessage by remember { mutableStateOf<String?>(null) }
     var successToastResetToken by remember { mutableStateOf(0L) }
+    var splashNavigationHandled by rememberSaveable { mutableStateOf(false) }
     val mainTabRoutes = remember {
         setOf(
             AppRoute.Home.route,
@@ -231,6 +233,11 @@ fun EmojiBatteryApp(
                 SplashRoute(
                     fastForward = uiState.splashDone,
                     onFinish = {
+                        if (splashNavigationHandled) {
+                            Log.d(TAG, "splash: skip duplicate finish callback")
+                            return@SplashRoute
+                        }
+                        splashNavigationHandled = true
                         if (!uiState.splashDone) {
                             viewModel.finishSplash()
                         }
@@ -246,6 +253,7 @@ fun EmojiBatteryApp(
                         }
                         navController.navigate(nextRoute) {
                             popUpTo(AppRoute.Splash.route) { inclusive = true }
+                            launchSingleTop = true
                         }
                     },
                 )

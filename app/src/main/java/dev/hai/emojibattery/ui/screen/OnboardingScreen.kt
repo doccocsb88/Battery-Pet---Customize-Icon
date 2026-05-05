@@ -27,11 +27,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.model.SampleCatalog
@@ -66,8 +66,8 @@ internal fun OnboardingScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                painter = painterResource(imageRes),
+            AsyncImage(
+                model = imageRes,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()

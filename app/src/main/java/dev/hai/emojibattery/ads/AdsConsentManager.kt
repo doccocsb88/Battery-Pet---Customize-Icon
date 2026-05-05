@@ -3,9 +3,6 @@ package dev.hai.emojibattery.ads
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import co.q7labs.co.emoji.BuildConfig
-import com.google.android.ump.ConsentDebugSettings
-import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.FormError
@@ -35,18 +32,12 @@ class AdsConsentManager(
             return
         }
         isConsentFlowInProgress = true
-        val paramsBuilder = ConsentRequestParameters.Builder()
+        val params = ConsentRequestParameters.Builder()
             .setTagForUnderAgeOfConsent(false)
-        if (BuildConfig.DEBUG) {
-            paramsBuilder.setConsentDebugSettings(
-                ConsentDebugSettings.Builder(appContext)
-                    .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                    .build(),
-            )
-        }
+            .build()
         consentInformation.requestConsentInfoUpdate(
             activity,
-            paramsBuilder.build(),
+            params,
             {
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { formError ->
                     if (formError != null) {
