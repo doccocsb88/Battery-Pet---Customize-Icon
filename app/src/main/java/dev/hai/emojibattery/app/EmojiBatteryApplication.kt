@@ -28,6 +28,5 @@ class EmojiBatteryApplication : Application() {
         )
         FirebaseAnalytics.getInstance(this)
         googleMobileAdsService = GoogleMobileAdsService(this)
-        googleMobileAdsService.initialize()
     }
 }

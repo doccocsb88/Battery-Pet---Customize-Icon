@@ -637,6 +637,16 @@ fun EmojiBatteryApp(
                         viewModel.openPrivacyPolicy()
                         navController.navigate(AppRoute.Legal.create("privacy"))
                     },
+                    onOpenGdprConsentOptions = {
+                        rawContext.findActivity()?.let { activity ->
+                            adsService.showPrivacyOptionsForm(activity)
+                        }
+                    },
+                    gdprConsentSubtitle = if (adsService.isPrivacyOptionsRequired()) {
+                        rawContext.getString(R.string.gdpr_consent_options_subtitle)
+                    } else {
+                        rawContext.getString(R.string.gdpr_consent_options_subtitle_optional)
+                    },
                     onOpenTerms = {
                         viewModel.openTermsOfUse()
                         navController.navigate(AppRoute.Legal.create("terms"))

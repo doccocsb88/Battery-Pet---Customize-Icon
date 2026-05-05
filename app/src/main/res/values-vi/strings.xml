@@ -41,6 +41,9 @@
     <string name="week11">tuần</string>
     <string name="terms_amp_conditions">Điều khoản &amp; Điều kiện</string>
     <string name="privacy_policy">Chính sách quyền riêng tư</string>
+    <string name="gdpr_consent_options">Tùy chọn chấp thuận GDPR</string>
+    <string name="gdpr_consent_options_subtitle">Quản lý lựa chọn quyền riêng tư cho quảng cáo</string>
+    <string name="gdpr_consent_options_subtitle_optional">Xem lại tùy chọn quyền riêng tư cho quảng cáo</string>
     <string name="paywall_subscription_terms_title">Điều khoản thuê bao</string>
     <string name="paywall_cancel_anytime">Hủy bất cứ lúc nào</string>
     <string name="paywall_subscription_terms_monthly_line">- Gói tháng (%1$s): truy cập premium 30 ngày, tự động gia hạn mỗi 30 ngày.</string>

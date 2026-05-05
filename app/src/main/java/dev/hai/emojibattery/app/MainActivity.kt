@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
             ),
         )
         routeOverride.value = intent.getStringExtra("route")
+        (application as? EmojiBatteryApplication)
+            ?.googleMobileAdsService
+            ?.requestConsentAndInitialize(this)
         setContent {
             EmojiBatteryTheme {
                 val viewModel: EmojiBatteryViewModel = viewModel()

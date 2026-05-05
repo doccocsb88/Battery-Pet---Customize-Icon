@@ -39,6 +39,7 @@ class GoogleMobileAdsService(
 ) {
     private val appContext = context.applicationContext
     private val entitlementManager = UserEntitlementManager(appContext)
+    private val consentManager = AdsConsentManager(appContext)
 
     @Volatile
     private var initialized = false
@@ -51,9 +52,43 @@ class GoogleMobileAdsService(
     @Volatile
     private var lastInterstitialShownAtMs = 0L
 
+    fun requestConsentAndInitialize(
+        activity: Activity,
+        onComplete: () -> Unit = {},
+    ) {
+        consentManager.requestConsentInfo(activity) {
+            if (consentManager.canRequestAds()) {
+                initialize()
+            } else {
+                Log.d(TAG, "requestConsentAndInitialize: ads not requestable after consent flow")
+            }
+            onComplete()
+        }
+    }
+
+    fun canRequestAds(): Boolean = consentManager.canRequestAds()
+
+    fun isPrivacyOptionsRequired(): Boolean = consentManager.isPrivacyOptionsRequired()
+
+    fun showPrivacyOptionsForm(
+        activity: Activity,
+        onDismissed: () -> Unit = {},
+    ) {
+        consentManager.showPrivacyOptionsForm(activity) {
+            if (consentManager.canRequestAds()) {
+                initialize()
+            }
+            onDismissed()
+        }
+    }
+
     fun initialize() {
         if (initialized) {
             Log.d(TAG, "initialize: already initialized")
+            return
+        }
+        if (!consentManager.canRequestAds()) {
+            Log.d(TAG, "initialize: skip until consent allows ad requests")
             return
         }
         Log.d(TAG, "initialize: start")
@@ -85,6 +120,10 @@ class GoogleMobileAdsService(
         adUnitId: String = ADMOB_BANNER_AD_UNIT_ID,
         isPremium: Boolean = isPremiumUser(),
     ): AdView? {
+        if (!consentManager.canRequestAds()) {
+            Log.d(TAG, "createBannerAdView: skip (consent not ready)")
+            return null
+        }
         if (!shouldShowAds(isPremium)) {
             Log.d(TAG, "createBannerAdView: skip (premium user)")
             return null
@@ -115,6 +154,11 @@ class GoogleMobileAdsService(
         onLoaded: (NativeAd) -> Unit,
         onFailed: () -> Unit = {},
     ) {
+        if (!consentManager.canRequestAds()) {
+            Log.d(TAG, "loadNativeAd: skip (consent not ready)")
+            onFailed()
+            return
+        }
         if (!shouldShowAds(isPremium)) {
             Log.d(TAG, "loadNativeAd: skip (premium user)")
             onFailed()
@@ -180,6 +224,10 @@ class GoogleMobileAdsService(
         adUnitId: String = ADMOB_INTERSTITIAL_AD_UNIT_ID,
         isPremium: Boolean = isPremiumUser(),
     ) {
+        if (!consentManager.canRequestAds()) {
+            Log.d(TAG, "preloadInterstitial: skip (consent not ready)")
+            return
+        }
         if (!shouldShowAds(isPremium)) {
             Log.d(TAG, "preloadInterstitial: skip (premium user)")
             return
@@ -232,6 +280,11 @@ class GoogleMobileAdsService(
         onUnavailable: () -> Unit = {},
         onDismissed: () -> Unit = {},
     ) {
+        if (!consentManager.canRequestAds()) {
+            Log.d(TAG, "showInterstitial: unavailable (consent not ready)")
+            onUnavailable()
+            return
+        }
         if (!shouldShowAds(isPremium)) {
             Log.d(TAG, "showInterstitial: unavailable (premium user)")
             onUnavailable()

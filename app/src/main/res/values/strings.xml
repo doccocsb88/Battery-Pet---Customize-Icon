@@ -56,6 +56,9 @@
     <string name="week11">week</string>
     <string name="terms_amp_conditions">Terms &amp; Conditions</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="gdpr_consent_options">GDPR Consent Options</string>
+    <string name="gdpr_consent_options_subtitle">Manage your ads privacy choices</string>
+    <string name="gdpr_consent_options_subtitle_optional">Review privacy options for ads</string>
     <string name="paywall_restore">Restore</string>
     <string name="paywall_manage_subscriptions">Manage subscriptions</string>
     <string name="paywall_price_loading">Loading…</string>

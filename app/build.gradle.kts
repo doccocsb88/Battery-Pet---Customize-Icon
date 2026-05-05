@@ -196,6 +196,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.4")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("com.google.android.gms:play-services-ads:23.6.0")
+    implementation("com.google.ads.mediation:facebook:6.21.0.0")
+    implementation("com.google.android.ump:user-messaging-platform:4.0.0")
     implementation("com.android.billingclient:billing-ktx:7.1.1")
     implementation(firebaseBom)
     implementation("com.google.firebase:firebase-analytics-ktx")
