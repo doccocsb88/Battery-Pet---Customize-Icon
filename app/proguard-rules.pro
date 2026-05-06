@@ -21,3 +21,8 @@
 
 # Keep TypeToken subclasses created inline so their generic type information survives.
 -keep class * extends com.google.gson.reflect.TypeToken
+
+# Facebook mediation references these nullability annotations, but they are not
+# required at runtime for the release artifact.
+-dontwarn com.facebook.infer.annotation.Nullsafe
+-dontwarn com.facebook.infer.annotation.Nullsafe$Mode
