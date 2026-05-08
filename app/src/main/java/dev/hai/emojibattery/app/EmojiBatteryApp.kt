@@ -108,6 +108,7 @@ fun EmojiBatteryApp(
     var transientSuccessMessage by remember { mutableStateOf<String?>(null) }
     var successToastResetToken by remember { mutableStateOf(0L) }
     var splashNavigationHandled by rememberSaveable { mutableStateOf(false) }
+    var splashNavigationPending by remember { mutableStateOf(false) }
     val mainTabRoutes = remember {
         setOf(
             AppRoute.Home.route,
@@ -146,6 +147,35 @@ fun EmojiBatteryApp(
             )
         } else {
             navigateDirectly()
+        }
+    }
+    fun finishSplashNavigation() {
+        if (splashNavigationHandled) {
+            Log.d(TAG, "splash: skip duplicate finish callback")
+            return
+        }
+        if (navController.currentDestination?.route != AppRoute.Splash.route) {
+            Log.d(TAG, "splash: skip stale finish callback on non-splash route")
+            return
+        }
+        splashNavigationPending = false
+        splashNavigationHandled = true
+        if (!uiState.splashDone) {
+            viewModel.finishSplash()
+        }
+        viewModel.maybeShowPostOnboardingPaywall()
+        val latest = viewModel.uiState.value
+        val nextRoute = when {
+            AppLanguageConfig.isLanguagePickerFlowEnabled && !latest.languageChosen ->
+                AppRoute.Language.route
+            !latest.onboardingCompleted -> AppRoute.Onboarding.route
+            latest.paywallState?.featureKey == "flow:post_onboarding_home" ->
+                AppRoute.Paywall.route
+            else -> AppRoute.Home.route
+        }
+        navController.navigate(nextRoute) {
+            popUpTo(AppRoute.Splash.route) { inclusive = true }
+            launchSingleTop = true
         }
     }
 
@@ -248,28 +278,46 @@ fun EmojiBatteryApp(
                 SplashRoute(
                     fastForward = uiState.splashDone,
                     onFinish = {
+                        val splashBackStackEntry = navController.currentBackStackEntry
                         if (splashNavigationHandled) {
                             Log.d(TAG, "splash: skip duplicate finish callback")
                             return@SplashRoute
                         }
-                        splashNavigationHandled = true
-                        if (!uiState.splashDone) {
-                            viewModel.finishSplash()
+                        if (navController.currentDestination?.route != AppRoute.Splash.route) {
+                            Log.d(TAG, "splash: skip stale finish callback on non-splash route")
+                            return@SplashRoute
                         }
-                        viewModel.maybeShowPostOnboardingPaywall()
-                        val latest = viewModel.uiState.value
-                        val nextRoute = when {
-                            AppLanguageConfig.isLanguagePickerFlowEnabled && !latest.languageChosen ->
-                                AppRoute.Language.route
-                            !latest.onboardingCompleted -> AppRoute.Onboarding.route
-                            latest.paywallState?.featureKey == "flow:post_onboarding_home" ->
-                                AppRoute.Paywall.route
-                            else -> AppRoute.Home.route
+                        if (
+                            splashBackStackEntry?.lifecycle?.currentState
+                                ?.isAtLeast(Lifecycle.State.RESUMED) != true
+                        ) {
+                            if (splashNavigationPending || splashBackStackEntry == null) {
+                                Log.d(TAG, "splash: skip duplicate pending finish callback")
+                                return@SplashRoute
+                            }
+                            splashNavigationPending = true
+                            val lifecycle = splashBackStackEntry.lifecycle
+                            val observer = object : LifecycleEventObserver {
+                                override fun onStateChanged(
+                                    source: androidx.lifecycle.LifecycleOwner,
+                                    event: Lifecycle.Event,
+                                ) {
+                                    if (lifecycle.currentState == Lifecycle.State.DESTROYED) {
+                                        lifecycle.removeObserver(this)
+                                        splashNavigationPending = false
+                                        return
+                                    }
+                                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                        lifecycle.removeObserver(this)
+                                        finishSplashNavigation()
+                                    }
+                                }
+                            }
+                            lifecycle.addObserver(observer)
+                            Log.d(TAG, "splash: defer finish callback until back stack entry resumes")
+                            return@SplashRoute
                         }
-                        navController.navigate(nextRoute) {
-                            popUpTo(AppRoute.Splash.route) { inclusive = true }
-                            launchSingleTop = true
-                        }
+                        finishSplashNavigation()
                     },
                 )
             }

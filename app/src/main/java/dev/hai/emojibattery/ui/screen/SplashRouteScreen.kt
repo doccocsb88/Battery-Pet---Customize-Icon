@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,22 +27,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import co.q7labs.co.emoji.R
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 
 @Composable
 internal fun SplashRoute(
     fastForward: Boolean,
     onFinish: () -> Unit,
 ) {
-    // Always show splash for at least 2s; do not bypass/cancel this flow.
+    // Always show splash for at least 2s while this route remains active.
     val minSplashDurationMs = 2_000L
     val iconPhaseDurationMs = 1_000L
     val loadingPhaseDurationMs = (minSplashDurationMs - iconPhaseDurationMs).coerceAtLeast(0L)
     val splashColorText = Color.White
 
     var showLoading by remember { mutableStateOf(false) }
+    val latestOnFinish by rememberUpdatedState(onFinish)
 
     LaunchedEffect(Unit) {
         // Keep parameter for call-site compatibility; splash timing is now fixed.
@@ -49,13 +49,10 @@ internal fun SplashRoute(
         val ignoredFastForward = fastForward
 
         showLoading = false
-
-        withContext(NonCancellable) {
-            delay(iconPhaseDurationMs)
-            showLoading = true
-            delay(loadingPhaseDurationMs)
-        }
-        onFinish()
+        delay(iconPhaseDurationMs)
+        showLoading = true
+        delay(loadingPhaseDurationMs)
+        latestOnFinish()
     }
 
     Box(Modifier.fillMaxSize()) {
