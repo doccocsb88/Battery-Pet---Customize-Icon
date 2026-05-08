@@ -194,7 +194,8 @@ fun EmojiBatteryApp(
         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
     }
 
-    LaunchedEffect(billingState.ownedProductIds) {
+    LaunchedEffect(billingState.ownedProductIds, billingState.purchaseRefreshSucceeded) {
+        if (!billingState.purchaseRefreshSucceeded) return@LaunchedEffect
         val hasPremium = purchaseService.hasPremiumAccess(billingState.ownedProductIds)
         viewModel.syncPremiumAccess(hasPremium)
     }

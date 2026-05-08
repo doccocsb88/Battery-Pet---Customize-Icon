@@ -154,7 +154,7 @@ fun PaywallScreen(
 
     fun planTypeForProduct(productId: String): String? = when (productId) {
         purchaseService.weeklyProductId -> "weekly"
-        purchaseService.monthlyProductId -> "monthly"
+        purchaseService.monthlyProductId, "${purchaseService.monthlyProductId}trial" -> "monthly"
         purchaseService.lifetimeProductId -> "lifetime"
         else -> null
     }

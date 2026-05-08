@@ -43,6 +43,7 @@ data class BillingUiState(
     val monthlyHasFreeTrial: Boolean = false,
     val monthlyTrialDays: Int? = null,
     val ownedProductIds: Set<String> = emptySet(),
+    val purchaseRefreshSucceeded: Boolean = false,
     val purchaseInFlight: Boolean = false,
     val errorMessage: String? = null,
 )
@@ -52,8 +53,14 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     override val monthlyProductId: String = "$APP_ID.monthly"
     override val lifetimeProductId: String = "$APP_ID.lifetime"
     private val monthlyFallbackProductId: String = "$APP_ID.monthlytrial"
-    private val monthlyCandidateProductIds: List<String> = listOf(monthlyProductId, monthlyFallbackProductId)
-    private val subscriptionProductIds: Set<String> = setOf(weeklyProductId) + monthlyCandidateProductIds
+    private val weeklyCandidateProductIds: List<String> = listOf(weeklyProductId)
+    private val monthlyCandidateProductIds: List<String> = listOf(
+        monthlyProductId,
+        monthlyFallbackProductId,
+    )
+    private val lifetimeCandidateProductIds: List<String> = listOf(lifetimeProductId)
+    private val subscriptionProductIds: Set<String> = weeklyCandidateProductIds.toSet() + monthlyCandidateProductIds
+    private val premiumProductIds: Set<String> = subscriptionProductIds + lifetimeCandidateProductIds
 
     private var billingClient: BillingClient? = null
     private var appContext: Context? = null
@@ -164,17 +171,19 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     }
 
     override fun openManageSubscriptions(context: Context) {
+        val activeSubscriptionProductId = _uiState.value.ownedProductIds
+            .firstOrNull { it in subscriptionProductIds }
+            ?: _uiState.value.weeklyPlan?.productId
+            ?: weeklyProductId
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://play.google.com/store/account/subscriptions?packageName=$APP_ID&sku=$weeklyProductId"),
+            Uri.parse("https://play.google.com/store/account/subscriptions?packageName=$APP_ID&sku=$activeSubscriptionProductId"),
         ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
 
     override fun hasPremiumAccess(ownedProductIds: Set<String>): Boolean {
-        return ownedProductIds.any {
-            it in subscriptionProductIds || it == lifetimeProductId
-        }
+        return ownedProductIds.any { it in premiumProductIds }
     }
 
     override fun clearError() {
@@ -214,11 +223,14 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             }
         }
         queryProductDetails(
-            listOf(weeklyProductId) + monthlyCandidateProductIds,
+            weeklyCandidateProductIds + monthlyCandidateProductIds,
             BillingClient.ProductType.SUBS,
         ) { details ->
             details.forEach { productCache[it.productId] = it }
-            val weeklyDetails = details.find { it.productId == weeklyProductId }
+            val weeklyDetails = weeklyCandidateProductIds
+                .asSequence()
+                .mapNotNull { productId -> details.find { it.productId == productId } }
+                .firstOrNull()
             val monthlyDetails = monthlyCandidateProductIds
                 .asSequence()
                 .mapNotNull { productId -> details.find { it.productId == productId } }
@@ -234,9 +246,13 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             subsLoaded = true
             maybeFinishLoading()
         }
-        queryProductDetails(listOf(lifetimeProductId), BillingClient.ProductType.INAPP) { details ->
+        queryProductDetails(lifetimeCandidateProductIds, BillingClient.ProductType.INAPP) { details ->
             details.forEach { productCache[it.productId] = it }
-            _uiState.value = _uiState.value.copy(lifetimePlan = details.firstOrNull()?.let(::lifetimePlanFrom))
+            val lifetimeDetails = lifetimeCandidateProductIds
+                .asSequence()
+                .mapNotNull { productId -> details.find { it.productId == productId } }
+                .firstOrNull()
+            _uiState.value = _uiState.value.copy(lifetimePlan = lifetimeDetails?.let(::lifetimePlanFrom))
             inAppLoaded = true
             maybeFinishLoading()
         }
@@ -272,6 +288,8 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
     private fun refreshPurchases() {
         val client = billingClient ?: return
         val previousOwnedProductIds = _uiState.value.ownedProductIds
+        val completingPurchaseProductId = pendingPurchaseProductId
+        var purchaseRevenueTracked = false
         ownedProducts.clear()
         var pendingCallbacks = 2
         var hadFailure = false
@@ -282,6 +300,14 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
                     acknowledgeIfNeeded(purchase)
                     if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                         ownedProducts += purchase.products
+                        if (
+                            completingPurchaseProductId != null &&
+                            !purchaseRevenueTracked &&
+                            completingPurchaseProductId in purchase.products
+                        ) {
+                            trackPurchaseRevenue(completingPurchaseProductId)
+                            purchaseRevenueTracked = true
+                        }
                     }
                 }
             } else {
@@ -294,6 +320,7 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             if (pendingCallbacks == 0) {
                 _uiState.value = _uiState.value.copy(
                     ownedProductIds = if (hadFailure) previousOwnedProductIds else ownedProducts.toSet(),
+                    purchaseRefreshSucceeded = !hadFailure,
                     purchaseInFlight = false,
                     loading = false,
                     errorMessage = refreshErrorMessage ?: _uiState.value.errorMessage,
@@ -319,10 +346,46 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         ) { }
     }
 
+    private fun trackPurchaseRevenue(productId: String) {
+        val amount = purchaseAmountFor(productId)
+        appContext?.let { context ->
+            dev.hai.emojibattery.tracking.TrackingServices.trackBillingPurchaseRevenue(
+                context = context,
+                productId = productId,
+                planType = planTypeForProduct(productId),
+                valueMicros = amount?.valueMicros,
+                currencyCode = amount?.currencyCode,
+            )
+        }
+    }
+
+    private fun purchaseAmountFor(productId: String): PurchaseAmount? {
+        val details = productCache[productId] ?: return null
+        val recurringPhase = details.subscriptionOfferDetails
+            ?.firstOrNull()
+            ?.pricingPhases
+            ?.pricingPhaseList
+            ?.firstOrNull { it.priceAmountMicros > 0 }
+        if (recurringPhase != null) {
+            return PurchaseAmount(
+                valueMicros = recurringPhase.priceAmountMicros,
+                currencyCode = recurringPhase.priceCurrencyCode,
+            )
+        }
+        val oneTime = details.oneTimePurchaseOfferDetails
+        if (oneTime != null) {
+            return PurchaseAmount(
+                valueMicros = oneTime.priceAmountMicros,
+                currencyCode = oneTime.priceCurrencyCode,
+            )
+        }
+        return null
+    }
+
     private fun planTypeForProduct(productId: String): String? = when (productId) {
-        weeklyProductId -> "weekly"
-        monthlyProductId, monthlyFallbackProductId -> "monthly"
-        lifetimeProductId -> "lifetime"
+        in weeklyCandidateProductIds -> "weekly"
+        in monthlyCandidateProductIds -> "monthly"
+        in lifetimeCandidateProductIds -> "lifetime"
         else -> null
     }
 
@@ -401,4 +464,9 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         const val APP_ID = AppStoreConfig.APP_ID
         val shared: GooglePlayPurchaseService = GooglePlayPurchaseService()
     }
+
+    private data class PurchaseAmount(
+        val valueMicros: Long,
+        val currencyCode: String,
+    )
 }

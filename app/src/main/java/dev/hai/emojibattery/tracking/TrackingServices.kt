@@ -88,6 +88,28 @@ object TrackingServices {
         )
     }
 
+    fun trackBillingPurchaseRevenue(
+        context: Context,
+        productId: String,
+        planType: String?,
+        valueMicros: Long?,
+        currencyCode: String?,
+    ) {
+        logEvent(
+            context = context,
+            name = FirebaseAnalytics.Event.PURCHASE,
+            params = Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_ID, productId.trim())
+                putString("product_id", productId.trim())
+                putString("plan_type", planType?.trim().orEmpty().ifBlank { null })
+                if (valueMicros != null && valueMicros > 0 && !currencyCode.isNullOrBlank()) {
+                    putDouble(FirebaseAnalytics.Param.VALUE, valueMicros / 1_000_000.0)
+                    putString(FirebaseAnalytics.Param.CURRENCY, currencyCode)
+                }
+            },
+        )
+    }
+
     fun trackPaywallPurchaseError(
         context: Context,
         productId: String?,
