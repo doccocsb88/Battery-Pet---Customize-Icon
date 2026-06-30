@@ -22,6 +22,39 @@
       "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/matching/",
       "thumbnail_file_name": "Gemini_Generated_Image_c7kidlc7kidlc7ki.png",
       "keywords": ["matching", "pair", "couple", "duo"]
+    },
+    {
+      "id": "firebase_girl01",
+      "source": "firebase_storage",
+      "title": "Girl",
+      "subtitle": "Dreamy girl wallpapers with soft fashion, flowers, and cozy vibes",
+      "description": "Cute girl illustrations with soft, dreamy vibes.",
+      "item_count": 16,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/girl01/",
+      "thumbnail_file_name": "girl01_01.png",
+      "keywords": ["girl", "cute girl", "anime girl", "aesthetic girl", "fashion", "sunflower", "flowers", "headphones", "laptop", "cozy", "dreamy", "portrait", "soft color", "kawaii", "illustration", "lock screen", "wallpaper"]
+    },
+    {
+      "id": "firebase_layer01",
+      "source": "firebase_storage",
+      "title": "Layer",
+      "subtitle": "Layered paper wallpapers with travel scenes and 3D depth",
+      "description": "Layered paper-cut scenes with city and travel vibes.",
+      "item_count": 20,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/layer01/",
+      "thumbnail_file_name": "layer01_01.png",
+      "keywords": ["layer", "3 layer", "paper cut", "torn paper", "collage", "3d depth", "travel", "city", "street", "postcard", "scenery", "urban", "frame", "minimal", "aesthetic", "wallpaper", "lock screen"]
+    },
+    {
+      "id": "firebase_panda01",
+      "source": "firebase_storage",
+      "title": "Panda",
+      "subtitle": "Cute panda wallpapers with flowers, charms, and peaceful wishes",
+      "description": "Cute panda wallpapers with flowers and lucky charms.",
+      "item_count": 13,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/panda01/",
+      "thumbnail_file_name": "panda01_01.png",
+      "keywords": ["panda", "cute panda", "kawaii", "animal", "flowers", "floral", "charm", "lucky", "wish", "peaceful", "minimal", "soft", "asian style", "calligraphy", "spring", "cute wallpaper", "lock screen"]
     }
   ]
 }
