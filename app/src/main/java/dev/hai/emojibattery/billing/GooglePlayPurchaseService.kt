@@ -16,6 +16,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryProductDetailsResult
 import com.android.billingclient.api.QueryPurchasesParams
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -78,6 +79,7 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
             .enablePendingPurchases(
                 PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
             )
+            .enableAutoServiceReconnection()
             .setListener(this)
             .build()
         billingClient = client
@@ -103,7 +105,6 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
 
             override fun onBillingServiceDisconnected() {
                 _uiState.value = _uiState.value.copy(connected = false)
-                connect(client)
             }
         })
     }
@@ -272,9 +273,9 @@ class GooglePlayPurchaseService private constructor() : PurchaseService, Purchas
         }
         client.queryProductDetailsAsync(
             QueryProductDetailsParams.newBuilder().setProductList(products).build(),
-        ) { result, details ->
+        ) { result: BillingResult, productDetailsResult: QueryProductDetailsResult ->
             if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                onLoaded(details.orEmpty())
+                onLoaded(productDetailsResult.productDetailsList.orEmpty())
             } else {
                 _uiState.value = _uiState.value.copy(
                     loading = false,

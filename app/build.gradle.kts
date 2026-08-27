@@ -91,14 +91,14 @@ val hasReleaseSigning = listOf(
 
 android {
     namespace = "co.q7labs.co.emoji"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "co.q7labs.co.emoji"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = computedVersionCode
-        versionName = "0.1.5"
+        versionName = "0.1.7"
         manifestPlaceholders["adMobAppId"] = admobAppId
         buildConfigField("String", "ADMOB_APP_ID", admobAppId.asBuildConfigString())
         buildConfigField("String", "ADMOB_BANNER_AD_UNIT_ID", admobBannerAdUnitId.asBuildConfigString())
@@ -116,8 +116,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+    }
+
+    androidResources {
         // Ship English locale variants only; base `values/` stays included (see AppLanguageConfig).
-        resourceConfigurations += listOf("en")
+        localeFilters += listOf("en")
     }
 
     signingConfigs {
@@ -198,7 +201,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:23.6.0")
     implementation("com.google.ads.mediation:facebook:6.21.0.0")
     implementation("com.google.android.ump:user-messaging-platform:4.0.0")
-    implementation("com.android.billingclient:billing-ktx:7.1.1")
+    implementation("com.android.billingclient:billing:8.2.1")
     implementation(firebaseBom)
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-appcheck-playintegrity")

@@ -1,3 +1,4 @@
+- Targets Android 16 (API 36) to meet Google Play security requirements
 - Launching Emoji Battery with customizable battery icons and status bar themes
 - Includes stickers, gesture actions, notch customization, and Ocean Serenity UI refresh
 - Improved status bar editor, template loading, and apply flows for a smoother first release
