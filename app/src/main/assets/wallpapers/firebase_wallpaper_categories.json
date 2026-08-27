@@ -10,7 +10,12 @@
       "item_count": 28,
       "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/couple/",
       "thumbnail_file_name": "couple_10.webp",
-      "keywords": ["couple", "love", "romantic", "pair"]
+      "keywords": [
+        "couple",
+        "love",
+        "romantic",
+        "pair"
+      ]
     },
     {
       "id": "firebase_matching",
@@ -21,7 +26,12 @@
       "item_count": 20,
       "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/matching/",
       "thumbnail_file_name": "Gemini_Generated_Image_c7kidlc7kidlc7ki.png",
-      "keywords": ["matching", "pair", "couple", "duo"]
+      "keywords": [
+        "matching",
+        "pair",
+        "couple",
+        "duo"
+      ]
     },
     {
       "id": "firebase_girl01",
@@ -32,7 +42,25 @@
       "item_count": 16,
       "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/girl01/",
       "thumbnail_file_name": "girl01_01.png",
-      "keywords": ["girl", "cute girl", "anime girl", "aesthetic girl", "fashion", "sunflower", "flowers", "headphones", "laptop", "cozy", "dreamy", "portrait", "soft color", "kawaii", "illustration", "lock screen", "wallpaper"]
+      "keywords": [
+        "girl",
+        "cute girl",
+        "anime girl",
+        "aesthetic girl",
+        "fashion",
+        "sunflower",
+        "flowers",
+        "headphones",
+        "laptop",
+        "cozy",
+        "dreamy",
+        "portrait",
+        "soft color",
+        "kawaii",
+        "illustration",
+        "lock screen",
+        "wallpaper"
+      ]
     },
     {
       "id": "firebase_layer01",
@@ -43,7 +71,25 @@
       "item_count": 20,
       "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/layer01/",
       "thumbnail_file_name": "layer01_01.png",
-      "keywords": ["layer", "3 layer", "paper cut", "torn paper", "collage", "3d depth", "travel", "city", "street", "postcard", "scenery", "urban", "frame", "minimal", "aesthetic", "wallpaper", "lock screen"]
+      "keywords": [
+        "layer",
+        "3 layer",
+        "paper cut",
+        "torn paper",
+        "collage",
+        "3d depth",
+        "travel",
+        "city",
+        "street",
+        "postcard",
+        "scenery",
+        "urban",
+        "frame",
+        "minimal",
+        "aesthetic",
+        "wallpaper",
+        "lock screen"
+      ]
     },
     {
       "id": "firebase_panda01",
@@ -54,7 +100,176 @@
       "item_count": 13,
       "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/panda01/",
       "thumbnail_file_name": "panda01_01.png",
-      "keywords": ["panda", "cute panda", "kawaii", "animal", "flowers", "floral", "charm", "lucky", "wish", "peaceful", "minimal", "soft", "asian style", "calligraphy", "spring", "cute wallpaper", "lock screen"]
+      "keywords": [
+        "panda",
+        "cute panda",
+        "kawaii",
+        "animal",
+        "flowers",
+        "floral",
+        "charm",
+        "lucky",
+        "wish",
+        "peaceful",
+        "minimal",
+        "soft",
+        "asian style",
+        "calligraphy",
+        "spring",
+        "cute wallpaper",
+        "lock screen"
+      ]
+    },
+    {
+      "id": "pattern_01",
+      "source": "firebase_storage",
+      "title": "Abstract Pebble Wallpapers",
+      "subtitle": "Smooth shapes. Rich textures.",
+      "description": "A collection of clean 3D abstract wallpapers with bold colors, soft shapes, and detailed textures.",
+      "item_count": 20,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/pattern_01/",
+      "thumbnail_file_name": "ChatGPT_Image_15_51_32_17_thg_8__2026__1_.png",
+      "keywords": [
+        "abstract wallpaper",
+        "android wallpaper",
+        "4k wallpaper",
+        "3d wallpaper",
+        "amoled wallpaper",
+        "pebble wallpaper",
+        "geometric wallpaper",
+        "minimal wallpaper",
+        "colorful wallpaper",
+        "dark wallpaper",
+        "texture wallpaper",
+        "modern wallpaper",
+        "phone background",
+        "lock screen wallpaper",
+        "home screen wallpaper"
+      ]
+    },
+    {
+      "id": "firebase_emerald _fow",
+      "source": "firebase_storage",
+      "title": "Emerald Flow",
+      "subtitle": "Nature in Motion",
+      "description": "A serene tree among flowing emerald layers.",
+      "item_count": 15,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/emerald _fow/",
+      "thumbnail_file_name": "ChatGPT_Image_16_38_16_17_thg_8__2026__1_.png",
+      "keywords": [
+        "green",
+        "nature",
+        "tree",
+        "emerald",
+        "abstract",
+        "layered",
+        "paper art",
+        "calming",
+        "3d",
+        "wallpaper"
+      ]
+    },
+    {
+      "id": "faith_race_wallpapers",
+      "source": "firebase_storage",
+      "title": "Faith & Grace Wallpapers",
+      "subtitle": "Peace, light, and hope for every day.",
+      "item_count": 16,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/faith_race_wallpapers/",
+      "thumbnail_file_name": "ChatGPT_Image_22_09_57_17_thg_8__2026__1_.png",
+      "keywords": [
+        "Christian",
+        "Faith",
+        "Jesus",
+        "God",
+        "Cross",
+        "Prayer",
+        "Grace",
+        "Peace",
+        "Hope",
+        "Angel",
+        "Church",
+        "Bible",
+        "Spiritual",
+        "Religious",
+        "Inspirational",
+        "Dark",
+        "Blue",
+        "Minimal",
+        "AMOLED",
+        "Quote"
+      ]
+    },
+    {
+      "id": "firebase_zen_buddha",
+      "source": "firebase_storage",
+      "title": "Divine Zen",
+      "subtitle": "Serenity Beyond the Ordinary",
+      "description": "Sacred Buddha wallpapers blending meditation, mystical art, dragons, moonlight, and peaceful spiritual energy.",
+      "item_count": 9,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/zen_buddha_02/",
+      "thumbnail_file_name": "ChatGPT_Image_22_42_36_17_thg_8__2026__1_.png",
+      "keywords": [
+        "buddha",
+        "zen",
+        "meditation",
+        "spiritual",
+        "buddhism",
+        "serenity",
+        "peaceful",
+        "divine",
+        "sacred",
+        "mindfulness",
+        "temple",
+        "lotus",
+        "dragon",
+        "fantasy",
+        "mystical",
+        "dark",
+        "moon",
+        "asian art",
+        "oriental",
+        "guanyin",
+        "monk",
+        "aura",
+        "enlightenment",
+        "calm",
+        "4k",
+        "amoled",
+        "wallpaper"
+      ]
+    },
+    {
+      "id": "firebase_spring_in_the_sky",
+      "source": "firebase_storage",
+      "title": "Spring in the Sky",
+      "subtitle": "Fresh blooms, blue skies & quiet moments",
+      "description": "A refreshing collection of flowers, trees, and peaceful blue skies.",
+      "item_count": 10,
+      "storage_folder_url": "gs://battery-emoji-266a5.firebasestorage.app/wallpaper/spring_in_the_sky/",
+      "thumbnail_file_name": "ChatGPT_Image_23_08_52_17_thg_8__2026__10_.png",
+      "keywords": [
+        "spring",
+        "nature",
+        "flowers",
+        "blue sky",
+        "green",
+        "blossom",
+        "floral",
+        "trees",
+        "bamboo",
+        "wisteria",
+        "sunlight",
+        "peaceful",
+        "fresh",
+        "botanical",
+        "minimal",
+        "aesthetic",
+        "calming",
+        "bright",
+        "outdoors",
+        "4k wallpaper"
+      ]
     }
   ]
 }

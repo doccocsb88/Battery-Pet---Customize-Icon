@@ -32,6 +32,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import dev.hai.emojibattery.app.EmojiBatteryApplication
 import dev.hai.emojibattery.service.UserEntitlementManager
+import dev.hai.emojibattery.tracking.TrackingServices
 import kotlinx.coroutines.delay
 
 class GoogleMobileAdsService(
@@ -277,12 +278,22 @@ class GoogleMobileAdsService(
         activity: Activity,
         adUnitId: String = ADMOB_INTERSTITIAL_AD_UNIT_ID,
         isPremium: Boolean = isPremiumUser(),
+        placement: String = "unknown",
         onUnavailable: () -> Unit = {},
         onDismissed: () -> Unit = {},
     ) {
+        fun skip(reason: String) {
+            TrackingServices.trackAdInterstitial(
+                context = appContext,
+                result = "skipped",
+                reason = reason,
+                placement = placement,
+            )
+            onUnavailable()
+        }
         if (!consentManager.canRequestAds()) {
             Log.d(TAG, "showInterstitial: unavailable (consent not ready)")
-            onUnavailable()
+            skip("consent")
             return
         }
         if (!shouldShowAds(isPremium)) {
@@ -292,7 +303,7 @@ class GoogleMobileAdsService(
         }
         if (adUnitId.isBlank()) {
             Log.w(TAG, "showInterstitial: unavailable (empty adUnitId)")
-            onUnavailable()
+            skip("empty_unit")
             return
         }
         initialize()
@@ -306,18 +317,24 @@ class GoogleMobileAdsService(
             val remainingMs = remainingThrottleMs()
             Log.d(TAG, "showInterstitial: throttled, remainingMs=$remainingMs")
             preloadInterstitial(adUnitId = adUnitId, isPremium = isPremium)
-            onUnavailable()
+            skip("throttled")
             return
         }
         val readyAd = interstitialAd
         if (readyAd == null) {
             Log.d(TAG, "showInterstitial: unavailable (no cached ad yet)")
             preloadInterstitial(adUnitId = adUnitId, isPremium = isPremium)
-            onUnavailable()
+            skip("no_fill")
             return
         }
         interstitialAd = null
         Log.d(TAG, "showInterstitial: showing cached interstitial")
+        TrackingServices.trackAdInterstitial(
+            context = appContext,
+            result = "shown",
+            reason = null,
+            placement = placement,
+        )
         readyAd.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 lastInterstitialShownAtMs = SystemClock.elapsedRealtime()
@@ -331,6 +348,12 @@ class GoogleMobileAdsService(
                     TAG,
                     "Interstitial failed to show: code=${adError.code}, " +
                         "domain=${adError.domain}, message=${adError.message}",
+                )
+                TrackingServices.trackAdInterstitial(
+                    context = appContext,
+                    result = "skipped",
+                    reason = "failed_show",
+                    placement = placement,
                 )
                 preloadInterstitial(adUnitId = adUnitId, isPremium = isPremium)
                 onUnavailable()

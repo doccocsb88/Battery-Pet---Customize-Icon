@@ -18,6 +18,10 @@ __pycache__/
 # Local crawls / decompile output (large; regenerate with scripts)
 volio_api_crawl/downloaded_assets/
 
+# Wallpaper admin local TikTok imports and Firebase key
+tools/wallpaper-admin/imports/
+tools/wallpaper-admin/serviceAccountKey.json
+
 # Play Store release artifacts
 play-secrets/
 *.jks

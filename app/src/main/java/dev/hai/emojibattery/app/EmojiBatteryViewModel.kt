@@ -45,6 +45,7 @@ import dev.hai.emojibattery.locale.resolveDefaultLocaleTag
 import dev.hai.emojibattery.service.GestureSettingsStore
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.service.UserEntitlementManager
+import dev.hai.emojibattery.tracking.TrackingServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,6 +61,7 @@ class EmojiBatteryViewModel(
 ) : AndroidViewModel(application) {
     private var homeCategoryLoadJob: Job? = null
     private var stickerCatalogLoadJob: Job? = null
+    private var accessibilityPermissionHydrated = false
     private val userEntitlementManager = UserEntitlementManager(application.applicationContext)
 
     companion object {
@@ -186,6 +188,7 @@ class EmojiBatteryViewModel(
         if (localeChanged) {
             AppLocalePreferences.applyAppCompatFromPersistedLocales(app)
         }
+        TrackingServices.trackLanguageSelected(app, tag, localeChanged)
         _uiState.update {
             it.copy(
                 languageChosen = true,
@@ -199,15 +202,22 @@ class EmojiBatteryViewModel(
     fun nextOnboardingPage() {
         _uiState.update { state ->
             val lastIndex = SampleCatalog.onboardingPages.lastIndex
+            val app = getApplication<Application>()
             if (state.onboardingPage >= lastIndex) {
-                val app = getApplication<Application>()
                 AppFlowPreferences.setOnboardingDone(app)
+                TrackingServices.trackOnboardingComplete(app, SampleCatalog.onboardingPages.size)
                 val updated = state.copy(
                     onboardingCompleted = true,
                     infoMessage = "Onboarding completed.",
                 )
                 maybeShowPostOnboardingPaywall(app, updated)
             } else {
+                TrackingServices.trackOnboardingStep(
+                    context = app,
+                    pageIndex = state.onboardingPage,
+                    pageCount = SampleCatalog.onboardingPages.size,
+                    action = "next",
+                )
                 state.copy(onboardingPage = state.onboardingPage + 1)
             }
         }
@@ -215,6 +225,12 @@ class EmojiBatteryViewModel(
 
     fun previousOnboardingPage() {
         _uiState.update { state ->
+            TrackingServices.trackOnboardingStep(
+                context = getApplication(),
+                pageIndex = state.onboardingPage,
+                pageCount = SampleCatalog.onboardingPages.size,
+                action = "back",
+            )
             state.copy(onboardingPage = (state.onboardingPage - 1).coerceAtLeast(0))
         }
     }
@@ -223,6 +239,7 @@ class EmojiBatteryViewModel(
         val app = getApplication<Application>()
         AppFlowPreferences.setOnboardingDone(app)
         _uiState.update { state ->
+            TrackingServices.trackOnboardingSkip(app, state.onboardingPage)
             val updated = state.copy(
                 onboardingCompleted = true,
                 infoMessage = "Onboarding skipped.",
@@ -434,6 +451,16 @@ class EmojiBatteryViewModel(
     }
 
     fun syncAccessibilityGranted(granted: Boolean) {
+        val previousGranted = _uiState.value.accessibilityGranted
+        val shouldTrackChange = accessibilityPermissionHydrated && previousGranted != granted
+        accessibilityPermissionHydrated = true
+        if (shouldTrackChange) {
+            TrackingServices.trackPermissionResult(
+                context = getApplication(),
+                permissionType = "accessibility",
+                granted = granted,
+            )
+        }
         _uiState.update { it.copy(accessibilityGranted = granted) }
     }
 
@@ -515,28 +542,41 @@ class EmojiBatteryViewModel(
      */
     fun applyConfig(): Boolean {
         var appliedSuccessfully = false
+        var failReason: String? = null
         var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
-            if (!state.accessibilityGranted) {
-                state.copy(applyMessage = "Enable accessibility bridge before applying.")
-            } else if (!canApplyBattery(state)) {
-                state.copy(
-                    paywallState = PaywallState(
-                        featureKey = "limit:apply_battery",
-                        title = "Free Battery Apply Limit Reached",
-                        message = "Free users can apply battery ${LimitedFeature.ApplyBattery.freeLimit} times. Upgrade to keep applying without limits.",
-                    ),
-                )
-            } else {
-                appliedSuccessfully = true
-                updatedEntitlement = recordBatteryApply(state.userEntitlement)
-                state.copy(
-                    appliedConfig = state.editingConfig,
-                    applyMessage = APPLY_SUCCESS_MESSAGE,
-                    userEntitlement = updatedEntitlement ?: state.userEntitlement,
-                )
+            when {
+                !state.accessibilityGranted -> {
+                    failReason = "no_permission"
+                    state.copy(applyMessage = "Enable accessibility bridge before applying.")
+                }
+                !canApplyBattery(state) -> {
+                    failReason = "limit"
+                    state.copy(
+                        paywallState = PaywallState(
+                            featureKey = "limit:apply_battery",
+                            title = "Free Battery Apply Limit Reached",
+                            message = "Free users can apply battery ${LimitedFeature.ApplyBattery.freeLimit} times. Upgrade to keep applying without limits.",
+                        ),
+                    )
+                }
+                else -> {
+                    appliedSuccessfully = true
+                    updatedEntitlement = recordBatteryApply(state.userEntitlement)
+                    state.copy(
+                        appliedConfig = state.editingConfig,
+                        applyMessage = APPLY_SUCCESS_MESSAGE,
+                        userEntitlement = updatedEntitlement ?: state.userEntitlement,
+                    )
+                }
             }
         }
+        trackApplyOutcome(
+            contentType = "battery",
+            contentId = _uiState.value.editingConfig.batteryPresetId,
+            success = appliedSuccessfully,
+            failReason = failReason,
+        )
         if (appliedSuccessfully) {
             advanceAchievement("apply_status_bar")
         }
@@ -545,28 +585,41 @@ class EmojiBatteryViewModel(
 
     fun applyLegacyBatteryConfig(): Boolean {
         var appliedSuccessfully = false
+        var failReason: String? = null
         var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
-            if (!state.accessibilityGranted) {
-                state.copy(applyMessage = "Enable accessibility bridge before applying.")
-            } else if (!canApplyBattery(state)) {
-                state.copy(
-                    paywallState = PaywallState(
-                        featureKey = "limit:apply_battery",
-                        title = "Free Battery Apply Limit Reached",
-                        message = "Free users can apply battery ${LimitedFeature.ApplyBattery.freeLimit} times. Upgrade to keep applying without limits.",
-                    ),
-                )
-            } else {
-                appliedSuccessfully = true
-                updatedEntitlement = recordBatteryApply(state.userEntitlement)
-                state.copy(
-                    appliedConfig = state.editingConfig,
-                    applyMessage = APPLY_SUCCESS_MESSAGE,
-                    userEntitlement = updatedEntitlement ?: state.userEntitlement,
-                )
+            when {
+                !state.accessibilityGranted -> {
+                    failReason = "no_permission"
+                    state.copy(applyMessage = "Enable accessibility bridge before applying.")
+                }
+                !canApplyBattery(state) -> {
+                    failReason = "limit"
+                    state.copy(
+                        paywallState = PaywallState(
+                            featureKey = "limit:apply_battery",
+                            title = "Free Battery Apply Limit Reached",
+                            message = "Free users can apply battery ${LimitedFeature.ApplyBattery.freeLimit} times. Upgrade to keep applying without limits.",
+                        ),
+                    )
+                }
+                else -> {
+                    appliedSuccessfully = true
+                    updatedEntitlement = recordBatteryApply(state.userEntitlement)
+                    state.copy(
+                        appliedConfig = state.editingConfig,
+                        applyMessage = APPLY_SUCCESS_MESSAGE,
+                        userEntitlement = updatedEntitlement ?: state.userEntitlement,
+                    )
+                }
             }
         }
+        trackApplyOutcome(
+            contentType = "legacy_battery",
+            contentId = _uiState.value.editingConfig.batteryPresetId,
+            success = appliedSuccessfully,
+            failReason = failReason,
+        )
         if (appliedSuccessfully) {
             advanceAchievement("apply_status_bar")
         }
@@ -701,6 +754,12 @@ class EmojiBatteryViewModel(
         val sticker = _uiState.value.stickerPresetForId(stickerId) ?: return
         _uiState.update { state ->
             if (sticker.premium && !hasFeatureAccess(state, "sticker:$stickerId")) {
+                TrackingServices.trackContentSelect(
+                    context = getApplication(),
+                    contentType = "sticker",
+                    contentId = stickerId,
+                    locked = true,
+                )
                 state.copy(
                     paywallState = PaywallState(
                         featureKey = "sticker:$stickerId",
@@ -785,18 +844,28 @@ class EmojiBatteryViewModel(
 
     fun saveStickerOverlay(): Boolean {
         var savedSuccessfully = false
+        var failReason: String? = null
         var updatedEntitlement: UserEntitlementState? = null
         _uiState.update { state ->
             when {
-                state.stickerPlacements.isEmpty() -> state.copy(applyMessage = "Please select a sticker first.")
-                !state.accessibilityGranted -> state.copy(applyMessage = "Enable accessibility bridge before applying.")
-                !canApplySticker(state) -> state.copy(
-                    paywallState = PaywallState(
-                        featureKey = "limit:apply_sticker",
-                        title = "Free Sticker Apply Limit Reached",
-                        message = "Free users can apply sticker ${LimitedFeature.ApplySticker.freeLimit} times. Upgrade to keep using sticker overlay.",
-                    ),
-                )
+                state.stickerPlacements.isEmpty() -> {
+                    failReason = "empty_sticker"
+                    state.copy(applyMessage = "Please select a sticker first.")
+                }
+                !state.accessibilityGranted -> {
+                    failReason = "no_permission"
+                    state.copy(applyMessage = "Enable accessibility bridge before applying.")
+                }
+                !canApplySticker(state) -> {
+                    failReason = "limit"
+                    state.copy(
+                        paywallState = PaywallState(
+                            featureKey = "limit:apply_sticker",
+                            title = "Free Sticker Apply Limit Reached",
+                            message = "Free users can apply sticker ${LimitedFeature.ApplySticker.freeLimit} times. Upgrade to keep using sticker overlay.",
+                        ),
+                    )
+                }
                 else -> {
                     savedSuccessfully = true
                     state.copy(
@@ -808,6 +877,12 @@ class EmojiBatteryViewModel(
                 }
             }
         }
+        trackApplyOutcome(
+            contentType = "sticker",
+            contentId = _uiState.value.selectedStickerId,
+            success = savedSuccessfully,
+            failReason = failReason,
+        )
         if (updatedEntitlement != null) {
             advanceAchievement("save_sticker")
         }
@@ -905,6 +980,12 @@ class EmojiBatteryViewModel(
         val template = SampleCatalog.realTimeTemplates.firstOrNull { it.id == templateId } ?: return
         _uiState.update { state ->
             if (template.premium && !hasFeatureAccess(state, "template:$templateId")) {
+                TrackingServices.trackContentSelect(
+                    context = getApplication(),
+                    contentType = "realtime",
+                    contentId = templateId,
+                    locked = true,
+                )
                 state.copy(
                     paywallState = PaywallState(
                         featureKey = "template:$templateId",
@@ -920,15 +1001,23 @@ class EmojiBatteryViewModel(
 
     fun applyRealTimeTemplate(): Boolean {
         var appliedSuccessfully = false
+        var failReason: String? = null
         val selected = SampleCatalog.realTimeTemplates.firstOrNull { it.id == _uiState.value.selectedRealTimeTemplateId } ?: return false
         _uiState.update { state ->
             if (!state.accessibilityGranted) {
+                failReason = "no_permission"
                 state.copy(applyMessage = "Enable accessibility bridge before applying.")
             } else {
                 appliedSuccessfully = true
                 state.copy(applyMessage = APPLY_SUCCESS_MESSAGE)
             }
         }
+        trackApplyOutcome(
+            contentType = "realtime",
+            contentId = selected.id,
+            success = appliedSuccessfully,
+            failReason = failReason,
+        )
         if (appliedSuccessfully) {
             advanceAchievement("template_explorer")
         }
@@ -1038,27 +1127,42 @@ class EmojiBatteryViewModel(
 
     fun applyBatteryTroll(): Boolean {
         var appliedSuccessfully = false
+        var failReason: String? = null
         _uiState.update { state ->
-            if (!state.accessibilityGranted) {
-                state.copy(applyMessage = "Enable accessibility bridge before applying.")
-            } else if (!state.statusBarOverlayEnabled) {
-                state.copy(
-                    trollOverlayEnabled = false,
-                    applyMessage = "Enable emoji battery overlay first.",
-                )
-            } else if (!state.trollFeatureEnabled) {
-                state.copy(
-                    trollOverlayEnabled = false,
-                    applyMessage = "Battery Troll is disabled.",
-                )
-            } else {
-                appliedSuccessfully = true
-                state.copy(
-                    trollOverlayEnabled = true,
-                    applyMessage = APPLY_SUCCESS_MESSAGE,
-                )
+            when {
+                !state.accessibilityGranted -> {
+                    failReason = "no_permission"
+                    state.copy(applyMessage = "Enable accessibility bridge before applying.")
+                }
+                !state.statusBarOverlayEnabled -> {
+                    failReason = "overlay_off"
+                    state.copy(
+                        trollOverlayEnabled = false,
+                        applyMessage = "Enable emoji battery overlay first.",
+                    )
+                }
+                !state.trollFeatureEnabled -> {
+                    failReason = "troll_disabled"
+                    state.copy(
+                        trollOverlayEnabled = false,
+                        applyMessage = "Battery Troll is disabled.",
+                    )
+                }
+                else -> {
+                    appliedSuccessfully = true
+                    state.copy(
+                        trollOverlayEnabled = true,
+                        applyMessage = APPLY_SUCCESS_MESSAGE,
+                    )
+                }
             }
         }
+        trackApplyOutcome(
+            contentType = "battery_troll",
+            contentId = _uiState.value.selectedBatteryTrollTemplateId,
+            success = appliedSuccessfully,
+            failReason = failReason,
+        )
         if (appliedSuccessfully) {
             advanceAchievement("template_explorer")
         }
@@ -1089,6 +1193,7 @@ class EmojiBatteryViewModel(
         _uiState.update { state ->
             val lastIndex = SampleCatalog.tutorialPages.lastIndex
             if (state.tutorialPage >= lastIndex) {
+                TrackingServices.trackTutorialComplete(getApplication(), skipped = false)
                 state.copy(
                     tutorialCompleted = true,
                     infoMessage = "Tutorial completed.",
@@ -1106,6 +1211,7 @@ class EmojiBatteryViewModel(
     }
 
     fun skipTutorial() {
+        TrackingServices.trackTutorialComplete(getApplication(), skipped = true)
         _uiState.update {
             it.copy(
                 tutorialCompleted = true,
@@ -1375,6 +1481,21 @@ class EmojiBatteryViewModel(
 
     private fun canApplyBattery(state: AppUiState): Boolean =
         userEntitlementManager.canApplyBattery(state.userEntitlement)
+
+    private fun trackApplyOutcome(
+        contentType: String,
+        contentId: String?,
+        success: Boolean,
+        failReason: String?,
+    ) {
+        val app = getApplication<Application>()
+        TrackingServices.trackApplyAttempt(app, contentType, contentId)
+        if (success) {
+            TrackingServices.trackApplySuccess(app, contentType, contentId)
+        } else {
+            TrackingServices.trackApplyFail(app, contentType, failReason ?: "unknown", contentId)
+        }
+    }
 
     private fun recordStickerApply(state: UserEntitlementState): UserEntitlementState =
         userEntitlementManager.recordApplySticker(state)
