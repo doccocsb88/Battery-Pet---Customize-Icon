@@ -76,8 +76,10 @@ import dev.hai.emojibattery.service.OverlayAccessibilityService
 import dev.hai.emojibattery.service.OverlayConfigStore
 import dev.hai.emojibattery.service.WallpaperApplyService
 import dev.hai.emojibattery.locale.AppLanguageConfig
+import dev.hai.emojibattery.ui.accessibility.AccessibilityPermissionTutorialScreen
 import dev.hai.emojibattery.ui.accessibility.AccessibilityServiceUsageDialog
 import dev.hai.emojibattery.ui.navigation.AppRoute
+import dev.hai.emojibattery.tracking.TrackingServices
 import co.q7labs.co.emoji.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -105,6 +107,7 @@ fun EmojiBatteryApp(
         AppRoute.Settings.route,
     )
     var showAccessibilityConsent by remember { mutableStateOf(false) }
+    var showAccessibilityTutorial by remember { mutableStateOf(false) }
     var transientSuccessMessage by remember { mutableStateOf<String?>(null) }
     var successToastResetToken by remember { mutableStateOf(0L) }
     var splashNavigationHandled by rememberSaveable { mutableStateOf(false) }
@@ -134,7 +137,12 @@ fun EmojiBatteryApp(
             OverlayAccessibilityService.requestRefresh(context)
         }
     }
-    val navigateWithInterstitial: (String) -> Unit = { destinationRoute ->
+    val navigateWithInterstitial: (String, String) -> Unit = { destinationRoute, placement ->
+        TrackingServices.trackFeatureOpen(
+            context = context,
+            featureKey = TrackingServices.screenNameFromRoute(destinationRoute),
+            source = placement,
+        )
         val navigateDirectly = {
             navController.navigate(destinationRoute)
         }
@@ -142,6 +150,7 @@ fun EmojiBatteryApp(
             adsService.showInterstitial(
                 activity = hostActivity,
                 isPremium = uiState.premiumUnlocked,
+                placement = placement,
                 onUnavailable = navigateDirectly,
                 onDismissed = navigateDirectly,
             )
@@ -173,6 +182,7 @@ fun EmojiBatteryApp(
                 AppRoute.Paywall.route
             else -> AppRoute.Home.route
         }
+        TrackingServices.trackSplashComplete(context, nextRoute)
         navController.navigate(nextRoute) {
             popUpTo(AppRoute.Splash.route) { inclusive = true }
             launchSingleTop = true
@@ -200,6 +210,28 @@ fun EmojiBatteryApp(
         viewModel.syncPremiumAccess(hasPremium)
     }
 
+    LaunchedEffect(route) {
+        TrackingServices.trackScreenView(context, route)
+    }
+
+    LaunchedEffect(uiState.premiumUnlocked, uiState.accessibilityGranted, uiState.onboardingCompleted) {
+        TrackingServices.syncUserProperties(
+            context = context,
+            isPremium = uiState.premiumUnlocked,
+            hasAccessibility = uiState.accessibilityGranted,
+            onboardingCompleted = uiState.onboardingCompleted,
+        )
+    }
+
+    LaunchedEffect(showAccessibilityConsent) {
+        if (!showAccessibilityConsent) return@LaunchedEffect
+        TrackingServices.trackPermissionPrompt(
+            context = context,
+            permissionType = "accessibility",
+            fromScreen = TrackingServices.screenNameFromRoute(route),
+        )
+    }
+
     LaunchedEffect(uiState.applyMessage) {
         val message = uiState.applyMessage ?: return@LaunchedEffect
         transientSuccessMessage = message
@@ -215,6 +247,7 @@ fun EmojiBatteryApp(
         }
     }
 
+    Box(Modifier.fillMaxSize()) {
     Scaffold(
         bottomBar = {
             AnimatedVisibility(showBottomBar) {
@@ -237,10 +270,16 @@ fun EmojiBatteryApp(
                                 "hasHostActivity=${hostActivity != null}, premium=${uiState.premiumUnlocked}",
                         )
 
+                        TrackingServices.trackTabSelect(
+                            context = context,
+                            tabName = TrackingServices.screenNameFromRoute(destination.route),
+                            fromTab = TrackingServices.screenNameFromRoute(route),
+                        )
                         if (shouldShowInterstitial) {
                             adsService.showInterstitial(
                                 activity = hostActivity,
                                 isPremium = uiState.premiumUnlocked,
+                                placement = "tab_switch",
                                 onUnavailable = {
                                     Log.d(TAG, "tabNavigate: interstitial unavailable -> navigate directly")
                                     navigateToMainDestination(destination, section)
@@ -341,6 +380,9 @@ fun EmojiBatteryApp(
                 )
             }
             composable(AppRoute.Onboarding.route) {
+                LaunchedEffect(Unit) {
+                    TrackingServices.trackOnboardingStart(context)
+                }
                 OnboardingScreen(
                     uiState = uiState,
                     onSkip = {
@@ -374,6 +416,9 @@ fun EmojiBatteryApp(
                 )
             }
             composable(AppRoute.Tutorial.route) {
+                LaunchedEffect(Unit) {
+                    TrackingServices.trackTutorialStart(context)
+                }
                 TutorialScreen(
                     uiState = uiState,
                     onClose = { navController.popBackStack() },
@@ -397,17 +442,28 @@ fun EmojiBatteryApp(
                         viewModel.selectMainSection(MainSection.Home)
                         viewModel.selectStatusTab(StatusBarTab.Battery)
                         if (selectedItem != null) {
+                            TrackingServices.trackContentSelect(
+                                context = context,
+                                contentType = "battery",
+                                contentId = selectedItem.id,
+                                categoryId = selectedItem.categoryId,
+                            )
                             viewModel.stageStatusBarSelectionFromHome(
                                 categoryId = selectedItem.categoryId,
                                 selectedItemId = selectedItem.id,
                             )
                         }
-                        navigateWithInterstitial(AppRoute.StatusBarCustom.route)
+                        navigateWithInterstitial(AppRoute.StatusBarCustom.route, "home_item")
                     },
                     onOpenLegacyBattery = { navController.navigate(AppRoute.LegacyBattery.route) },
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
-                    onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
-                    onOpenBatteryTroll = { navigateWithInterstitial(AppRoute.BatteryTroll.route) },
+                    onOpenSticker = {
+                        TrackingServices.trackFeatureOpen(context, "emoji_sticker", "home")
+                        navController.navigate(AppRoute.EmojiSticker.route)
+                    },
+                    onOpenBatteryTroll = {
+                        navigateWithInterstitial(AppRoute.BatteryTroll.route, "home")
+                    },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
                     onOpenPremium = viewModel::openStore,
                     onSetOverlayEnabled = onSetOverlayEnabled,
@@ -416,30 +472,36 @@ fun EmojiBatteryApp(
             composable(AppRoute.Customize.route) {
                 CustomizeHubScreen(
                     uiState = uiState,
-                    onOpenSticker = { navController.navigate(AppRoute.EmojiSticker.route) },
+                    onOpenSticker = {
+                        TrackingServices.trackFeatureOpen(context, "emoji_sticker", "customize")
+                        navController.navigate(AppRoute.EmojiSticker.route)
+                    },
                     onOpenFeature = { entry ->
                         when (entry) {
                             CustomizeEntry.Theme,
                             CustomizeEntry.Settings,
                             -> {
                                 customizeEntryToStatusBarTab(entry)?.let { viewModel.selectStatusTab(it) }
-                                navigateWithInterstitial(AppRoute.StatusBarCustom.route)
+                                navigateWithInterstitial(AppRoute.StatusBarCustom.route, "customize_${entry.name.lowercase()}")
                             }
 
-                            else -> navController.navigate(AppRoute.FeatureDetail.create(entry.title))
+                            else -> {
+                                TrackingServices.trackFeatureOpen(context, entry.name.lowercase(), "customize")
+                                navController.navigate(AppRoute.FeatureDetail.create(entry.title))
+                            }
                         }
                     },
                     onOpenStatusBarCustom = {
                         viewModel.selectStatusTab(StatusBarTab.Battery)
-                        navigateWithInterstitial(AppRoute.StatusBarCustom.route)
+                        navigateWithInterstitial(AppRoute.StatusBarCustom.route, "customize_hub")
                     },
-                    onOpenThemeList = { navigateWithInterstitial(AppRoute.ThemeList.route) },
+                    onOpenThemeList = { navigateWithInterstitial(AppRoute.ThemeList.route, "customize") },
                     onOpenAccessibility = { showAccessibilityConsent = true },
                     onOpenSearch = { navController.navigate(AppRoute.Search.route) },
-                    onOpenNotch = { navigateWithInterstitial(AppRoute.Notch.route) },
-                    onOpenAnimation = { navigateWithInterstitial(AppRoute.Animation.route) },
+                    onOpenNotch = { navigateWithInterstitial(AppRoute.Notch.route, "customize") },
+                    onOpenAnimation = { navigateWithInterstitial(AppRoute.Animation.route, "customize") },
                     onOpenFeedback = { navController.navigate(AppRoute.Feedback.route) },
-                    onOpenBatteryTroll = { navigateWithInterstitial(AppRoute.BatteryTroll.route) },
+                    onOpenBatteryTroll = { navigateWithInterstitial(AppRoute.BatteryTroll.route, "customize") },
                     onOpenPremium = viewModel::openStore,
                     onSetOverlayEnabled = onSetOverlayEnabled,
                 )
@@ -448,6 +510,7 @@ fun EmojiBatteryApp(
                 WallpaperScreen(
                     onOpenCategory = { categoryId ->
                         viewModel.selectMainSection(MainSection.Wallpaper)
+                        TrackingServices.trackFeatureOpen(context, "wallpaper_category", "wallpaper_tab")
                         navController.navigate(AppRoute.WallpaperCategory.create(categoryId))
                     },
                 )
@@ -462,6 +525,13 @@ fun EmojiBatteryApp(
                     isPremiumUser = uiState.premiumUnlocked,
                     onBack = { navController.popBackStack() },
                     onOpenPreview = { selectedCategoryId, wallpaperId, locked ->
+                        TrackingServices.trackContentSelect(
+                            context = context,
+                            contentType = "wallpaper",
+                            contentId = wallpaperId,
+                            categoryId = selectedCategoryId,
+                            locked = locked,
+                        )
                         val navigateToPreview = {
                             navController.navigate(
                                 AppRoute.WallpaperPreview.create(selectedCategoryId, wallpaperId),
@@ -471,6 +541,7 @@ fun EmojiBatteryApp(
                             adsService.showInterstitial(
                                 activity = hostActivity,
                                 isPremium = uiState.premiumUnlocked,
+                                placement = "wallpaper_locked",
                                 onUnavailable = navigateToPreview,
                                 onDismissed = navigateToPreview,
                             )
@@ -939,12 +1010,15 @@ fun EmojiBatteryApp(
                     onBack = { navController.popBackStack() },
                     onApplyTheme = { optionId, selectedWallpaperAsset ->
                         viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                        TrackingServices.trackApplyAttempt(context, "theme", optionId)
                         if (!AccessibilityBridge.isEnabled(context)) {
+                            TrackingServices.trackApplyFail(context, "theme", "no_permission", optionId)
                             showAccessibilityConsent = true
                             viewModel.postInfoMessage("Enable accessibility bridge before applying.")
                         } else {
                             val selectedOption = themeOptions.firstOrNull { it.id == optionId }
                             if (selectedOption == null) {
+                                TrackingServices.trackApplyFail(context, "theme", "not_found", optionId)
                                 viewModel.postInfoMessage("Theme option not found: $optionId")
                             } else {
                                 OverlayConfigStore.applyThemeSelection(
@@ -962,6 +1036,7 @@ fun EmojiBatteryApp(
                                     )
                                         ?.let { viewModel.postInfoMessage(it) }
                                 }
+                                TrackingServices.trackApplySuccess(context, "theme", optionId)
                                 viewModel.postApplyMessage("Applied successfully.")
                             }
                         }
@@ -1084,8 +1159,7 @@ fun EmojiBatteryApp(
                 onDismiss = { showAccessibilityConsent = false },
                 onConfirmOpenSettings = {
                     showAccessibilityConsent = false
-                    AccessibilityBridge.openSettings(context)
-                    viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+                    showAccessibilityTutorial = true
                 },
                 onMissingConsent = {
                     val msg = rawContext.getString(R.string.please_read_and_click) + " " + rawContext.getString(R.string.i_agree)
@@ -1094,6 +1168,19 @@ fun EmojiBatteryApp(
             )
         }
         }
+    }
+
+    if (showAccessibilityTutorial) {
+        AccessibilityPermissionTutorialScreen(
+            fromScreen = TrackingServices.screenNameFromRoute(route),
+            onBack = { showAccessibilityTutorial = false },
+            onGoToSettings = {
+                showAccessibilityTutorial = false
+                AccessibilityBridge.openSettings(context)
+                viewModel.syncAccessibilityGranted(AccessibilityBridge.isEnabled(context))
+            },
+        )
+    }
     }
 
     LaunchedEffect(uiState.paywallState, route) {

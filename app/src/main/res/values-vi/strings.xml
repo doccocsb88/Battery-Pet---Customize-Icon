@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="home_screen_title">Battery Pet</string>
+    <string name="customize_screen_title">Tùy chỉnh</string>
+    <string name="settings_group_support">Hỗ trợ</string>
+    <string name="settings_group_legal">Pháp lý</string>
     <string name="loading_dot">Đang tải...</string>
     <string name="this_action_may_be_content_ads">(Hành động này có thể là nội dung quảng cáo)</string>
     <string name="select_your_language">Chọn ngôn ngữ của bạn</string>
@@ -53,4 +57,16 @@
     <!-- Wallpaper -->
     <string name="wallpaper_search_hint">Tìm danh mục hình nền</string>
     <string name="wallpaper_search_no_results">Không tìm thấy danh mục phù hợp với \"%1$s\".</string>
+
+    <string name="how_to_use_title">Cách sử dụng</string>
+    <string name="go_to_setting">Đến Cài đặt</string>
+    <string name="select_app_in_quotes">Chọn “%1$s”</string>
+    <string name="turn_on">Bật</string>
+    <string name="select_installed_apps_in_accessibility_setting">Chọn “Installed Apps” trong Cài đặt trợ năng</string>
+    <string name="select_installed_apps_or_downloaded_app_in_accessibility_setting">Chọn “Downloaded App” hoặc “Installed Apps” trong Cài đặt trợ năng</string>
+    <string name="select_downloaded_app_in_accessibility_setting">Chọn “Downloaded App” trong Cài đặt trợ năng</string>
+    <string name="select_downloaded_services_in_accessibility_setting">Chọn “Downloaded Services” trong Cài đặt trợ năng</string>
+    <string name="select_installed_services_in_accessibility_setting">Chọn “Installed services” trong Cài đặt trợ năng</string>
+    <string name="click_allow">Nhấn “Allow”</string>
+    <string name="click_grant_access">Nhấn “Grant Access”</string>
 </resources>

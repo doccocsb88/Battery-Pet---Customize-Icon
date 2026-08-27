@@ -202,16 +202,14 @@ private fun HomeScreenScaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             OriginalTopShell(
-                title = stringResource(R.string.battery_icon_title),
+                title = stringResource(R.string.home_screen_title),
                 onLeftSecondary = onOpenFeedback,
                 onSearch = onOpenSearch,
                 showLeftSecondary = false,
                 trailingContent = {
                     if (!uiState.premiumUnlocked) {
                         PremiumButton(
-                            modifier = Modifier
-                                .width(104.dp)
-                                .aspectRatio(2.2f),
+                            compact = true,
                             onClick = onOpenPremium,
                         )
                     } else {
@@ -393,13 +391,11 @@ internal fun CustomizeHubScreen(
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             Spacer(Modifier.width(40.dp))
                         }
-                        Text(stringResource(R.string.battery_icon_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                        Text(stringResource(R.string.customize_screen_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
                         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
                             if (!uiState.premiumUnlocked) {
                                 PremiumButton(
-                                    modifier = Modifier
-                                        .width(104.dp)
-                                        .aspectRatio(2.2f),
+                                    compact = true,
                                     onClick = onOpenPremium,
                                 )
                             } else {

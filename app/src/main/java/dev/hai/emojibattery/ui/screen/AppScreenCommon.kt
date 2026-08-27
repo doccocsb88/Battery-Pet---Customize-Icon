@@ -546,11 +546,31 @@ internal fun MainBottomBar(
 @Composable
 internal fun PremiumButton(
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val premiumLabel = stringResource(R.string.cd_premium)
+    if (compact) {
+        Surface(
+            onClick = onClick,
+            modifier = modifier.size(32.dp),
+            shape = CircleShape,
+            color = Color(0xFFE8F8FF),
+            border = BorderStroke(1.5.dp, OceanSerenity.Secondary),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(R.drawable.ic_diamond),
+                    contentDescription = premiumLabel,
+                    modifier = Modifier.size(16.dp),
+                )
+            }
+        }
+        return
+    }
     Image(
         painter = painterResource(R.drawable.premium_pro_button),
-        contentDescription = "Open premium",
+        contentDescription = premiumLabel,
         contentScale = ContentScale.Crop,
         modifier = modifier
             .clip(RoundedCornerShape(22.dp))

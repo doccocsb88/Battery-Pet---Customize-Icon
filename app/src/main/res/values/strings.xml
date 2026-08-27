@@ -1,5 +1,7 @@
 <resources>
     <string name="battery_icon_title">Battery Icon</string>
+    <string name="home_screen_title">Battery Pet</string>
+    <string name="customize_screen_title">Customize</string>
 
     <string name="app_name">Battery Pet - Icon Customize</string>
     <string name="splash_tagline">Customize your status bar battery &amp; emoji</string>
@@ -106,6 +108,18 @@
     <string name="i_have_read_and_agree_terms_of_service">I have read and agree terms of service</string>
     <string name="please_read_and_click">Please read and click</string>
     <string name="i_agree">I Agree</string>
+
+    <!-- Accessibility how-to tutorial (DialogTutorialRequestPermission) -->
+    <string name="go_to_setting">Go to Setting</string>
+    <string name="select_app_in_quotes">Select “%1$s”</string>
+    <string name="turn_on">Turn On</string>
+    <string name="select_installed_apps_in_accessibility_setting">Select “Installed Apps” in Accessibility Setting</string>
+    <string name="select_installed_apps_or_downloaded_app_in_accessibility_setting">Select “Downloaded App” or “Installed Apps” in Accessibility Setting</string>
+    <string name="select_downloaded_app_in_accessibility_setting">Select “Downloaded App” in Accessibility Setting</string>
+    <string name="select_downloaded_services_in_accessibility_setting">Select “Downloaded Services” in Accessibility Setting</string>
+    <string name="select_installed_services_in_accessibility_setting">Select “Installed services” in Accessibility Setting</string>
+    <string name="click_allow">Click “Allow”</string>
+    <string name="click_grant_access">Click “Grant Access”</string>
 
     <!-- Overlay state -->
     <string name="overlay_active">Overlay active</string>
@@ -306,6 +320,8 @@
 
     <!-- Settings (additional rows) -->
     <string name="settings_screen_title">Settings</string>
+    <string name="settings_group_support">Support</string>
+    <string name="settings_group_legal">Legal</string>
     <string name="settings_not_allowed_apps">Not-Allowed Apps</string>
     <string name="settings_protected">Protected</string>
     <string name="settings_tutorial_summary">Permission guide</string>

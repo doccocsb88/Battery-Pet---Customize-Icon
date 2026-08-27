@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import co.q7labs.co.emoji.R
 import dev.hai.emojibattery.model.AppUiState
 import dev.hai.emojibattery.locale.AppLanguageConfig
@@ -66,6 +68,7 @@ internal fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
@@ -74,15 +77,30 @@ internal fun SettingsScreen(
                 SettingsRow(stringResource(R.string.language), R.drawable.ic_language_settings, languageSubtitle, onOpenLanguage)
             }
 
+            SettingsSectionHeader(stringResource(R.string.settings_group_support))
             SettingsRow(stringResource(R.string.settings_store), R.drawable.ic_store_settings, null, onOpenStore)
             SettingsRow(stringResource(R.string.feedback_title), R.drawable.ic_feed_back_setting, null, onOpenFeedback)
             SettingsRow(stringResource(R.string.settings_share_app), R.drawable.ic_share_app_settings, null, onShareApp)
             SettingsRow(stringResource(R.string.settings_rate_us), R.drawable.ic_rate_us_setting, if (uiState.ratingSelection > 0) stringResource(R.string.settings_rating_line, uiState.ratingSelection) else null, onRateApp)
+
+            SettingsSectionHeader(stringResource(R.string.settings_group_legal))
             SettingsRow(stringResource(R.string.gdpr_consent_options), R.drawable.ic_privacy_settings, gdprConsentSubtitle, onOpenGdprConsentOptions)
             SettingsRow(stringResource(R.string.privacy_policy), R.drawable.ic_privacy_settings, null, onOpenPrivacy)
             SettingsRow(stringResource(R.string.terms_amp_conditions), R.drawable.ic_privacy_settings, null, onOpenTerms)
         }
     }
+}
+
+@Composable
+private fun SettingsSectionHeader(title: String) {
+    Text(
+        text = title.uppercase(Locale.ROOT),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 11.sp,
+        letterSpacing = 1.2.sp,
+        modifier = Modifier.padding(start = 4.dp, top = 4.dp),
+    )
 }
 
 @Composable

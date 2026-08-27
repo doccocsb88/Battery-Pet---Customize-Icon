@@ -76,6 +76,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import co.q7labs.co.emoji.R
+import dev.hai.emojibattery.tracking.TrackingServices
 import dev.hai.emojibattery.ads.AdMobBanner
 import dev.hai.emojibattery.ads.AdMobNativeAd
 import dev.hai.emojibattery.ads.rememberGoogleMobileAdsService
@@ -461,6 +462,7 @@ internal fun WallpaperPreviewScreen(
         scope.launch {
             selectedTarget = target
             settingWallpaper = true
+            TrackingServices.trackApplyAttempt(appContext, "wallpaper", wallpaperId)
             val result = WallpaperApplyService.applyWallpaper(
                 context = appContext,
                 imageUrl = imageUrl,
@@ -468,6 +470,16 @@ internal fun WallpaperPreviewScreen(
                 target = target,
             )
             settingWallpaper = false
+            if (result.isSuccess) {
+                TrackingServices.trackApplySuccess(appContext, "wallpaper", wallpaperId)
+            } else {
+                TrackingServices.trackApplyFail(
+                    context = appContext,
+                    contentType = "wallpaper",
+                    reason = "apply_error",
+                    contentId = wallpaperId,
+                )
+            }
             onSetBackgroundDone(
                 if (result.isSuccess) {
                     wallpaperSetSuccessMessage(target)
@@ -502,6 +514,13 @@ internal fun WallpaperPreviewScreen(
                     onClick = {
                         if (settingWallpaper) return@Button
                         if (isLocked) {
+                            TrackingServices.trackApplyAttempt(appContext, "wallpaper", wallpaperId)
+                            TrackingServices.trackApplyFail(
+                                context = appContext,
+                                contentType = "wallpaper",
+                                reason = "paywall_locked",
+                                contentId = wallpaperId,
+                            )
                             onOpenPaywall()
                             return@Button
                         }
